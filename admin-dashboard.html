@@ -1316,6 +1316,7 @@
         }
 
         // ======================= FUNCTION TO LOAD TOURNAMENTS =======================
+        // ======================= FUNCTION TO LOAD TOURNAMENTS (UPDATED) =======================
         async function loadAdminTournaments() {
             const container = document.getElementById('admin-tournament-list');
             const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
@@ -1362,7 +1363,7 @@
                     return `
                         <div class="admin-tournament-item">
                             <div class="admin-tournament-info">
-                                <a href="td.html?id=${t._id}" class="tournament-link name">${t.title}</a>
+                                <a href="td.html?slug=${t.slug}" class="tournament-link name">${t.title}</a>
                                 <span class="game">${t.game}</span>
                             </div>
                             <div>
@@ -1396,23 +1397,23 @@
                 alert('Deleting tournament with ID: ' + id);
             }
         }
-        
-        // Modal functions
-        function showModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.style.display = 'flex';
-            setTimeout(() => {
-                modal.querySelector('.modal-content').classList.add('active');
-            }, 10);
-        }
-        
-        function hideModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.querySelector('.modal-content').classList.remove('active');
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300);
-        }
+                
+                // Modal functions
+                function showModal(modalId) {
+                    const modal = document.getElementById(modalId);
+                    modal.style.display = 'flex';
+                    setTimeout(() => {
+                        modal.querySelector('.modal-content').classList.add('active');
+                    }, 10);
+                }
+                
+                function hideModal(modalId) {
+                    const modal = document.getElementById(modalId);
+                    modal.querySelector('.modal-content').classList.remove('active');
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                    }, 300);
+                }
 
         // Handle tournament creation form submission
         document.addEventListener('DOMContentLoaded', function() {
