@@ -925,7 +925,7 @@
 
           setTimeout(() => {
             const userRoles = result.data.user.roles || [];
-            window.location.href = userRoles.includes('admin') ? 'admin-dashboard.html' : 'user-dashboard.html';
+            window.location.href = userRoles.includes('admin') ? 'admin-dashboard.html' : 'index.html';
           }, 1500);
         } else {
           showError(result.error || 'Login failed. Please check your credentials and try again.');
@@ -1015,7 +1015,7 @@
           const userRoles = sessionData.user?.roles || [];
           showSuccess('You are already logged in. Redirecting to your dashboard...');
           setTimeout(() => {
-            window.location.href = userRoles.includes('admin') ? 'admin-dashboard.html' : 'user-dashboard.html';
+            window.location.href = userRoles.includes('admin') ? 'admin-dashboard.html' : 'index.html';
           }, 1500);
         } catch (error) {
           sessionStorage.removeItem('earena_session');
