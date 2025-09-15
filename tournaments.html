@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse All Tournaments | EArena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity=""
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    /* Theme variables */
+    :root {
+      --bg: #0f0f10;
+      --panel: #1f1f20;
+      --muted: #9aa0a6;
+      --copy: #e6e6e6;
+      --accent: #FFD700;
+      --accent-2: #e0ac10;
+      --glass: rgba(20, 20, 20, 0.55);
+      --radius: 12px;
+      --container: 1200px;
+      --ease: 180ms cubic-bezier(.2, .9, .2, 1);
+      --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+      --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+      --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, var(--bg), #070707 140%);
+      color: var(--copy);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.45;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(94%, var(--container));
+      margin: 0 auto;
+    }
+
+    /* Header Styles */
+    header.site-header {
+      position: fixed;
+      inset: 0 0 auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 1200;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s var(--ease-out-quart);
+      height: 60px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--copy);
+      font-size: 1.2rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .brand:hover {
+      color: var(--accent);
+      transform: scale(1.05);
+    }
+
+    .brand .accent {
+      color: var(--accent);
+    }
+
+    .brand::before {
+      content: "⬜";
+      font-size: 1rem;
+      color: var(--accent);
+    }
+
+    .back-btn {
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .back-btn:hover {
+      color: var(--accent);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .login-link {
+      color: var(--copy);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .login-link:hover {
+      color: var(--accent);
+    }
+
+    .header-cta {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #000;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .header-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    }
+
+    /* Main content */
+    main {
+      margin-top: 60px;
+      min-height: calc(100vh - 60px);
+    }
+
+    /* Page Header */
+    .page-header {
+      padding: 4rem 0 2rem;
+      text-align: center;
+    }
+
+    .page-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .page-subtitle {
+      font-size: 1.2rem;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.5;
+    }
+
+    /* Filters */
+    .filters-section {
+      padding: 2rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .filters {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .filter-btn {
+      padding: 0.75rem 1.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 25px;
+      color: var(--copy);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: rgba(255, 215, 0, 0.1);
+      border-color: rgba(255, 215, 0, 0.3);
+      color: var(--accent);
+    }
+
+    /* Tournaments Grid */
+    .tournaments-section {
+      padding: 4rem 0;
+    }
+
+    .tournaments-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .tournament-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s var(--ease-out-quart);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tournament-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 215, 0, 0.2);
+    }
+
+    .tournament-image {
+      height: 200px;
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tournament-image::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 30% 40%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 70% 60%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+    }
+
+    .tournament-badge {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: rgba(255, 215, 0, 0.9);
+      color: #000;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .tournament-status {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-live {
+      background: #ff4444;
+      color: white;
+    }
+
+    .status-upcoming {
+      background: #44ff44;
+      color: #000;
+    }
+
+    .status-registration {
+      background: #4444ff;
+      color: white;
+    }
+
+    .status-completed {
+      background: #888888;
+      color: white;
+    }
+
+    .tournament-content {
+      padding: 1.5rem;
+    }
+
+    .tournament-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .tournament-description {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .tournament-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tournament-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #06110a;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s var(--ease-out-back);
+      border: none;
+      cursor: pointer;
+      flex: 1;
+      text-align: center;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--copy);
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      flex: 1;
+      text-align: center;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 215, 0, 0.3);
+    }
+
+    /* Loading State */
+    .loading {
+      text-align: center;
+      padding: 4rem 0;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 215, 0, 0.3);
+      border-top: 3px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Footer Styles */
+    footer.site-footer {
+      padding: 2.5rem 1rem;
+      background: #070707;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-column h4 {
+      color: var(--copy);
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .footer-column ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-column ul li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-column ul a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-column ul a:hover {
+      color: var(--accent);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--muted);
+    }
+
+    .footer-brand p {
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 1.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .tournaments-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .filters {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+      }
+
+      .filter-btn {
+        white-space: nowrap;
+      }
+
+      .tournament-actions {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <a href="index.html" class="back-btn">
+      <i class="fas fa-arrow-left"></i>
+      Back to Home
+    </a>
+
+    <a href="index.html" class="brand">
+      <span><span class="accent">E</span>Arena</span>
+    </a>
+
+    <div class="nav-actions">
+      <a href="auth.html" class="login-link">Log in</a>
+      <button class="header-cta" onclick="window.location.href='auth.html'">Sign up</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Page Header -->
+    <section class="page-header">
+      <div class="container">
+        <h1 class="page-title">Browse All Tournaments</h1>
+        <p class="page-subtitle">
+          Discover and join exciting esports tournaments. Compete with the best players and win amazing prizes.
+        </p>
+      </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="filters-section">
+      <div class="container">
+        <div class="filters">
+          <button class="filter-btn active" data-filter="all">All Tournaments</button>
+          <button class="filter-btn" data-filter="live">Live</button>
+          <button class="filter-btn" data-filter="upcoming">Upcoming</button>
+          <button class="filter-btn" data-filter="registration">Registration Open</button>
+          <button class="filter-btn" data-filter="completed">Past Results</button>
+          <button class="filter-btn" data-filter="pubg">PUBG</button>
+          <button class="filter-btn" data-filter="bgmi">BGMI</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tournaments Grid -->
+    <section class="tournaments-section">
+      <div class="container">
+        <!-- Loading State -->
+        <div class="loading" id="loading">
+          <div class="loading-spinner"></div>
+          <p>Loading tournaments...</p>
+        </div>
+
+        <!-- Tournaments Grid -->
+        <div class="tournaments-grid" id="tournaments-grid" style="display: none;">
+          <!-- Tournament cards will be populated by JavaScript -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-column footer-brand">
+          <h4><a href="index.html" style="color: var(--copy); text-decoration: none;"><span
+                style="color:var(--accent)">E</span>Arena</a></h4>
+          <p>The ultimate destination for competitive gaming.</p>
+        </div>
+        <div class="footer-column">
+          <h4>Tournaments</h4>
+          <ul>
+            <li><a href="tournaments.html">Browse All</a></li>
+            <li><a href="tournaments.html?filter=live">Live Matches</a></li>
+            <li><a href="tournaments.html?filter=upcoming">Upcoming</a></li>
+            <li><a href="tournaments.html?filter=completed">Past Results</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Community</h4>
+          <ul>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">Forums</a></li>
+            <li><a href="#">Support</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="auth.html">Sign In</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 EArena. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Simulated tournament data (would come from backend API)
+    const tournamentsData = [
+      {
+        id: 1,
+        title: "PUBG Global Series 2025",
+        description: "The biggest PUBG tournament of the year is here! Join us as the best teams from around the world battle it out in London for the title of Global Champions.",
+        prizePool: "$500K",
+        teams: "32",
+        duration: "7 Days",
+        status: "registration",
+        game: "pubg",
+        detailsLink: "tournament-details.html?tournament=pubg-global-series-2025",
+        badge: "Featured"
+      },
+      {
+        id: 2,
+        title: "BGMI Masters Championship",
+        description: "India's premier BGMI tournament featuring the country's top teams competing for glory and massive prizes in an epic battle royale showdown.",
+        prizePool: "$300K",
+        teams: "24",
+        duration: "5 Days",
+        status: "upcoming",
+        game: "bgmi",
+        detailsLink: "tournament-bgmi-masters.html",
+        badge: "Premium"
+      },
+      {
+        id: 3,
+        title: "BGMI Championship Series",
+        description: "The biggest BGMI tournament of the year! Assemble your squad and compete against India's best players for the ultimate battle royale championship title.",
+        prizePool: "$750K",
+        teams: "48",
+        duration: "10 Days",
+        status: "registration",
+        game: "bgmi",
+        detailsLink: "tournament-championship-series.html",
+        badge: "Championship"
+      },
+      {
+        id: 4,
+        title: "PUBG Mobile World Cup",
+        description: "Global championship featuring the best PUBG Mobile teams from around the world competing for the ultimate title and massive prize pool.",
+        prizePool: "$1M",
+        teams: "64",
+        duration: "14 Days",
+        status: "upcoming",
+        game: "pubg",
+        detailsLink: "#",
+        badge: "World Cup"
+      },
+      {
+        id: 5,
+        title: "BGMI Pro League Season 3",
+        description: "Professional league featuring India's top BGMI teams competing in a season-long format with weekly matches and playoffs.",
+        prizePool: "$200K",
+        teams: "16",
+        duration: "8 Weeks",
+        status: "live",
+        game: "bgmi",
+        detailsLink: "tournament-details.html?tournament=bgmi-masters-championship&status=live",
+        badge: "Pro League"
+      },
+      {
+        id: 6,
+        title: "PUBG Continental Series",
+        description: "Regional championship bringing together the best teams from Asia, Europe, and Americas for an epic continental showdown.",
+        prizePool: "$400K",
+        teams: "40",
+        duration: "6 Days",
+        status: "registration",
+        game: "pubg",
+        detailsLink: "#",
+        badge: "Continental"
+      },
+      {
+        id: 7,
+        title: "PUBG Global Championship 2024",
+        description: "The concluded global championship where Team Liquid emerged victorious after an intense final battle against the world's best teams.",
+        prizePool: "$600K",
+        teams: "32",
+        duration: "Completed",
+        status: "completed",
+        game: "pubg",
+        detailsLink: "tournament-details.html?tournament=bgmi-championship-series&status=completed&winner=liquid",
+        badge: "Champion",
+        winner: {
+          team: "Team Liquid",
+          logo: "TL",
+          members: ["ScreaM", "Jamppi", "soulcas", "Nivera"],
+          prize: "$200,000"
+        }
+      },
+      {
+        id: 8,
+        title: "BGMI Masters 2024 Finals",
+        description: "Epic conclusion to the BGMI Masters where Soul dominated the competition with exceptional gameplay and strategic prowess.",
+        prizePool: "$400K",
+        teams: "24",
+        duration: "Completed",
+        status: "completed",
+        game: "bgmi",
+        detailsLink: "tournament-bgmi-masters.html?completed=true&winner=soul",
+        badge: "Champion",
+        winner: {
+          team: "Team Soul",
+          logo: "TS",
+          members: ["Mortal", "Viper", "Clutchgod", "Regaltos"],
+          prize: "$120,000"
+        }
+      },
+      {
+        id: 9,
+        title: "PUBG Nations Cup 2024",
+        description: "International tournament concluded with spectacular performances where Natus Vincere claimed the championship title.",
+        prizePool: "$350K",
+        teams: "28",
+        duration: "Completed",
+        status: "completed",
+        game: "pubg",
+        detailsLink: "tournament-championship-series.html?completed=true&winner=navi",
+        badge: "Champion",
+        winner: {
+          team: "Natus Vincere",
+          logo: "NV",
+          members: ["s1mple", "electronic", "Perfecto", "b1t"],
+          prize: "$100,000"
+        }
+      }
+    ];
+
+    let currentFilter = 'all';
+
+    // Status configurations
+    const statusConfig = {
+      live: { class: 'status-live', text: 'Live' },
+      upcoming: { class: 'status-upcoming', text: 'Upcoming' },
+      registration: { class: 'status-registration', text: 'Registration Open' },
+      completed: { class: 'status-completed', text: 'Completed' }
+    };
+
+    // Fetch tournaments from API
+    async function fetchTournaments() {
+      try {
+        const response = await fetch('https://tournament-hosting-backend.onrender.com/api/tournaments');
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+          // Transform backend data to match frontend format
+          return result.data.map(tournament => ({
+            id: tournament._id,
+            title: tournament.title,
+            subtitle: tournament.subtitle || '',
+            game: tournament.game || 'Unknown',
+            status: tournament.status || 'upcoming',
+            badge: getStatusBadge(tournament.status),
+            prizePool: tournament.prizePool || 0,
+            maxTeams: tournament.maxTeams || 16,
+            registrationStart: tournament.registrationStart,
+            registrationEnd: tournament.registrationEnd,
+            tournamentStart: tournament.tournamentStart,
+            tournamentEnd: tournament.tournamentEnd,
+            backgroundImage: tournament.backgroundImage || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+            detailsLink: `tournament-details.html?slug=${tournament.slug}`
+          }));
+        } else {
+          throw new Error(result.error || 'Failed to fetch tournaments');
+        }
+      } catch (error) {
+        console.error('Error fetching tournaments:', error);
+        // Return empty array on error, let the UI handle the empty state
+        return [];
+      }
+    }
+
+    // Get status badge text
+    function getStatusBadge(status) {
+      const badges = {
+        'upcoming': 'Coming Soon',
+        'registration': 'Registration Open',
+        'live': 'Live Now',
+        'completed': 'Completed'
+      };
+      return badges[status] || 'Unknown';
+    }
+
+    // Create tournament card HTML
+    function createTournamentCard(tournament) {
+      const statusInfo = statusConfig[tournament.status];
+
+      // Determine if we should show the register button
+      const showRegisterButton = tournament.status === 'registration';
+
+      const actionsHTML = showRegisterButton ? `
+        <div class="tournament-actions">
+          <a href="${tournament.detailsLink}" class="btn-secondary">
+            <i class="fas fa-info-circle"></i>
+            View Details
+          </a>
+          <button class="btn-primary" onclick="handleRegistration('${tournament.title}')">
+            <i class="fas fa-user-plus"></i>
+            Register
+          </button>
+        </div>
+      ` : `
+        <div class="tournament-actions">
+          <a href="${tournament.detailsLink}" class="btn-primary" style="flex: 1;">
+            <i class="fas fa-info-circle"></i>
+            View Details
+          </a>
+        </div>
+      `;
+
+      return `
+        <div class="tournament-card" data-status="${tournament.status}" data-game="${tournament.game}">
+          <div class="tournament-image">
+            <div class="tournament-badge">${tournament.badge}</div>
+            <div class="tournament-status ${statusInfo.class}">${statusInfo.text}</div>
+          </div>
+          <div class="tournament-content">
+            <h3 class="tournament-title">${tournament.title}</h3>
+            <p class="tournament-description">${tournament.description}</p>
+            
+            <div class="tournament-stats">
+              <div class="stat">
+                <span class="stat-value">${tournament.prizePool}</span>
+                <span class="stat-label">Prize Pool</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value">${tournament.teams}</span>
+                <span class="stat-label">Teams</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value">${tournament.duration}</span>
+                <span class="stat-label">Duration</span>
+              </div>
+            </div>
+            
+            ${actionsHTML}
+          </div>
+        </div>
+      `;
+    }
+
+    // Filter tournaments
+    function filterTournaments(filter) {
+      const cards = document.querySelectorAll('.tournament-card');
+
+      cards.forEach(card => {
+        const status = card.dataset.status;
+        const game = card.dataset.game;
+
+        let show = false;
+
+        if (filter === 'all') {
+          show = true;
+        } else if (filter === 'live' || filter === 'upcoming' || filter === 'registration' || filter === 'completed') {
+          show = status === filter;
+        } else if (filter === 'pubg' || filter === 'bgmi') {
+          show = game === filter;
+        }
+
+        if (show) {
+          card.style.display = 'block';
+          card.style.animation = 'fadeIn 0.3s ease-in-out';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Initialize page
+    async function initializePage() {
+      try {
+        // Show loading
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('tournaments-grid').style.display = 'none';
+
+        // Fetch tournaments (simulated)
+        const tournaments = await fetchTournaments();
+
+        // Populate tournaments grid
+        const grid = document.getElementById('tournaments-grid');
+
+        if (tournaments.length === 0) {
+          // Show empty state
+          grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--muted);">
+              <i class="fas fa-trophy" style="font-size: 4rem; margin-bottom: 1.5rem; opacity: 0.3;"></i>
+              <h3 style="margin-bottom: 1rem; color: var(--copy); font-size: 1.5rem;">No Tournaments Available</h3>
+              <p style="font-size: 1rem; line-height: 1.6; max-width: 400px; margin: 0 auto;">
+                There are currently no tournaments scheduled. Check back soon for exciting new competitions!
+              </p>
+            </div>
+          `;
+        } else {
+          grid.innerHTML = tournaments.map(tournament => createTournamentCard(tournament)).join('');
+        }
+
+        // Hide loading and show grid
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('tournaments-grid').style.display = 'grid';
+
+        // Add filter event listeners
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            // Update active filter
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Apply filter
+            const filter = btn.dataset.filter;
+            currentFilter = filter;
+            filterTournaments(filter);
+          });
+        });
+
+      } catch (error) {
+        console.error('Error loading tournaments:', error);
+
+        // Hide loading and show error state
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('tournaments-grid').style.display = 'block';
+        document.getElementById('tournaments-grid').innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--muted);">
+            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+            <h3 style="margin-bottom: 0.5rem; color: var(--copy);">Error Loading Tournaments</h3>
+            <p>Unable to load tournaments. Please check your connection and try again.</p>
+            <button onclick="initializePage()" style="margin-top: 1rem; padding: 0.75rem 1.5rem; background: var(--accent); color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+              <i class="fas fa-sync-alt"></i> Retry
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+      const header = document.querySelector('.site-header');
+      if (window.scrollY > 100) {
+        header.style.background = 'rgba(15, 15, 15, 0.9)';
+        header.style.backdropFilter = 'blur(30px)';
+      } else {
+        header.style.background = 'rgba(26, 26, 26, 0.8)';
+        header.style.backdropFilter = 'blur(20px)';
+      }
+    });
+
+    // Add fade-in animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Handle URL parameters for filtering
+    function handleUrlParams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const filter = urlParams.get('filter');
+
+      if (filter && ['live', 'upcoming', 'registration', 'completed', 'pubg', 'bgmi'].includes(filter)) {
+        currentFilter = filter;
+
+        // Update active filter button
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+          btn.classList.remove('active');
+          if (btn.dataset.filter === filter) {
+            btn.classList.add('active');
+          }
+        });
+
+        // Apply filter
+        setTimeout(() => {
+          filterTournaments(filter);
+        }, 100);
+      }
+    }
+
+    // Handle registration button clicks
+    function handleRegistration(tournamentTitle) {
+      alert(`Registration for ${tournamentTitle} would open here!`);
+      // This would redirect to actual registration form
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      initializePage().then(() => {
+        handleUrlParams();
+      });
+    });
+
+    // Authentication handling
+    function checkUserAuthentication() {
+      const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+
+      if (session) {
+        try {
+          const sessionData = JSON.parse(session);
+          const user = sessionData.user;
+          const userRoles = user?.roles || [];
+
+          // Update navigation for logged-in users
+          const authButtons = document.querySelector('.nav-actions');
+          if (authButtons) {
+            authButtons.innerHTML = `
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <span style="color: var(--copy); font-weight: 600;">${user.username}</span>
+                ${userRoles.includes('admin') ? '<span style="background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #000; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">Admin</span>' : ''}
+                <button onclick="logout()" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--copy); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+              </div>
+            `;
+          }
+
+          return true;
+        } catch (error) {
+          console.error('Invalid session data:', error);
+          return false;
+        }
+      }
+
+      return false;
+    }
+
+    async function logout() {
+      try {
+        const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+
+        if (session) {
+          const sessionData = JSON.parse(session);
+
+          // Call logout API
+          await fetch('https://tournament-hosting-backend.onrender.com/api/auth/logout', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${sessionData.token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Logout API error:', error);
+      } finally {
+        localStorage.removeItem('earena_session');
+        sessionStorage.removeItem('earena_session');
+        window.location.reload();
+      }
+    }
+
+    // Initialize authentication on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      checkUserAuthentication();
+    });
+  </script>
+</body>
+
+</html>

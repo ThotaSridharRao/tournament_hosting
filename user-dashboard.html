@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | EArena</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-z3gLPD7yE+316I2Fz4Nl0Vj3z9a16q41e17F1A+n0A31l6kE2v3F1F1E1T0a1S1p1A1A1S1p1A1A1S1p1A1A1S1p1A1"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /* Theme variables */
+        :root {
+            --bg: #0f0f10;
+            --panel: #1f1f20;
+            --muted: #9aa0a6;
+            --copy: #e6e6e6;
+            --accent: #FFD700;
+            --accent-2: #e0ac10;
+            --glass: rgba(20, 20, 20, 0.55);
+            --radius: 12px;
+            --container: 1200px;
+            --ease: 180ms cubic-bezier(.2, .9, .2, 1);
+            --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+            --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: linear-gradient(180deg, var(--bg), #070707 140%);
+            color: var(--copy);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.45;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s var(--ease-out-quart);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--copy);
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .brand:hover {
+            color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .brand .accent {
+            color: var(--accent);
+        }
+
+        .admin-nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .admin-nav a {
+            color: var(--copy);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .admin-nav a:hover {
+            color: var(--accent);
+        }
+
+        .user-menu {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--copy);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 0, 0, 0.1);
+            border-color: rgba(255, 0, 0, 0.3);
+            color: #ff6b6b;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 60px;
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .dashboard-subtitle {
+            color: var(--muted);
+            font-size: 1.1rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 215, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #000;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--copy);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        /* Action Cards */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .action-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .action-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #000;
+            margin: 0 auto 1.5rem;
+        }
+
+        .action-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--copy);
+            margin-bottom: 0.5rem;
+        }
+
+        .action-description {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* Recent Activity */
+        .recent-activity {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 2rem;
+        }
+
+        .activity-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 1.5rem;
+        }
+
+        .activity-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--copy);
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 215, 0, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            color: var(--copy);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-time {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.3s var(--ease-out-quart);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content.active {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close-btn:hover {
+            color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--copy);
+            font-size: 0.9rem;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-file,
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--copy);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: var(--muted);
+        }
+
+        .form-file {
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .form-file::-webkit-file-upload-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            color: var(--copy);
+            font-weight: 600;
+            margin-right: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .form-file::-webkit-file-upload-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-out-quart);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .admin-nav {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <a href="index.html" class="brand">
+            <span class="accent">E</span>Arena
+        </a>
+
+        <nav class="admin-nav">
+            <a href="#tournaments">Tournaments</a>
+            <a href="#users">Users</a>
+            <a href="#content">Content</a>
+            <a href="#analytics">Analytics</a>
+        </nav>
+
+        <div class="user-menu">
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Admin Dashboard</h1>
+            <p class="dashboard-subtitle">Manage tournaments, users, and platform content</p>
+        </div>
+
+        <div class="actions-grid">
+            <div class="action-card" onclick="showModal('createTournamentModal')">
+                <div class="action-icon">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <h3 class="action-title">Create Tournament</h3>
+                <p class="action-description">Set up a new tournament with custom rules, prizes, and schedules</p>
+            </div>
+
+            <div class="action-card" onclick="manageUsers()">
+                <div class="action-icon">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <h3 class="action-title">Manage Users</h3>
+                <p class="action-description">View, edit, and moderate user accounts and permissions</p>
+            </div>
+
+            <div class="action-card" onclick="manageContent()">
+                <div class="action-icon">
+                    <i class="fas fa-edit"></i>
+                </div>
+                <h3 class="action-title">Manage Content</h3>
+                <p class="action-description">Update homepage content, highlights, and sponsored posts</p>
+            </div>
+
+            <div class="action-card" onclick="viewAnalytics()">
+                <div class="action-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h3 class="action-title">Analytics</h3>
+                <p class="action-description">View platform statistics, user engagement, and tournament metrics</p>
+            </div>
+        </div>
+
+        <div class="recent-activity">
+            <div class="activity-header">
+                <h3 class="activity-title">Recent Activity</h3>
+            </div>
+            <ul class="activity-list" id="activity-list">
+                <li class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">Loading recent activity...</div>
+                        <div class="activity-time">Please wait</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="createTournamentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Create New Tournament</h2>
+                <button class="modal-close-btn" onclick="hideModal('createTournamentModal')">&times;</button>
+            </div>
+            <form id="create-tournament-form">
+                <div class="form-group">
+                    <label for="tournament-name" class="form-label">Tournament Name</label>
+                    <input type="text" id="tournament-name" class="form-input" placeholder="e.g., EArena League of Legends Cup" required>
+                </div>
+                <div class="form-group">
+                    <label for="tournament-game" class="form-label">Game</label>
+                    <input type="text" id="tournament-game" class="form-input" placeholder="e.g., Counter-Strike 2" required>
+                </div>
+                <div class="form-group">
+                    <label for="tournament-details" class="form-label">Tournament Details</label>
+                    <textarea id="tournament-details" class="form-textarea" placeholder="A brief description of the tournament" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="tournament-location" class="form-label">Location</label>
+                    <input type="text" id="tournament-location" class="form-input" placeholder="e.g., Online, New Delhi" required>
+                </div>
+                <div class="form-group">
+                    <label for="tournament-format" class="form-label">Format</label>
+                    <input type="text" id="tournament-format" class="form-input" placeholder="e.g., Single Elimination, Round Robin" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-start-date" class="form-label">Registration Start Date</label>
+                    <input type="date" id="reg-start-date" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-end-date" class="form-label">Registration End Date</label>
+                    <input type="date" id="reg-end-date" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="tournament-start-date" class="form-label">Tournament Start Date</label>
+                    <input type="date" id="tournament-start-date" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="tournament-end-date" class="form-label">Tournament End Date</label>
+                    <input type="date" id="tournament-end-date" class="form-input" onchange="calculateDuration()" required>
+                </div>
+                <div class="form-group">
+                    <label for="tournament-duration" class="form-label">Tournament Duration</label>
+                    <input type="text" id="tournament-duration" class="form-input" placeholder="Calculated automatically" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="prize-pool" class="form-label">Prize Pool (₹)</label>
+                    <input type="number" id="prize-pool" class="form-input" placeholder="e.g., 50000" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="team-size" class="form-label">Number of Players per Team</label>
+                    <input type="number" id="team-size" class="form-input" placeholder="e.g., 5" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="num-teams" class="form-label">Number of Teams</label>
+                    <input type="number" id="num-teams" class="form-input" placeholder="e.g., 16" min="2" required>
+                </div>
+                <div class="form-group">
+                    <label for="tournament-poster" class="form-label">Poster Image</label>
+                    <input type="file" id="tournament-poster" class="form-file" accept="image/*">
+                </div>
+                <button type="submit" class="submit-btn">Create Tournament</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://earena-backend.onrender.com';
+
+        // Check admin authentication
+        function checkAdminAuth() {
+            const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+            
+            if (!session) {
+                // No session found, redirect to login
+                window.location.href = 'auth.html';
+                return false;
+            }
+
+            try {
+                const sessionData = JSON.parse(session);
+                const userRoles = sessionData.user?.roles || [];
+                
+                if (!userRoles.includes('admin')) {
+                    // User is not an admin, redirect to login
+                    alert('Access denied. Admin privileges required.');
+                    window.location.href = 'auth.html';
+                    return false;
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('Invalid session data:', error);
+                localStorage.removeItem('earena_session');
+                sessionStorage.removeItem('earena_session');
+                window.location.href = 'auth.html';
+                return false;
+            }
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+                
+                if (session) {
+                    const sessionData = JSON.parse(session);
+                    
+                    // Call logout API
+                    await fetch(`${API_BASE_URL}/api/auth/logout`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${sessionData.token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Logout API error:', error);
+            } finally {
+                // Clear session data
+                localStorage.removeItem('earena_session');
+                sessionStorage.removeItem('earena_session');
+                
+                // Redirect to login
+                window.location.href = 'auth.html';
+            }
+        }
+
+        // Load dashboard stats
+        async function loadDashboardStats() {
+            const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+            
+            if (!session) {
+                return; // Should have been redirected by checkAdminAuth
+            }
+            
+            try {
+                const sessionData = JSON.parse(session);
+                const statsResponse = await fetch(`${API_BASE_URL}/api/tournaments/stats`, {
+                    headers: {
+                        'Authorization': `Bearer ${sessionData.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (statsResponse.ok) {
+                    const statsResult = await statsResponse.json();
+                    const stats = statsResult.data;
+                    
+                    document.getElementById('total-tournaments').textContent = stats.totalTournaments || 0;
+                    document.getElementById('total-prize-pool').textContent = `$${(stats.totalPrizePool || 0).toLocaleString()}`;
+                    document.getElementById('total-users').textContent = stats.activePlayers || 0;
+                }
+
+                const tournamentsResponse = await fetch(`${API_BASE_URL}/api/tournaments`, {
+                    headers: {
+                        'Authorization': `Bearer ${sessionData.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (tournamentsResponse.ok) {
+                    const tournamentsResult = await tournamentsResponse.json();
+                    const tournaments = Array.isArray(tournamentsResult) ? tournamentsResult : (tournamentsResult.data || []);
+                    const liveTournaments = tournaments.filter(t => t.status === 'live').length;
+                    
+                    document.getElementById('live-tournaments').textContent = liveTournaments;
+                }
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+
+        // Load recent activity
+        function loadRecentActivity() {
+            const activities = [
+                {
+                    icon: 'fas fa-trophy',
+                    text: 'New tournament "PUBG Global Series 2025" created',
+                    time: '2 hours ago'
+                },
+                {
+                    icon: 'fas fa-user-plus',
+                    text: '15 new users registered today',
+                    time: '4 hours ago'
+                },
+                {
+                    icon: 'fas fa-edit',
+                    text: 'Homepage content updated',
+                    time: '6 hours ago'
+                },
+                {
+                    icon: 'fas fa-star',
+                    text: 'Featured highlights updated',
+                    time: '1 day ago'
+                }
+            ];
+
+            const activityList = document.getElementById('activity-list');
+            activityList.innerHTML = activities.map(activity => `
+                <li class="activity-item">
+                    <div class="activity-icon">
+                        <i class="${activity.icon}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">${activity.text}</div>
+                        <div class="activity-time">${activity.time}</div>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.querySelector('.modal-content').classList.add('active');
+            }, 10);
+        }
+        
+        function hideModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.querySelector('.modal-content').classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+        // Action functions
+        function createTournament() {
+            showModal('createTournamentModal');
+        }
+
+        function manageUsers() {
+            alert('User management feature coming soon!');
+        }
+
+        function manageContent() {
+            alert('Content management feature coming soon!');
+        }
+
+        function viewAnalytics() {
+            alert('Analytics dashboard coming soon!');
+        }
+
+        function calculateDuration() {
+            const startDate = document.getElementById('tournament-start-date').value;
+            const endDate = document.getElementById('tournament-end-date').value;
+            const durationInput = document.getElementById('tournament-duration');
+            
+            if (startDate && endDate) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                const differenceInTime = end.getTime() - start.getTime();
+                const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
+                
+                if (differenceInDays >= 0) {
+                    durationInput.value = `${differenceInDays} day(s)`;
+                } else {
+                    durationInput.value = 'Invalid dates';
+                }
+            } else {
+                durationInput.value = '';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkAdminAuth()) {
+                loadDashboardStats();
+                loadRecentActivity();
+            }
+        });
+    </script>
+</body>
+
+</html>

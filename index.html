@@ -1,0 +1,2916 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description"
+    content="EArena — host and compete. Clean, accessible esports landing page with responsive layout and video hero." />
+  <meta name="theme-color" content="#0b0b0b" />
+  <title>EArena — Compete | Host | Win</title>
+
+  <!-- Fonts & icons (preload & preconnect for performance) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity=""
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    /* =========================
+       Theme variables
+       ========================= */
+    :root {
+      --bg: #0f0f10;
+      /* page background */
+      --panel: #1f1f20;
+      /* panels/cards */
+      --muted: #9aa0a6;
+      /* muted text */
+      --copy: #e6e6e6;
+      /* main copy */
+      --accent: #FFD700;
+      /* primary accent */
+      --accent-2: #e0ac10;
+      /* secondary accent (a darker shade of yellow) */
+      --glass: rgba(20, 20, 20, 0.55);
+      --radius: 12px;
+      --container: 1200px;
+      --ease: 180ms cubic-bezier(.2, .9, .2, 1);
+      --max-hero-height: 880px;
+      --focus: 3px solid rgba(255, 215, 0, 0.12);
+    }
+
+    /* Enhanced easing curves for smoother animations */
+    :root {
+      --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+      --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+      --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    /* Respect reduced motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      :root {
+        --ease: 0ms;
+      }
+
+      * {
+        transition-duration: 0ms !important;
+        animation-duration: 0ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+
+    /* =========================
+       Base resets & accessibility
+       ========================= */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, var(--bg), #070707 140%);
+      color: var(--copy);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.45;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img,
+    video,
+    iframe {
+      max-width: 100%;
+      display: block;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* Skip link for keyboard users */
+    .skip-link {
+      position: absolute;
+      left: -999px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+
+    .skip-link:focus {
+      left: 1rem;
+      top: 1rem;
+      width: auto;
+      height: auto;
+      padding: .5rem .75rem;
+      background: rgba(0, 0, 0, .8);
+      border-radius: 6px;
+      color: var(--copy);
+      z-index: 9999;
+    }
+
+    /* =========================
+       Layout helpers
+       ========================= */
+    .container {
+      width: min(94%, var(--container));
+      margin: 0 auto;
+    }
+
+    header.site-header {
+      position: fixed;
+      inset: 0 0 auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      background: rgba(26, 26, 26, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      z-index: 1200;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s var(--ease-out-quart);
+      height: 60px;
+    }
+
+    header.site-header.scrolled {
+      background: rgba(15, 15, 15, 0.9);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--copy);
+      font-size: 1.2rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .brand:hover {
+      color: var(--accent);
+      transform: scale(1.05);
+    }
+
+    .brand .accent {
+      color: var(--accent);
+    }
+
+    .brand::before {
+      content: "⬜";
+      font-size: 1rem;
+      color: var(--accent);
+    }
+
+    nav.primary {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    /* Nav links — desktop */
+    .nav-links {
+      display: flex;
+      gap: 0;
+      align-items: center;
+    }
+
+    .nav-item {
+      position: relative;
+    }
+
+    .nav-links a {
+      color: rgba(255, 255, 255, 0.8);
+      padding: 1rem 1.5rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+      position: relative;
+      transition: all 0.3s var(--ease-out-quart);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus {
+      color: #ffffff;
+      outline: none;
+    }
+
+    .nav-links a.active {
+      color: #ffffff;
+    }
+
+    /* Dropdown styles */
+    .dropdown-arrow {
+      font-size: 0.7rem;
+      transition: transform 0.3s var(--ease-out-quart);
+    }
+
+    .nav-item:hover .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #1a1a1a;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      min-width: 200px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s var(--ease-out-quart);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .nav-item:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-menu a {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .dropdown-menu a:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-menu a:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #ffffff;
+    }
+
+    /* Right side actions */
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .login-link {
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      transition: all 0.3s var(--ease-out-quart);
+    }
+
+    .login-link:hover {
+      color: #ffffff;
+    }
+
+    /* CTA in header */
+    .header-cta {
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      background: #ffffff;
+      color: #1a1a1a;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s var(--ease-out-back);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-cta::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.1), transparent);
+      transition: left 0.6s var(--ease-out-quart);
+    }
+
+    .header-cta:hover::before {
+      left: 100%;
+    }
+
+    .header-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .header-cta:focus {
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    /* User Menu Styles */
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--copy);
+      font-weight: 600;
+      margin-right: 1rem;
+    }
+
+    .role-badge {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #000;
+      padding: 0.25rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--copy);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 0, 0, 0.1);
+      border-color: rgba(255, 0, 0, 0.3);
+      color: #ff6b6b;
+    }
+
+    #user-menu {
+      display: flex;
+      align-items: center;
+    }
+
+    .dashboard-link:hover {
+      color: var(--accent) !important;
+    }
+
+    /* Hamburger (mobile) */
+    .hamburger {
+      display: none;
+      background: none;
+      border: 0;
+      padding: .5rem;
+      margin-left: .5rem;
+      cursor: pointer;
+      color: var(--copy);
+    }
+
+    .hamburger .bars {
+      display: inline-block;
+      width: 22px;
+      height: 2px;
+      background: var(--copy);
+      border-radius: 2px;
+      position: relative;
+      transition: var(--ease);
+    }
+
+    .hamburger .bars::before,
+    .hamburger .bars::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--copy);
+      border-radius: 2px;
+      transition: var(--ease);
+    }
+
+    .hamburger .bars::before {
+      top: -7px;
+    }
+
+    .hamburger .bars::after {
+      top: 7px;
+    }
+
+    .hamburger[aria-expanded="true"] .bars {
+      background: transparent;
+    }
+
+    .hamburger[aria-expanded="true"] .bars::before {
+      transform: translateY(7px) rotate(-45deg);
+      top: 0;
+    }
+
+    .hamburger[aria-expanded="true"] .bars::after {
+      transform: translateY(-7px) rotate(45deg);
+      top: 0;
+    }
+
+    /* Mobile nav overlay */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      inset: 60px 0 0 0;
+      background: #1a1a1a;
+      z-index: 1100;
+      overflow: auto;
+    }
+
+    .mobile-nav.is-open {
+      display: block;
+    }
+
+
+
+    .mobile-nav-section {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .mobile-nav-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .mobile-nav-items {
+      padding-left: 2rem;
+      display: none;
+    }
+
+    .mobile-nav-items .mobile-link {
+      display: block;
+      padding: 0.75rem 1.5rem;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .mobile-nav>nav>.mobile-link {
+      display: block;
+      padding: 1rem 1.5rem;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: 500;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .mobile-nav-actions {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1.5rem;
+      background: #1a1a1a;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+    }
+
+    /* Mobile Auth Buttons */
+    #mobile-auth-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .mobile-login-btn {
+      flex: 1;
+      padding: 0.875rem 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--copy);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+    }
+
+    .mobile-login-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .mobile-signup-btn {
+      flex: 1;
+      padding: 0.875rem 1rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .mobile-signup-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+    }
+
+    /* Mobile User Menu */
+    #mobile-user-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .mobile-user-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .mobile-user-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 1.2rem;
+    }
+
+    .mobile-user-details {
+      flex: 1;
+    }
+
+    .mobile-username {
+      display: block;
+      color: var(--copy);
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .mobile-user-role {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #000;
+      padding: 0.25rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .mobile-logout-btn {
+      width: 100%;
+      padding: 0.875rem;
+      background: rgba(255, 0, 0, 0.1);
+      border: 1px solid rgba(255, 0, 0, 0.3);
+      border-radius: 8px;
+      color: #ff6b6b;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .mobile-logout-btn:hover {
+      background: rgba(255, 0, 0, 0.15);
+      border-color: rgba(255, 0, 0, 0.4);
+      transform: translateY(-2px);
+    }
+
+    /* =========================
+       Hero section
+       ========================= */
+    .hero {
+      position: relative;
+      height: 80vh;
+      min-height: 600px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+      overflow: hidden;
+      color: #fff;
+      padding: 2rem 1rem;
+    }
+
+    .hero__bg-slider {
+      position: absolute;
+      inset: 0;
+    }
+
+    .hero__bg-slider img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: all 3s var(--ease-in-out-quart);
+      transform: scale(1.1) rotate(0.5deg);
+      filter: brightness(0.8) contrast(1.1);
+    }
+
+    .hero__bg-slider img.active {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+      filter: brightness(1) contrast(1.2);
+    }
+
+
+    .hero__overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, #0f0f10 15%, transparent 80%);
+      z-index: 1;
+    }
+
+    .hero__content {
+      position: relative;
+      z-index: 2;
+      width: min(94%, var(--container));
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      padding: 3rem;
+      max-width: 700px;
+      transition: all 1.2s var(--ease-out-quart);
+      opacity: 0;
+      transform: translateY(40px) translateX(-20px);
+    }
+
+    .hero__content.active {
+      opacity: 1;
+      transform: translateY(0) translateX(0);
+    }
+
+    .hero__content>* {
+      transition: all 0.8s var(--ease-out-quart);
+      transform: translateY(20px);
+      opacity: 0;
+    }
+
+    .hero__content.active>* {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .hero__content.active>*:nth-child(1) {
+      transition-delay: 0.1s;
+    }
+
+    .hero__content.active>*:nth-child(2) {
+      transition-delay: 0.2s;
+    }
+
+    .hero__content.active>*:nth-child(3) {
+      transition-delay: 0.3s;
+    }
+
+    .hero__content.active>*:nth-child(4) {
+      transition-delay: 0.4s;
+    }
+
+    .hero__content .logo {
+      width: 80px;
+      height: 80px;
+      background: var(--panel);
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .hero__content .logo img {
+      width: 60%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .hero__content .tournament-name {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin: 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    .hero__content .prize-pool {
+      font-size: 1.5rem;
+      color: var(--accent);
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+      margin: 0.5rem 0;
+    }
+
+    .hero__content p {
+      color: var(--muted);
+      max-width: 500px;
+      line-height: 1.6;
+      font-size: 1.1rem;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .55rem 1rem;
+      /* Reduced padding for smaller button */
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 0;
+      transition: transform var(--ease), box-shadow var(--ease);
+      text-decoration: none;
+      margin-top: 1rem;
+    }
+
+    .btn--primary {
+      display: inline-flex;
+      align-items: center;
+      gap: .8rem;
+      padding: 1rem 2rem;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+      width: max-content;
+      border: 0;
+      transition: all 0.4s var(--ease-out-back);
+      text-decoration: none;
+      margin-top: 1.5rem;
+      min-width: 180px;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      font-size: 1.1rem;
+
+      /* Styles specifically for the primary button */
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #06110a;
+      box-shadow: 0 10px 30px rgba(255, 215, 0, 0.06);
+    }
+
+    .btn--primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.6s var(--ease-out-quart);
+    }
+
+    .btn--primary:hover::before {
+      left: 100%;
+    }
+
+    .btn--primary:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
+    }
+
+    .btn--primary:active {
+      transform: translateY(-1px) scale(0.98);
+      transition: all 0.1s var(--ease-out-quart);
+    }
+
+    .btn--primary:focus {
+      outline: none;
+      box-shadow: var(--focus);
+      transform: translateY(-2px);
+    }
+
+
+    /* =========================
+       Matches / Panels Grid
+       ========================= */
+    main {
+      margin-top: 72px;
+    }
+
+    /* header height */
+    .section {
+      padding: clamp(2rem, 4vw, 4rem) 1rem;
+    }
+
+    .highlights-section {
+      margin: clamp(4rem, 7vw, 7rem) 0;
+      padding: clamp(3rem, 5vw, 5rem) 1rem;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.005), rgba(255, 255, 255, 0.01));
+    }
+
+    .why-section {
+      margin: clamp(4rem, 7vw, 7rem) 0;
+      padding: clamp(4rem, 6vw, 6rem) 1rem;
+      position: relative;
+      background: #000000;
+      overflow: hidden;
+    }
+
+    .why-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.08) 0%, transparent 60%),
+        radial-gradient(circle at 80% 70%, rgba(255, 215, 0, 0.05) 0%, transparent 60%);
+      z-index: -1;
+    }
+
+    .why-section .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .why-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .why-title {
+      font-size: clamp(2.5rem, 4vw, 3.5rem);
+      font-weight: 800;
+      color: var(--copy);
+      margin-bottom: 1rem;
+    }
+
+    .why-title .accent {
+      color: var(--accent);
+    }
+
+    .why-subtitle {
+      font-size: 1.2rem;
+      color: var(--muted);
+      font-weight: 500;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .cta-section {
+      margin: clamp(3rem, 6vw, 6rem) 0;
+      padding: clamp(3rem, 6vw, 6rem) 1rem;
+      background: #000000;
+    }
+
+    .panels {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.25rem;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      padding: 1.25rem;
+      border-radius: var(--radius);
+      box-shadow: 0 6px 26px rgba(0, 0, 0, 0.35);
+      color: var(--copy);
+      transition: all 0.3s var(--ease-out-quart);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .panel:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+      border-color: rgba(255, 215, 0, 0.1);
+    }
+
+    .panel--large {
+      grid-column: span 6;
+    }
+
+    .panel--small {
+      grid-column: span 3;
+      min-width: 240px;
+    }
+
+    .panel h3 {
+      margin: 0 0 .6rem 0;
+      color: var(--accent);
+      font-size: 1.05rem;
+    }
+
+    .tournament-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: .5rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .tournament-list li:last-child {
+      border-bottom: none;
+    }
+
+    .tournament-list h4 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--copy);
+    }
+
+    .tournament-list p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .live-badge {
+      display: inline-block;
+      background: #ff2f2f;
+      color: white;
+      padding: .25rem .6rem;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: .78rem;
+      box-shadow: 0 6px 18px rgba(255, 47, 47, 0.12);
+    }
+
+    /* =========================
+       Highlights Section
+       ========================= */
+    .highlights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .video-clip {
+      position: relative;
+      padding-top: 56.25%;
+      /* 16:9 Aspect Ratio */
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      transition: all 0.4s var(--ease-out-back);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .video-clip:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      border-color: rgba(255, 215, 0, 0.3);
+    }
+
+    .video-clip iframe {
+      transition: all 0.3s var(--ease-out-quart);
+    }
+
+    .video-clip:hover iframe {
+      transform: scale(1.05);
+    }
+
+    .video-clip iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* =========================
+       Why choose us / CTA / Footer
+       ========================= */
+    .why-grid {
+      display: grid;
+      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      align-items: stretch;
+      margin-top: 2rem;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* 2x2 grid for large screens (1920x1080 and similar) */
+    @media (min-width: 1400px) {
+      .why-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        max-width: 900px;
+        gap: 2.5rem;
+      }
+
+      .why-item {
+        padding: 3rem 2.5rem;
+      }
+    }
+
+    /* Specific optimization for 1920x1080 */
+    @media (min-width: 1920px) {
+      .why-grid {
+        max-width: 1000px;
+        gap: 3rem;
+      }
+
+      .why-item {
+        padding: 3.5rem 3rem;
+      }
+
+      .why-item .fa {
+        font-size: 3.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .why-item h3 {
+        font-size: 1.4rem;
+        margin-bottom: 1.2rem;
+      }
+
+      .why-item p {
+        font-size: 1rem;
+      }
+    }
+
+    .why-item {
+      padding: 2.5rem 2rem;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      text-align: center;
+      position: relative;
+    }
+
+    .why-item .fa {
+      font-size: 3rem;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 1.5rem;
+    }
+
+    .why-item h3 {
+      color: var(--copy);
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .why-item p {
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .cta-hero {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    footer.site-footer {
+      padding: 2.5rem 1rem;
+      background: #070707;
+      color: var(--muted);
+      margin-top: 2rem;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      max-width: var(--container);
+      margin: 0 auto;
+    }
+
+    .footer-column h4 {
+      color: var(--copy);
+      font-weight: 700;
+      margin-bottom: .6rem;
+    }
+
+    .footer-column ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-column ul a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: 1.25rem;
+      font-size: .9rem;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    /* =========================
+       Responsive
+       ========================= */
+    @media (max-width:1100px) {
+      .panels {
+        grid-template-columns: repeat(6, 1fr);
+      }
+
+      .panel--large {
+        grid-column: span 6;
+      }
+
+      .panel--small {
+        grid-column: span 6;
+      }
+    }
+
+    @media (max-width:820px) {
+      .nav-links {
+        display: none;
+      }
+
+      .nav-actions {
+        display: none;
+      }
+
+      .hamburger {
+        display: inline-flex;
+      }
+
+      .mobile-nav.is-open {
+        display: block;
+      }
+
+      .panels {
+        grid-template-columns: repeat(6, 1fr);
+      }
+
+      .panel--large {
+        grid-column: span 6;
+      }
+
+      .panel--small {
+        grid-column: span 6;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+
+    @media (max-width:480px) {
+      .hero {
+        padding-top: 5rem;
+        padding-bottom: 2rem;
+      }
+
+      .hero__content {
+        padding: 2rem 1.5rem;
+        max-width: 100%;
+        gap: 1rem;
+      }
+
+      .hero__content .tournament-name {
+        font-size: clamp(2rem, 8vw, 2.8rem);
+      }
+
+      .hero__content .prize-pool {
+        font-size: 1.2rem;
+      }
+
+      .hero__content p {
+        font-size: 1rem;
+        max-width: 100%;
+      }
+
+      .btn--primary {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        min-width: 160px;
+      }
+
+      .brand {
+        font-size: 1rem;
+      }
+
+      .why-section {
+        margin: clamp(2rem, 4vw, 3rem) 0;
+        padding: clamp(2rem, 4vw, 3rem) 1rem;
+        border-radius: 16px;
+      }
+
+      .why-grid {
+        gap: 1.5rem;
+        grid-template-columns: 1fr;
+      }
+
+      .why-item {
+        padding: 2rem 1.5rem;
+      }
+
+      .why-header {
+        margin-bottom: 2rem;
+      }
+
+      .why-title {
+        font-size: clamp(2rem, 6vw, 2.5rem);
+      }
+
+      .why-subtitle {
+        font-size: 1rem;
+      }
+    }
+
+    .panel-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .main-panel {
+      grid-column: span 6;
+    }
+
+    .right-column {
+      grid-column: span 6;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" role="banner">
+    <a href="index.html" class="brand" aria-hidden="false">
+      <span><span class="accent">E</span>Arena</span>
+    </a>
+
+    <nav class="primary" role="navigation" aria-label="Primary">
+      <div class="nav-links" role="menubar" aria-hidden="false">
+        <div class="nav-item">
+          <a href="#" role="menuitem">
+            Tournaments
+            <span class="dropdown-arrow">▼</span>
+          </a>
+          <div class="dropdown-menu">
+            <a href="tournaments.html">Browse All</a>
+            <a href="tournaments.html?filter=live">Live Matches</a>
+            <a href="tournaments.html?filter=upcoming">Upcoming Events</a>
+            <a href="tournaments.html?filter=completed">Past Results</a>
+            <a href="#">Leaderboards</a>
+          </div>
+        </div>
+        <div class="nav-item" id="host-nav-item" style="display: none;">
+          <a href="#" role="menuitem">
+            Host
+            <span class="dropdown-arrow">▼</span>
+          </a>
+          <div class="dropdown-menu">
+            <a href="admin-dashboard.html">Admin Dashboard</a>
+            <a href="#">Create Tournament</a>
+            <a href="#">Manage Events</a>
+            <a href="#">Analytics Dashboard</a>
+            <a href="#">Prize Management</a>
+          </div>
+        </div>
+        <a href="#games" role="menuitem">Games</a>
+        <a href="#community" role="menuitem">Community</a>
+        <a href="#support" role="menuitem">Support</a>
+        <a href="#pricing" role="menuitem">Pricing</a>
+      </div>
+
+      <div class="nav-actions">
+        <!-- Not logged in -->
+        <div id="auth-buttons">
+          <a href="auth.html" class="login-link">Log in</a>
+          <button class="header-cta" aria-label="Sign up" id="sign-up-desktop"
+            onclick="window.location.href='auth.html'">Sign up</button>
+        </div>
+        
+        <!-- Logged in -->
+        <div id="user-menu" style="display: none;">
+          <a href="user-dashboard.html" class="dashboard-link" id="user-dashboard-link" style="color: var(--copy); text-decoration: none; font-weight: 600; margin-right: 1rem; transition: color 0.3s ease;">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+          </a>
+          <div class="user-info">
+            <span id="user-username">User</span>
+            <span id="user-role-badge" class="role-badge" style="display: none;">Admin</span>
+          </div>
+          <button class="logout-btn" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
+      </div>
+
+      <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-nav">
+        <span class="bars" aria-hidden="true"></span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Mobile nav (toggle) -->
+  <div id="mobile-nav" class="mobile-nav" hidden>
+    <nav aria-label="Mobile primary">
+      <div class="mobile-nav-section">
+        <div class="mobile-nav-title">
+          Tournaments
+          <span class="mobile-arrow">▲</span>
+        </div>
+        <div class="mobile-nav-items">
+          <a href="tournaments.html" class="mobile-link">Browse All</a>
+          <a href="tournaments.html?filter=live" class="mobile-link">Live Matches</a>
+          <a href="tournaments.html?filter=upcoming" class="mobile-link">Upcoming Events</a>
+          <a href="tournaments.html?filter=completed" class="mobile-link">Past Results</a>
+          <a href="#" class="mobile-link">Leaderboards</a>
+        </div>
+      </div>
+
+      <div class="mobile-nav-section" id="mobile-host-section" style="display: none;">
+        <div class="mobile-nav-title">
+          Host
+          <span class="mobile-arrow">▼</span>
+        </div>
+        <div class="mobile-nav-items">
+          <a href="admin-dashboard.html" class="mobile-link">Admin Dashboard</a>
+          <a href="#" class="mobile-link">Create Tournament</a>
+          <a href="#" class="mobile-link">Manage Events</a>
+          <a href="#" class="mobile-link">Analytics Dashboard</a>
+          <a href="#" class="mobile-link">Prize Management</a>
+        </div>
+      </div>
+
+      <a href="#games" class="mobile-link">Games</a>
+      <a href="#community" class="mobile-link">Community</a>
+      <a href="#support" class="mobile-link">Support</a>
+      <a href="#pricing" class="mobile-link">Pricing</a>
+    </nav>
+
+    <!-- Mobile Authentication Actions -->
+    <div class="mobile-nav-actions">
+      <!-- Not logged in -->
+      <div id="mobile-auth-buttons">
+        <a href="auth.html" class="mobile-login-btn">
+          <i class="fas fa-sign-in-alt"></i>
+          Log In
+        </a>
+        <a href="auth.html" class="mobile-signup-btn">
+          <i class="fas fa-user-plus"></i>
+          Sign Up
+        </a>
+      </div>
+      
+      <!-- Logged in -->
+      <div id="mobile-user-menu" style="display: none;">
+        <a href="user-dashboard.html" class="mobile-link" id="mobile-dashboard-link" style="padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: var(--copy); text-decoration: none; font-weight: 600;">
+          <i class="fas fa-tachometer-alt"></i> My Dashboard
+        </a>
+        <div class="mobile-user-info">
+          <div class="mobile-user-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="mobile-user-details">
+            <span class="mobile-username" id="mobile-user-username">User</span>
+            <span class="mobile-user-role" id="mobile-user-role-badge" style="display: none;">Admin</span>
+          </div>
+        </div>
+        <button class="mobile-logout-btn" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i>
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero__bg-slider">
+        <img src="/t1.jpg" alt="BGMI Pro League Poster" class="active" />
+        <img src="/t2.jpg" alt="Battlegrounds Summer Championship Poster" />
+        <img src="/t3.jpg" alt="India Invitational Grand Finals Poster" />
+      </div>
+
+      <div class="hero__overlay"></div>
+
+      <div class="hero__content" role="region" aria-label="Hero">
+        <!-- Logo was here previously but is now commented out. The JavaScript has been updated to no longer reference this element. -->
+        <h1 id="hero-title" class="tournament-name">PUBG Global Series 2025</h1>
+        <div class="prize-pool" id="prize-pool">Prize Pool: $500,000</div>
+        <p id="tournament-description">
+          The biggest PUBG tournament of the year is here! Join us as the best teams from around the world battle it out
+          in London for the title of Global Champions.
+        </p>
+
+        <a class="btn--primary" href="/tournament-details.html?tournament=pubg-global-series-2025"
+          id="cta-learn-more">Tournament Details</a>
+      </div>
+    </section>
+
+    <!-- Matches / Tournaments -->
+    <section id="tournaments" class="section container" aria-labelledby="tournaments-heading">
+      <h2 id="tournaments-heading" style="font-size:1.6rem; margin-bottom:1rem; color:var(--copy);">Matches &
+        Tournaments</h2>
+
+      <div class="panels">
+        <!-- Left Column: Recent Matches Details -->
+        <article class="panel main-panel" role="listitem" aria-labelledby="recent-matches-title">
+          <h3 id="recent-matches-title"><i class="fa-solid fa-hourglass-end" style="margin-right:.5rem"></i>Recent
+            Matches</h3>
+          <ul class="tournament-list">
+            <li>
+              <div>
+                <h4>BGMI 2025 Series Match 1</h4>
+                <p>ESL Masters — BGMI</p>
+              </div>
+              <div style="text-align:right">
+                <div style="font-weight:700; color:var(--muted)">28 Aug 2025</div>
+                <div style="font-size:.82rem; color:var(--muted)">28.08.2025</div>
+                <div style="margin-top:0.4rem; font-weight:700; color:var(--accent);">Live</div>
+              </div>
+            </li>
+            <li>
+              <div>
+                <h4>BGMI 2025 Series Quarter Finals</h4>
+                <p>PUBG Players Tour — KRAFTON</p>
+              </div>
+              <div style="text-align:right">
+                <div style="font-weight:700; color:var(--muted)">27 Aug 2025</div>
+                <div style="font-size:.82rem; color:var(--muted)">27.08.2025</div>
+                <div style="margin-top:0.4rem; font-weight:700; color:var(--muted);">Result: Team Alpha wins</div>
+              </div>
+            </li>
+            <li>
+              <div>
+                <h4>BGMI 2025 Series Semi Finals</h4>
+                <p>PUBG Players Tour — KRAFTON</p>
+              </div>
+              <div style="text-align:right">
+                <div style="font-weight:700; color:var(--muted)">26 Aug 2025</div>
+                <div style="font-size:.82rem; color:var(--muted)">26.08.2025</div>
+                <div style="margin-top:0.4rem; font-weight:700; color:var(--accent);">Live</div>
+              </div>
+            </li>
+            <li>
+              <div>
+                <h4>BGMI India Invitational</h4>
+                <p>IEM Katowice — BGMI</p>
+              </div>
+              <div style="text-align:right">
+                <div style="font-weight:700; color:var(--muted)">25 Aug 2025</div>
+                <div style="font-size:.82rem; color:var(--muted)">25.08.2025</div>
+                <div style="margin-top:0.4rem; font-weight:700; color:var(--muted);">Result: Team Bravo wins</div>
+              </div>
+            </li>
+            <li>
+              <div>
+                <h4>BGMI 2025 Series Match 5</h4>
+                <p>PUBG Players Tour — KRAFTON</p>
+              </div>
+              <div style="text-align:right">
+                <div style="font-weight:700; color:var(--muted)">24 Aug 2025</div>
+                <div style="font-size:.82rem; color:var(--muted)">24.08.2025</div>
+                <div style="margin-top:0.4rem; font-weight:700; color:var(--muted);">Result: Team Gamma wins</div>
+              </div>
+            </li>
+            <li>
+              <div>
+                <h4>BGMI 2025 Series Match 4</h4>
+                <p>ESL Masters — BGMI</p>
+              </div>
+              <div style="text-align:right">
+                <div style="font-weight:700; color:var(--muted)">23 Aug 2025</div>
+                <div style="font-size:.82rem; color:var(--muted)">23.08.2025</div>
+                <div style="margin-top:0.4rem; font-weight:700; color:var(--accent);">Live</div>
+              </div>
+            </li>
+            <li>
+              <div>
+                <h4>BGMI 2025 Series Match 3</h4>
+                <p>IEM Katowice — BGMI</p>
+              </div>
+              <div style="text-align:right">
+                <div style="font-weight:700; color:var(--muted)">22 Aug 2025</div>
+                <div style="font-size:.82rem; color:var(--muted)">22.08.2025</div>
+                <div style="margin-top:0.4rem; font-weight:700; color:var(--muted);">Result: Team Delta wins</div>
+              </div>
+            </li>
+            <li>
+              <div>
+                <h4>BGMI 2025 Series Match 2</h4>
+                <p>ESL Masters — BGMI</p>
+              </div>
+              <div style="text-align:right">
+                <div style="font-weight:700; color:var(--muted)">21 Aug 2025</div>
+                <div style="font-size:.82rem; color:var(--muted)">21.08.2025</div>
+                <div style="margin-top:0.4rem; font-weight:700; color:var(--muted);">Result: Team Echo wins</div>
+              </div>
+            </li>
+          </ul>
+        </article>
+
+        <!-- Right Column: Upcoming & Live -->
+        <div class="right-column">
+          <!-- Upcoming tournaments -->
+          <article class="panel panel--small" role="listitem" aria-labelledby="upcoming-title">
+            <h3 id="upcoming-title"><i class="fa-solid fa-calendar-alt" style="margin-right:.5rem"></i>Upcoming</h3>
+            <ul class="tournament-list" aria-label="Upcoming tournaments">
+              <li>
+                <div>
+                  <h4>Grand Final: TBA vs TBA</h4>
+                  <p>Starts: Jan 22, 2025</p>
+                </div>
+                <div style="text-align:right;color:var(--muted)">22 Jan 2025</div>
+              </li>
+              <li>
+                <div>
+                  <h4>Qualifier 1: Team I vs Team J</h4>
+                  <p>Starts: Jan 21, 2025</p>
+                </div>
+                <div style="text-align:right;color:var(--muted)">21 Jan 2025</div>
+              </li>
+            </ul>
+          </article>
+
+          <!-- Live matches -->
+          <article class="panel panel--small" role="listitem" aria-labelledby="live-title">
+            <h3 id="live-title"><i class="fa-solid fa-satellite-dish" style="margin-right:.5rem"></i>Live</h3>
+            <ul class="tournament-list" aria-label="Live matches">
+              <li>
+                <div>
+                  <h4>VP <span style="font-weight:600; color:var(--muted); margin:0 .5rem">VS</span> M80</h4>
+                  <p>BLAST Open Fall 2025</p>
+                </div>
+                <div style="text-align:right">
+                  <span class="live-badge" aria-hidden="true">LIVE</span>
+                  <div style="margin-top:.4rem"><a href="#" aria-label="Watch VP vs M80">Watch</a></div>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <h4>RRO <span style="font-weight:600; color:var(--muted); margin:0 .5rem">VS</span> VES</h4>
+                  <p>Indonesia Kings League Fall 2025</p>
+                </div>
+                <div style="text-align:right">
+                  <span class="live-badge" aria-hidden="true">LIVE</span>
+                  <div style="margin-top:.4rem"><a href="#" aria-label="Watch RRO vs VES">Watch</a></div>
+                </div>
+              </li>
+            </ul>
+          </article>
+
+          <!-- Advertisement Panel -->
+          <article class="panel panel--small" role="listitem" aria-labelledby="ad-title">
+            <h3 id="ad-title"><i class="fa-solid fa-bullhorn" style="margin-right:.5rem"></i>Sponsored</h3>
+            <div style="text-align:center;">
+              <p style="color:var(--copy); font-size:1.1rem; font-weight:bold; margin-bottom:.5rem;">Elevate Your Game!
+              </p>
+              <p style="color:var(--muted); font-size:.9rem; line-height:1.4;">
+                Join the new season with our exclusive gaming gear.
+              </p>
+              <a href="#"
+                style="display:inline-block; margin-top:1rem; padding:.5rem 1rem; background:var(--accent); color:var(--bg); font-weight:700; border-radius:6px;">Shop
+                Now</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Highlights Section -->
+    <section id="highlights" class="section highlights-section" aria-labelledby="highlights-heading">
+      <div class="container">
+        <h2 id="highlights-heading" style="margin-bottom:1.5rem; color:var(--copy)">Featured Highlights</h2>
+        <p style="color:var(--muted); margin-bottom:2.5rem; font-size:1.1rem;">The best plays and moments from the
+          biggest tournaments.</p>
+
+        <div class="highlights-grid">
+          <!-- Clip 1 -->
+          <div class="video-clip">
+            <iframe
+              src="https://www.youtube.com/embed/C28f73G4y80?autoplay=1&mute=1&controls=0&loop=1&playlist=C28f73G4y80"
+              title="Esports Highlight Reel 1" allow="autoplay; encrypted-media; picture-in-picture"
+              frameborder="0"></iframe>
+          </div>
+          <!-- Clip 2 -->
+          <div class="video-clip">
+            <iframe
+              src="https://www.youtube.com/embed/9w_Y2y_V-94?autoplay=1&mute=1&controls=0&loop=1&playlist=9w_Y2y_V-94"
+              title="Esports Highlight Reel 2" allow="autoplay; encrypted-media; picture-in-picture"
+              frameborder="0"></iframe>
+          </div>
+          <!-- Clip 3 -->
+          <div class="video-clip">
+            <iframe
+              src="https://www.youtube.com/embed/gL91y1b-8_I?autoplay=1&mute=1&controls=0&loop=1&playlist=gL91y1b-8_I"
+              title="Esports Highlight Reel 3" allow="autoplay; encrypted-media; picture-in-picture"
+              frameborder="0"></iframe>
+          </div>
+          <!-- Clip 4 -->
+          <div class="video-clip">
+            <iframe
+              src="https://www.youtube.com/embed/w7g9c2P8cWw?autoplay=1&mute=1&controls=0&loop=1&playlist=w7g9c2P8cWw"
+              title="Esports Highlight Reel 4" allow="autoplay; encrypted-media; picture-in-picture"
+              frameborder="0"></iframe>
+          </div>
+          <!-- Clip 5 -->
+          <div class="video-clip">
+            <iframe
+              src="https://www.youtube.com/embed/oQJ2v3s22eY?autoplay=1&mute=1&controls=0&loop=1&playlist=oQJ2v3s22eY"
+              title="Esports Highlight Reel 5" allow="autoplay; encrypted-media; picture-in-picture"
+              frameborder="0"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="section why-section" aria-labelledby="why-heading">
+      <div class="container">
+        <div class="why-header">
+          <h2 id="why-heading" class="why-title">Why choose <span class="accent">E</span>Arena?</h2>
+          <p class="why-subtitle">Join the ultimate esports platform designed for champions</p>
+        </div>
+        <div class="why-grid" role="list">
+          <div class="why-item" role="listitem">
+            <i class="fa-solid fa-users" aria-hidden="true"></i>
+            <h3 style="margin:.6rem 0 .25rem 0; color:var(--copy)">Thriving community</h3>
+            <p style="color:var(--muted)">Join thousands of passionate players. Team up, scrim, and find matches fast.
+            </p>
+          </div>
+
+          <div class="why-item" role="listitem">
+            <i class="fa-solid fa-trophy" aria-hidden="true"></i>
+            <h3 style="margin:.6rem 0 .25rem 0; color:var(--copy)">Epic prizes</h3>
+            <p style="color:var(--muted)">Free tournaments with cash prizes and exclusive gear.</p>
+          </div>
+
+          <div class="why-item" role="listitem">
+            <i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i>
+            <h3 style="margin:.6rem 0 .25rem 0; color:var(--copy)">Free to play</h3>
+            <p style="color:var(--muted)">Your skill matters — no entry fees for most events.</p>
+          </div>
+
+          <div class="why-item" role="listitem">
+            <i class="fa-solid fa-shield-alt" aria-hidden="true"></i>
+            <h3 style="margin:.6rem 0 .25rem 0; color:var(--copy)">Fair play</h3>
+            <p style="color:var(--muted)">Advanced anti-cheat systems and transparent rules.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section cta-section" aria-labelledby="cta-heading">
+      <div class="container" style="text-align:center;">
+        <h2 id="cta-heading" style="margin-bottom:1rem; color:var(--copy)">Stop scrolling, start playing</h2>
+        <p style="color:var(--muted); margin-bottom:2rem;">Create your account now and earn 2,000 coins.</p>
+        <div class="cta-hero">
+          <a class="btn btn--primary" href="#" aria-label="Join now and claim bonus">Join Now</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-column footer-brand">
+          <h4><a href="index.html" style="color: var(--copy); text-decoration: none;"><span
+                style="color:var(--accent)">E</span>Arena</a></h4>
+          <p>The ultimate destination for competitive gaming.</p>
+        </div>
+        <div class="footer-column">
+          <h4>Tournaments</h4>
+          <ul>
+            <li><a href="tournaments.html">Browse All</a></li>
+            <li><a href="tournaments.html?filter=live">Live Matches</a></li>
+            <li><a href="tournaments.html?filter=upcoming">Upcoming</a></li>
+            <li><a href="tournaments.html?filter=completed">Past Results</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Community</h4>
+          <ul>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">Forums</a></li>
+            <li><a href="#">Support</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="auth.html">Sign In</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 EArena. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Enhanced smooth interactions and animations
+
+    // Header scroll effect
+    let lastScrollY = window.scrollY;
+    const header = document.querySelector('.site-header');
+
+    window.addEventListener('scroll', () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > 100) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+
+      lastScrollY = currentScrollY;
+    });
+
+    // Hero background slider with smooth transitions
+    const heroImages = document.querySelectorAll('.hero__bg-slider img');
+    const heroContent = document.querySelector('.hero__content');
+    let currentImageIndex = 0;
+
+    // API Configuration
+    const API_BASE_URL = 'https://tournament-hosting-backend.onrender.com';
+
+    // Hero content data - will be populated from API
+    let heroData = [];
+    let isDataLoaded = false;
+
+    // API Functions
+    async function fetchTournaments(retryCount = 0) {
+      const maxRetries = 3;
+
+      try {
+        showLoadingState();
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s
+
+        const response = await fetch(`${API_BASE_URL}/api/tournaments`, {
+          signal: controller.signal,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // backend returns { success: true, data: [...] }
+        const body = await response.json();
+        const tournaments = Array.isArray(body) ? body : (body.data || []);
+
+        if (!Array.isArray(tournaments)) {
+          throw new Error('Invalid data format received from API');
+        }
+
+        console.log('Fetched tournaments (normalized):', tournaments);
+
+        // Transform data for hero
+        heroData = tournaments.slice(0, 3).map(t => ({
+          id: t._id || t.id,
+          slug: t.slug,
+          title: t.title || t.name || 'Untitled Tournament',
+          prizePool: `Prize Pool: ${t.prizePool != null ? ('$' + t.prizePool) : '$0'}`,
+          description: t.description || 'Join this exciting tournament!',
+          detailsLink: `tournament-details.html?slug=${t.slug || t._id || t.id}`,
+          poster: t.backgroundImage || t.poster || t.image || null,
+          status: t.status || 'upcoming',
+          game: t.game || 'Gaming'
+        }));
+
+        isDataLoaded = true;
+        hideLoadingState();
+
+        if (heroData.length > 0) {
+          updateHeroContent(0);
+          startHeroSlider();
+        }
+
+        return tournaments;
+      } catch (error) {
+        console.error(`Error fetching tournaments (attempt ${retryCount + 1}):`, error);
+
+        if (retryCount < maxRetries && error.name !== 'AbortError') {
+          await new Promise(res => setTimeout(res, (retryCount + 1) * 2000));
+          return fetchTournaments(retryCount + 1);
+        }
+
+        hideLoadingState();
+        showErrorState();
+
+        // fallback demo content
+        heroData = [{
+          title: "EArena Championships",
+          prizePool: "Prize Pool: $100,000",
+          description: "Experience the ultimate gaming competition. Connect to see live tournaments and join the action!",
+          detailsLink: "tournaments.html"
+        }];
+
+        if (heroData.length > 0) {
+          updateHeroContent(0);
+        }
+
+        return [];
+      }
+    }
+
+    // Loading and Error States
+    function showLoadingState() {
+      const heroTitle = document.getElementById('hero-title');
+      const prizePool = document.getElementById('prize-pool');
+      const description = document.getElementById('tournament-description');
+
+      if (heroTitle) heroTitle.textContent = 'Loading Tournaments...';
+      if (prizePool) prizePool.textContent = 'Fetching latest data...';
+      if (description) description.textContent = 'Please wait while we load the most exciting tournaments for you.';
+
+      // Add loading animation to CTA button
+      const ctaButton = document.getElementById('cta-learn-more');
+      if (ctaButton) {
+        ctaButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+        ctaButton.style.pointerEvents = 'none';
+      }
+
+      // Show loading states for other sections
+      showSectionLoadingStates();
+    }
+
+    function showSectionLoadingStates() {
+      // Recent matches loading
+      const recentMatchesList = document.querySelector('#recent-matches-title')?.parentElement?.querySelector('.tournament-list');
+      if (recentMatchesList) {
+        recentMatchesList.innerHTML = `
+          <li style="opacity: 0.6;">
+            <div>
+              <h4><i class="fas fa-spinner fa-spin"></i> Loading recent matches...</h4>
+              <p>Fetching latest match data</p>
+            </div>
+          </li>
+        `;
+      }
+
+      // Upcoming tournaments loading
+      const upcomingList = document.querySelector('#upcoming-title')?.parentElement?.querySelector('.tournament-list');
+      if (upcomingList) {
+        upcomingList.innerHTML = `
+          <li style="opacity: 0.6;">
+            <div>
+              <h4><i class="fas fa-spinner fa-spin"></i> Loading upcoming tournaments...</h4>
+              <p>Fetching schedule data</p>
+            </div>
+          </li>
+        `;
+      }
+
+      // Live matches loading
+      const liveList = document.querySelector('#live-title')?.parentElement?.querySelector('.tournament-list');
+      if (liveList) {
+        liveList.innerHTML = `
+          <li style="opacity: 0.6;">
+            <div>
+              <h4><i class="fas fa-spinner fa-spin"></i> Loading live matches...</h4>
+              <p>Checking for live tournaments</p>
+            </div>
+          </li>
+        `;
+      }
+
+      // Highlights loading
+      const highlightsGrid = document.querySelector('.highlights-grid');
+      if (highlightsGrid) {
+        highlightsGrid.innerHTML = `
+          <div class="video-clip" style="display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1);">
+            <div style="text-align: center; color: var(--muted);">
+              <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+              <p>Loading highlights...</p>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function hideLoadingState() {
+      const ctaButton = document.getElementById('cta-learn-more');
+      if (ctaButton) {
+        ctaButton.innerHTML = 'Tournament Details';
+        ctaButton.style.pointerEvents = 'auto';
+      }
+    }
+
+    function showErrorState() {
+      const heroTitle = document.getElementById('hero-title');
+      const prizePool = document.getElementById('prize-pool');
+      const description = document.getElementById('tournament-description');
+
+      if (heroTitle) heroTitle.textContent = 'Connection Error';
+      if (prizePool) prizePool.textContent = 'Unable to load tournaments';
+      if (description) description.textContent = 'We\'re having trouble connecting to our servers. Please refresh the page or try again later.';
+
+      const ctaButton = document.getElementById('cta-learn-more');
+      if (ctaButton) {
+        ctaButton.innerHTML = '<i class="fas fa-refresh"></i> Retry';
+        ctaButton.onclick = async (e) => {
+          e.preventDefault();
+          ctaButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Retrying...';
+          ctaButton.style.pointerEvents = 'none';
+
+          try {
+            await populateAllSections();
+          } catch (error) {
+            console.error('Retry failed:', error);
+            setTimeout(() => {
+              ctaButton.innerHTML = '<i class="fas fa-refresh"></i> Retry';
+              ctaButton.style.pointerEvents = 'auto';
+            }, 2000);
+          }
+        };
+      }
+
+      // Show error notification
+      showNotification('Unable to load tournament data. Please check your connection.', 'error');
+    }
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: ${type === 'error' ? 'rgba(255, 0, 0, 0.9)' : 'rgba(0, 255, 0, 0.9)'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        z-index: 10000;
+        font-weight: 600;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+      `;
+
+      notification.textContent = message;
+      document.body.appendChild(notification);
+
+      // Animate in
+      setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+      }, 100);
+
+      // Auto remove
+      setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+          if (document.body.contains(notification)) {
+            document.body.removeChild(notification);
+          }
+        }, 300);
+      }, 5000);
+    }
+
+    function updateHeroContent(index) {
+      if (!heroData || heroData.length === 0) return;
+
+      const data = heroData[index];
+      if (!data) return;
+
+      // Fade out content
+      heroContent.classList.remove('active');
+
+      setTimeout(() => {
+        // Update content
+        const heroTitle = document.getElementById('hero-title');
+        const prizePool = document.getElementById('prize-pool');
+        const description = document.getElementById('tournament-description');
+        const detailsButton = document.getElementById('cta-learn-more');
+
+        if (heroTitle) heroTitle.textContent = data.title;
+        if (prizePool) prizePool.textContent = data.prizePool;
+        if (description) description.textContent = data.description;
+
+        // Update button link
+        if (detailsButton && data.detailsLink) {
+          detailsButton.href = data.detailsLink;
+          detailsButton.onclick = null; // Remove any error retry handlers
+        }
+
+        // Update background image if available
+        if (data.poster) {
+          updateHeroBackground(data.poster, index);
+        }
+
+        // Fade in content
+        heroContent.classList.add('active');
+      }, 300);
+    }
+
+    function updateHeroBackground(posterUrl, index) {
+      const heroImages = document.querySelectorAll('.hero__bg-slider img');
+      if (heroImages[index]) {
+        // Create a new image to test if the URL is valid
+        const img = new Image();
+        img.onload = () => {
+          heroImages[index].src = posterUrl;
+        };
+        img.onerror = () => {
+          console.warn(`Failed to load poster image: ${posterUrl}`);
+          // Keep the default image
+        };
+        img.src = posterUrl;
+      }
+    }
+
+    function nextHeroSlide() {
+      if (!isDataLoaded || heroData.length === 0) return;
+
+      const heroImages = document.querySelectorAll('.hero__bg-slider img');
+      if (heroImages.length === 0) return;
+
+      heroImages[currentImageIndex].classList.remove('active');
+      currentImageIndex = (currentImageIndex + 1) % Math.min(heroData.length, heroImages.length);
+      heroImages[currentImageIndex].classList.add('active');
+      updateHeroContent(currentImageIndex);
+    }
+
+    function startHeroSlider() {
+      if (heroData.length > 1) {
+        setInterval(nextHeroSlide, 6000);
+      }
+    }
+
+    // Initialize hero
+    heroContent.classList.add('active');
+
+    // Additional API Functions
+    async function fetchFeaturedTournaments() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/tournaments/featured`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        if (response.ok) {
+          const body = await response.json();
+          return Array.isArray(body) ? body : (body.data || []);
+        }
+      } catch (error) {
+        console.warn('Featured tournaments endpoint not available:', error);
+      }
+      return null;
+    }
+
+    async function fetchTournamentStats() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/tournaments/stats`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        if (response.ok) {
+          const body = await response.json();
+          return body.data || body;
+        }
+      } catch (error) {
+        console.warn('Tournament stats endpoint not available:', error);
+      }
+      return null;
+    }
+
+    // Fetch Recent Matches
+    async function fetchRecentMatches() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/matches/recent`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        if (response.ok) {
+          const body = await response.json();
+          return Array.isArray(body) ? body : (body.data || []);
+        }
+      } catch (error) {
+        console.warn('Recent matches endpoint not available:', error);
+      }
+      return null;
+    }
+
+    // Fetch Live Matches
+    async function fetchLiveMatches() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/matches/live`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        if (response.ok) {
+          const body = await response.json();
+          return Array.isArray(body) ? body : (body.data || []);
+        }
+      } catch (error) {
+        console.warn('Live matches endpoint not available:', error);
+      }
+      return null;
+    }
+
+    // Fetch Upcoming Matches
+    async function fetchUpcomingMatches() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/matches/upcoming`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        if (response.ok) {
+          const body = await response.json();
+          return Array.isArray(body) ? body : (body.data || []);
+        }
+      } catch (error) {
+        console.warn('Upcoming matches endpoint not available:', error);
+      }
+      return null;
+    }
+
+    // Fetch Sponsored Content
+    async function fetchSponsoredContent() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/content/sponsored`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        if (response.ok) {
+          const body = await response.json();
+          return Array.isArray(body) ? body : (body.data || body);
+        }
+      } catch (error) {
+        console.warn('Sponsored content endpoint not available:', error);
+      }
+      return null;
+    }
+
+    // Fetch Featured Highlights
+    async function fetchFeaturedHighlights() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/content/highlights`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        if (response.ok) {
+          const body = await response.json();
+          return Array.isArray(body) ? body : (body.data || []);
+        }
+      } catch (error) {
+        console.warn('Featured highlights endpoint not available:', error);
+      }
+      return null;
+    }
+
+    // Main Content Population Function
+    async function populateAllSections() {
+      try {
+        console.log('Fetching all content data...');
+
+        // Fetch all data concurrently for better performance
+        const [
+          tournaments,
+          recentMatches,
+          liveMatches,
+          upcomingMatches,
+          sponsoredContent,
+          highlights,
+          featured,
+          stats
+        ] = await Promise.allSettled([
+          fetchTournaments(),
+          fetchRecentMatches(),
+          fetchLiveMatches(),
+          fetchUpcomingMatches(),
+          fetchSponsoredContent(),
+          fetchFeaturedHighlights(),
+          fetchFeaturedTournaments(),
+          fetchTournamentStats()
+        ]);
+
+        // Process tournaments
+        if (tournaments.status === 'fulfilled' && tournaments.value?.length > 0) {
+          populateUpcomingTournaments(tournaments.value);
+          populateLiveTournaments(tournaments.value);
+        }
+
+        // Process recent matches
+        if (recentMatches.status === 'fulfilled' && recentMatches.value) {
+          populateRecentMatches(recentMatches.value);
+        }
+
+        // Process live matches (update live section)
+        if (liveMatches.status === 'fulfilled' && liveMatches.value) {
+          updateLiveMatches(liveMatches.value);
+        }
+
+        // Process upcoming matches (update upcoming section)
+        if (upcomingMatches.status === 'fulfilled' && upcomingMatches.value) {
+          updateUpcomingMatches(upcomingMatches.value);
+        }
+
+        // Process sponsored content
+        if (sponsoredContent.status === 'fulfilled' && sponsoredContent.value) {
+          populateSponsoredContent(sponsoredContent.value);
+        }
+
+        // Process highlights
+        if (highlights.status === 'fulfilled' && highlights.value) {
+          populateFeaturedHighlights(highlights.value);
+        }
+
+        // Process featured tournaments
+        if (featured.status === 'fulfilled' && featured.value) {
+          console.log('Featured tournaments:', featured.value);
+        }
+
+        // Process stats
+        if (stats.status === 'fulfilled' && stats.value) {
+          console.log('Tournament stats:', stats.value);
+          updateStatsDisplay(stats.value);
+        }
+
+        console.log('All content sections populated successfully');
+      } catch (error) {
+        console.error('Error populating content sections:', error);
+      }
+    }
+
+    // Legacy function for backward compatibility
+    async function populateTournamentSections() {
+      return populateAllSections();
+    }
+
+    function updateStatsDisplay(stats) {
+      // Update any statistics displays on the page
+      if (stats.totalTournaments) {
+        const statsElements = document.querySelectorAll('[data-stat="tournaments"]');
+        statsElements.forEach(el => el.textContent = stats.totalTournaments);
+      }
+
+      if (stats.totalPrizePool) {
+        const prizeElements = document.querySelectorAll('[data-stat="prize-pool"]');
+        prizeElements.forEach(el => el.textContent = stats.totalPrizePool);
+      }
+
+      if (stats.activePlayers) {
+        const playerElements = document.querySelectorAll('[data-stat="players"]');
+        playerElements.forEach(el => el.textContent = stats.activePlayers);
+      }
+    }
+
+    // Recent Matches Population
+    function populateRecentMatches(matches) {
+      const recentMatchesList = document.querySelector('#recent-matches-title').parentElement.querySelector('.tournament-list');
+
+      if (recentMatchesList && matches && matches.length > 0) {
+        recentMatchesList.innerHTML = matches.slice(0, 5).map(match => {
+          const matchDate = match.date ? new Date(match.date) : new Date();
+          const formattedDate = matchDate.toLocaleDateString('en-US', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+          });
+
+          const shortDate = matchDate.toLocaleDateString('en-US', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          });
+
+          let statusDisplay = '';
+          if (match.status === 'live') {
+            statusDisplay = `<div style="margin-top:0.4rem; font-weight:700; color:var(--accent);">Live</div>`;
+          } else if (match.result) {
+            statusDisplay = `<div style="margin-top:0.4rem; font-weight:700; color:var(--muted);">Result: ${match.result}</div>`;
+          } else if (match.winner) {
+            statusDisplay = `<div style="margin-top:0.4rem; font-weight:700; color:var(--muted);">Winner: ${match.winner}</div>`;
+          }
+
+          return `
+            <li>
+              <div>
+                <h4>${match.title || match.name || 'Tournament Match'}</h4>
+                <p>${match.tournament || match.series || 'Tournament Series'} — ${match.game || 'Gaming'}</p>
+              </div>
+              <div style="text-align:right">
+                <div style="font-weight:700; color:var(--muted)">${formattedDate}</div>
+                <div style="font-size:.82rem; color:var(--muted)">${shortDate}</div>
+                ${statusDisplay}
+              </div>
+            </li>
+          `;
+        }).join('');
+      }
+    }
+
+    // Update Live Matches in the Live Section
+    function updateLiveMatches(liveMatches) {
+      const liveList = document.querySelector('#live-title').parentElement.querySelector('.tournament-list');
+
+      if (liveList && liveMatches && liveMatches.length > 0) {
+        liveList.innerHTML = liveMatches.slice(0, 3).map(match => `
+          <li>
+            <div>
+              <h4>${match.team1 || 'Team A'} <span style="font-weight:600; color:var(--muted); margin:0 .5rem">VS</span> ${match.team2 || 'Team B'}</h4>
+              <p>${match.tournament || match.title || 'Live Tournament'}</p>
+            </div>
+            <div style="text-align:right">
+              <span class="live-badge" aria-hidden="true">LIVE</span>
+              <div style="margin-top:.4rem">
+                <a href="${match.watchLink || `tournament-details.html?slug=${match.tournamentSlug || match.tournamentId || match.id}`}" aria-label="Watch ${match.title}">Watch</a>
+              </div>
+            </div>
+          </li>
+        `).join('');
+      }
+    }
+
+    // Update Upcoming Matches in the Upcoming Section
+    function updateUpcomingMatches(upcomingMatches) {
+      const upcomingList = document.querySelector('#upcoming-title').parentElement.querySelector('.tournament-list');
+
+      if (upcomingList && upcomingMatches && upcomingMatches.length > 0) {
+        upcomingList.innerHTML = upcomingMatches.slice(0, 3).map(match => {
+          const startDate = match.startDate ? new Date(match.startDate) : new Date();
+          const formattedDate = startDate.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+          });
+
+          return `
+            <li>
+              <div>
+                <h4>${match.title || `${match.team1 || 'TBA'} vs ${match.team2 || 'TBA'}`}</h4>
+                <p>Starts: ${formattedDate}</p>
+              </div>
+              <div style="text-align:right;color:var(--muted)">${formattedDate}</div>
+            </li>
+          `;
+        }).join('');
+      }
+    }
+
+    // Populate Sponsored Content
+    function populateSponsoredContent(sponsoredData) {
+      const sponsoredPanel = document.querySelector('#ad-title').parentElement;
+
+      if (sponsoredPanel && sponsoredData) {
+        const content = Array.isArray(sponsoredData) ? sponsoredData[0] : sponsoredData;
+
+        const contentDiv = sponsoredPanel.querySelector('div[style*="text-align:center"]');
+        if (contentDiv && content) {
+          contentDiv.innerHTML = `
+            <p style="color:var(--copy); font-size:1.1rem; font-weight:bold; margin-bottom:.5rem;">
+              ${content.title || 'Sponsored Content'}
+            </p>
+            <p style="color:var(--muted); font-size:.9rem; line-height:1.4;">
+              ${content.description || content.text || 'Check out our latest offers and promotions.'}
+            </p>
+            <a href="${content.link || content.url || '#'}" 
+               style="display:inline-block; margin-top:1rem; padding:.5rem 1rem; background:var(--accent); color:var(--bg); font-weight:700; border-radius:6px;">
+              ${content.buttonText || 'Learn More'}
+            </a>
+          `;
+        }
+      }
+    }
+
+    // Populate Featured Highlights
+    function populateFeaturedHighlights(highlightsData) {
+      const highlightsGrid = document.querySelector('.highlights-grid');
+
+      if (highlightsGrid && highlightsData && highlightsData.length > 0) {
+        highlightsGrid.innerHTML = highlightsData.slice(0, 5).map(highlight => {
+          // Extract video ID from various YouTube URL formats
+          let videoId = highlight.videoId;
+          if (!videoId && highlight.url) {
+            const match = highlight.url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/);
+            videoId = match ? match[1] : null;
+          }
+
+          // Fallback to default video if no valid ID
+          if (!videoId) {
+            videoId = 'C28f73G4y80'; // Default fallback
+          }
+
+          return `
+            <div class="video-clip">
+              <iframe
+                src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}"
+                title="${highlight.title || 'Esports Highlight'}" 
+                allow="autoplay; encrypted-media; picture-in-picture"
+                frameborder="0">
+              </iframe>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function populateUpcomingTournaments(tournaments) {
+      const upcomingTournaments = tournaments.filter(t =>
+        t.status === 'upcoming' || t.status === 'registration'
+      ).slice(0, 3);
+
+      const upcomingList = document.querySelector('#upcoming-title').parentElement.querySelector('.tournament-list');
+
+      if (upcomingList && upcomingTournaments.length > 0) {
+        upcomingList.innerHTML = upcomingTournaments.map(tournament => {
+          const startDate = tournament.startDate ? new Date(tournament.startDate) : new Date();
+          const formattedDate = startDate.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+          });
+
+          return `
+            <li>
+              <div>
+                <h4><a href="tournament-details.html?slug=${tournament.slug || tournament._id || tournament.id}" style="color: var(--copy); text-decoration: none;">${tournament.title || tournament.name}</a></h4>
+                <p>Prize Pool: ${tournament.prizePool != null ? ('$' + tournament.prizePool) : 'TBA'}</p>
+              </div>
+              <div style="text-align:right;color:var(--muted)">${formattedDate}</div>
+            </li>
+          `;
+        }).join('');
+      }
+    }
+
+    function populateLiveTournaments(tournaments) {
+      const liveTournaments = tournaments.filter(t => t.status === 'live').slice(0, 3);
+
+      const liveList = document.querySelector('#live-title').parentElement.querySelector('.tournament-list');
+
+      if (liveList && liveTournaments.length > 0) {
+        liveList.innerHTML = liveTournaments.map(tournament => `
+          <li>
+            <div>
+              <h4>${tournament.title || tournament.name}</h4>
+              <p>${tournament.game || 'Tournament'} Championship</p>
+            </div>
+            <div style="text-align:right">
+              <span class="live-badge" aria-hidden="true">LIVE</span>
+              <div style="margin-top:.4rem">
+                <a href="tournament-details.html?slug=${tournament.slug || tournament._id || tournament.id}" aria-label="View ${tournament.title}">Watch</a>
+              </div>
+            </div>
+          </li>
+        `).join('');
+      } else if (liveList) {
+        // Show placeholder if no live tournaments
+        liveList.innerHTML = `
+          <li>
+            <div>
+              <h4>No Live Tournaments</h4>
+              <p>Check back soon for live matches!</p>
+            </div>
+            <div style="text-align:right;color:var(--muted)">
+              <a href="tournaments.html">Browse All</a>
+            </div>
+          </li>
+        `;
+      }
+    }
+
+    // Mobile menu toggle with smooth animation
+    const hamburger = document.querySelector('.hamburger');
+    const mobileNav = document.getElementById('mobile-nav');
+
+
+    function toggleMobileMenu() {
+      const isOpen = hamburger.getAttribute('aria-expanded') === 'true';
+
+      hamburger.setAttribute('aria-expanded', !isOpen);
+      mobileNav.classList.toggle('is-open');
+      mobileNav.hidden = isOpen;
+
+      // Prevent body scroll when menu is open
+      if (!isOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+    }
+
+    if (hamburger) {
+      hamburger.addEventListener('click', toggleMobileMenu);
+    }
+
+
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function (event) {
+      const isClickInsideNav = mobileNav.contains(event.target);
+      const isClickOnHamburger = hamburger.contains(event.target);
+
+      if (!isClickInsideNav && !isClickOnHamburger && mobileNav.classList.contains('is-open')) {
+        toggleMobileMenu();
+      }
+    });
+
+    // Mobile dropdown functionality
+    document.querySelectorAll('.mobile-nav-title').forEach(title => {
+      title.addEventListener('click', function () {
+        const section = this.parentElement;
+        const items = section.querySelector('.mobile-nav-items');
+        const arrow = this.querySelector('.mobile-arrow');
+
+        if (items) {
+          const isOpen = items.style.display === 'block';
+
+          if (isOpen) {
+            items.style.display = 'none';
+            arrow.textContent = '▼';
+          } else {
+            items.style.display = 'block';
+            arrow.textContent = '▲';
+          }
+        }
+      });
+    });
+
+    // Smooth scroll for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Add loading animation for video clips
+    const videoClips = document.querySelectorAll('.video-clip');
+
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    videoClips.forEach((clip, index) => {
+      clip.style.opacity = '0';
+      clip.style.transform = 'translateY(30px)';
+      clip.style.transition = `all 0.6s var(--ease-out-quart) ${index * 0.1}s`;
+      observer.observe(clip);
+    });
+
+    // Enhanced panel animations
+    const panels = document.querySelectorAll('.panel');
+
+    panels.forEach((panel, index) => {
+      panel.style.opacity = '0';
+      panel.style.transform = 'translateY(20px)';
+      panel.style.transition = `all 0.6s var(--ease-out-quart) ${index * 0.1}s`;
+
+      const panelObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1 });
+
+      panelObserver.observe(panel);
+    });
+
+    // Add ripple effect to buttons
+    function createRipple(event) {
+      const button = event.currentTarget;
+      const circle = document.createElement('span');
+      const diameter = Math.max(button.clientWidth, button.clientHeight);
+      const radius = diameter / 2;
+
+      circle.style.width = circle.style.height = `${diameter}px`;
+      circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+      circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+      circle.classList.add('ripple');
+
+      const ripple = button.getElementsByClassName('ripple')[0];
+      if (ripple) {
+        ripple.remove();
+      }
+
+      button.appendChild(circle);
+    }
+
+    // Add ripple styles
+    const rippleStyle = document.createElement('style');
+    rippleStyle.textContent = `
+      .btn--primary {
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.3);
+        transform: scale(0);
+        animation: ripple-animation 0.6s linear;
+        pointer-events: none;
+      }
+      
+      @keyframes ripple-animation {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(rippleStyle);
+
+    // Apply ripple effect to buttons
+    document.querySelectorAll('.btn--primary, .header-cta').forEach(button => {
+      button.addEventListener('click', createRipple);
+    });
+
+    // Connection status monitoring
+    function checkConnectionStatus() {
+      return navigator.onLine;
+    }
+
+    // Add connection status listeners
+    window.addEventListener('online', () => {
+      showNotification('Connection restored! Refreshing all content...', 'success');
+      populateAllSections().catch(console.error);
+    });
+
+    window.addEventListener('offline', () => {
+      showNotification('Connection lost. Some features may not work properly.', 'error');
+    });
+
+    // Authentication and User Management
+    function checkUserAuthentication() {
+      const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+      
+      if (session) {
+        try {
+          const sessionData = JSON.parse(session);
+          const user = sessionData.user;
+          const userRoles = user?.roles || [];
+          
+          // Desktop navigation
+          document.getElementById('auth-buttons').style.display = 'none';
+          document.getElementById('user-menu').style.display = 'flex';
+          document.getElementById('user-username').textContent = user.username;
+          
+          // Mobile navigation
+          document.getElementById('mobile-auth-buttons').style.display = 'none';
+          document.getElementById('mobile-user-menu').style.display = 'flex';
+          document.getElementById('mobile-user-username').textContent = user.username;
+          
+          // Show admin features for admins
+          if (userRoles.includes('admin')) {
+            // Desktop
+            document.getElementById('user-role-badge').style.display = 'inline-block';
+            document.getElementById('host-nav-item').style.display = 'block';
+            
+            // Update dashboard links to admin dashboard
+            document.getElementById('user-dashboard-link').href = 'admin-dashboard.html';
+            document.getElementById('user-dashboard-link').innerHTML = '<i class="fas fa-cog"></i> Admin Dashboard';
+            
+            // Mobile
+            document.getElementById('mobile-user-role-badge').style.display = 'inline-block';
+            document.getElementById('mobile-host-section').style.display = 'block';
+            document.getElementById('mobile-dashboard-link').href = 'admin-dashboard.html';
+            document.getElementById('mobile-dashboard-link').innerHTML = '<i class="fas fa-cog"></i> Admin Dashboard';
+          } else {
+            // Regular users get user dashboard
+            document.getElementById('user-dashboard-link').href = 'user-dashboard.html';
+            document.getElementById('user-dashboard-link').innerHTML = '<i class="fas fa-tachometer-alt"></i> Dashboard';
+            document.getElementById('mobile-dashboard-link').href = 'user-dashboard.html';
+            document.getElementById('mobile-dashboard-link').innerHTML = '<i class="fas fa-tachometer-alt"></i> My Dashboard';
+          }
+          
+          return true;
+        } catch (error) {
+          console.error('Invalid session data:', error);
+          clearUserSession();
+          return false;
+        }
+      }
+      
+      return false;
+    }
+
+    function clearUserSession() {
+      localStorage.removeItem('earena_session');
+      sessionStorage.removeItem('earena_session');
+      
+      // Desktop navigation
+      document.getElementById('auth-buttons').style.display = 'flex';
+      document.getElementById('user-menu').style.display = 'none';
+      document.getElementById('user-role-badge').style.display = 'none';
+      document.getElementById('host-nav-item').style.display = 'none';
+      
+      // Mobile navigation
+      document.getElementById('mobile-auth-buttons').style.display = 'flex';
+      document.getElementById('mobile-user-menu').style.display = 'none';
+      document.getElementById('mobile-user-role-badge').style.display = 'none';
+      document.getElementById('mobile-host-section').style.display = 'none';
+    }
+
+    async function logout() {
+      try {
+        const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+        
+        if (session) {
+          const sessionData = JSON.parse(session);
+          
+          // Call logout API
+          await fetch(`${API_BASE_URL}/api/auth/logout`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${sessionData.token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Logout API error:', error);
+      } finally {
+        clearUserSession();
+        showNotification('Logged out successfully', 'success');
+      }
+    }
+
+    // Initialize the page with API data
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('Initializing EArena homepage...');
+
+      // Check user authentication first
+      checkUserAuthentication();
+
+      // Check connection status
+      if (!checkConnectionStatus()) {
+        showNotification('No internet connection detected.', 'error');
+        return;
+      }
+
+      try {
+        // Add loading indicator to the page
+        addGlobalLoadingIndicator();
+
+        // Fetch and populate all content data
+        await populateAllSections();
+        console.log('Tournament data loaded successfully');
+
+        showNotification('Tournament data loaded successfully!', 'success');
+      } catch (error) {
+        console.error('Failed to initialize tournament data:', error);
+        showNotification('Failed to load tournament data. Please try again.', 'error');
+      } finally {
+        removeGlobalLoadingIndicator();
+      }
+    });
+
+    // Global loading indicator
+    function addGlobalLoadingIndicator() {
+      const loader = document.createElement('div');
+      loader.id = 'global-loader';
+      loader.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        z-index: 10001;
+        animation: loading-bar 2s ease-in-out infinite;
+      `;
+
+      // Add CSS animation
+      if (!document.querySelector('#loading-animation-style')) {
+        const style = document.createElement('style');
+        style.id = 'loading-animation-style';
+        style.textContent = `
+          @keyframes loading-bar {
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(0%); }
+            100% { transform: translateX(100%); }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      document.body.appendChild(loader);
+    }
+
+    function removeGlobalLoadingIndicator() {
+      const loader = document.getElementById('global-loader');
+      if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => {
+          if (document.body.contains(loader)) {
+            document.body.removeChild(loader);
+          }
+        }, 300);
+      }
+    }
+
+    // Fallback initialization if DOMContentLoaded already fired
+    if (document.readyState === 'loading') {
+      // Document is still loading, DOMContentLoaded will fire
+    } else {
+      // Document has already loaded
+      if (checkConnectionStatus()) {
+        populateAllSections().catch(console.error);
+      } else {
+        showNotification('No internet connection detected.', 'error');
+      }
+    }
+
+  </script>
+</body>
+
+</html>
