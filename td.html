@@ -11,40 +11,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
-        /* Inherited Theme from Dashboard */
+        /* All CSS styles remain the same as before */
         :root {
-            --bg: #0f0f10;
-            --panel: #1f1f20;
-            --muted: #9aa0a6;
-            --copy: #e6e6e6;
-            --accent: #FFD700;
-            --accent-2: #e0ac10;
-            --radius: 12px;
+            --bg: #0f0f10; --panel: #1f1f20; --muted: #9aa0a6; --copy: #e6e6e6; --accent: #FFD700; --accent-2: #e0ac10; --radius: 12px;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-            background: linear-gradient(180deg, var(--bg), #070707 140%);
-            color: var(--copy);
-            line-height: 1.5;
-            min-height: 100vh;
-        }
-
-        /* Header (Copied from Dashboard) */
-        .site-header {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            background: rgba(26, 26, 26, 0.8); backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            height: 64px; display: flex; align-items: center; justify-content: space-between;
-            padding: 0 24px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { margin: 0; font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: linear-gradient(180deg, var(--bg), #070707 140%); color: var(--copy); line-height: 1.5; min-height: 100vh; }
+        .site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(26, 26, 26, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
         .header-left { display: flex; align-items: center; gap: 24px; }
         .back-link { color: var(--muted); text-decoration: none; font-weight: 500; display: flex; align-items: center; gap: 8px; transition: color 0.2s ease; }
         .back-link:hover { color: var(--accent); }
@@ -55,57 +28,25 @@
         .admin-badge { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #000; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
         .logout-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--copy); padding: 8px 16px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; font-weight: 500; font-size: 14px; }
         .logout-btn:hover { background: rgba(255, 0, 0, 0.1); border-color: rgba(255, 0, 0, 0.3); color: #ff6b6b; }
-
-        /* Main Content */
-        .main-content {
-            margin-top: 64px;
-            padding: 32px 24px;
-            max-width: 1400px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .breadcrumb {
-            margin-bottom: 16px;
-            color: var(--muted);
-            font-size: 14px;
-        }
+        .main-content { margin-top: 64px; padding: 32px 24px; max-width: 1400px; margin-left: auto; margin-right: auto; }
+        .breadcrumb { margin-bottom: 16px; color: var(--muted); font-size: 14px; }
         .breadcrumb a { color: var(--accent); text-decoration: none; }
         .page-header { margin-bottom: 32px; }
         .page-title { font-size: 28px; font-weight: 700; }
         .page-subtitle { color: var(--muted); }
-
-        /* General UI Components */
-        .dashboard-section {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius);
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
+        .dashboard-section { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; }
         .section-header { margin-bottom: 1.5rem; }
         .section-title { font-size: 1.5rem; font-weight: 700; color: var(--copy); }
         .btn { padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; border: none; text-decoration: none; display: inline-block; text-align: center; }
         .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #000; }
         .btn-danger { background: #ef4444; color: white; }
-        
-        /* New Page Specific Styles */
-        .details-grid {
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 2rem;
-            align-items: start;
-        }
-
-        /* Right Column: Info & Actions */
+        .details-grid { display: grid; grid-template-columns: 1fr 380px; gap: 2rem; align-items: start; }
         .tournament-info-card ul { list-style: none; padding: 0; }
         .tournament-info-card li { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
         .tournament-info-card li:last-child { border-bottom: none; }
         .tournament-info-card .label { color: var(--muted); font-weight: 500; }
         .tournament-info-card .value { font-weight: 600; color: var(--copy); }
         .tournament-actions { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
-
-        /* Left Column: Teams & Players */
         .team-count { color: var(--muted); margin-left: 1rem; font-size: 1rem; }
         .team-accordion { display: flex; flex-direction: column; gap: 1rem; }
         .team-item { background: rgba(0, 0, 0, 0.2); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); }
@@ -114,19 +55,14 @@
         .team-header i { transition: transform 0.3s ease; }
         .team-item.open .team-header i { transform: rotate(180deg); }
         .team-players { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
-        .team-item.open .team-players { max-height: 500px; /* Adjust as needed */ }
+        .team-item.open .team-players { max-height: 500px; }
         .players-list { padding: 0 1rem 1rem; }
         .player-item { display: flex; justify-content: space-between; padding: 0.75rem; border-radius: 6px; }
         .player-item:nth-child(odd) { background: rgba(0, 0, 0, 0.2); }
         .player-name { font-weight: 500; }
         .player-id { color: var(--muted); font-family: monospace; }
         .loading-state, .empty-state { padding: 2rem; text-align: center; color: var(--muted); }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .details-grid { grid-template-columns: 1fr; }
-            .main-content { padding: 24px 16px; }
-        }
+        @media (max-width: 1024px) { .details-grid { grid-template-columns: 1fr; } .main-content { padding: 24px 16px; } }
     </style>
 </head>
 
@@ -204,23 +140,11 @@
         const API_BASE_URL = 'https://tournament-hosting-backend.onrender.com';
 
         // --- AUTHENTICATION & USER INFO ---
-        function checkAdminAuth() {
+        function getSessionData() {
             const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
-            if (!session) {
-                window.location.href = 'auth.html';
-                return null;
-            }
             try {
-                const sessionData = JSON.parse(session);
-                if (!sessionData.user?.roles?.includes('admin')) {
-                    alert('Access denied.');
-                    window.location.href = 'index.html';
-                    return null;
-                }
-                document.getElementById('admin-username').textContent = sessionData.user.username;
-                return sessionData;
+                return JSON.parse(session);
             } catch (error) {
-                window.location.href = 'auth.html';
                 return null;
             }
         }
@@ -232,19 +156,27 @@
         }
 
         // --- DATA LOADING ---
-        async function loadTournamentDetails(tournamentId, token) {
+        // === MODIFIED: Now takes a tournament SLUG and auth token ===
+        async function loadTournamentDetails(tournamentSlug, token) {
             const headers = {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             };
 
             try {
-                // Fetch main tournament details
-                const tournamentResponse = await fetch(`${API_BASE_URL}/api/tournaments/${tournamentId}`, { headers });
-                if (!tournamentResponse.ok) throw new Error('Tournament not found');
+                // === MODIFIED: Fetching from a new backend endpoint for slugs ===
+                const tournamentResponse = await fetch(`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}`, { headers });
+                
+                if (!tournamentResponse.ok) {
+                     if (tournamentResponse.status === 404) {
+                        throw new Error('Tournament not found. Please check the slug.');
+                    }
+                    throw new Error('Failed to fetch tournament data.');
+                }
+                
                 const t = (await tournamentResponse.json()).data;
 
-                // Populate UI with tournament details
+                // Populate UI with tournament details (this logic remains the same)
                 document.getElementById('tournament-title').textContent = t.title;
                 document.getElementById('breadcrumb-tournament-name').textContent = t.title;
                 document.getElementById('tournament-game').textContent = t.game;
@@ -256,11 +188,7 @@
                 document.getElementById('info-format').textContent = t.format || 'Not specified';
                 document.getElementById('team-count-display').textContent = `(${(t.participants?.length || 0)}/${t.maxTeams})`;
 
-
-                // Fetch registered teams
                 const teamsContainer = document.getElementById('teams-list-container');
-                // Assuming an endpoint like /api/tournaments/:id/teams exists
-                // For now, we use placeholder data from t.participants
                 const teams = t.participants || [];
 
                 if (teams.length === 0) {
@@ -290,23 +218,27 @@
             } catch (error) {
                 console.error('Failed to load tournament details:', error);
                 document.getElementById('tournament-title').textContent = 'Error';
-                document.getElementById('tournament-game').textContent = 'Could not load tournament data.';
+                document.getElementById('tournament-game').textContent = error.message;
             }
         }
 
         // --- PAGE INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
-            const sessionData = checkAdminAuth();
-            if (sessionData) {
-                const urlParams = new URLSearchParams(window.location.search);
-                const tournamentId = urlParams.get('id');
+            const sessionData = getSessionData();
+            if (sessionData && sessionData.user) {
+                 document.getElementById('admin-username').textContent = sessionData.user.username;
+            }
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            // === MODIFIED: Looking for 'slug' instead of 'id' ===
+            const tournamentSlug = urlParams.get('slug'); 
+            const authToken = sessionData ? sessionData.token : null;
 
-                if (tournamentId) {
-                    loadTournamentDetails(tournamentId, sessionData.token);
-                } else {
-                    document.getElementById('tournament-title').textContent = 'No Tournament Specified';
-                    document.getElementById('tournament-game').textContent = 'Please provide a tournament ID in the URL.';
-                }
+            if (tournamentSlug) {
+                loadTournamentDetails(tournamentSlug, authToken);
+            } else {
+                document.getElementById('tournament-title').textContent = 'No Tournament Specified';
+                document.getElementById('tournament-game').textContent = 'Please provide a tournament slug in the URL (e.g., td.html?slug=your-tournament-name).';
             }
         });
 
