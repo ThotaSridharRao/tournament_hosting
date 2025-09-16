@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
-        /* All CSS styles remain the same as before */
         :root {
             --bg: #0f0f10; --panel: #1f1f20; --muted: #9aa0a6; --copy: #e6e6e6; --accent: #FFD700; --accent-2: #e0ac10; --radius: 12px;
         }
@@ -21,25 +20,32 @@
         .header-left { display: flex; align-items: center; gap: 24px; }
         .back-link { color: var(--muted); text-decoration: none; font-weight: 500; display: flex; align-items: center; gap: 8px; transition: color 0.2s ease; }
         .back-link:hover { color: var(--accent); }
-        .brand { display: flex; align-items: center; gap: 0.5rem; font-weight: 700; color: var(--copy); font-size: 22px; text-decoration: none; }
-        .brand .accent { color: var(--accent); }
         .user-menu { display: flex; align-items: center; gap: 1rem; }
         .user-info { display: flex; align-items: center; gap: 0.5rem; color: var(--copy); font-weight: 500; }
-        .admin-badge { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #000; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
         .logout-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--copy); padding: 8px 16px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; font-weight: 500; font-size: 14px; }
         .logout-btn:hover { background: rgba(255, 0, 0, 0.1); border-color: rgba(255, 0, 0, 0.3); color: #ff6b6b; }
         .main-content { margin-top: 64px; padding: 32px 24px; max-width: 1400px; margin-left: auto; margin-right: auto; }
         .breadcrumb { margin-bottom: 16px; color: var(--muted); font-size: 14px; }
         .breadcrumb a { color: var(--accent); text-decoration: none; }
-        .page-header { margin-bottom: 32px; }
-        .page-title { font-size: 28px; font-weight: 700; }
+        .page-header { margin-bottom: 32px; display: flex; gap: 24px; align-items: flex-start; }
+        .page-content { flex: 1; }
+        .page-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
         .page-subtitle { color: var(--muted); }
+        .tournament-poster { width: 200px; height: 280px; border-radius: var(--radius); overflow: hidden; border: 2px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center; }
+        .tournament-poster img { width: 100%; height: 100%; object-fit: cover; }
+        .poster-placeholder { color: var(--muted); text-align: center; font-size: 14px; }
         .dashboard-section { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; }
         .section-header { margin-bottom: 1.5rem; }
         .section-title { font-size: 1.5rem; font-weight: 700; color: var(--copy); }
         .btn { padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; border: none; text-decoration: none; display: inline-block; text-align: center; }
+        .btn:hover { transform: translateY(-1px); }
         .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #000; }
+        .btn-primary:hover { background: linear-gradient(135deg, var(--accent-2), var(--accent)); }
+        .btn-secondary { background: rgba(255, 255, 255, 0.1); color: var(--copy); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }
         .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         .details-grid { display: grid; grid-template-columns: 1fr 380px; gap: 2rem; align-items: start; }
         .tournament-info-card ul { list-style: none; padding: 0; }
         .tournament-info-card li { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
@@ -62,7 +68,24 @@
         .player-name { font-weight: 500; }
         .player-id { color: var(--muted); font-family: monospace; }
         .loading-state, .empty-state { padding: 2rem; text-align: center; color: var(--muted); }
-        @media (max-width: 1024px) { .details-grid { grid-template-columns: 1fr; } .main-content { padding: 24px 16px; } }
+        
+        /* Modal Styles */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: var(--panel); border-radius: var(--radius); padding: 2rem; max-width: 500px; width: 90%; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-title { font-size: 1.5rem; font-weight: 700; }
+        .close-modal { background: none; border: none; color: var(--muted); font-size: 1.5rem; cursor: pointer; }
+        .close-modal:hover { color: var(--copy); }
+        .modal-buttons { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        .modal-buttons .btn { flex: 1; }
+        
+        @media (max-width: 1024px) { 
+            .details-grid { grid-template-columns: 1fr; } 
+            .main-content { padding: 24px 16px; } 
+            .page-header { flex-direction: column; align-items: flex-start; }
+            .tournament-poster { width: 150px; height: 210px; }
+        }
     </style>
 </head>
 
@@ -71,16 +94,12 @@
         <div class="header-left">
             <a href="admin-dashboard.html" class="back-link">
                 <i class="fas fa-arrow-left"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="index.html" class="brand">
-                <span class="accent">E</span>Arena
+                <span>Back to Dashboard</span>
             </a>
         </div>
         <div class="user-menu">
             <div class="user-info">
                 <span id="admin-username">Admin</span>
-                <span class="admin-badge">Admin</span>
             </div>
             <button class="logout-btn" onclick="logout()">
                 <i class="fas fa-sign-out-alt"></i> Logout
@@ -94,8 +113,16 @@
         </div>
 
         <div class="page-header">
-            <h1 class="page-title" id="tournament-title">Loading Tournament...</h1>
-            <p class="page-subtitle" id="tournament-game">Manage teams, brackets, and settings for this event.</p>
+            <div class="page-content">
+                <h1 class="page-title" id="tournament-title">Loading Tournament...</h1>
+                <p class="page-subtitle" id="tournament-game">Manage teams, brackets, and settings for this event.</p>
+            </div>
+            <div class="tournament-poster" id="tournament-poster">
+                <div class="poster-placeholder">
+                    <i class="fas fa-image"></i><br>
+                    No poster available
+                </div>
+            </div>
         </div>
 
         <div class="details-grid">
@@ -125,19 +152,42 @@
                         <li><span class="label">Start Date</span><span class="value" id="info-start-date">--</span></li>
                         <li><span class="label">End Date</span><span class="value" id="info-end-date">--</span></li>
                         <li><span class="label">Format</span><span class="value" id="info-format">--</span></li>
+                        <li><span class="label">Tournament ID</span><span class="value" id="info-tournament-id">--</span></li>
                     </ul>
                 </div>
                 <div class="tournament-actions">
-                    <button class="btn btn-primary"><i class="fas fa-edit"></i> Edit Details</button>
-                    <button class="btn btn-secondary"><i class="fas fa-sitemap"></i> Manage Brackets</button>
-                    <button class="btn btn-danger"><i class="fas fa-ban"></i> Cancel Tournament</button>
+                    <button class="btn btn-primary" id="edit-details-btn">
+                        <i class="fas fa-edit"></i> Edit Details
+                    </button>
+                    <button class="btn btn-secondary" id="manage-brackets-btn">
+                        <i class="fas fa-sitemap"></i> Manage Brackets
+                    </button>
+                    <button class="btn btn-danger" id="cancel-tournament-btn">
+                        <i class="fas fa-ban"></i> Cancel Tournament
+                    </button>
                 </div>
             </div>
         </div>
     </main>
 
+    <!-- Cancel Tournament Modal -->
+    <div id="cancel-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Cancel Tournament</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <p>Are you sure you want to cancel this tournament? This action cannot be undone and all registered teams will be notified.</p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary close-modal">Keep Tournament</button>
+                <button class="btn btn-danger" id="confirm-cancel-btn">Yes, Cancel Tournament</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const API_BASE_URL = 'https://tournament-hosting-backend.onrender.com';
+        let currentTournament = null;
 
         // --- AUTHENTICATION & USER INFO ---
         function getSessionData() {
@@ -155,8 +205,70 @@
             window.location.href = 'auth.html';
         }
 
+        // --- TOURNAMENT ACTIONS ---
+        function editTournamentDetails() {
+            if (currentTournament) {
+                // Redirect to edit page with tournament ID
+                window.location.href = `edit-tournament.html?id=${currentTournament._id}`;
+            } else {
+                alert('Tournament data not loaded yet. Please wait and try again.');
+            }
+        }
+
+        function manageBrackets() {
+            if (currentTournament) {
+                // Redirect to brackets management page
+                window.location.href = `tournament-brackets.html?id=${currentTournament._id}`;
+            } else {
+                alert('Tournament data not loaded yet. Please wait and try again.');
+            }
+        }
+
+        function showCancelModal() {
+            document.getElementById('cancel-modal').classList.add('active');
+        }
+
+        function hideCancelModal() {
+            document.getElementById('cancel-modal').classList.remove('active');
+        }
+
+        async function cancelTournament() {
+            if (!currentTournament) {
+                alert('Tournament data not loaded yet. Please wait and try again.');
+                return;
+            }
+
+            const sessionData = getSessionData();
+            if (!sessionData || !sessionData.token) {
+                alert('Authentication required. Please login again.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament._id}/cancel`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${sessionData.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    alert('Tournament has been cancelled successfully.');
+                    hideCancelModal();
+                    // Reload the page to reflect changes
+                    window.location.reload();
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to cancel tournament.');
+                }
+            } catch (error) {
+                console.error('Cancel tournament error:', error);
+                alert('Failed to cancel tournament: ' + error.message);
+            }
+        }
+
         // --- DATA LOADING ---
-        // === MODIFIED: Now takes a tournament SLUG and auth token ===
         async function loadTournamentDetails(tournamentSlug, token) {
             const headers = {
                 'Authorization': `Bearer ${token}`,
@@ -164,19 +276,19 @@
             };
 
             try {
-                // === MODIFIED: Fetching from a new backend endpoint for slugs ===
                 const tournamentResponse = await fetch(`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}`, { headers });
                 
                 if (!tournamentResponse.ok) {
-                     if (tournamentResponse.status === 404) {
+                    if (tournamentResponse.status === 404) {
                         throw new Error('Tournament not found. Please check the slug.');
                     }
                     throw new Error('Failed to fetch tournament data.');
                 }
                 
                 const t = (await tournamentResponse.json()).data;
+                currentTournament = t; // Store tournament data globally
 
-                // Populate UI with tournament details (this logic remains the same)
+                // Populate UI with tournament details
                 document.getElementById('tournament-title').textContent = t.title;
                 document.getElementById('breadcrumb-tournament-name').textContent = t.title;
                 document.getElementById('tournament-game').textContent = t.game;
@@ -185,7 +297,22 @@
                 document.getElementById('info-fee').textContent = `₹${(t.entryFee || 0).toLocaleString()} per team`;
                 document.getElementById('info-start-date').textContent = new Date(t.tournamentStart).toLocaleDateString();
                 document.getElementById('info-end-date').textContent = new Date(t.tournamentEnd).toLocaleDateString();
-                document.getElementById('info-format').textContent = t.format || 'Not specified';
+                document.getElementById('info-tournament-id').textContent = t._id;
+                
+                // Handle format - try multiple possible field names
+                const format = t.format || t.tournamentFormat || t.gameFormat || 'Not specified';
+                document.getElementById('info-format').textContent = format;
+
+                // Handle tournament poster
+                const posterElement = document.getElementById('tournament-poster');
+                if (t.poster || t.thumbnailUrl || t.imageUrl) {
+                    const posterUrl = t.poster || t.thumbnailUrl || t.imageUrl;
+                    posterElement.innerHTML = `<img src="${posterUrl}" alt="Tournament Poster" onerror="this.parentElement.innerHTML='<div class=\\'poster-placeholder\\'><i class=\\'fas fa-image\\'></i><br>Failed to load poster</div>'">`;
+                } else {
+                    posterElement.innerHTML = `<div class="poster-placeholder"><i class="fas fa-image"></i><br>No poster available</div>`;
+                }
+
+                // Handle team count
                 document.getElementById('team-count-display').textContent = `(${(t.participants?.length || 0)}/${t.maxTeams})`;
 
                 const teamsContainer = document.getElementById('teams-list-container');
@@ -222,15 +349,14 @@
             }
         }
 
-        // --- PAGE INITIALIZATION ---
+        // --- EVENT LISTENERS ---
         document.addEventListener('DOMContentLoaded', () => {
             const sessionData = getSessionData();
             if (sessionData && sessionData.user) {
-                 document.getElementById('admin-username').textContent = sessionData.user.username;
+                document.getElementById('admin-username').textContent = sessionData.user.username;
             }
             
             const urlParams = new URLSearchParams(window.location.search);
-            // === MODIFIED: Looking for 'slug' instead of 'id' ===
             const tournamentSlug = urlParams.get('slug'); 
             const authToken = sessionData ? sessionData.token : null;
 
@@ -240,9 +366,27 @@
                 document.getElementById('tournament-title').textContent = 'No Tournament Specified';
                 document.getElementById('tournament-game').textContent = 'Please provide a tournament slug in the URL (e.g., td.html?slug=your-tournament-name).';
             }
+
+            // Button event listeners
+            document.getElementById('edit-details-btn').addEventListener('click', editTournamentDetails);
+            document.getElementById('manage-brackets-btn').addEventListener('click', manageBrackets);
+            document.getElementById('cancel-tournament-btn').addEventListener('click', showCancelModal);
+            document.getElementById('confirm-cancel-btn').addEventListener('click', cancelTournament);
+
+            // Modal close event listeners
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', hideCancelModal);
+            });
+
+            // Close modal when clicking outside
+            document.getElementById('cancel-modal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) {
+                    hideCancelModal();
+                }
+            });
         });
 
-        // --- EVENT LISTENERS for accordion ---
+        // Team accordion functionality
         document.getElementById('teams-list-container').addEventListener('click', function(event) {
             const header = event.target.closest('.team-header');
             if (header) {
