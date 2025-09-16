@@ -72,13 +72,64 @@
         /* Modal Styles */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); }
         .modal.active { display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: var(--panel); border-radius: var(--radius); padding: 2rem; max-width: 500px; width: 90%; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .modal-content { background: var(--panel); border-radius: var(--radius); padding: 2rem; max-width: 500px; width: 90%; border: 1px solid rgba(255, 255, 255, 0.1); max-height: 90vh; overflow-y: auto; }
+        .edit-modal-content { max-width: 800px; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
         .modal-title { font-size: 1.5rem; font-weight: 700; }
         .close-modal { background: none; border: none; color: var(--muted); font-size: 1.5rem; cursor: pointer; }
         .close-modal:hover { color: var(--copy); }
         .modal-buttons { display: flex; gap: 1rem; margin-top: 1.5rem; }
         .modal-buttons .btn { flex: 1; }
+
+        /* Form Styles */
+        .edit-form { display: flex; flex-direction: column; gap: 1.5rem; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .form-group.full-width, .full-width { grid-column: span 2; }
+        .form-group label { font-weight: 600; color: var(--copy); font-size: 0.9rem; }
+        .form-group input, .form-group select, .form-group textarea { 
+            background: rgba(255, 255, 255, 0.1); 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            border-radius: 6px; 
+            padding: 0.75rem; 
+            color: var(--copy); 
+            font-family: inherit; 
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { 
+            outline: none; 
+            border-color: var(--accent); 
+            background: rgba(255, 255, 255, 0.15); 
+        }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+
+        /* Poster Upload Styles */
+        .poster-upload-area { display: flex; flex-direction: column; gap: 1rem; }
+        .poster-preview { 
+            width: 200px; 
+            height: 280px; 
+            border: 2px dashed rgba(255, 255, 255, 0.3); 
+            border-radius: var(--radius); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            transition: border-color 0.2s ease;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .poster-preview:hover { border-color: var(--accent); }
+        .poster-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .poster-placeholder { text-align: center; color: var(--muted); }
+        .poster-placeholder i { font-size: 2rem; margin-bottom: 0.5rem; }
+        .poster-placeholder p { margin: 0; font-size: 0.9rem; }
+        
+        @media (max-width: 768px) { 
+            .form-row { grid-template-columns: 1fr; }
+            .form-group.full-width, .full-width { grid-column: span 1; }
+            .edit-modal-content { max-width: 95%; padding: 1.5rem; }
+            .poster-preview { width: 150px; height: 210px; }
+        }
         
         @media (max-width: 1024px) { 
             .details-grid { grid-template-columns: 1fr; } 
@@ -170,6 +221,96 @@
         </div>
     </main>
 
+    <!-- Edit Tournament Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content edit-modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Tournament Details</h3>
+                <button class="close-modal" id="close-edit-modal">&times;</button>
+            </div>
+            <form id="edit-tournament-form" class="edit-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-title">Tournament Title</label>
+                        <input type="text" id="edit-title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-game">Game</label>
+                        <input type="text" id="edit-game" name="game" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-prize-pool">Prize Pool (₹)</label>
+                        <input type="number" id="edit-prize-pool" name="prizePool" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-entry-fee">Entry Fee (₹)</label>
+                        <input type="number" id="edit-entry-fee" name="entryFee" min="0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-start-date">Start Date</label>
+                        <input type="datetime-local" id="edit-start-date" name="tournamentStart" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-end-date">End Date</label>
+                        <input type="datetime-local" id="edit-end-date" name="tournamentEnd" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-format">Tournament Format</label>
+                        <select id="edit-format" name="format">
+                            <option value="">Select Format</option>
+                            <option value="single-elimination">Single Elimination</option>
+                            <option value="double-elimination">Double Elimination</option>
+                            <option value="round-robin">Round Robin</option>
+                            <option value="swiss">Swiss System</option>
+                            <option value="group-stage">Group Stage</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-max-teams">Max Teams</label>
+                        <input type="number" id="edit-max-teams" name="maxTeams" min="2" max="128">
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="edit-description">Description</label>
+                    <textarea id="edit-description" name="description" rows="4" placeholder="Tournament description..."></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="edit-poster">Tournament Poster</label>
+                    <div class="poster-upload-area">
+                        <input type="file" id="edit-poster" name="poster" accept="image/*" style="display: none;">
+                        <div class="poster-preview" id="poster-preview">
+                            <div class="poster-placeholder">
+                                <i class="fas fa-image"></i>
+                                <p>Click to upload poster</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary" id="upload-poster-btn">
+                            <i class="fas fa-upload"></i> Choose Image
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="save-tournament-btn">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Cancel Tournament Modal -->
     <div id="cancel-modal" class="modal">
         <div class="modal-content">
@@ -208,10 +349,119 @@
         // --- TOURNAMENT ACTIONS ---
         function editTournamentDetails() {
             if (currentTournament) {
-                // Redirect to edit page with tournament ID
-                window.location.href = `edit-tournament.html?id=${currentTournament._id}`;
+                populateEditForm();
+                document.getElementById('edit-modal').classList.add('active');
             } else {
                 alert('Tournament data not loaded yet. Please wait and try again.');
+            }
+        }
+
+        function populateEditForm() {
+            if (!currentTournament) return;
+
+            document.getElementById('edit-title').value = currentTournament.title || '';
+            document.getElementById('edit-game').value = currentTournament.game || '';
+            document.getElementById('edit-prize-pool').value = currentTournament.prizePool || '';
+            document.getElementById('edit-entry-fee').value = currentTournament.entryFee || '';
+            document.getElementById('edit-max-teams').value = currentTournament.maxTeams || '';
+            document.getElementById('edit-description').value = currentTournament.description || '';
+            
+            // Format dates for datetime-local input
+            if (currentTournament.tournamentStart) {
+                const startDate = new Date(currentTournament.tournamentStart);
+                document.getElementById('edit-start-date').value = startDate.toISOString().slice(0, 16);
+            }
+            if (currentTournament.tournamentEnd) {
+                const endDate = new Date(currentTournament.tournamentEnd);
+                document.getElementById('edit-end-date').value = endDate.toISOString().slice(0, 16);
+            }
+
+            // Set format
+            const format = currentTournament.format || currentTournament.tournamentFormat || currentTournament.gameFormat || '';
+            document.getElementById('edit-format').value = format;
+
+            // Show current poster if available
+            const posterPreview = document.getElementById('poster-preview');
+            if (currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl) {
+                const posterUrl = currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl;
+                posterPreview.innerHTML = `<img src="${posterUrl}" alt="Tournament Poster">`;
+            } else {
+                posterPreview.innerHTML = `<div class="poster-placeholder"><i class="fas fa-image"></i><p>Click to upload poster</p></div>`;
+            }
+        }
+
+        function hideEditModal() {
+            document.getElementById('edit-modal').classList.remove('active');
+        }
+
+        async function saveTournamentChanges(formData) {
+            const sessionData = getSessionData();
+            if (!sessionData || !sessionData.token) {
+                alert('Authentication required. Please login again.');
+                return false;
+            }
+
+            try {
+                // Disable save button
+                const saveBtn = document.getElementById('save-tournament-btn');
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                saveBtn.disabled = true;
+
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament._id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${sessionData.token}`
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const updatedTournament = await response.json();
+                    currentTournament = updatedTournament.data || updatedTournament;
+                    
+                    // Update the UI with new data
+                    updateUIWithTournamentData();
+                    hideEditModal();
+                    alert('Tournament updated successfully!');
+                    return true;
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to update tournament.');
+                }
+            } catch (error) {
+                console.error('Update tournament error:', error);
+                alert('Failed to update tournament: ' + error.message);
+                return false;
+            } finally {
+                // Re-enable save button
+                const saveBtn = document.getElementById('save-tournament-btn');
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+                saveBtn.disabled = false;
+            }
+        }
+
+        function updateUIWithTournamentData() {
+            if (!currentTournament) return;
+
+            // Update page content
+            document.getElementById('tournament-title').textContent = currentTournament.title;
+            document.getElementById('breadcrumb-tournament-name').textContent = currentTournament.title;
+            document.getElementById('tournament-game').textContent = currentTournament.game;
+            document.getElementById('info-status').textContent = currentTournament.status.charAt(0).toUpperCase() + currentTournament.status.slice(1);
+            document.getElementById('info-prize').textContent = `₹${(currentTournament.prizePool || 0).toLocaleString()}`;
+            document.getElementById('info-fee').textContent = `₹${(currentTournament.entryFee || 0).toLocaleString()} per team`;
+            document.getElementById('info-start-date').textContent = new Date(currentTournament.tournamentStart).toLocaleDateString();
+            document.getElementById('info-end-date').textContent = new Date(currentTournament.tournamentEnd).toLocaleDateString();
+            
+            const format = currentTournament.format || currentTournament.tournamentFormat || currentTournament.gameFormat || 'Not specified';
+            document.getElementById('info-format').textContent = format;
+
+            // Update poster
+            const posterElement = document.getElementById('tournament-poster');
+            if (currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl) {
+                const posterUrl = currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl;
+                posterElement.innerHTML = `<img src="${posterUrl}" alt="Tournament Poster" onerror="this.parentElement.innerHTML='<div class=\\'poster-placeholder\\'><i class=\\'fas fa-image\\'></i><br>Failed to load poster</div>'">`;
             }
         }
 
@@ -375,14 +625,82 @@
 
             // Modal close event listeners
             document.querySelectorAll('.close-modal').forEach(btn => {
-                btn.addEventListener('click', hideCancelModal);
+                btn.addEventListener('click', (e) => {
+                    if (e.target.id === 'close-edit-modal') {
+                        hideEditModal();
+                    } else {
+                        hideCancelModal();
+                    }
+                });
             });
 
-            // Close modal when clicking outside
+            // Close modals when clicking outside
             document.getElementById('cancel-modal').addEventListener('click', (e) => {
                 if (e.target === e.currentTarget) {
                     hideCancelModal();
                 }
+            });
+
+            document.getElementById('edit-modal').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) {
+                    hideEditModal();
+                }
+            });
+
+            // Poster upload functionality
+            document.getElementById('upload-poster-btn').addEventListener('click', () => {
+                document.getElementById('edit-poster').click();
+            });
+
+            document.getElementById('poster-preview').addEventListener('click', () => {
+                document.getElementById('edit-poster').click();
+            });
+
+            document.getElementById('edit-poster').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    // Validate file type
+                    if (!file.type.startsWith('image/')) {
+                        alert('Please select a valid image file.');
+                        return;
+                    }
+
+                    // Validate file size (5MB limit)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File size must be less than 5MB.');
+                        return;
+                    }
+
+                    // Preview the image
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        document.getElementById('poster-preview').innerHTML = 
+                            `<img src="${e.target.result}" alt="Tournament Poster Preview">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Form submission
+            document.getElementById('edit-tournament-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData();
+                const form = e.target;
+                
+                // Add all form fields to FormData
+                const inputs = form.querySelectorAll('input, select, textarea');
+                inputs.forEach(input => {
+                    if (input.type === 'file') {
+                        if (input.files[0]) {
+                            formData.append(input.name, input.files[0]);
+                        }
+                    } else {
+                        formData.append(input.name, input.value);
+                    }
+                });
+
+                await saveTournamentChanges(formData);
             });
         });
 
