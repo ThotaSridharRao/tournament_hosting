@@ -221,7 +221,6 @@
         </div>
     </main>
 
-    <!-- Edit Tournament Modal -->
     <div id="edit-modal" class="modal">
         <div class="modal-content edit-modal-content">
             <div class="modal-header">
@@ -311,7 +310,6 @@
         </div>
     </div>
 
-    <!-- Cancel Tournament Modal -->
     <div id="cancel-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -394,81 +392,37 @@
             document.getElementById('edit-modal').classList.remove('active');
         }
 
-        async function saveTournamentChanges(formData) {
-            const sessionData = getSessionData();
-            if (!sessionData || !sessionData.token) {
-                alert('Authentication required. Please login again.');
-                return false;
-            }
-
+        async function saveTournamentChanges(formData, slug, token) {
             try {
-                // Disable save button
-                const saveBtn = document.getElementById('save-tournament-btn');
-                const originalText = saveBtn.innerHTML;
-                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-                saveBtn.disabled = true;
+                const response = await fetch(
+                    `${API_BASE_URL}/api/tournaments/${slug}`,
+                    {
+                        method: "PATCH",
+                        headers: {
+                            Authorization: `Bearer ${token}`, // DO NOT set Content-Type
+                        },
+                        body: formData,
+                    }
+                );
 
-            const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament.slug}`, {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': `Bearer ${sessionData.token}`
-                },
-                body: formData
-            });
-
-
-                if (response.ok) {
-                    const updatedTournament = await response.json();
-                    currentTournament = updatedTournament.data || updatedTournament;
-                    
-                    // Update the UI with new data
-                    updateUIWithTournamentData();
-                    hideEditModal();
-                    alert('Tournament updated successfully!');
-                    return true;
-                } else {
+                if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to update tournament.');
+                    throw new Error(errorData.message || "Unknown error occurred.");
                 }
+
+                const result = await response.json();
+                alert("Tournament updated successfully!");
+                console.log("Updated:", result.data);
+                hideEditModal();
+                loadTournamentDetails(slug, token);
             } catch (error) {
-                console.error('Update tournament error:', error);
-                alert('Failed to update tournament: ' + error.message);
-                return false;
-            } finally {
-                // Re-enable save button
-                const saveBtn = document.getElementById('save-tournament-btn');
-                saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
-                saveBtn.disabled = false;
-            }
-        }
-
-        function updateUIWithTournamentData() {
-            if (!currentTournament) return;
-
-            // Update page content
-            document.getElementById('tournament-title').textContent = currentTournament.title;
-            document.getElementById('breadcrumb-tournament-name').textContent = currentTournament.title;
-            document.getElementById('tournament-game').textContent = currentTournament.game;
-            document.getElementById('info-status').textContent = currentTournament.status.charAt(0).toUpperCase() + currentTournament.status.slice(1);
-            document.getElementById('info-prize').textContent = `₹${(currentTournament.prizePool || 0).toLocaleString()}`;
-            document.getElementById('info-fee').textContent = `₹${(currentTournament.entryFee || 0).toLocaleString()} per team`;
-            document.getElementById('info-start-date').textContent = new Date(currentTournament.tournamentStart).toLocaleDateString();
-            document.getElementById('info-end-date').textContent = new Date(currentTournament.tournamentEnd).toLocaleDateString();
-            
-            const format = currentTournament.format || currentTournament.tournamentFormat || currentTournament.gameFormat || 'Not specified';
-            document.getElementById('info-format').textContent = format;
-
-            // Update poster
-            const posterElement = document.getElementById('tournament-poster');
-            if (currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl) {
-                const posterUrl = currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl;
-                posterElement.innerHTML = `<img src="${posterUrl}" alt="Tournament Poster" onerror="this.parentElement.innerHTML='<div class=\\'poster-placeholder\\'><i class=\\'fas fa-image\\'></i><br>Failed to load poster</div>'">`;
+                console.error("Update tournament error:", error);
+                alert(`Failed to update tournament: ${error.message}`);
             }
         }
 
         function manageBrackets() {
             if (currentTournament) {
-                // Redirect to brackets management page
                 window.location.href = `tournament-brackets.html?id=${currentTournament._id}`;
             } else {
                 alert('Tournament data not loaded yet. Please wait and try again.');
@@ -507,7 +461,6 @@
                 if (response.ok) {
                     alert('Tournament has been cancelled successfully.');
                     hideCancelModal();
-                    // Reload the page to reflect changes
                     window.location.reload();
                 } else {
                     const errorData = await response.json();
@@ -537,9 +490,8 @@
                 }
                 
                 const t = (await tournamentResponse.json()).data;
-                currentTournament = t; // Store tournament data globally
+                currentTournament = t;
 
-                // Populate UI with tournament details
                 document.getElementById('tournament-title').textContent = t.title;
                 document.getElementById('breadcrumb-tournament-name').textContent = t.title;
                 document.getElementById('tournament-game').textContent = t.game;
@@ -550,11 +502,9 @@
                 document.getElementById('info-end-date').textContent = new Date(t.tournamentEnd).toLocaleDateString();
                 document.getElementById('info-tournament-id').textContent = t._id;
                 
-                // Handle format - try multiple possible field names
                 const format = t.format || t.tournamentFormat || t.gameFormat || 'Not specified';
                 document.getElementById('info-format').textContent = format;
 
-                // Handle tournament poster
                 const posterElement = document.getElementById('tournament-poster');
                 if (t.poster || t.thumbnailUrl || t.imageUrl) {
                     const posterUrl = t.poster || t.thumbnailUrl || t.imageUrl;
@@ -563,7 +513,6 @@
                     posterElement.innerHTML = `<div class="poster-placeholder"><i class="fas fa-image"></i><br>No poster available</div>`;
                 }
 
-                // Handle team count
                 document.getElementById('team-count-display').textContent = `(${(t.participants?.length || 0)}/${t.maxTeams})`;
 
                 const teamsContainer = document.getElementById('teams-list-container');
@@ -600,55 +549,55 @@
             }
         }
 
-        // --- EVENT LISTENERS ---
+        // --- PAGE INITIALIZATION AND EVENT LISTENERS ---
         document.addEventListener('DOMContentLoaded', () => {
+            // Check for user session and handle auth
             const sessionData = getSessionData();
-            if (sessionData && sessionData.user) {
+            if (!sessionData || !sessionData.token) {
+                window.location.href = 'auth.html';
+                return; // Stop execution if not authenticated
+            }
+            if (sessionData.user) {
                 document.getElementById('admin-username').textContent = sessionData.user.username;
             }
             
+            // Get tournament info from URL
             const urlParams = new URLSearchParams(window.location.search);
             const tournamentSlug = urlParams.get('slug'); 
-            const authToken = sessionData ? sessionData.token : null;
+            const authToken = sessionData.token;
 
+            // Load tournament details if slug exists
             if (tournamentSlug) {
                 loadTournamentDetails(tournamentSlug, authToken);
             } else {
                 document.getElementById('tournament-title').textContent = 'No Tournament Specified';
-                document.getElementById('tournament-game').textContent = 'Please provide a tournament slug in the URL (e.g., td.html?slug=your-tournament-name).';
+                document.getElementById('tournament-game').textContent = 'Please provide a tournament slug in the URL.';
+                alert("No tournament slug found in URL.");
             }
 
-            // Button event listeners
+            // --- Main Button Event Listeners ---
             document.getElementById('edit-details-btn').addEventListener('click', editTournamentDetails);
             document.getElementById('manage-brackets-btn').addEventListener('click', manageBrackets);
             document.getElementById('cancel-tournament-btn').addEventListener('click', showCancelModal);
             document.getElementById('confirm-cancel-btn').addEventListener('click', cancelTournament);
 
-            // Modal close event listeners
+            // --- Modal Close Listeners ---
             document.querySelectorAll('.close-modal').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    if (e.target.id === 'close-edit-modal') {
-                        hideEditModal();
-                    } else {
-                        hideCancelModal();
+                    const modal = e.target.closest('.modal');
+                    if (modal) modal.classList.remove('active');
+                });
+            });
+
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === e.currentTarget) {
+                        e.currentTarget.classList.remove('active');
                     }
                 });
             });
 
-            // Close modals when clicking outside
-            document.getElementById('cancel-modal').addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) {
-                    hideCancelModal();
-                }
-            });
-
-            document.getElementById('edit-modal').addEventListener('click', (e) => {
-                if (e.target === e.currentTarget) {
-                    hideEditModal();
-                }
-            });
-
-            // Poster upload functionality
+            // --- Edit Form Poster Upload Listeners ---
             document.getElementById('upload-poster-btn').addEventListener('click', () => {
                 document.getElementById('edit-poster').click();
             });
@@ -660,19 +609,14 @@
             document.getElementById('edit-poster').addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    // Validate file type
                     if (!file.type.startsWith('image/')) {
                         alert('Please select a valid image file.');
                         return;
                     }
-
-                    // Validate file size (5MB limit)
-                    if (file.size > 5 * 1024 * 1024) {
+                    if (file.size > 5 * 1024 * 1024) { // 5MB limit
                         alert('File size must be less than 5MB.');
                         return;
                     }
-
-                    // Preview the image
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         document.getElementById('poster-preview').innerHTML = 
@@ -682,38 +626,27 @@
                 }
             });
 
-            // Form submission
+            // --- Edit Form Submission Listener ---
             document.getElementById('edit-tournament-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
-                const formData = new FormData();
+                if (!tournamentSlug || !authToken) {
+                    alert("Could not save changes. Missing tournament slug or auth token.");
+                    return;
+                }
                 const form = e.target;
-                
-                // Add all form fields to FormData
-                const inputs = form.querySelectorAll('input, select, textarea');
-                inputs.forEach(input => {
-                    if (input.type === 'file') {
-                        if (input.files[0]) {
-                            formData.append(input.name, input.files[0]);
-                        }
-                    } else {
-                        formData.append(input.name, input.value);
-                    }
-                });
+                const formData = new FormData(form);
+                await saveTournamentChanges(formData, tournamentSlug, authToken);
+            });
 
-                await saveTournamentChanges(formData);
+            // --- Team Accordion Listener (Event Delegation) ---
+            document.getElementById('teams-list-container').addEventListener('click', function(event) {
+                const header = event.target.closest('.team-header');
+                if (header) {
+                    const item = header.parentElement;
+                    item.classList.toggle('open');
+                }
             });
         });
-
-        // Team accordion functionality
-        document.getElementById('teams-list-container').addEventListener('click', function(event) {
-            const header = event.target.closest('.team-header');
-            if (header) {
-                const item = header.parentElement;
-                item.classList.toggle('open');
-            }
-        });
-
     </script>
 </body>
 
