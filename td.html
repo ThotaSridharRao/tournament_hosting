@@ -408,13 +408,14 @@
                 saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
                 saveBtn.disabled = true;
 
-                const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament._id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${sessionData.token}`
-                    },
-                    body: formData
-                });
+            const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament.slug}`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${sessionData.token}`
+                },
+                body: formData
+            });
+
 
                 if (response.ok) {
                     const updatedTournament = await response.json();
