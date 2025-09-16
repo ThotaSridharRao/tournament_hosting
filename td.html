@@ -497,7 +497,8 @@
                 document.getElementById('tournament-game').textContent = t.game;
                 document.getElementById('info-status').textContent = t.status.charAt(0).toUpperCase() + t.status.slice(1);
                 document.getElementById('info-prize').textContent = `₹${(t.prizePool || 0).toLocaleString()}`;
-                document.getElementById('info-fee').textContent = `₹${(t.entryFee || 0).toLocaleString()} per team`;
+                // Recommended replacement
+                document.getElementById('info-fee').textContent = t.entryFee !== undefined ? `₹${t.entryFee.toLocaleString()} per team` : 'Not Specified';
                 document.getElementById('info-start-date').textContent = new Date(t.tournamentStart).toLocaleDateString();
                 document.getElementById('info-end-date').textContent = new Date(t.tournamentEnd).toLocaleDateString();
                 document.getElementById('info-tournament-id').textContent = t._id;
@@ -505,10 +506,12 @@
                 const format = t.format || t.tournamentFormat || t.gameFormat || 'Not specified';
                 document.getElementById('info-format').textContent = format;
 
+                // This corrected code looks for the right property name
                 const posterElement = document.getElementById('tournament-poster');
-                if (t.poster || t.thumbnailUrl || t.imageUrl) {
-                    const posterUrl = t.poster || t.thumbnailUrl || t.imageUrl;
-                    posterElement.innerHTML = `<img src="${posterUrl}" alt="Tournament Poster" onerror="this.parentElement.innerHTML='<div class=\\'poster-placeholder\\'><i class=\\'fas fa-image\\'></i><br>Failed to load poster</div>'">`;
+                if (t.posterImage) { // 👈 Changed from t.poster to t.posterImage
+                    // We need to construct the full URL if the backend only sends the path
+                    const posterUrl = t.posterImage.startsWith('http') ? t.posterImage : `${API_BASE_URL}/${t.posterImage}`;
+                    posterElement.innerHTML = `<img src="${posterUrl}" alt="Tournament Poster" onerror="this.parentElement.innerHTML='<div class=\\'poster-placeholder\\'><i class=\\'fas fa-image\\'></i><br>Poster found</div>'">`;
                 } else {
                     posterElement.innerHTML = `<div class="poster-placeholder"><i class="fas fa-image"></i><br>No poster available</div>`;
                 }
