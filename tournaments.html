@@ -754,18 +754,20 @@
           // Transform backend data to match frontend format
           return result.data.map(tournament => ({
             id: tournament._id,
+            slug: tournament.slug,
             title: tournament.title,
-            subtitle: tournament.subtitle || '',
+            description: tournament.description || '',
             game: tournament.game || 'Unknown',
             status: tournament.status || 'upcoming',
             badge: getStatusBadge(tournament.status),
             prizePool: tournament.prizePool || 0,
             maxTeams: tournament.maxTeams || 16,
+            participants: tournament.participants || [],
             registrationStart: tournament.registrationStart,
             registrationEnd: tournament.registrationEnd,
             tournamentStart: tournament.tournamentStart,
             tournamentEnd: tournament.tournamentEnd,
-            backgroundImage: tournament.backgroundImage || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+            posterImage: tournament.posterImage,
             detailsLink: `tournament-details.html?slug=${tournament.slug}`
           }));
         } else {
@@ -793,6 +795,12 @@
     function createTournamentCard(tournament) {
       const statusInfo = statusConfig[tournament.status];
 
+      // Calculate duration
+      const startDate = new Date(tournament.tournamentStart);
+      const endDate = new Date(tournament.tournamentEnd);
+      const durationDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+      const duration = durationDays === 1 ? '1 Day' : `${durationDays} Days`;
+
       // Determine if we should show the register button
       const showRegisterButton = tournament.status === 'registration';
 
@@ -802,7 +810,7 @@
             <i class="fas fa-info-circle"></i>
             View Details
           </a>
-          <button class="btn-primary" onclick="handleRegistration('${tournament.title}')">
+          <button class="btn-primary" onclick="handleRegistration('${tournament.slug}')">
             <i class="fas fa-user-plus"></i>
             Register
           </button>
@@ -818,25 +826,25 @@
 
       return `
         <div class="tournament-card" data-status="${tournament.status}" data-game="${tournament.game}">
-          <div class="tournament-image">
+          <div class="tournament-image" style="background-image: url('${tournament.posterImage || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'}'); background-size: cover; background-position: center;">
             <div class="tournament-badge">${tournament.badge}</div>
             <div class="tournament-status ${statusInfo.class}">${statusInfo.text}</div>
           </div>
           <div class="tournament-content">
             <h3 class="tournament-title">${tournament.title}</h3>
-            <p class="tournament-description">${tournament.description}</p>
+            <p class="tournament-description">${tournament.description || 'Join this exciting tournament and compete with the best players!'}</p>
             
             <div class="tournament-stats">
               <div class="stat">
-                <span class="stat-value">${tournament.prizePool}</span>
+                <span class="stat-value">₹${(tournament.prizePool || 0).toLocaleString()}</span>
                 <span class="stat-label">Prize Pool</span>
               </div>
               <div class="stat">
-                <span class="stat-value">${tournament.teams}</span>
+                <span class="stat-value">${tournament.participants?.length || 0}/${tournament.maxTeams}</span>
                 <span class="stat-label">Teams</span>
               </div>
               <div class="stat">
-                <span class="stat-value">${tournament.duration}</span>
+                <span class="stat-value">${duration}</span>
                 <span class="stat-label">Duration</span>
               </div>
             </div>
@@ -881,7 +889,7 @@
         document.getElementById('loading').style.display = 'block';
         document.getElementById('tournaments-grid').style.display = 'none';
 
-        // Fetch tournaments (simulated)
+        // Fetch tournaments from API
         const tournaments = await fetchTournaments();
 
         // Populate tournaments grid
@@ -985,9 +993,18 @@
     }
 
     // Handle registration button clicks
-    function handleRegistration(tournamentTitle) {
-      alert(`Registration for ${tournamentTitle} would open here!`);
-      // This would redirect to actual registration form
+    function handleRegistration(tournamentSlug) {
+      // Check if user is authenticated
+      const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+      
+      if (!session) {
+        alert('Please log in to register for tournaments');
+        window.location.href = 'auth.html';
+        return;
+      }
+      
+      // Redirect to tournament details page where registration can happen
+      window.location.href = `tournament-details.html?slug=${tournamentSlug}`;
     }
 
     // Initialize when page loads

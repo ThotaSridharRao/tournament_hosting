@@ -450,7 +450,7 @@
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament._id}/cancel`, {
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament.slug}/cancel`, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${sessionData.token}`,
@@ -469,6 +469,44 @@
             } catch (error) {
                 console.error('Cancel tournament error:', error);
                 alert('Failed to cancel tournament: ' + error.message);
+            }
+        }
+
+        async function deleteTournament() {
+            if (!currentTournament) {
+                alert('Tournament data not loaded yet. Please wait and try again.');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to DELETE this tournament? This will permanently remove all tournament data and cannot be undone!')) {
+                return;
+            }
+
+            const sessionData = getSessionData();
+            if (!sessionData || !sessionData.token) {
+                alert('Authentication required. Please login again.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament.slug}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${sessionData.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    alert('Tournament has been deleted successfully.');
+                    window.location.href = 'admin-dashboard.html';
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to delete tournament.');
+                }
+            } catch (error) {
+                console.error('Delete tournament error:', error);
+                alert('Failed to delete tournament: ' + error.message);
             }
         }
 
@@ -530,14 +568,156 @@
                     <div class="team-item" data-team-id="${team._id}">
                         <div class="team-header">
                             <span class="team-name">${team.name || 'Unnamed Team'}</span>
-                            <i class="fas fa-chevron-down"></i>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="color: var(--muted); font-size: 0.9rem;">
+                                    ${team.players?.length || 0} players
+                                </span>
+                                <span style="
+                                    padding: 0.25rem 0.5rem;
+                                    border-radius: 4px;
+                                    font-size: 0.8rem;
+                                    font-weight: 600;
+                                    ${team.paymentStatus === 'paid' ? 'background: rgba(34, 197, 94, 0.2); color: #22c55e;' : 
+                                      team.paymentStatus === 'pending' ? 'background: rgba(251, 191, 36, 0.2); color: #fbbf24;' : 
+                                      'background: rgba(239, 68, 68, 0.2); color: #ef4444;'}
+                                ">
+                                    ${team.paymentStatus === 'paid' ? 'Paid' : 
+                                      team.paymentStatus === 'pending' ? 'Payment Pending' : 
+                                      'Payment Failed'}
+                                </span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
                         </div>
                         <div class="team-players">
                             <div class="players-list">
-                                ${team.players.map(player => `
+                                ${(team.players || []).map(player => `
                                     <div class="player-item">
-                                        <span class="player-name">${player.username || 'Unknown Player'}</span>
-                                        <span class="player-id">${player._id}</span>
+                                        <div>
+                                            <span class="player-name">${player.name || 'Unknown Player'} ${player.isCaptain ? '(Captain)' : ''}</span>
+                                            <div style="font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem;">
+                                                <div>In-Game ID: ${player.inGameId || 'N/A'}</div>
+                                                <div>Phone: ${player.phoneNumber || 'N/A'}</div>
+                                            </div>
+                                        </div>
+                                        <span class="player-id">${player.email || 'No email'}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Add click handlers for team expansion
+                document.querySelectorAll('.team-header').forEach(header => {
+                    header.addEventListener('click', function() {
+                        const teamItem = this.closest('.team-item');
+                        teamItem.classList.toggle('open');
+                    });
+                });
+
+            } catch (error) {
+                console.error('Error loading tournament details:', error);
+                document.getElementById('tournament-title').textContent = 'Error Loading Tournament';
+                document.getElementById('tournament-game').textContent = 'Please try refreshing the page.';
+                
+                const teamsContainer = document.getElementById('teams-list-container');
+                teamsContainer.innerHTML = `<div class="empty-state">Error loading tournament data.</div>`;
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tournamentSlug = urlParams.get('slug');
+            
+            if (!tournamentSlug) {
+                alert('No tournament specified. Redirecting to dashboard.');
+                window.location.href = 'admin-dashboard.html';
+                return;
+            }
+
+            const sessionData = getSessionData();
+            if (!sessionData || !sessionData.token) {
+                alert('Authentication required. Please login.');
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            // Set admin username
+            document.getElementById('admin-username').textContent = sessionData.user.username;
+
+            // Load tournament details
+            loadTournamentDetails(tournamentSlug, sessionData.token);
+
+            // Set up event listeners
+            document.getElementById('edit-details-btn').addEventListener('click', editTournamentDetails);
+            document.getElementById('manage-brackets-btn').addEventListener('click', manageBrackets);
+            document.getElementById('cancel-tournament-btn').addEventListener('click', showCancelModal);
+            document.getElementById('confirm-cancel-btn').addEventListener('click', cancelTournament);
+
+            // Modal close handlers
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.modal').classList.remove('active');
+                });
+            });
+
+            // Edit form submission
+            document.getElementById('edit-tournament-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const sessionData = getSessionData();
+                
+                if (!sessionData || !sessionData.token) {
+                    alert('Authentication required. Please login again.');
+                    return;
+                }
+
+                await saveTournamentChanges(formData, currentTournament.slug, sessionData.token);
+            });
+
+            // Poster upload functionality
+            document.getElementById('upload-poster-btn').addEventListener('click', function() {
+                document.getElementById('edit-poster').click();
+            });
+
+            document.getElementById('poster-preview').addEventListener('click', function() {
+                document.getElementById('edit-poster').click();
+            });
+
+            document.getElementById('edit-poster').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('poster-preview').innerHTML = 
+                            `<img src="${e.target.result}" alt="Tournament Poster">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        // Add delete tournament button functionality
+        function addDeleteButton() {
+            const actionsContainer = document.querySelector('.tournament-actions');
+            if (actionsContainer && !document.getElementById('delete-tournament-btn')) {
+                const deleteBtn = document.createElement('button');
+                deleteBtn.id = 'delete-tournament-btn';
+                deleteBtn.className = 'btn btn-danger';
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete Tournament';
+                deleteBtn.style.marginTop = '0.5rem';
+                deleteBtn.addEventListener('click', deleteTournament);
+                actionsContainer.appendChild(deleteBtn);
+            }
+        }
+
+        // Call this after loading tournament details
+        setTimeout(addDeleteButton, 1000);
+    </script>
+</body>
+</html>${player._id}</span>
                                     </div>
                                 `).join('')}
                             </div>

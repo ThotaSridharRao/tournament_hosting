@@ -925,7 +925,7 @@
 
           setTimeout(() => {
             const userRoles = result.data.user.roles || [];
-            window.location.href = userRoles.includes('admin') ? 'admin-dashboard.html' : 'index.html';
+            window.location.href = userRoles.includes('admin') ? 'admin-dashboard.html' : 'user-dashboard.html';
           }, 1500);
         } else {
           showError(result.error || 'Login failed. Please check your credentials and try again.');
