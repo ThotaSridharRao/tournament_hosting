@@ -950,7 +950,20 @@ window.location.href = `team-dashboard.html?tournament=${currentTournament.slug}
 
 } catch (error) {
 console.error('Registration error:', error);
-showError(`Registration failed: ${error.message}`);
+let errorMessage = error.message;
+
+// Provide more user-friendly error messages
+if (error.message.includes('Team name already exists')) {
+    errorMessage = 'This team name is already taken. Please choose a different team name.';
+} else if (error.message.includes('already registered in a team')) {
+    errorMessage = 'You are already registered in a team for this tournament.';
+} else if (error.message.includes('already registered in this tournament')) {
+    errorMessage = 'One of your players is already registered in this tournament with another team.';
+} else if (error.message.includes('Tournament is full')) {
+    errorMessage = 'This tournament is full. Registration is no longer available.';
+}
+
+showError(errorMessage);
 }
 }
 
