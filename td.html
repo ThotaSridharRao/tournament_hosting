@@ -949,6 +949,13 @@
     </div>
 
     <script>
+        // Helper function to redirect to auth with return URL
+        function redirectToAuth() {
+          const currentUrl = window.location.href;
+          const returnUrl = encodeURIComponent(currentUrl);
+          window.location.href = `auth.html?returnUrl=${returnUrl}`;
+        }
+
         const API_BASE_URL = 'https://tournament-hosting-backend.onrender.com';
         let currentTournament = null;
 
@@ -973,7 +980,7 @@
         function logout() {
             localStorage.removeItem('earena_session');
             sessionStorage.removeItem('earena_session');
-            window.location.href = 'auth.html';
+            redirectToAuth();
         }
 
         // --- TOURNAMENT ACTIONS ---
@@ -1389,7 +1396,7 @@ In-Game ID: ${player.inGameId || 'N/A'}
         document.addEventListener('DOMContentLoaded', () => {
             const sessionData = getSessionData();
             if (!sessionData || !sessionData.token) {
-                window.location.href = 'auth.html';
+                redirectToAuth();
                 return;
             }
 

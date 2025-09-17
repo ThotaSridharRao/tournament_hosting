@@ -925,7 +925,18 @@
 
           setTimeout(() => {
             const userRoles = result.data.user.roles || [];
-            window.location.href = userRoles.includes('admin') ? 'admin-dashboard.html' : 'user-dashboard.html';
+            
+            // Check for return URL in query parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const returnUrl = urlParams.get('returnUrl');
+            
+            if (returnUrl) {
+              // Decode and redirect to the original page
+              window.location.href = decodeURIComponent(returnUrl);
+            } else {
+              // Default redirect based on user role
+              window.location.href = userRoles.includes('admin') ? 'admin-dashboard.html' : 'user-dashboard.html';
+            }
           }, 1500);
         } else {
           showError(result.error || 'Login failed. Please check your credentials and try again.');
@@ -1015,7 +1026,17 @@
           const userRoles = sessionData.user?.roles || [];
           showSuccess('You are already logged in. Redirecting to your dashboard...');
           setTimeout(() => {
-            window.location.href = userRoles.includes('admin') ? 'admin-dashboard.html' : 'index.html';
+            // Check for return URL in query parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const returnUrl = urlParams.get('returnUrl');
+            
+            if (returnUrl) {
+              // Decode and redirect to the original page
+              window.location.href = decodeURIComponent(returnUrl);
+            } else {
+              // Default redirect based on user role
+              window.location.href = userRoles.includes('admin') ? 'admin-dashboard.html' : 'index.html';
+            }
           }, 1500);
         } catch (error) {
           sessionStorage.removeItem('earena_session');

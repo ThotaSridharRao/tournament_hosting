@@ -1335,9 +1335,9 @@
       <div class="nav-actions">
         <!-- Not logged in -->
         <div id="auth-buttons">
-          <a href="auth.html" class="login-link">Log in</a>
+          <a href="auth.html?returnUrl=index.html" class="login-link">Log in</a>
           <button class="header-cta" aria-label="Sign up" id="sign-up-desktop"
-            onclick="window.location.href='auth.html'">Sign up</button>
+            onclick="redirectToAuth()">Sign up</button>
         </div>
         
         <!-- Logged in -->
@@ -1402,11 +1402,11 @@
     <div class="mobile-nav-actions">
       <!-- Not logged in -->
       <div id="mobile-auth-buttons">
-        <a href="auth.html" class="mobile-login-btn">
+        <a href="auth.html?returnUrl=index.html" class="mobile-login-btn">
           <i class="fas fa-sign-in-alt"></i>
           Log In
         </a>
-        <a href="auth.html" class="mobile-signup-btn">
+        <a href="auth.html?returnUrl=index.html" class="mobile-signup-btn">
           <i class="fas fa-user-plus"></i>
           Sign Up
         </a>
@@ -1753,7 +1753,7 @@
           <h4>Company</h4>
           <ul>
             <li><a href="#">About</a></li>
-            <li><a href="auth.html">Sign In</a></li>
+            <li><a href="auth.html?returnUrl=index.html">Sign In</a></li>
             <li><a href="#">Contact</a></li>
           </ul>
         </div>
@@ -1765,6 +1765,13 @@
   </footer>
 
   <script>
+    // Helper function to redirect to auth with return URL
+    function redirectToAuth() {
+      const currentUrl = window.location.href;
+      const returnUrl = encodeURIComponent(currentUrl);
+      window.location.href = `auth.html?returnUrl=${returnUrl}`;
+    }
+
     // Enhanced smooth interactions and animations
 
     // Header scroll effect

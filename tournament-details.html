@@ -956,8 +956,8 @@
     </a>
 
     <div class="nav-actions">
-      <a href="auth.html" class="login-link">Log in</a>
-      <button class="header-cta" onclick="window.location.href='auth.html'">Sign up</button>
+      <a href="auth.html?returnUrl=tournament-details.html" class="login-link">Log in</a>
+      <button class="header-cta" onclick="redirectToAuth()">Sign up</button>
     </div>
   </header>
 
@@ -1236,7 +1236,7 @@
           <h4>Company</h4>
           <ul>
             <li><a href="#">About</a></li>
-            <li><a href="auth.html">Sign In</a></li>
+            <li><a href="auth.html?returnUrl=tournament-details.html">Sign In</a></li>
             <li><a href="#">Contact</a></li>
           </ul>
         </div>
@@ -1250,6 +1250,13 @@
   <script>
     const API_BASE_URL = 'https://tournament-hosting-backend.onrender.com';
     let currentTournament = null;
+
+    // Helper function to redirect to auth with return URL
+    function redirectToAuth() {
+      const currentUrl = window.location.href;
+      const returnUrl = encodeURIComponent(currentUrl);
+      window.location.href = `auth.html?returnUrl=${returnUrl}`;
+    }
 
     // Function to get proper image URL with CORS support
     function getImageUrl(imagePath) {
@@ -1453,7 +1460,7 @@
             You need to be logged in to ${action}. Please sign in or create an account to continue.
           </p>
           <div style="display: flex; gap: 1rem; justify-content: center;">
-            <button onclick="window.location.href='auth.html'" style="
+            <button onclick="redirectToAuth()" style="
               background: linear-gradient(135deg, var(--accent), var(--accent-2));
               color: #000;
               border: none;
@@ -2867,7 +2874,7 @@
         case 'upcoming':
         case 'registration-open':
           primaryAction.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
-          primaryAction.onclick = () => window.location.href = 'auth.html';
+          primaryAction.onclick = () => redirectToAuth();
           secondaryAction.style.display = 'inline-block';
           secondaryAction.innerHTML = '<i class="fas fa-info-circle"></i> Learn More';
           break;

@@ -501,7 +501,7 @@ grid-template-columns: 1fr;
 
 <div class="user-menu">
 <div class="user-info" id="user-info">
-<a href="auth.html" style="color: var(--copy); text-decoration: none;">Login</a>
+<a href="auth.html?returnUrl=team-registration.html" style="color: var(--copy); text-decoration: none;">Login</a>
 </div>
 </div>
 </header>
@@ -653,6 +653,13 @@ Only qualifying teams pay for subsequent rounds.
 </main>
 
 <script>
+// Helper function to redirect to auth with return URL
+function redirectToAuth() {
+  const currentUrl = window.location.href;
+  const returnUrl = encodeURIComponent(currentUrl);
+  window.location.href = `auth.html?returnUrl=${returnUrl}`;
+}
+
 const API_BASE_URL = 'https://tournament-hosting-backend.onrender.com';
 let currentTournament = null;
 let playerCount = 0;
@@ -923,7 +930,7 @@ document.getElementById('user-info').innerHTML = `
 function logout() {
 localStorage.removeItem('earena_session');
 sessionStorage.removeItem('earena_session');
-window.location.href = 'auth.html';
+redirectToAuth();
 }
 </script>
 </body>

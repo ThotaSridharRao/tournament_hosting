@@ -1242,6 +1242,13 @@
     <div class="modal-overlay" id="moderationModal"> </div>
 
     <script>
+        // Helper function to redirect to auth with return URL
+        function redirectToAuth() {
+          const currentUrl = window.location.href;
+          const returnUrl = encodeURIComponent(currentUrl);
+          window.location.href = `auth.html?returnUrl=${returnUrl}`;
+        }
+
         const API_BASE_URL = 'https://tournament-hosting-backend.onrender.com';
 
         // Check admin authentication
@@ -1250,7 +1257,7 @@
             
             if (!session) {
                 console.log('No session found, redirecting to login');
-                window.location.href = 'auth.html';
+                redirectToAuth();
                 return false;
             }
 
@@ -1260,7 +1267,7 @@
                 
                 if (!userRoles.includes('admin')) {
                     alert('Access denied. Admin privileges required.');
-                    window.location.href = 'auth.html';
+                    redirectToAuth();
                     return false;
                 }
                 
@@ -1272,7 +1279,7 @@
                 return sessionData;
             } catch (error) {
                 console.error('Invalid session data:', error);
-                window.location.href = 'auth.html';
+                redirectToAuth();
                 return false;
             }
         }
