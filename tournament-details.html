@@ -1258,6 +1258,16 @@
       window.location.href = `auth.html?returnUrl=${returnUrl}`;
     }
 
+    // Helper function to get session data
+    function getSessionData() {
+      const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+      try {
+        return JSON.parse(session);
+      } catch (error) {
+        return null;
+      }
+    }
+
     // Function to get proper image URL with CORS support
     function getImageUrl(imagePath) {
       if (!imagePath) return null;
@@ -2870,11 +2880,37 @@
       const primaryAction = document.getElementById('primary-action');
       const secondaryAction = document.getElementById('secondary-action');
 
+      console.log('Tournament status:', tournament.status); // Debug log
+
+      // Check if registration is open based on dates
+      const now = new Date();
+      const regStart = new Date(tournament.registrationStart);
+      const regEnd = new Date(tournament.registrationEnd);
+      const isRegistrationOpen = now >= regStart && now <= regEnd;
+
+      console.log('Registration dates:', { now, regStart, regEnd, isRegistrationOpen }); // Debug log
+
       switch (tournament.status) {
         case 'upcoming':
+        case 'registration':
         case 'registration-open':
           primaryAction.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
-          primaryAction.onclick = () => redirectToAuth();
+          primaryAction.onclick = () => {
+            console.log('Register button clicked'); // Debug log
+            // Check if user is logged in
+            const sessionData = getSessionData();
+            console.log('Session data:', sessionData); // Debug log
+            if (sessionData && sessionData.token) {
+              // User is logged in, redirect to registration page
+              const tournamentSlug = new URLSearchParams(window.location.search).get('slug') || new URLSearchParams(window.location.search).get('id');
+              console.log('Redirecting to registration page with slug:', tournamentSlug); // Debug log
+              window.location.href = `team-registration.html?slug=${tournamentSlug}`;
+            } else {
+              // User not logged in, redirect to auth
+              console.log('User not logged in, redirecting to auth'); // Debug log
+              redirectToAuth();
+            }
+          };
           secondaryAction.style.display = 'inline-block';
           secondaryAction.innerHTML = '<i class="fas fa-info-circle"></i> Learn More';
           break;
