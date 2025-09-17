@@ -8,134 +8,564 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
         :root {
-            --bg: #0f0f10; --panel: #1f1f20; --muted: #9aa0a6; --copy: #e6e6e6; --accent: #FFD700; --accent-2: #e0ac10; --radius: 12px;
+            --bg: #0f0f10;
+            --panel: #1f1f20;
+            --muted: #9aa0a6;
+            --copy: #e6e6e6;
+            --accent: #FFD700;
+            --accent-2: #e0ac10;
+            --radius: 12px;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { margin: 0; font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: linear-gradient(180deg, var(--bg), #070707 140%); color: var(--copy); line-height: 1.5; min-height: 100vh; }
-        .site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(26, 26, 26, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; }
-        .header-left { display: flex; align-items: center; gap: 24px; }
-        .back-link { color: var(--muted); text-decoration: none; font-weight: 500; display: flex; align-items: center; gap: 8px; transition: color 0.2s ease; }
-        .back-link:hover { color: var(--accent); }
-        .user-menu { display: flex; align-items: center; gap: 1rem; }
-        .user-info { display: flex; align-items: center; gap: 0.5rem; color: var(--copy); font-weight: 500; }
-        .logout-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--copy); padding: 8px 16px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; font-weight: 500; font-size: 14px; }
-        .logout-btn:hover { background: rgba(255, 0, 0, 0.1); border-color: rgba(255, 0, 0, 0.3); color: #ff6b6b; }
-        .main-content { margin-top: 64px; padding: 32px 24px; max-width: 1400px; margin-left: auto; margin-right: auto; }
-        .breadcrumb { margin-bottom: 16px; color: var(--muted); font-size: 14px; }
-        .breadcrumb a { color: var(--accent); text-decoration: none; }
-        .page-header { margin-bottom: 32px; display: flex; gap: 24px; align-items: flex-start; }
-        .page-content { flex: 1; }
-        .page-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
-        .page-subtitle { color: var(--muted); }
-        .tournament-poster { width: 200px; height: 280px; border-radius: var(--radius); overflow: hidden; border: 2px solid rgba(255, 255, 255, 0.1); background: rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center; }
-        .tournament-poster img { width: 100%; height: 100%; object-fit: cover; }
-        .poster-placeholder { color: var(--muted); text-align: center; font-size: 14px; }
-        .dashboard-section { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; }
-        .section-header { margin-bottom: 1.5rem; }
-        .section-title { font-size: 1.5rem; font-weight: 700; color: var(--copy); }
-        .btn { padding: 0.75rem 1.5rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; border: none; text-decoration: none; display: inline-block; text-align: center; }
-        .btn:hover { transform: translateY(-1px); }
-        .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #000; }
-        .btn-primary:hover { background: linear-gradient(135deg, var(--accent-2), var(--accent)); }
-        .btn-secondary { background: rgba(255, 255, 255, 0.1); color: var(--copy); border: 1px solid rgba(255, 255, 255, 0.2); }
-        .btn-secondary:hover { background: rgba(255, 255, 255, 0.2); }
-        .btn-danger { background: #ef4444; color: white; }
-        .btn-danger:hover { background: #dc2626; }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        .details-grid { display: grid; grid-template-columns: 1fr 380px; gap: 2rem; align-items: start; }
-        .tournament-info-card ul { list-style: none; padding: 0; }
-        .tournament-info-card li { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-        .tournament-info-card li:last-child { border-bottom: none; }
-        .tournament-info-card .label { color: var(--muted); font-weight: 500; }
-        .tournament-info-card .value { font-weight: 600; color: var(--copy); }
-        .tournament-actions { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
-        .team-count { color: var(--muted); margin-left: 1rem; font-size: 1rem; }
-        .team-accordion { display: flex; flex-direction: column; gap: 1rem; }
-        .team-item { background: rgba(0, 0, 0, 0.2); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .team-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem; cursor: pointer; }
-        .team-name { font-size: 1.1rem; font-weight: 600; }
-        .team-header i { transition: transform 0.3s ease; }
-        .team-item.open .team-header i { transform: rotate(180deg); }
-        .team-players { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
-        .team-item.open .team-players { max-height: 500px; }
-        .players-list { padding: 0 1rem 1rem; }
-        .player-item { display: flex; justify-content: space-between; padding: 0.75rem; border-radius: 6px; }
-        .player-item:nth-child(odd) { background: rgba(0, 0, 0, 0.2); }
-        .player-name { font-weight: 500; }
-        .player-id { color: var(--muted); font-family: monospace; }
-        .loading-state, .empty-state { padding: 2rem; text-align: center; color: var(--muted); }
-        
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: linear-gradient(180deg, var(--bg), #070707 140%);
+            color: var(--copy);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .back-link {
+            color: var(--muted);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--copy);
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--copy);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 0, 0, 0.1);
+            border-color: rgba(255, 0, 0, 0.3);
+            color: #ff6b6b;
+        }
+
+        .main-content {
+            margin-top: 64px;
+            padding: 32px 24px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .breadcrumb {
+            margin-bottom: 16px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        .page-content {
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: var(--muted);
+        }
+
+        .tournament-poster {
+            width: 200px;
+            height: 280px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tournament-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .poster-placeholder {
+            color: var(--muted);
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .dashboard-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--copy);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--accent-2), var(--accent));
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--copy);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .tournament-info-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tournament-info-card li {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tournament-info-card li:last-child {
+            border-bottom: none;
+        }
+
+        .tournament-info-card .label {
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .tournament-info-card .value {
+            font-weight: 600;
+            color: var(--copy);
+        }
+
+        .tournament-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .team-count {
+            color: var(--muted);
+            margin-left: 1rem;
+            font-size: 1rem;
+        }
+
+        .team-accordion {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .team-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .team-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            cursor: pointer;
+        }
+
+        .team-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .team-header i {
+            transition: transform 0.3s ease;
+        }
+
+        .team-item.open .team-header i {
+            transform: rotate(180deg);
+        }
+
+        .team-players {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+
+        .team-item.open .team-players {
+            max-height: 500px;
+        }
+
+        .players-list {
+            padding: 0 1rem 1rem;
+        }
+
+        .player-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem;
+            border-radius: 6px;
+        }
+
+        .player-item:nth-child(odd) {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .player-name {
+            font-weight: 500;
+        }
+
+        .player-id {
+            color: var(--muted);
+            font-family: monospace;
+        }
+
+        .loading-state,
+        .empty-state {
+            padding: 2rem;
+            text-align: center;
+            color: var(--muted);
+        }
+
         /* Modal Styles */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); }
-        .modal.active { display: flex; align-items: center; justify-content: center; }
-        .modal-content { background: var(--panel); border-radius: var(--radius); padding: 2rem; max-width: 500px; width: 90%; border: 1px solid rgba(255, 255, 255, 0.1); max-height: 90vh; overflow-y: auto; }
-        .edit-modal-content { max-width: 800px; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-        .modal-title { font-size: 1.5rem; font-weight: 700; }
-        .close-modal { background: none; border: none; color: var(--muted); font-size: 1.5rem; cursor: pointer; }
-        .close-modal:hover { color: var(--copy); }
-        .modal-buttons { display: flex; gap: 1rem; margin-top: 1.5rem; }
-        .modal-buttons .btn { flex: 1; }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--panel);
+            border-radius: var(--radius);
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .edit-modal-content {
+            max-width: 800px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: var(--copy);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-buttons .btn {
+            flex: 1;
+        }
 
         /* Form Styles */
-        .edit-form { display: flex; flex-direction: column; gap: 1.5rem; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
-        .form-group.full-width, .full-width { grid-column: span 2; }
-        .form-group label { font-weight: 600; color: var(--copy); font-size: 0.9rem; }
-        .form-group input, .form-group select, .form-group textarea { 
-            background: rgba(255, 255, 255, 0.1); 
-            border: 1px solid rgba(255, 255, 255, 0.2); 
-            border-radius: 6px; 
-            padding: 0.75rem; 
-            color: var(--copy); 
-            font-family: inherit; 
+        .edit-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width,
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--copy);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 0.75rem;
+            color: var(--copy);
+            font-family: inherit;
             transition: border-color 0.2s ease, background-color 0.2s ease;
         }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { 
-            outline: none; 
-            border-color: var(--accent); 
-            background: rgba(255, 255, 255, 0.15); 
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.15);
         }
-        .form-group textarea { resize: vertical; min-height: 100px; }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
 
         /* Poster Upload Styles */
-        .poster-upload-area { display: flex; flex-direction: column; gap: 1rem; }
-        .poster-preview { 
-            width: 200px; 
-            height: 280px; 
-            border: 2px dashed rgba(255, 255, 255, 0.3); 
-            border-radius: var(--radius); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer; 
+        .poster-upload-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .poster-preview {
+            width: 200px;
+            height: 280px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
             transition: border-color 0.2s ease;
             overflow: hidden;
             background: rgba(255, 255, 255, 0.05);
         }
-        .poster-preview:hover { border-color: var(--accent); }
-        .poster-preview img { width: 100%; height: 100%; object-fit: cover; }
-        .poster-placeholder { text-align: center; color: var(--muted); }
-        .poster-placeholder i { font-size: 2rem; margin-bottom: 0.5rem; }
-        .poster-placeholder p { margin: 0; font-size: 0.9rem; }
-        
-        @media (max-width: 768px) { 
-            .form-row { grid-template-columns: 1fr; }
-            .form-group.full-width, .full-width { grid-column: span 1; }
-            .edit-modal-content { max-width: 95%; padding: 1.5rem; }
-            .poster-preview { width: 150px; height: 210px; }
+
+        .poster-preview:hover {
+            border-color: var(--accent);
         }
-        
-        @media (max-width: 1024px) { 
-            .details-grid { grid-template-columns: 1fr; } 
-            .main-content { padding: 24px 16px; } 
-            .page-header { flex-direction: column; align-items: flex-start; }
-            .tournament-poster { width: 150px; height: 210px; }
+
+        .poster-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .poster-placeholder {
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .poster-placeholder i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .poster-placeholder p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width,
+            .full-width {
+                grid-column: span 1;
+            }
+
+            .edit-modal-content {
+                max-width: 95%;
+                padding: 1.5rem;
+            }
+
+            .poster-preview {
+                width: 150px;
+                height: 210px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main-content {
+                padding: 24px 16px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .tournament-poster {
+                width: 150px;
+                height: 210px;
+            }
         }
     </style>
 </head>
@@ -200,10 +630,17 @@
                         <li><span class="label">Status</span><span class="value" id="info-status">--</span></li>
                         <li><span class="label">Prize Pool</span><span class="value" id="info-prize">--</span></li>
                         <li><span class="label">Entry Fee</span><span class="value" id="info-fee">--</span></li>
-                        <li><span class="label">Start Date</span><span class="value" id="info-start-date">--</span></li>
-                        <li><span class="label">End Date</span><span class="value" id="info-end-date">--</span></li>
+                        <li><span class="label">Registration Start</span><span class="value"
+                                id="info-reg-start">--</span></li>
+                        <li><span class="label">Registration End</span><span class="value" id="info-reg-end">--</span>
+                        </li>
+                        <li><span class="label">Tournament Start</span><span class="value"
+                                id="info-start-date">--</span></li>
+                        <li><span class="label">Tournament End</span><span class="value" id="info-end-date">--</span>
+                        </li>
                         <li><span class="label">Format</span><span class="value" id="info-format">--</span></li>
-                        <li><span class="label">Tournament ID</span><span class="value" id="info-tournament-id">--</span></li>
+                        <li><span class="label">Tournament ID</span><span class="value"
+                                id="info-tournament-id">--</span></li>
                     </ul>
                 </div>
                 <div class="tournament-actions">
@@ -238,7 +675,7 @@
                         <input type="text" id="edit-game" name="game" required>
                     </div>
                 </div>
-                
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="edit-prize-pool">Prize Pool (₹)</label>
@@ -252,11 +689,22 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="edit-start-date">Start Date</label>
+                        <label for="edit-reg-start">Registration Start</label>
+                        <input type="datetime-local" id="edit-reg-start" name="registrationStart" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-reg-end">Registration End</label>
+                        <input type="datetime-local" id="edit-reg-end" name="registrationEnd" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-start-date">Tournament Start</label>
                         <input type="datetime-local" id="edit-start-date" name="tournamentStart" required>
                     </div>
                     <div class="form-group">
-                        <label for="edit-end-date">End Date</label>
+                        <label for="edit-end-date">Tournament End</label>
                         <input type="datetime-local" id="edit-end-date" name="tournamentEnd" required>
                     </div>
                 </div>
@@ -281,7 +729,8 @@
 
                 <div class="form-group full-width">
                     <label for="edit-description">Description</label>
-                    <textarea id="edit-description" name="description" rows="4" placeholder="Tournament description..."></textarea>
+                    <textarea id="edit-description" name="description" rows="4"
+                        placeholder="Tournament description..."></textarea>
                 </div>
 
                 <div class="form-group full-width">
@@ -316,7 +765,8 @@
                 <h3 class="modal-title">Cancel Tournament</h3>
                 <button class="close-modal">&times;</button>
             </div>
-            <p>Are you sure you want to cancel this tournament? This action cannot be undone and all registered teams will be notified.</p>
+            <p>Are you sure you want to cancel this tournament? This action cannot be undone and all registered teams
+                will be notified.</p>
             <div class="modal-buttons">
                 <button class="btn btn-secondary close-modal">Keep Tournament</button>
                 <button class="btn btn-danger" id="confirm-cancel-btn">Yes, Cancel Tournament</button>
@@ -337,7 +787,7 @@
                 return null;
             }
         }
-        
+
         function logout() {
             localStorage.removeItem('earena_session');
             sessionStorage.removeItem('earena_session');
@@ -363,8 +813,16 @@
             document.getElementById('edit-entry-fee').value = currentTournament.entryFee || '';
             document.getElementById('edit-max-teams').value = currentTournament.maxTeams || '';
             document.getElementById('edit-description').value = currentTournament.description || '';
-            
+
             // Format dates for datetime-local input
+            if (currentTournament.registrationStart) {
+                const regStartDate = new Date(currentTournament.registrationStart);
+                document.getElementById('edit-reg-start').value = regStartDate.toISOString().slice(0, 16);
+            }
+            if (currentTournament.registrationEnd) {
+                const regEndDate = new Date(currentTournament.registrationEnd);
+                document.getElementById('edit-reg-end').value = regEndDate.toISOString().slice(0, 16);
+            }
             if (currentTournament.tournamentStart) {
                 const startDate = new Date(currentTournament.tournamentStart);
                 document.getElementById('edit-start-date').value = startDate.toISOString().slice(0, 16);
@@ -519,14 +977,14 @@
 
             try {
                 const tournamentResponse = await fetch(`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}`, { headers });
-                
+
                 if (!tournamentResponse.ok) {
                     if (tournamentResponse.status === 404) {
                         throw new Error('Tournament not found. Please check the slug.');
                     }
                     throw new Error('Failed to fetch tournament data.');
                 }
-                
+
                 const t = (await tournamentResponse.json()).data;
                 currentTournament = t;
 
@@ -537,10 +995,12 @@
                 document.getElementById('info-prize').textContent = `₹${(t.prizePool || 0).toLocaleString()}`;
                 // Recommended replacement
                 document.getElementById('info-fee').textContent = t.entryFee !== undefined ? `₹${t.entryFee.toLocaleString()} per team` : 'Not Specified';
+                document.getElementById('info-reg-start').textContent = t.registrationStart ? new Date(t.registrationStart).toLocaleDateString() : 'Not specified';
+                document.getElementById('info-reg-end').textContent = t.registrationEnd ? new Date(t.registrationEnd).toLocaleDateString() : 'Not specified';
                 document.getElementById('info-start-date').textContent = new Date(t.tournamentStart).toLocaleDateString();
                 document.getElementById('info-end-date').textContent = new Date(t.tournamentEnd).toLocaleDateString();
                 document.getElementById('info-tournament-id').textContent = t._id;
-                
+
                 const format = t.format || t.tournamentFormat || t.gameFormat || 'Not specified';
                 document.getElementById('info-format').textContent = format;
 
@@ -549,7 +1009,7 @@
                 if (t.posterImage) { // 👈 Changed from t.poster to t.posterImage
                     // We need to construct the full URL if the backend only sends the path
                     const posterUrl = t.posterImage.startsWith('http') ? t.posterImage : `${API_BASE_URL}/${t.posterImage}`;
-                    posterElement.innerHTML = `<img src="${posterUrl}" alt="Tournament Poster" onerror="this.parentElement.innerHTML='<div class=\\'poster-placeholder\\'><i class=\\'fas fa-image\\'></i><br>Poster found</div>'">`;
+                    posterElement.innerHTML = `<img src="${posterUrl}" alt="Tournament Poster" onerror="this.parentElement.innerHTML='<div class=\\'poster-placeholder\\'><i class=\\'fas fa-image\\'></i><br>Poster not found</div>'">`;
                 } else {
                     posterElement.innerHTML = `<div class="poster-placeholder"><i class="fas fa-image"></i><br>No poster available</div>`;
                 }
@@ -577,13 +1037,13 @@
                                     border-radius: 4px;
                                     font-size: 0.8rem;
                                     font-weight: 600;
-                                    ${team.paymentStatus === 'paid' ? 'background: rgba(34, 197, 94, 0.2); color: #22c55e;' : 
-                                      team.paymentStatus === 'pending' ? 'background: rgba(251, 191, 36, 0.2); color: #fbbf24;' : 
-                                      'background: rgba(239, 68, 68, 0.2); color: #ef4444;'}
+                                    ${team.paymentStatus === 'paid' ? 'background: rgba(34, 197, 94, 0.2); color: #22c55e;' :
+                        team.paymentStatus === 'pending' ? 'background: rgba(251, 191, 36, 0.2); color: #fbbf24;' :
+                            'background: rgba(239, 68, 68, 0.2); color: #ef4444;'}
                                 ">
-                                    ${team.paymentStatus === 'paid' ? 'Paid' : 
-                                      team.paymentStatus === 'pending' ? 'Payment Pending' : 
-                                      'Payment Failed'}
+                                    ${team.paymentStatus === 'paid' ? 'Paid' :
+                        team.paymentStatus === 'pending' ? 'Payment Pending' :
+                            'Payment Failed'}
                                 </span>
                                 <i class="fas fa-chevron-down"></i>
                             </div>
@@ -609,7 +1069,7 @@
 
                 // Add click handlers for team expansion
                 document.querySelectorAll('.team-header').forEach(header => {
-                    header.addEventListener('click', function() {
+                    header.addEventListener('click', function () {
                         const teamItem = this.closest('.team-item');
                         teamItem.classList.toggle('open');
                     });
@@ -619,85 +1079,11 @@
                 console.error('Error loading tournament details:', error);
                 document.getElementById('tournament-title').textContent = 'Error Loading Tournament';
                 document.getElementById('tournament-game').textContent = 'Please try refreshing the page.';
-                
+
                 const teamsContainer = document.getElementById('teams-list-container');
                 teamsContainer.innerHTML = `<div class="empty-state">Error loading tournament data.</div>`;
             }
         }
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const tournamentSlug = urlParams.get('slug');
-            
-            if (!tournamentSlug) {
-                alert('No tournament specified. Redirecting to dashboard.');
-                window.location.href = 'admin-dashboard.html';
-                return;
-            }
-
-            const sessionData = getSessionData();
-            if (!sessionData || !sessionData.token) {
-                alert('Authentication required. Please login.');
-                window.location.href = 'auth.html';
-                return;
-            }
-
-            // Set admin username
-            document.getElementById('admin-username').textContent = sessionData.user.username;
-
-            // Load tournament details
-            loadTournamentDetails(tournamentSlug, sessionData.token);
-
-            // Set up event listeners
-            document.getElementById('edit-details-btn').addEventListener('click', editTournamentDetails);
-            document.getElementById('manage-brackets-btn').addEventListener('click', manageBrackets);
-            document.getElementById('cancel-tournament-btn').addEventListener('click', showCancelModal);
-            document.getElementById('confirm-cancel-btn').addEventListener('click', cancelTournament);
-
-            // Modal close handlers
-            document.querySelectorAll('.close-modal').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    this.closest('.modal').classList.remove('active');
-                });
-            });
-
-            // Edit form submission
-            document.getElementById('edit-tournament-form').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                const formData = new FormData(this);
-                const sessionData = getSessionData();
-                
-                if (!sessionData || !sessionData.token) {
-                    alert('Authentication required. Please login again.');
-                    return;
-                }
-
-                await saveTournamentChanges(formData, currentTournament.slug, sessionData.token);
-            });
-
-            // Poster upload functionality
-            document.getElementById('upload-poster-btn').addEventListener('click', function() {
-                document.getElementById('edit-poster').click();
-            });
-
-            document.getElementById('poster-preview').addEventListener('click', function() {
-                document.getElementById('edit-poster').click();
-            });
-
-            document.getElementById('edit-poster').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        document.getElementById('poster-preview').innerHTML = 
-                            `<img src="${e.target.result}" alt="Tournament Poster">`;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        });
 
         // Add delete tournament button functionality
         function addDeleteButton() {
@@ -713,25 +1099,6 @@
             }
         }
 
-        // Call this after loading tournament details
-        setTimeout(addDeleteButton, 1000);
-    </script>
-</body>
-</html>${player._id}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-
-            } catch (error) {
-                console.error('Failed to load tournament details:', error);
-                document.getElementById('tournament-title').textContent = 'Error';
-                document.getElementById('tournament-game').textContent = error.message;
-            }
-        }
-
         // --- PAGE INITIALIZATION AND EVENT LISTENERS ---
         document.addEventListener('DOMContentLoaded', () => {
             // Check for user session and handle auth
@@ -743,10 +1110,10 @@
             if (sessionData.user) {
                 document.getElementById('admin-username').textContent = sessionData.user.username;
             }
-            
+
             // Get tournament info from URL
             const urlParams = new URLSearchParams(window.location.search);
-            const tournamentSlug = urlParams.get('slug'); 
+            const tournamentSlug = urlParams.get('slug');
             const authToken = sessionData.token;
 
             // Load tournament details if slug exists
@@ -802,7 +1169,7 @@
                     }
                     const reader = new FileReader();
                     reader.onload = (e) => {
-                        document.getElementById('poster-preview').innerHTML = 
+                        document.getElementById('poster-preview').innerHTML =
                             `<img src="${e.target.result}" alt="Tournament Poster Preview">`;
                     };
                     reader.readAsDataURL(file);
@@ -822,13 +1189,16 @@
             });
 
             // --- Team Accordion Listener (Event Delegation) ---
-            document.getElementById('teams-list-container').addEventListener('click', function(event) {
+            document.getElementById('teams-list-container').addEventListener('click', function (event) {
                 const header = event.target.closest('.team-header');
                 if (header) {
                     const item = header.parentElement;
                     item.classList.toggle('open');
                 }
             });
+
+            // Call delete button function after loading
+            setTimeout(addDeleteButton, 1000);
         });
     </script>
 </body>
