@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Dashboard | EArena</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+:root {
+--bg: #0f0f10;
+--panel: #1f1f20;
+--muted: #9aa0a6;
+--copy: #e6e6e6;
+--accent: #FFD700;
+--accent-2: #e0ac10;
+--radius: 12px;
+--border-color: rgba(255, 255, 255, 0.1);
+--success: #10b981;
+--warning: #f59e0b;
+--danger: #ef4444;
+}
+
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+margin: 0;
+font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+background: var(--bg);
+color: var(--copy);
+line-height: 1.5;
+min-height: 100vh;
+}
+
+.site-header {
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+z-index: 1000;
+background: rgba(15, 15, 16, 0.8);
+backdrop-filter: blur(20px);
+border-bottom: 1px solid var(--border-color);
+height: 64px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 0 24px;
+}
+
+.header-left {
+display: flex;
+align-items: center;
+gap: 24px;
+}
+
+.back-link {
+color: var(--muted);
+text-decoration: none;
+font-weight: 500;
+display: flex;
+align-items: center;
+gap: 8px;
+transition: color 0.2s ease;
+}
+
+.back-link:hover {
+color: var(--accent);
+}
+
+.brand {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+font-weight: 700;
+letter-spacing: -0.5px;
+color: var(--copy);
+font-size: 1.2rem;
+text-decoration: none;
+}
+
+.brand .accent {
+color: var(--accent);
+}
+
+.user-menu {
+display: flex;
+align-items: center;
+gap: 1rem;
+}
+
+.user-info {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+color: var(--copy);
+font-weight: 500;
+}
+
+.main-content {
+margin-top: 64px;
+padding: 32px 24px;
+max-width: 1400px;
+margin-left: auto;
+margin-right: auto;
+}
+
+.dashboard-header {
+margin-bottom: 2rem;
+}
+
+.page-title {
+font-size: 2rem;
+font-weight: 800;
+margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+color: var(--muted);
+font-size: 1.1rem;
+}
+
+.dashboard-grid {
+display: grid;
+grid-template-columns: 1fr 400px;
+gap: 2rem;
+align-items: start;
+}
+
+.main-column {
+display: flex;
+flex-direction: column;
+gap: 2rem;
+}
+
+.sidebar-column {
+display: flex;
+flex-direction: column;
+gap: 2rem;
+position: sticky;
+top: 88px;
+}
+
+.dashboard-section {
+background: var(--panel);
+border: 1px solid var(--border-color);
+border-radius: var(--radius);
+padding: 2rem;
+}
+
+.section-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 1.5rem;
+}
+
+.section-title {
+font-size: 1.5rem;
+font-weight: 700;
+color: var(--copy);
+}
+
+.team-status {
+display: flex;
+align-items: center;
+gap: 2rem;
+margin-bottom: 2rem;
+}
+
+.status-card {
+background: rgba(0, 0, 0, 0.2);
+border-radius: var(--radius);
+padding: 1.5rem;
+text-align: center;
+flex: 1;
+}
+
+.status-value {
+font-size: 1.5rem;
+font-weight: 800;
+display: block;
+margin-bottom: 0.5rem;
+}
+
+.status-label {
+font-size: 0.85rem;
+color: var(--muted);
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+.status-active {
+color: var(--success);
+}
+
+.status-pending {
+color: var(--warning);
+}
+
+.status-eliminated {
+color: var(--danger);
+}
+
+.rounds-progress {
+display: flex;
+flex-direction: column;
+gap: 1rem;
+}
+
+.round-card {
+background: rgba(0, 0, 0, 0.2);
+border-radius: var(--radius);
+padding: 1.5rem;
+border-left: 4px solid var(--border-color);
+}
+
+.round-card.active {
+border-left-color: var(--accent);
+background: rgba(255, 215, 0, 0.05);
+}
+
+.round-card.completed {
+border-left-color: var(--success);
+background: rgba(16, 185, 129, 0.05);
+}
+
+.round-card.eliminated {
+border-left-color: var(--danger);
+background: rgba(239, 68, 68, 0.05);
+opacity: 0.7;
+}
+
+.round-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 1rem;
+}
+
+.round-name {
+font-size: 1.2rem;
+font-weight: 700;
+}
+
+.round-status {
+padding: 0.25rem 0.75rem;
+border-radius: 12px;
+font-size: 0.75rem;
+font-weight: 600;
+text-transform: uppercase;
+}
+
+.status-upcoming {
+background: rgba(156, 163, 175, 0.2);
+color: #9ca3af;
+}
+
+.status-current {
+background: rgba(255, 215, 0, 0.2);
+color: var(--accent);
+}
+
+.status-qualified {
+background: rgba(16, 185, 129, 0.2);
+color: var(--success);
+}
+
+.status-not-qualified {
+background: rgba(239, 68, 68, 0.2);
+color: var(--danger);
+}
+
+.round-details {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+gap: 1rem;
+margin-bottom: 1rem;
+}
+
+.detail-item {
+text-align: center;
+}
+
+.detail-value {
+font-size: 1.1rem;
+font-weight: 700;
+color: var(--copy);
+display: block;
+}
+
+.detail-label {
+font-size: 0.8rem;
+color: var(--muted);
+}
+
+.round-actions {
+display: flex;
+gap: 1rem;
+flex-wrap: wrap;
+}
+
+.btn {
+padding: 0.75rem 1.5rem;
+border-radius: 6px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.3s ease;
+border: none;
+text-decoration: none;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 0.5rem;
+text-align: center;
+font-size: 0.9rem;
+}
+
+.btn:hover {
+transform: translateY(-1px);
+}
+
+.btn-primary {
+background: linear-gradient(135deg, var(--accent), var(--accent-2));
+color: #000;
+}
+
+.btn-primary:hover {
+background: linear-gradient(135deg, var(--accent-2), var(--accent));
+}
+
+.btn-success {
+background: var(--success);
+color: white;
+}
+
+.btn-success:hover {
+background: #059669;
+}
+
+.btn-secondary {
+background: rgba(255, 255, 255, 0.1);
+color: var(--copy);
+border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+background: rgba(255, 255, 255, 0.2);
+}
+
+.btn:disabled {
+opacity: 0.5;
+cursor: not-allowed;
+transform: none;
+}
+
+.payment-alert {
+background: rgba(245, 158, 11, 0.1);
+border: 1px solid rgba(245, 158, 11, 0.3);
+border-radius: var(--radius);
+padding: 1rem;
+margin-bottom: 1rem;
+}
+
+.payment-alert h4 {
+color: var(--warning);
+margin-bottom: 0.5rem;
+}
+
+.team-info-card {
+background: var(--panel);
+border: 1px solid var(--border-color);
+border-radius: var(--radius);
+padding: 2rem;
+}
+
+.info-list {
+list-style: none;
+padding: 0;
+}
+
+.info-list li {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 12px 0;
+border-bottom: 1px solid var(--border-color);
+}
+
+.info-list li:last-child {
+border-bottom: none;
+}
+
+.info-label {
+color: var(--muted);
+font-weight: 500;
+}
+
+.info-value {
+font-weight: 600;
+color: var(--copy);
+text-align: right;
+}
+
+.players-list {
+margin-top: 1rem;
+}
+
+.player-item {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 0.75rem;
+margin-bottom: 0.5rem;
+background: rgba(0, 0, 0, 0.2);
+border-radius: 6px;
+}
+
+.player-info {
+flex: 1;
+}
+
+.player-name {
+font-weight: 600;
+color: var(--copy);
+}
+
+.player-details {
+font-size: 0.85rem;
+color: var(--muted);
+margin-top: 0.25rem;
+}
+
+.captain-badge {
+background: var(--accent);
+color: #000;
+padding: 0.25rem 0.5rem;
+border-radius: 12px;
+font-size: 0.75rem;
+font-weight: 700;
+}
+
+.tournament-info {
+background: var(--panel);
+border: 1px solid var(--border-color);
+border-radius: var(--radius);
+padding: 2rem;
+}
+
+.tournament-poster {
+width: 100%;
+height: 200px;
+border-radius: var(--radius);
+overflow: hidden;
+margin-bottom: 1.5rem;
+background: rgba(255, 255, 255, 0.05);
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.tournament-poster img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+.poster-placeholder {
+color: var(--muted);
+text-align: center;
+}
+
+.loading-state {
+text-align: center;
+padding: 3rem;
+color: var(--muted);
+}
+
+.error-message {
+background: rgba(239, 68, 68, 0.1);
+border: 1px solid rgba(239, 68, 68, 0.3);
+border-radius: var(--radius);
+padding: 1rem;
+margin-bottom: 1rem;
+color: var(--danger);
+}
+
+.success-message {
+background: rgba(16, 185, 129, 0.1);
+border: 1px solid rgba(16, 185, 129, 0.3);
+border-radius: var(--radius);
+padding: 1rem;
+margin-bottom: 1rem;
+color: var(--success);
+}
+
+@media (max-width: 768px) {
+.dashboard-grid {
+grid-template-columns: 1fr;
+}
+
+.sidebar-column {
+position: static;
+}
+
+.team-status {
+flex-direction: column;
+gap: 1rem;
+}
+
+.round-details {
+grid-template-columns: repeat(2, 1fr);
+}
+
+.round-actions {
+flex-direction: column;
+}
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+<div class="header-left">
+<a href="tournament-details.html" class="back-link" id="back-to-tournament">
+<i class="fas fa-arrow-left"></i>
+<span>Back to Tournament</span>
+</a>
+</div>
+
+<a href="index.html" class="brand">
+<span><span class="accent">E</span>Arena</span>
+</a>
+
+<div class="user-menu">
+<div class="user-info" id="user-info">
+<span>Loading...</span>
+</div>
+</div>
+</header>
+
+<main class="main-content">
+<div class="dashboard-header">
+<h1 class="page-title" id="team-name">Team Dashboard</h1>
+<p class="page-subtitle" id="tournament-name">Loading tournament...</p>
+</div>
+
+<div id="message-container"></div>
+
+<div class="dashboard-grid">
+<div class="main-column">
+<div class="dashboard-section">
+<div class="section-header">
+<h2 class="section-title">Tournament Progress</h2>
+</div>
+
+<div class="team-status">
+<div class="status-card">
+<span class="status-value status-active" id="current-round">Round 1</span>
+<span class="status-label">Current Round</span>
+</div>
+<div class="status-card">
+<span class="status-value" id="team-status">Registered</span>
+<span class="status-label">Status</span>
+</div>
+<div class="status-card">
+<span class="status-value" id="total-paid">₹0</span>
+<span class="status-label">Total Paid</span>
+</div>
+</div>
+
+<div class="rounds-progress" id="rounds-container">
+<div class="loading-state">
+<i class="fas fa-spinner fa-spin"></i> Loading tournament progress...
+</div>
+</div>
+</div>
+</div>
+
+<div class="sidebar-column">
+<div class="team-info-card">
+<div class="section-header">
+<h3 class="section-title">Team Information</h3>
+</div>
+<ul class="info-list">
+<li>
+<span class="info-label">Team Name</span>
+<span class="info-value" id="team-name-display">--</span>
+</li>
+<li>
+<span class="info-label">Team Tag</span>
+<span class="info-value" id="team-tag-display">--</span>
+</li>
+<li>
+<span class="info-label">Registration Date</span>
+<span class="info-value" id="registration-date">--</span>
+</li>
+<li>
+<span class="info-label">Team ID</span>
+<span class="info-value" id="team-id" style="font-family: monospace; font-size: 0.8rem;">--</span>
+</li>
+</ul>
+
+<div class="players-list">
+<h4 style="margin-bottom: 1rem; color: var(--accent);">Team Members</h4>
+<div id="players-container">
+<!-- Players will be loaded here -->
+</div>
+</div>
+</div>
+
+<div class="tournament-info">
+<div class="tournament-poster" id="tournament-poster">
+<div class="poster-placeholder">
+<i class="fas fa-image"></i><br>
+Tournament Poster
+</div>
+</div>
+
+<div class="section-header">
+<h3 class="section-title" id="tournament-title">Tournament Info</h3>
+</div>
+<ul class="info-list">
+<li>
+<span class="info-label">Game</span>
+<span class="info-value" id="game-name">--</span>
+</li>
+<li>
+<span class="info-label">Prize Pool</span>
+<span class="info-value" id="prize-pool">--</span>
+</li>
+<li>
+<span class="info-label">Total Teams</span>
+<span class="info-value" id="total-teams">--</span>
+</li>
+<li>
+<span class="info-label">Tournament Start</span>
+<span class="info-value" id="tournament-start">--</span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</main>
+
+<script>
+const API_BASE_URL = 'https://tournament-hosting-backend.onrender.com';
+let currentTournament = null;
+let teamData = null;
+let bracketsData = null;
+
+// Round configuration
+const ROUND_CONFIG = {
+1: { name: 'Round 1', entryFee: 100 },
+2: { name: 'Round 2', entryFee: 200 },
+3: { name: 'Round 3', entryFee: 300 },
+4: { name: 'Round 4', entryFee: 500 },
+final: { name: 'Finals', entryFee: 0 }
+};
+
+// Function to get proper image URL with CORS support
+function getImageUrl(imagePath) {
+if (!imagePath) return null;
+if (imagePath.startsWith('http')) return imagePath;
+const filename = imagePath.split('/').pop();
+return `${API_BASE_URL}/api/static/images/${filename}`;
+}
+
+// --- AUTHENTICATION & USER INFO ---
+function getSessionData() {
+const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+try {
+return JSON.parse(session);
+} catch (error) {
+return null;
+}
+}
+
+function logout() {
+localStorage.removeItem('earena_session');
+sessionStorage.removeItem('earena_session');
+window.location.href = 'auth.html';
+}
+
+// --- DATA LOADING ---
+async function loadDashboardData() {
+const urlParams = new URLSearchParams(window.location.search);
+const tournamentSlug = urlParams.get('tournament') || urlParams.get('slug');
+
+if (!tournamentSlug) {
+showError('No tournament specified. Please provide a valid tournament slug.');
+return;
+}
+
+const sessionData = getSessionData();
+if (!sessionData || !sessionData.token) {
+window.location.href = 'auth.html';
+return;
+}
+
+try {
+// Load tournament data
+const tournamentResponse = await fetch(`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}`, {
+headers: { 'Authorization': `Bearer ${sessionData.token}` }
+});
+
+if (!tournamentResponse.ok) {
+throw new Error('Failed to load tournament data');
+}
+
+const tournamentData = await tournamentResponse.json();
+currentTournament = tournamentData.data;
+
+// Load team data
+await loadTeamData();
+
+// Load brackets data
+await loadBracketsData();
+
+// Update displays
+updateTournamentDisplay();
+updateTeamDisplay();
+updateProgressDisplay();
+
+} catch (error) {
+console.error('Error loading dashboard data:', error);
+showError(`Error loading dashboard: ${error.message}`);
+}
+}
+
+async function loadTeamData() {
+const sessionData = getSessionData();
+
+try {
+const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament._id}/team`, {
+headers: { 'Authorization': `Bearer ${sessionData.token}` }
+});
+
+if (!response.ok) {
+throw new Error('Failed to load team data');
+}
+
+const data = await response.json();
+teamData = data.data;
+
+} catch (error) {
+console.error('Error loading team data:', error);
+throw error;
+}
+}
+
+async function loadBracketsData() {
+const sessionData = getSessionData();
+
+try {
+const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament._id}/brackets`, {
+headers: { 'Authorization': `Bearer ${sessionData.token}` }
+});
+
+if (response.ok) {
+const data = await response.json();
+bracketsData = data.data;
+}
+
+} catch (error) {
+console.error('Error loading brackets data:', error);
+// Brackets might not exist yet, that's okay
+}
+}
+
+function updateTournamentDisplay() {
+if (!currentTournament) {
+console.error('Tournament data not loaded');
+return;
+}
+
+// Update page header
+document.getElementById('tournament-name').textContent = currentTournament.title;
+document.getElementById('tournament-title').textContent = currentTournament.title;
+
+// Update back link
+const backLink = document.getElementById('back-to-tournament');
+backLink.href = `tournament-details.html?slug=${currentTournament.slug}`;
+
+// Update tournament info
+document.getElementById('game-name').textContent = currentTournament.game || 'TBD';
+document.getElementById('prize-pool').textContent = currentTournament.prizePool ? `₹${currentTournament.prizePool.toLocaleString()}` : 'TBD';
+document.getElementById('total-teams').textContent = currentTournament.participants?.length || 0;
+
+const tournamentStart = currentTournament.tournamentStart ? 
+new Date(currentTournament.tournamentStart).toLocaleDateString('en-IN', { 
+day: 'numeric', 
+month: 'short', 
+year: 'numeric' 
+}) : 'TBD';
+document.getElementById('tournament-start').textContent = tournamentStart;
+
+// Update tournament poster
+const posterPath = currentTournament.posterImage || currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl;
+if (posterPath) {
+const imageUrl = getImageUrl(posterPath);
+const posterElement = document.getElementById('tournament-poster');
+posterElement.innerHTML = `<img src="${imageUrl}" alt="Tournament Poster" onerror="this.innerHTML='<div class=\\'poster-placeholder\\'><i class=\\'fas fa-image\\'></i><br>Tournament Poster</div>'">`;
+}
+}
+
+function updateTeamDisplay() {
+if (!teamData) return;
+
+// Update team info
+document.getElementById('team-name').textContent = `${teamData.name} Dashboard`;
+document.getElementById('team-name-display').textContent = teamData.name;
+document.getElementById('team-tag-display').textContent = teamData.tag || 'N/A';
+document.getElementById('team-id').textContent = teamData._id;
+
+const regDate = teamData.createdAt ? 
+new Date(teamData.createdAt).toLocaleDateString('en-IN', { 
+day: 'numeric', 
+month: 'short', 
+year: 'numeric' 
+}) : 'N/A';
+document.getElementById('registration-date').textContent = regDate;
+
+// Update players list
+const playersContainer = document.getElementById('players-container');
+if (teamData.players && teamData.players.length > 0) {
+playersContainer.innerHTML = teamData.players.map(player => `
+<div class="player-item">
+<div class="player-info">
+<div class="player-name">${player.name} ${player.isCaptain ? '<span class="captain-badge">Captain</span>' : ''}</div>
+<div class="player-details">In-Game ID: ${player.inGameId || 'N/A'}</div>
+</div>
+</div>
+`).join('');
+} else {
+playersContainer.innerHTML = '<div style="text-align: center; color: var(--muted);">No players found</div>';
+}
+}
+
+function updateProgressDisplay() {
+const container = document.getElementById('rounds-container');
+
+if (!bracketsData) {
+container.innerHTML = `
+<div class="round-card">
+<div class="round-header">
+<span class="round-name">Registration Complete</span>
+<span class="round-status status-qualified">Registered</span>
+</div>
+<div class="round-details">
+<div class="detail-item">
+<span class="detail-value">Waiting</span>
+<span class="detail-label">Status</span>
+</div>
+</div>
+<p style="color: var(--muted); margin-top: 1rem;">Tournament brackets will be available once the tournament starts.</p>
+</div>
+`;
+return;
+}
+
+// Update current round and status
+const currentRound = bracketsData.currentRound;
+document.getElementById('current-round').textContent = ROUND_CONFIG[currentRound]?.name || 'Unknown';
+
+// Find team in current round
+const teamInCurrentRound = findTeamInRound(currentRound);
+if (teamInCurrentRound) {
+document.getElementById('team-status').textContent = teamInCurrentRound.status.charAt(0).toUpperCase() + teamInCurrentRound.status.slice(1);
+document.getElementById('team-status').className = `status-value status-${teamInCurrentRound.status === 'qualified' ? 'active' : teamInCurrentRound.status}`;
+}
+
+// Calculate total paid
+const totalPaid = calculateTotalPaid();
+document.getElementById('total-paid').textContent = `₹${totalPaid.toLocaleString()}`;
+
+// Render rounds
+renderRounds();
+}
+
+function findTeamInRound(roundKey) {
+if (!bracketsData || !bracketsData.rounds[roundKey]) return null;
+return bracketsData.rounds[roundKey].teams.find(team => team.teamId === teamData._id);
+}
+
+function calculateTotalPaid() {
+let total = 0;
+Object.keys(ROUND_CONFIG).forEach(roundKey => {
+const team = findTeamInRound(roundKey);
+if (team && team.paymentStatus === 'paid') {
+total += ROUND_CONFIG[roundKey].entryFee;
+}
+});
+return total;
+}
+
+function renderRounds() {
+const container = document.getElementById('rounds-container');
+const rounds = Object.keys(ROUND_CONFIG);
+
+container.innerHTML = rounds.map(roundKey => {
+const config = ROUND_CONFIG[roundKey];
+const roundData = bracketsData.rounds[roundKey];
+const team = findTeamInRound(roundKey);
+const isCurrentRound = bracketsData.currentRound === roundKey;
+
+if (!team && roundKey !== '1') {
+// Team not in this round (not qualified)
+return `
+<div class="round-card eliminated">
+<div class="round-header">
+<span class="round-name">${config.name}</span>
+<span class="round-status status-not-qualified">Not Qualified</span>
+</div>
+<div class="round-details">
+<div class="detail-item">
+<span class="detail-value">--</span>
+<span class="detail-label">Position</span>
+</div>
+<div class="detail-item">
+<span class="detail-value">--</span>
+<span class="detail-label">Score</span>
+</div>
+<div class="detail-item">
+<span class="detail-value">₹${config.entryFee}</span>
+<span class="detail-label">Entry Fee</span>
+</div>
+</div>
+<p style="color: var(--muted); margin-top: 1rem;">Team did not qualify for this round.</p>
+</div>
+`;
+}
+
+const cardClass = isCurrentRound ? 'active' : (team?.status === 'qualified' ? 'completed' : '');
+const statusClass = isCurrentRound ? 'current' : (team?.status === 'qualified' ? 'qualified' : 'upcoming');
+
+return `
+<div class="round-card ${cardClass}">
+<div class="round-header">
+<span class="round-name">${config.name}</span>
+<span class="round-status status-${statusClass}">
+${isCurrentRound ? 'Current' : (team?.status === 'qualified' ? 'Qualified' : 'Upcoming')}
+</span>
+</div>
+
+${team?.paymentStatus === 'pending' && isCurrentRound ? `
+<div class="payment-alert">
+<h4><i class="fas fa-exclamation-triangle"></i> Payment Required</h4>
+<p>You must pay ₹${config.entryFee} to participate in this round.</p>
+</div>
+` : ''}
+
+<div class="round-details">
+<div class="detail-item">
+<span class="detail-value">${team?.position || '--'}</span>
+<span class="detail-label">Position</span>
+</div>
+<div class="detail-item">
+<span class="detail-value">${team?.score || 0}</span>
+<span class="detail-label">Score</span>
+</div>
+<div class="detail-item">
+<span class="detail-value">₹${config.entryFee}</span>
+<span class="detail-label">Entry Fee</span>
+</div>
+<div class="detail-item">
+<span class="detail-value">${team?.paymentStatus === 'paid' ? '✅ Paid' : '❌ Pending'}</span>
+<span class="detail-label">Payment</span>
+</div>
+</div>
+
+<div class="round-actions">
+${team?.paymentStatus === 'pending' && isCurrentRound ? `
+<button class="btn btn-primary" onclick="makePayment('${roundKey}', ${config.entryFee})">
+<i class="fas fa-credit-card"></i> Pay ₹${config.entryFee}
+</button>
+` : ''}
+${roundData?.status === 'active' && team?.paymentStatus === 'paid' ? `
+<button class="btn btn-success" disabled>
+<i class="fas fa-check"></i> Ready to Play
+</button>
+` : ''}
+<button class="btn btn-secondary" onclick="viewRoundDetails('${roundKey}')">
+<i class="fas fa-eye"></i> View Details
+</button>
+</div>
+</div>
+`;
+}).join('');
+}
+
+// --- PAYMENT FUNCTIONS ---
+async function makePayment(roundKey, amount) {
+if (!confirm(`Are you sure you want to pay ₹${amount} for ${ROUND_CONFIG[roundKey].name}?`)) return;
+
+const sessionData = getSessionData();
+try {
+// In a real implementation, this would integrate with a payment gateway
+// For now, we'll simulate the payment process
+
+showMessage('Processing payment...', 'info');
+
+const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament._id}/brackets/payment`, {
+method: 'POST',
+headers: {
+'Authorization': `Bearer ${sessionData.token}`,
+'Content-Type': 'application/json'
+},
+body: JSON.stringify({
+teamId: teamData._id,
+roundKey: roundKey,
+amount: amount,
+status: 'paid',
+paymentMethod: 'card',
+transactionId: `txn_${Date.now()}`
+})
+});
+
+if (!response.ok) {
+throw new Error('Payment failed');
+}
+
+showMessage('Payment successful!', 'success');
+
+// Reload data to reflect payment
+await loadBracketsData();
+updateProgressDisplay();
+
+} catch (error) {
+console.error('Payment error:', error);
+showMessage(`Payment failed: ${error.message}`, 'error');
+}
+}
+
+function viewRoundDetails(roundKey) {
+const config = ROUND_CONFIG[roundKey];
+const team = findTeamInRound(roundKey);
+
+alert(`${config.name} Details:\n\nEntry Fee: ₹${config.entryFee}\nYour Status: ${team?.status || 'Not Qualified'}\nPayment Status: ${team?.paymentStatus || 'N/A'}\nScore: ${team?.score || 0}\nPosition: ${team?.position || 'N/A'}`);
+}
+
+// --- UTILITY FUNCTIONS ---
+function showMessage(message, type) {
+const container = document.getElementById('message-container');
+const className = type === 'error' ? 'error-message' : type === 'success' ? 'success-message' : 'info-message';
+container.innerHTML = `<div class="${className}"><i class="fas fa-${type === 'error' ? 'exclamation-triangle' : type === 'success' ? 'check-circle' : 'info-circle'}"></i> ${message}</div>`;
+
+// Auto-hide after 5 seconds
+setTimeout(() => {
+container.innerHTML = '';
+}, 5000);
+}
+
+function showError(message) {
+showMessage(message, 'error');
+}
+
+// --- EVENT LISTENERS ---
+document.addEventListener('DOMContentLoaded', () => {
+const sessionData = getSessionData();
+if (!sessionData || !sessionData.token) {
+window.location.href = 'auth.html';
+return;
+}
+
+// Update user info
+if (sessionData.user) {
+document.getElementById('user-info').innerHTML = `
+<span>Welcome, ${sessionData.user.username}</span>
+<a href="#" onclick="logout()" style="color: var(--muted); margin-left: 1rem; text-decoration: none;">Logout</a>
+`;
+}
+
+// Load dashboard data
+loadDashboardData();
+});
+</script>
+</body>
+</html>
