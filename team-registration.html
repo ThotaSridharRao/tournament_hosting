@@ -800,18 +800,49 @@ backLink.href = `tournament-details.html?slug=${currentTournament.slug}`;
 
 function checkRegistrationStatus() {
 if (!currentTournament) return;
+
+// Check if registration is open based on status and dates
 const now = new Date();
+const regStart = new Date(currentTournament.registrationStart);
 const regEnd = new Date(currentTournament.registrationEnd);
+const isWithinRegistrationPeriod = now >= regStart && now <= regEnd;
 
-if (now > regEnd) {
-showError('Registration for this tournament has ended.');
-document.getElementById('register-btn').disabled = true;
-document.getElementById('register-btn').textContent = 'Registration Closed';
-}
+const validStatuses = ['upcoming', 'registration', 'registration-open'];
+const restrictedStatuses = ['cancelled', 'completed'];
 
-if (currentTournament.status !== 'upcoming' && currentTournament.status !== 'registration-open') {
-showError('Registration is not currently open for this tournament.');
-document.getElementById('register-btn').disabled = true;
+console.log('Registration validation:', {
+    status: currentTournament.status,
+    now: now.toISOString(),
+    regStart: regStart.toISOString(),
+    regEnd: regEnd.toISOString(),
+    isWithinRegistrationPeriod,
+    validStatus: validStatuses.includes(currentTournament.status)
+});
+
+// Check various conditions
+if (restrictedStatuses.includes(currentTournament.status)) {
+    showError('Registration is not currently open for this tournament.');
+    document.getElementById('register-btn').disabled = true;
+    document.getElementById('register-btn').textContent = 'Registration Closed';
+} else if (now > regEnd) {
+    showError('Registration for this tournament has ended.');
+    document.getElementById('register-btn').disabled = true;
+    document.getElementById('register-btn').textContent = 'Registration Closed';
+} else if (now < regStart) {
+    showError(`Registration opens on ${regStart.toLocaleDateString()}`);
+    document.getElementById('register-btn').disabled = true;
+    document.getElementById('register-btn').textContent = 'Registration Not Open';
+} else {
+    // Registration is open
+    console.log('Registration is open!');
+    document.getElementById('register-btn').disabled = false;
+    document.getElementById('register-btn').textContent = 'Register Team';
+    
+    // Clear any error messages
+    const errorContainer = document.getElementById('error-container');
+    if (errorContainer) {
+        errorContainer.innerHTML = '';
+    }
 }
 }
 
