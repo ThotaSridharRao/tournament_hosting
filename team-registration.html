@@ -951,7 +951,11 @@ showError(`Registration failed: ${error.message}`);
 
 // Load registration summary based on tournament
 function loadRegistrationSummary(tournament) {
-    const container = document.getElementById('registration-summary');
+    const container = document.querySelector('.registration-summary');
+    if (!container) {
+        console.error('Registration summary container not found');
+        return;
+    }
     const entryFee = tournament.entryFee || 0;
     
     container.innerHTML = `
