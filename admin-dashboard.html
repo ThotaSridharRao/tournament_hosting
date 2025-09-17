@@ -1288,19 +1288,129 @@
         }
         
         // Load recent activity
-        function loadRecentActivity() {
-            const activities = [
-                { icon: 'fas fa-user-plus', text: 'New user registered: <strong>GamerPro123</strong>', time: '2 minutes ago' },
-                { icon: 'fas fa-medal', text: 'Tournament completed: <strong>PUBG Championship</strong>', time: '15 minutes ago' },
-                { icon: 'fas fa-money-bill-wave', text: 'Prize distributed: <strong>₹50,000</strong> to Team Alpha', time: '1 hour ago' },
-                { icon: 'fas fa-exclamation-triangle', text: 'User report received for inappropriate behavior', time: '2 hours ago' },
-                { icon: 'fas fa-file-edit', text: 'Homepage content updated by admin', time: '3 hours ago' }
+        async function loadRecentActivity() {
+            const sessionData = getSessionData();
+            if (!sessionData || !sessionData.token) {
+                console.error('No authentication token found');
+                displayFallbackActivities();
+                return;
+            }
+
+            try {
+                // Fetch recent activities for admin
+                const recentResponse = await fetch(`${API_BASE_URL}/api/activities/recent?limit=10&adminOnly=true`, {
+                    headers: {
+                        'Authorization': `Bearer ${sessionData.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                // Fetch platform-wide activities
+                const platformResponse = await fetch(`${API_BASE_URL}/api/activities/platform?limit=15`, {
+                    headers: {
+                        'Authorization': `Bearer ${sessionData.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (recentResponse.ok && platformResponse.ok) {
+                    const recentData = await recentResponse.json();
+                    const platformData = await platformResponse.json();
+
+                    displayActivities(recentData.activities, 'activity-list');
+                    displayActivities(platformData.activities, 'platform-activity-list');
+                } else {
+                    console.error('Failed to fetch activities');
+                    displayFallbackActivities();
+                }
+            } catch (error) {
+                console.error('Error loading activities:', error);
+                displayFallbackActivities();
+            }
+        }
+
+        // Display activities in the specified container
+        function displayActivities(activities, containerId) {
+            const container = document.getElementById(containerId);
+            
+            if (!activities || activities.length === 0) {
+                container.innerHTML = `
+                    <div class="activity-item">
+                        <div class="activity-icon"><i class="fas fa-info-circle"></i></div>
+                        <div class="activity-content">
+                            <div class="activity-text">No recent activities</div>
+                            <div class="activity-time">Check back later</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const activityHTML = activities.map(activity => {
+                const icon = getActivityIcon(activity.type);
+                const timeAgo = formatTimeAgo(new Date(activity.createdAt));
+                
+                return `
+                    <div class="activity-item">
+                        <div class="activity-icon"><i class="${icon}"></i></div>
+                        <div class="activity-content">
+                            <div class="activity-text">${activity.description}</div>
+                            <div class="activity-time">${timeAgo}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = activityHTML;
+        }
+
+        // Get appropriate icon for activity type
+        function getActivityIcon(type) {
+            const iconMap = {
+                'user_registered': 'fas fa-user-plus',
+                'user_login': 'fas fa-sign-in-alt',
+                'tournament_created': 'fas fa-plus-circle',
+                'tournament_registration_opened': 'fas fa-door-open',
+                'tournament_registration_closed': 'fas fa-door-closed',
+                'tournament_started': 'fas fa-play-circle',
+                'tournament_ended': 'fas fa-trophy',
+                'team_registered': 'fas fa-users',
+                'team_payment_completed': 'fas fa-credit-card',
+                'team_qualified': 'fas fa-check-circle',
+                'team_eliminated': 'fas fa-times-circle',
+                'bracket_created': 'fas fa-sitemap',
+                'round_started': 'fas fa-play',
+                'round_completed': 'fas fa-flag-checkered',
+                'match_completed': 'fas fa-medal',
+                'admin_action': 'fas fa-cog',
+                'system_notification': 'fas fa-bell'
+            };
+            return iconMap[type] || 'fas fa-info-circle';
+        }
+
+        // Format time ago
+        function formatTimeAgo(date) {
+            const now = new Date();
+            const diffInSeconds = Math.floor((now - date) / 1000);
+            
+            if (diffInSeconds < 60) return 'Just now';
+            if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+            if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+            if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
+            
+            return date.toLocaleDateString();
+        }
+
+        // Fallback activities when API fails
+        function displayFallbackActivities() {
+            const fallbackActivities = [
+                { icon: 'fas fa-info-circle', text: 'Unable to load recent activities', time: 'Check your connection' }
             ];
 
             const activityList = document.getElementById('activity-list');
             const platformActivityList = document.getElementById('platform-activity-list');
             
-            const activityHTML = activities.map(activity => `
+            const activityHTML = fallbackActivities.map(activity => `
                 <div class="activity-item">
                     <div class="activity-icon"><i class="${activity.icon}"></i></div>
                     <div class="activity-content">
