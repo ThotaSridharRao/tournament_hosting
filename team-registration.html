@@ -711,8 +711,25 @@ return;
 document.getElementById('tournament-name').textContent = `Register for ${currentTournament.title}`;
 document.getElementById('tournament-title').textContent = currentTournament.title;
 document.getElementById('game-name').textContent = currentTournament.game || 'TBD';
-document.getElementById('tournament-format').textContent = currentTournament.format || currentTournament.tournamentFormat || 'TBD';
+// Display format with KP details if applicable
+let formatText = currentTournament.format || currentTournament.tournamentFormat || 'TBD';
+if (currentTournament.format === 'kp' && currentTournament.kpSettings) {
+    const kp = currentTournament.kpSettings;
+    formatText = `KP Format (${kp.numberOfGroups} groups of ${kp.groupSize} teams, top ${kp.qualifiersPerGroup} qualify)`;
+}
+document.getElementById('tournament-format').textContent = formatText;
 document.getElementById('max-teams').textContent = currentTournament.maxTeams || 'Unlimited';
+
+// Show max players per team for KP tournaments
+if (currentTournament.format === 'kp' && currentTournament.kpSettings) {
+    const maxPlayersNote = document.createElement('div');
+    maxPlayersNote.className = 'detail-item';
+    maxPlayersNote.innerHTML = `
+        <span class="detail-label">Max Players per Team</span>
+        <span class="detail-value">${currentTournament.kpSettings.maxPlayersPerTeam}</span>
+    `;
+    document.querySelector('.tournament-details').appendChild(maxPlayersNote);
+}
 document.getElementById('prize-pool').textContent = currentTournament.prizePool ? `₹${currentTournament.prizePool.toLocaleString()}` : 'TBD';
 
 // Update registration end date
@@ -776,6 +793,10 @@ playerForm.innerHTML = `
 <input type="email" id="player-email-${playerCount}" name="players[${playerCount}][email]" required>
 </div>
 <div class="form-group">
+<label for="player-phone-${playerCount}">Phone Number</label>
+<input type="tel" id="player-phone-${playerCount}" name="players[${playerCount}][phoneNumber]" placeholder="+91 9876543210">
+</div>
+<div class="form-group">
 <label for="player-ingame-${playerCount}">In-Game ID *</label>
 <input type="text" id="player-ingame-${playerCount}" name="players[${playerCount}][inGameId]" required>
 </div>
@@ -830,12 +851,14 @@ acceptTerms: formData.get('acceptTerms') === 'on'
 for (let i = 1; i <= playerCount; i++) {
 const name = formData.get(`players[${i}][name]`);
 const email = formData.get(`players[${i}][email]`);
+const phoneNumber = formData.get(`players[${i}][phoneNumber]`);
 const inGameId = formData.get(`players[${i}][inGameId]`);
 
 if (name && email && inGameId) {
 registrationData.players.push({
 name: name,
 email: email,
+phoneNumber: phoneNumber || '',
 inGameId: inGameId,
 isCaptain: i === 1
 });

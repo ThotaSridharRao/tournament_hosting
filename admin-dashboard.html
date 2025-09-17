@@ -1225,8 +1225,30 @@
                         <option value="round-robin">Round Robin</option>
                         <option value="swiss">Swiss System</option>
                         <option value="group-stage">Group Stage</option>
+                        <option value="kp">KP Format (4 Groups → Top 4 Each → Final)</option>
                     </select>
                 </div>
+                <!-- KP Format Settings (hidden by default) -->
+                <div id="kp-settings" style="display: none;">
+                    <h4 style="color: var(--accent); margin: 1.5rem 0 1rem 0;">KP Tournament Settings</h4>
+                    <div class="form-group">
+                        <label for="group-size" class="form-label">Teams per Group</label>
+                        <input type="number" id="group-size" name="groupSize" class="form-input" value="25" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="number-of-groups" class="form-label">Number of Groups</label>
+                        <input type="number" id="number-of-groups" name="numberOfGroups" class="form-input" value="4" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="qualifiers-per-group" class="form-label">Qualifiers per Group</label>
+                        <input type="number" id="qualifiers-per-group" name="qualifiersPerGroup" class="form-input" value="4" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="max-players-per-team" class="form-label">Max Players per Team</label>
+                        <input type="number" id="max-players-per-team" name="maxPlayersPerTeam" class="form-input" value="4" min="1" max="10">
+                    </div>
+                </div>
+                
                 <div class="form-group">
                     <label for="tournament-poster" class="form-label">Poster Image</label>
                     <input type="file" id="tournament-poster" name="posterImage" class="form-file" accept="image/*">
@@ -1648,6 +1670,20 @@
                         const submitBtn = tournamentForm.querySelector('.submit-btn');
                         submitBtn.textContent = 'Create Tournament';
                         submitBtn.disabled = false;
+                    }
+                });
+            }
+
+            // Handle tournament format change
+            const formatSelect = document.getElementById('tournament-format');
+            const kpSettings = document.getElementById('kp-settings');
+            
+            if (formatSelect && kpSettings) {
+                formatSelect.addEventListener('change', function() {
+                    if (this.value === 'kp') {
+                        kpSettings.style.display = 'block';
+                    } else {
+                        kpSettings.style.display = 'none';
                     }
                 });
             }

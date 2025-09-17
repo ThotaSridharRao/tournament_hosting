@@ -2765,14 +2765,14 @@
 
       // Update custom schedule events
       updateCustomScheduleDisplay(tournament.scheduleEvents || []);
-      
+
       // Update main schedule timeline
       updateScheduleTimeline(tournament.scheduleEvents || []);
 
       // Update hero background if poster exists
       const posterPath = tournament.posterImage || tournament.poster || tournament.thumbnailUrl || tournament.imageUrl;
       const heroElement = document.querySelector('.tournament-hero');
-      
+
       if (posterPath) {
         const imageUrl = getImageUrl(posterPath);
         heroElement.style.backgroundImage = `url(${imageUrl})`;
