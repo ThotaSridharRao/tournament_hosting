@@ -2890,7 +2890,13 @@
 
       console.log('Registration dates:', { now, regStart, regEnd, isRegistrationOpen }); // Debug log
 
-      switch (tournament.status) {
+      // Determine effective status based on dates
+      let effectiveStatus = tournament.status;
+      if (isRegistrationOpen && (tournament.status === 'upcoming' || tournament.status === 'registration')) {
+        effectiveStatus = 'registration-open';
+      }
+
+      switch (effectiveStatus) {
         case 'upcoming':
         case 'registration':
         case 'registration-open':

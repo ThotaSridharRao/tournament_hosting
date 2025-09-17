@@ -232,6 +232,65 @@ color: var(--accent);
 font-weight: 700;
 }
 
+/* KP Structure Styles */
+.kp-structure {
+margin-top: 1.5rem;
+}
+
+.kp-flow {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 1rem;
+flex-wrap: wrap;
+margin: 1rem 0;
+}
+
+.kp-step {
+display: flex;
+flex-direction: column;
+align-items: center;
+text-align: center;
+padding: 1rem;
+background: rgba(255, 215, 0, 0.1);
+border-radius: 8px;
+border: 1px solid rgba(255, 215, 0, 0.3);
+min-width: 120px;
+}
+
+.kp-step i {
+font-size: 1.5rem;
+color: var(--accent);
+margin-bottom: 0.5rem;
+}
+
+.kp-step span {
+font-weight: 600;
+color: var(--copy);
+margin-bottom: 0.25rem;
+}
+
+.kp-step small {
+color: var(--muted);
+font-size: 0.8rem;
+}
+
+.kp-arrow {
+color: var(--accent);
+font-size: 1.5rem;
+font-weight: bold;
+}
+
+@media (max-width: 768px) {
+.kp-flow {
+flex-direction: column;
+}
+
+.kp-arrow {
+transform: rotate(90deg);
+}
+}
+
 .form-section {
 margin-bottom: 2rem;
 }
@@ -622,31 +681,8 @@ Tournament Poster
 </div>
 </div>
 
-<div class="payment-structure">
-<h4><i class="fas fa-coins"></i> Payment Structure</h4>
-<div class="round-payment">
-<span class="round-name">Round 1</span>
-<span class="round-fee">₹100</span>
-</div>
-<div class="round-payment">
-<span class="round-name">Round 2</span>
-<span class="round-fee">₹200</span>
-</div>
-<div class="round-payment">
-<span class="round-name">Round 3</span>
-<span class="round-fee">₹300</span>
-</div>
-<div class="round-payment">
-<span class="round-name">Round 4</span>
-<span class="round-fee">₹500</span>
-</div>
-<div class="round-payment">
-<span class="round-name">Finals</span>
-<span class="round-fee">Free</span>
-</div>
-<p style="font-size: 0.85rem; color: var(--muted); margin-top: 1rem;">
-Only qualifying teams pay for subsequent rounds.
-</p>
+<div class="payment-structure" id="payment-structure">
+<!-- Payment structure will be loaded dynamically -->
 </div>
 </div>
 </div>
@@ -740,6 +776,9 @@ month: 'short',
 year: 'numeric' 
 }) : 'TBD';
 document.getElementById('reg-end-date').textContent = regEndDate;
+
+// Load payment structure based on tournament format
+loadPaymentStructure(currentTournament);
 
 // Update tournament poster
 const posterPath = currentTournament.posterImage || currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl;
@@ -900,6 +939,61 @@ window.location.href = `team-dashboard.html?tournament=${currentTournament.slug}
 console.error('Registration error:', error);
 showError(`Registration failed: ${error.message}`);
 }
+}
+
+// Load payment structure based on tournament format
+function loadPaymentStructure(tournament) {
+    const container = document.getElementById('payment-structure');
+    
+    if (tournament.format === 'kp') {
+        // KP Format payment structure
+        const entryFee = tournament.entryFee || 200;
+        container.innerHTML = `
+            <h4><i class="fas fa-coins"></i> KP Tournament Payment</h4>
+            <div class="round-payment">
+                <span class="round-name">Entry Fee</span>
+                <span class="round-fee">₹${entryFee.toLocaleString()}</span>
+            </div>
+            <div class="kp-structure">
+                <h5 style="color: var(--accent); margin: 1rem 0 0.5rem 0;">Tournament Structure:</h5>
+                <div class="kp-flow">
+                    <div class="kp-step">
+                        <i class="fas fa-users"></i>
+                        <span>${tournament.kpSettings?.numberOfGroups || 4} Groups</span>
+                        <small>${tournament.kpSettings?.groupSize || 25} teams each</small>
+                    </div>
+                    <div class="kp-arrow">→</div>
+                    <div class="kp-step">
+                        <i class="fas fa-trophy"></i>
+                        <span>Qualifiers</span>
+                        <small>Top ${tournament.kpSettings?.qualifiersPerGroup || 4} from each group</small>
+                    </div>
+                    <div class="kp-arrow">→</div>
+                    <div class="kp-step">
+                        <i class="fas fa-crown"></i>
+                        <span>Final</span>
+                        <small>${(tournament.kpSettings?.numberOfGroups || 4) * (tournament.kpSettings?.qualifiersPerGroup || 4)} teams compete</small>
+                    </div>
+                </div>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--muted); margin-top: 1rem;">
+                One-time payment of ₹${entryFee.toLocaleString()} per team. No additional fees for qualifying rounds.
+            </p>
+        `;
+    } else {
+        // Traditional tournament payment structure
+        const entryFee = tournament.entryFee || 100;
+        container.innerHTML = `
+            <h4><i class="fas fa-coins"></i> Payment Structure</h4>
+            <div class="round-payment">
+                <span class="round-name">Entry Fee</span>
+                <span class="round-fee">₹${entryFee.toLocaleString()}</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--muted); margin-top: 1rem;">
+                Entry fee for ${tournament.format || 'tournament'} format.
+            </p>
+        `;
+    }
 }
 
 // --- UTILITY FUNCTIONS ---

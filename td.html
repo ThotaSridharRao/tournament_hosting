@@ -597,6 +597,113 @@
             margin-top: 1rem;
         }
 
+        /* KP Format Styles */
+        .kp-overview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .kp-stat {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .kp-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .kp-value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .kp-groups {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .kp-group {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .kp-group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .kp-group-title {
+            font-weight: 600;
+            color: var(--copy);
+        }
+
+        .kp-group-status {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .kp-group-status.pending {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .kp-group-status.active {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .kp-group-status.completed {
+            background: rgba(107, 114, 128, 0.2);
+            color: #6b7280;
+        }
+
+        .kp-group-teams {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .kp-group-qualified {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .kp-qualified-team {
+            display: inline-block;
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin: 0.25rem 0.25rem 0 0;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .kp-overview {
+                grid-template-columns: 1fr;
+            }
+            
+            .kp-groups {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .custom-event-item {
             display: flex;
             justify-content: space-between;
@@ -714,7 +821,7 @@
                             <i class="fas fa-edit"></i> Edit Details
                         </button>
                         <button class="btn btn-secondary" id="manage-brackets-btn">
-                            <i class="fas fa-sitemap"></i> Manage Brackets
+                            <i class="fas fa-sitemap"></i> <span id="manage-brackets-text">Manage Brackets</span>
                         </button>
                         <button class="btn btn-danger" id="cancel-tournament-btn">
                             <i class="fas fa-ban"></i> Cancel Tournament
@@ -759,6 +866,39 @@
                     </ul>
                     <div id="custom-schedule-events" class="custom-events">
                         <!-- Custom schedule events will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- KP Format Section (hidden by default) -->
+                <div class="dashboard-section" id="kp-format-section" style="display: none;">
+                    <div class="section-header">
+                        <h2 class="section-title">KP Tournament Structure</h2>
+                        <button class="btn btn-secondary" id="manage-groups-btn" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                            <i class="fas fa-users"></i> Manage Groups
+                        </button>
+                    </div>
+                    
+                    <div class="kp-overview">
+                        <div class="kp-stat">
+                            <span class="kp-label">Groups</span>
+                            <span class="kp-value" id="kp-groups-count">4</span>
+                        </div>
+                        <div class="kp-stat">
+                            <span class="kp-label">Teams per Group</span>
+                            <span class="kp-value" id="kp-group-size">25</span>
+                        </div>
+                        <div class="kp-stat">
+                            <span class="kp-label">Qualifiers per Group</span>
+                            <span class="kp-value" id="kp-qualifiers">4</span>
+                        </div>
+                        <div class="kp-stat">
+                            <span class="kp-label">Final Teams</span>
+                            <span class="kp-value" id="kp-final-teams">16</span>
+                        </div>
+                    </div>
+
+                    <div class="kp-groups" id="kp-groups-container">
+                        <!-- KP groups will be loaded here -->
                     </div>
                 </div>
             </div>
@@ -1051,10 +1191,85 @@
 
         function manageBrackets() {
             if (currentTournament) {
-                window.location.href = `tournament-brackets.html?slug=${currentTournament.slug}`;
+                if (currentTournament.format === 'kp') {
+                    // For KP tournaments, show groups management
+                    alert('KP Tournament Groups Management - Coming Soon!');
+                    // TODO: Implement KP groups management
+                } else {
+                    // For other tournaments, show brackets
+                    window.location.href = `tournament-brackets.html?slug=${currentTournament.slug}`;
+                }
             } else {
                 alert('Tournament data not loaded yet.');
             }
+        }
+
+        // Handle KP format tournament display
+        function handleKPFormat(tournament) {
+            const kpSection = document.getElementById('kp-format-section');
+            const manageBracketsText = document.getElementById('manage-brackets-text');
+            
+            if (tournament.format === 'kp') {
+                // Show KP section
+                kpSection.style.display = 'block';
+                
+                // Update button text
+                manageBracketsText.textContent = 'Manage Groups';
+                
+                // Load KP settings
+                if (tournament.kpSettings) {
+                    document.getElementById('kp-groups-count').textContent = tournament.kpSettings.numberOfGroups || 4;
+                    document.getElementById('kp-group-size').textContent = tournament.kpSettings.groupSize || 25;
+                    document.getElementById('kp-qualifiers').textContent = tournament.kpSettings.qualifiersPerGroup || 4;
+                    document.getElementById('kp-final-teams').textContent = (tournament.kpSettings.numberOfGroups || 4) * (tournament.kpSettings.qualifiersPerGroup || 4);
+                }
+                
+                // Load KP groups
+                loadKPGroups(tournament);
+            } else {
+                // Hide KP section for non-KP tournaments
+                kpSection.style.display = 'none';
+                manageBracketsText.textContent = 'Manage Brackets';
+            }
+        }
+
+        // Load KP groups display
+        function loadKPGroups(tournament) {
+            const container = document.getElementById('kp-groups-container');
+            const numberOfGroups = tournament.kpSettings?.numberOfGroups || 4;
+            const groupSize = tournament.kpSettings?.groupSize || 25;
+            const teams = tournament.participants || [];
+            
+            // Divide teams into groups
+            const groups = [];
+            for (let i = 0; i < numberOfGroups; i++) {
+                const groupTeams = teams.slice(i * groupSize, (i + 1) * groupSize);
+                groups.push({
+                    id: i + 1,
+                    name: `Group ${i + 1}`,
+                    teams: groupTeams,
+                    status: groupTeams.length > 0 ? 'pending' : 'empty',
+                    qualified: [] // TODO: Load qualified teams from backend
+                });
+            }
+            
+            container.innerHTML = groups.map(group => `
+                <div class="kp-group">
+                    <div class="kp-group-header">
+                        <span class="kp-group-title">${group.name}</span>
+                        <span class="kp-group-status ${group.status}">${group.status}</span>
+                    </div>
+                    <div class="kp-group-teams">
+                        ${group.teams.length}/${groupSize} teams registered
+                    </div>
+                    ${group.qualified.length > 0 ? `
+                        <div class="kp-group-qualified">
+                            <strong>Qualified:</strong><br>
+                            ${group.qualified.map(team => `<span class="kp-qualified-team">${team.name}</span>`).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
         }
 
         function showCancelModal() {
@@ -1137,7 +1352,12 @@
                 document.getElementById('info-status').textContent = t.status.charAt(0).toUpperCase() + t.status.slice(1);
                 document.getElementById('info-prize').textContent = `₹${(t.prizePool || 0).toLocaleString()}`;
                 document.getElementById('info-fee').textContent = `₹${(t.entryFee || 0).toLocaleString()} per team`;
-                document.getElementById('info-format').textContent = t.format || t.tournamentFormat || 'Not specified';
+                // Display format with KP details if applicable
+                let formatText = t.format || t.tournamentFormat || 'Not specified';
+                if (t.format === 'kp' && t.kpSettings) {
+                    formatText = `KP Format (${t.kpSettings.numberOfGroups} groups → ${t.kpSettings.qualifiersPerGroup} each → Final)`;
+                }
+                document.getElementById('info-format').textContent = formatText;
                 document.getElementById('info-tournament-id').textContent = t._id;
 
                 // Schedule Card
@@ -1152,6 +1372,9 @@
 
                 // Load custom schedule events
                 loadCustomScheduleEvents();
+
+                // Handle KP format tournaments
+                handleKPFormat(t);
 
                 const teamsContainer = document.getElementById('teams-list-container');
                 const teams = t.participants || [];
