@@ -1209,6 +1209,10 @@
                     <input type="number" id="prize-pool" name="prizePool" class="form-input" min="0" required>
                 </div>
                 <div class="form-group">
+                    <label for="entry-fee" class="form-label">Entry Fee (₹)</label>
+                    <input type="number" id="entry-fee" name="entryFee" class="form-input" min="0" value="0">
+                </div>
+                <div class="form-group">
                     <label for="num-teams" class="form-label">Number of Teams</label>
                     <input type="number" id="num-teams" name="maxTeams" class="form-input" min="2" required>
                 </div>
@@ -1466,6 +1470,26 @@
                 tournamentForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
                     
+                    // Client-side validation
+                    const regStart = new Date(document.getElementById('reg-start-date').value);
+                    const regEnd = new Date(document.getElementById('reg-end-date').value);
+                    const tournStart = new Date(document.getElementById('tournament-start-date').value);
+                    const tournEnd = new Date(document.getElementById('tournament-end-date').value);
+                    
+                    // Validate date sequence
+                    if (regEnd <= regStart) {
+                        alert('Registration end date must be after registration start date');
+                        return;
+                    }
+                    if (tournStart < regEnd) {
+                        alert('Tournament start date must be after registration end date');
+                        return;
+                    }
+                    if (tournEnd <= tournStart) {
+                        alert('Tournament end date must be after tournament start date');
+                        return;
+                    }
+                    
                     // 1. Create a FormData object directly from the form.
                     // This automatically collects all input values AND the uploaded file.
                     const formData = new FormData(tournamentForm);
@@ -1496,10 +1520,13 @@
                             hideModal('createTournamentModal');
                             loadAdminTournaments(); // Refresh the list
                         } else {
-                            throw new Error(result.message || 'Failed to create tournament');
+                            // Log the full error response for debugging
+                            console.error('Tournament creation failed:', result);
+                            throw new Error(result.error || result.message || 'Failed to create tournament');
                         }
                     } catch (error) {
-                        alert('Error: ' + error.message); // Use alert or a custom notification
+                        console.error('Tournament creation error:', error);
+                        alert('Error creating tournament: ' + error.message); // Use alert or a custom notification
                     } finally {
                         const submitBtn = tournamentForm.querySelector('.submit-btn');
                         submitBtn.textContent = 'Create Tournament';
