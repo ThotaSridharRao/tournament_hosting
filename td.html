@@ -778,25 +778,38 @@
         const API_BASE_URL = 'https://tournament-hosting-backend.onrender.com';
         let currentTournament = null;
 
-        // Function to load image with authentication
-        async function loadImageWithAuth(imagePath, token) {
-            try {
-                const imageUrl = imagePath.startsWith('http') ? imagePath : `${API_BASE_URL}/${imagePath}`;
-                const response = await fetch(imageUrl, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
+        // Function to get proper image URL with CORS support
+        function getImageUrl(imagePath) {
+            if (!imagePath) return null;
 
-                if (response.ok) {
-                    const blob = await response.blob();
-                    return URL.createObjectURL(blob);
-                } else {
-                    throw new Error('Failed to load image');
+            // If it's already a full URL, return as is
+            if (imagePath.startsWith('http')) {
+                return imagePath;
+            }
+
+            // Extract filename from path (e.g., 'temp/image.jpg' -> 'image.jpg')
+            const filename = imagePath.split('/').pop();
+
+            // Use the new static route for serving images with CORS
+            return `${API_BASE_URL}/api/static/images/${filename}`;
+        }
+
+        // Function to load image with fallback options
+        function getImageWithFallback(imagePath) {
+            try {
+                // First try the new CORS-enabled route
+                const corsUrl = getImageUrl(imagePath);
+                if (corsUrl) {
+                    return corsUrl;
                 }
+
+                // Fallback to direct path
+                const directUrl = imagePath.startsWith('http') ? imagePath :
+                    imagePath.startsWith('/') ? `${API_BASE_URL}${imagePath}` :
+                        `${API_BASE_URL}/${imagePath}`;
+                return directUrl;
             } catch (error) {
-                console.error('Error loading image:', error);
+                console.error('Error constructing image URL:', error);
                 return null;
             }
         }
@@ -865,17 +878,9 @@
                 const posterPath = currentTournament.posterImage || currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl;
                 const sessionData = getSessionData();
 
-                if (sessionData && sessionData.token) {
-                    loadImageWithAuth(posterPath, sessionData.token).then(imageUrl => {
-                        if (imageUrl) {
-                            posterPreview.innerHTML = `<img src="${imageUrl}" alt="Tournament Poster">`;
-                        } else {
-                            posterPreview.innerHTML = `<div class="poster-placeholder"><i class="fas fa-image"></i><p>Click to upload poster</p></div>`;
-                        }
-                    }).catch(error => {
-                        console.error('Error loading poster in edit form:', error);
-                        posterPreview.innerHTML = `<div class="poster-placeholder"><i class="fas fa-image"></i><p>Click to upload poster</p></div>`;
-                    });
+                const imageUrl = getImageWithFallback(posterPath);
+                if (imageUrl) {
+                    posterPreview.innerHTML = `<img src="${imageUrl}" alt="Tournament Poster" onerror="this.parentElement.innerHTML='<div class=\\'poster-placeholder\\'><i class=\\'fas fa-image\\'></i><p>Click to upload poster</p></div>'">`;
                 } else {
                     posterPreview.innerHTML = `<div class="poster-placeholder"><i class="fas fa-image"></i><p>Click to upload poster</p></div>`;
                 }
@@ -1047,21 +1052,13 @@
                 if (t.posterImage || t.poster || t.thumbnailUrl || t.imageUrl) {
                     const posterPath = t.posterImage || t.poster || t.thumbnailUrl || t.imageUrl;
 
-                    // Try to load image with authentication
-                    loadImageWithAuth(posterPath, token).then(imageUrl => {
-                        if (imageUrl) {
-                            posterElement.innerHTML = `<img src="${imageUrl}" alt="Tournament Poster" onload="console.log('Poster loaded successfully')">`;
-                        } else {
-                            // Fallback to direct URL (might work if CORS is fixed)
-                            const fallbackUrl = posterPath.startsWith('http') ? posterPath :
-                                posterPath.startsWith('/') ? `${API_BASE_URL}${posterPath}` :
-                                    `${API_BASE_URL}/${posterPath}`;
-                            posterElement.innerHTML = `<img src="${fallbackUrl}" alt="Tournament Poster" onerror="this.parentElement.innerHTML='<div class=\\'poster-placeholder\\'><i class=\\'fas fa-image\\'></i><br>Poster not available</div>'">`;
-                        }
-                    }).catch(error => {
-                        console.error('Error loading poster:', error);
+                    // Use new CORS-enabled image URL
+                    const imageUrl = getImageWithFallback(posterPath);
+                    if (imageUrl) {
+                        posterElement.innerHTML = `<img src="${imageUrl}" alt="Tournament Poster" onload="console.log('Poster loaded successfully')" onerror="this.parentElement.innerHTML='<div class=\\'poster-placeholder\\'><i class=\\'fas fa-image\\'></i><br>Poster not available</div>'">`;
+                    } else {
                         posterElement.innerHTML = `<div class="poster-placeholder"><i class="fas fa-image"></i><br>Poster not available</div>`;
-                    });
+                    }
                 } else {
                     posterElement.innerHTML = `<div class="poster-placeholder"><i class="fas fa-image"></i><br>No poster available</div>`;
                 }
