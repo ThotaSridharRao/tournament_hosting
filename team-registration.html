@@ -607,40 +607,11 @@ grid-template-columns: 1fr;
 </div>
 
 <div class="registration-summary">
-<h4><i class="fas fa-receipt"></i> Registration Summary</h4>
-<div class="summary-item">
-<span>Initial Registration</span>
-<span>Free</span>
-</div>
-<div class="summary-item">
-<span>Round 1 Entry Fee</span>
-<span>₹100</span>
-</div>
-<div class="summary-total">
-<div class="summary-item">
-<span>Total Due Now</span>
-<span>₹100</span>
-</div>
-</div>
-<p style="font-size: 0.85rem; color: var(--muted); margin-top: 1rem;">
-Additional fees will be required for subsequent rounds if your team qualifies.
-</p>
+<!-- Registration summary will be loaded dynamically -->
 </div>
 
-<div class="terms-section">
-<h4><i class="fas fa-file-contract"></i> Tournament Rules & Terms</h4>
-<ul class="terms-list">
-<li>Teams must pay entry fees for each round to participate</li>
-<li>Only top 4 teams from each group advance to the next round</li>
-<li>Payment must be completed before round starts</li>
-<li>No refunds for eliminated teams</li>
-<li>Teams must follow all tournament rules and guidelines</li>
-<li>Organizers reserve the right to disqualify teams for misconduct</li>
-</ul>
-<div class="checkbox-group">
-<input type="checkbox" id="accept-terms" name="acceptTerms" required>
-<label for="accept-terms">I accept the tournament rules and terms</label>
-</div>
+<div class="terms-section" id="terms-section">
+<!-- Tournament rules will be loaded dynamically -->
 </div>
 
 <button type="submit" class="btn btn-primary" style="width: 100%;" id="register-btn">
@@ -779,6 +750,12 @@ document.getElementById('reg-end-date').textContent = regEndDate;
 
 // Load payment structure based on tournament format
 loadPaymentStructure(currentTournament);
+
+// Load registration summary
+loadRegistrationSummary(currentTournament);
+
+// Load tournament rules
+loadTournamentRules(currentTournament);
 
 // Update tournament poster
 const posterPath = currentTournament.posterImage || currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl;
@@ -970,6 +947,71 @@ window.location.href = `team-dashboard.html?tournament=${currentTournament.slug}
 console.error('Registration error:', error);
 showError(`Registration failed: ${error.message}`);
 }
+}
+
+// Load registration summary based on tournament
+function loadRegistrationSummary(tournament) {
+    const container = document.getElementById('registration-summary');
+    const entryFee = tournament.entryFee || 0;
+    
+    container.innerHTML = `
+        <h4><i class="fas fa-receipt"></i> Registration Summary</h4>
+        <div class="summary-item">
+            <span>Tournament Entry Fee</span>
+            <span>₹${entryFee.toLocaleString()}</span>
+        </div>
+        <div class="summary-total">
+            <div class="summary-item">
+                <span>Total Due Now</span>
+                <span>₹${entryFee.toLocaleString()}</span>
+            </div>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--muted); margin-top: 1rem;">
+            One-time payment for the entire tournament. No additional fees required.
+        </p>
+    `;
+}
+
+// Load tournament rules based on format
+function loadTournamentRules(tournament) {
+    const container = document.getElementById('terms-section');
+    
+    let rules = [];
+    
+    if (tournament.format === 'kp') {
+        // KP Tournament specific rules
+        const kp = tournament.kpSettings || {};
+        rules = [
+            `One-time entry fee of ₹${tournament.entryFee || 200} per team`,
+            `Teams will be divided into ${kp.numberOfGroups || 4} groups of ${kp.groupSize || 25} teams each`,
+            `Top ${kp.qualifiersPerGroup || 4} teams from each group qualify for the final`,
+            `Maximum ${kp.maxPlayersPerTeam || 4} players per team`,
+            'No additional fees for qualifying rounds',
+            'No refunds for eliminated teams',
+            'Teams must follow all tournament rules and guidelines',
+            'Organizers reserve the right to disqualify teams for misconduct'
+        ];
+    } else {
+        // Default tournament rules
+        rules = [
+            `Entry fee: ₹${tournament.entryFee || 0} per team`,
+            'Teams must follow all tournament rules and guidelines',
+            'No refunds for eliminated teams',
+            'Organizers reserve the right to disqualify teams for misconduct',
+            'Payment must be completed before tournament starts'
+        ];
+    }
+    
+    container.innerHTML = `
+        <h4><i class="fas fa-file-contract"></i> Tournament Rules & Terms</h4>
+        <ul class="terms-list">
+            ${rules.map(rule => `<li>${rule}</li>`).join('')}
+        </ul>
+        <div class="checkbox-group">
+            <input type="checkbox" id="accept-terms" name="acceptTerms" required>
+            <label for="accept-terms">I accept the tournament rules and terms</label>
+        </div>
+    `;
 }
 
 // Load payment structure based on tournament format
