@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-
     <style>
         :root {
             --bg: #0f0f10;
@@ -21,6 +20,7 @@
             --accent: #FFD700;
             --accent-2: #e0ac10;
             --radius: 12px;
+            --border-color: rgba(255, 255, 255, 0.1);
         }
 
         * {
@@ -32,7 +32,7 @@
         body {
             margin: 0;
             font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-            background: linear-gradient(180deg, var(--bg), #070707 140%);
+            background: var(--bg);
             color: var(--copy);
             line-height: 1.5;
             min-height: 100vh;
@@ -44,9 +44,9 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            background: rgba(26, 26, 26, 0.8);
+            background: rgba(15, 15, 16, 0.8);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--border-color);
             height: 64px;
             display: flex;
             align-items: center;
@@ -106,86 +106,134 @@
             color: #ff6b6b;
         }
 
-        .main-content {
+        /* New Hero Section Styles */
+        .tournament-hero {
             margin-top: 64px;
+            height: 45vh;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 2rem 24px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #1a1a1a;
+        }
+
+        .tournament-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(15, 15, 16, 0.2) 0%, rgba(15, 15, 16, 1) 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+        }
+
+        .page-subtitle {
+            font-size: 1.25rem;
+            color: var(--muted);
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        .main-content {
             padding: 32px 24px;
             max-width: 1400px;
             margin-left: auto;
             margin-right: auto;
         }
 
-        .breadcrumb {
-            margin-bottom: 16px;
-            color: var(--muted);
-            font-size: 14px;
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 2rem;
+            align-items: start;
         }
 
-        .breadcrumb a {
-            color: var(--accent);
-            text-decoration: none;
-        }
-
-        .page-header {
-            margin-bottom: 32px;
+        .main-column {
             display: flex;
-            gap: 24px;
-            align-items: flex-start;
+            flex-direction: column;
+            gap: 2rem;
         }
 
-        .page-content {
-            flex: 1;
-        }
-
-        .page-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .page-subtitle {
-            color: var(--muted);
-        }
-
-        .tournament-poster {
-            width: 200px;
-            height: 280px;
-            border-radius: var(--radius);
-            overflow: hidden;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
+        .sidebar-column {
+            position: sticky;
+            top: 88px;
+            /* 64px header + 24px padding */
             display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .tournament-poster img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .poster-placeholder {
-            color: var(--muted);
-            text-align: center;
-            font-size: 14px;
+            flex-direction: column;
+            gap: 2rem;
         }
 
         .dashboard-section {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--panel);
+            border: 1px solid var(--border-color);
             border-radius: var(--radius);
             padding: 2rem;
-            margin-bottom: 2rem;
         }
 
         .section-header {
             margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .section-title {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--copy);
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+
+        .info-list .label {
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .info-list .value {
+            font-weight: 600;
+            color: var(--copy);
+            text-align: right;
+        }
+
+        .tournament-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
 
         .btn {
@@ -196,7 +244,10 @@
             transition: all 0.3s ease;
             border: none;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
             text-align: center;
         }
 
@@ -224,12 +275,22 @@
         }
 
         .btn-danger {
-            background: #ef4444;
+            background: rgba(239, 68, 68, 0.8);
             color: white;
         }
 
         .btn-danger:hover {
             background: #dc2626;
+        }
+
+        .btn-delete {
+            background: transparent;
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+
+        .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.1);
         }
 
         .btn:disabled {
@@ -238,49 +299,8 @@
             transform: none;
         }
 
-        .details-grid {
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 2rem;
-            align-items: start;
-        }
-
-        .tournament-info-card ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .tournament-info-card li {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .tournament-info-card li:last-child {
-            border-bottom: none;
-        }
-
-        .tournament-info-card .label {
-            color: var(--muted);
-            font-weight: 500;
-        }
-
-        .tournament-info-card .value {
-            font-weight: 600;
-            color: var(--copy);
-        }
-
-        .tournament-actions {
-            margin-top: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
         .team-count {
             color: var(--muted);
-            margin-left: 1rem;
             font-size: 1rem;
         }
 
@@ -293,7 +313,7 @@
         .team-item {
             background: rgba(0, 0, 0, 0.2);
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
         }
 
         .team-header {
@@ -321,10 +341,12 @@
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s ease-out;
+            border-top: 1px solid transparent;
         }
 
         .team-item.open .team-players {
             max-height: 500px;
+            border-top-color: var(--border-color);
         }
 
         .players-list {
@@ -383,7 +405,7 @@
             padding: 2rem;
             max-width: 500px;
             width: 90%;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
             max-height: 90vh;
             overflow-y: auto;
         }
@@ -527,6 +549,16 @@
             font-size: 0.9rem;
         }
 
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar-column {
+                position: static;
+            }
+        }
+
         @media (max-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr;
@@ -546,25 +578,17 @@
                 width: 150px;
                 height: 210px;
             }
-        }
 
-        @media (max-width: 1024px) {
-            .details-grid {
-                grid-template-columns: 1fr;
+            .page-title {
+                font-size: 2.2rem;
+            }
+
+            .page-subtitle {
+                font-size: 1.1rem;
             }
 
             .main-content {
                 padding: 24px 16px;
-            }
-
-            .page-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .tournament-poster {
-                width: 150px;
-                height: 210px;
             }
         }
     </style>
@@ -588,48 +612,69 @@
         </div>
     </header>
 
+    <section class="tournament-hero" id="tournament-hero">
+        <div class="hero-content">
+            <h1 class="page-title" id="tournament-title">Loading Tournament...</h1>
+            <p class="page-subtitle" id="tournament-game">Loading Game...</p>
+        </div>
+    </section>
+
     <main class="main-content">
-        <div class="breadcrumb">
-            <a href="admin-dashboard.html">Dashboard</a> &gt; <span id="breadcrumb-tournament-name">Tournament</span>
-        </div>
-
-        <div class="page-header">
-            <div class="page-content">
-                <h1 class="page-title" id="tournament-title">Loading Tournament...</h1>
-                <p class="page-subtitle" id="tournament-game">Manage teams, brackets, and settings for this event.</p>
-            </div>
-            <div class="tournament-poster" id="tournament-poster">
-                <div class="poster-placeholder">
-                    <i class="fas fa-image"></i><br>
-                    No poster available
-                </div>
-            </div>
-        </div>
-
-        <div class="details-grid">
-            <div class="dashboard-section" id="teams-section">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        Registered Teams
-                        <span class="team-count" id="team-count-display">(0/0)</span>
-                    </h2>
-                </div>
-                <div class="team-accordion" id="teams-list-container">
-                    <div class="loading-state">
-                        <i class="fas fa-spinner fa-spin"></i> Loading teams...
-                    </div>
-                </div>
-            </div>
-
-            <div class="dashboard-section" id="info-section">
-                <div class="tournament-info-card">
+        <div class="content-grid">
+            <div class="main-column">
+                <div class="dashboard-section" id="teams-section">
                     <div class="section-header">
-                        <h2 class="section-title">Tournament Info</h2>
+                        <h2 class="section-title">Registered Teams</h2>
+                        <span class="team-count" id="team-count-display">(0/0)</span>
                     </div>
-                    <ul>
+                    <div class="team-accordion" id="teams-list-container">
+                        <div class="loading-state">
+                            <i class="fas fa-spinner fa-spin"></i> Loading teams...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-column">
+                <div class="dashboard-section" id="actions-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Actions</h2>
+                    </div>
+                    <div class="tournament-actions">
+                        <button class="btn btn-primary" id="edit-details-btn">
+                            <i class="fas fa-edit"></i> Edit Details
+                        </button>
+                        <button class="btn btn-secondary" id="manage-brackets-btn">
+                            <i class="fas fa-sitemap"></i> Manage Brackets
+                        </button>
+                        <button class="btn btn-danger" id="cancel-tournament-btn">
+                            <i class="fas fa-ban"></i> Cancel Tournament
+                        </button>
+                        <button class="btn btn-delete" id="delete-tournament-btn">
+                            <i class="fas fa-trash"></i> Delete Tournament
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dashboard-section" id="info-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Tournament Details</h2>
+                    </div>
+                    <ul class="info-list">
                         <li><span class="label">Status</span><span class="value" id="info-status">--</span></li>
                         <li><span class="label">Prize Pool</span><span class="value" id="info-prize">--</span></li>
                         <li><span class="label">Entry Fee</span><span class="value" id="info-fee">--</span></li>
+                        <li><span class="label">Format</span><span class="value" id="info-format">--</span></li>
+                        <li><span class="label">Tournament ID</span><span class="value" id="info-tournament-id"
+                                style="font-family: monospace; font-size: 0.9rem;">--</span></li>
+                    </ul>
+                </div>
+
+                <div class="dashboard-section" id="schedule-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Schedule</h2>
+                    </div>
+                    <ul class="info-list">
                         <li><span class="label">Registration Start</span><span class="value"
                                 id="info-reg-start">--</span></li>
                         <li><span class="label">Registration End</span><span class="value" id="info-reg-end">--</span>
@@ -638,21 +683,7 @@
                                 id="info-start-date">--</span></li>
                         <li><span class="label">Tournament End</span><span class="value" id="info-end-date">--</span>
                         </li>
-                        <li><span class="label">Format</span><span class="value" id="info-format">--</span></li>
-                        <li><span class="label">Tournament ID</span><span class="value"
-                                id="info-tournament-id">--</span></li>
                     </ul>
-                </div>
-                <div class="tournament-actions">
-                    <button class="btn btn-primary" id="edit-details-btn">
-                        <i class="fas fa-edit"></i> Edit Details
-                    </button>
-                    <button class="btn btn-secondary" id="manage-brackets-btn">
-                        <i class="fas fa-sitemap"></i> Manage Brackets
-                    </button>
-                    <button class="btn btn-danger" id="cancel-tournament-btn">
-                        <i class="fas fa-ban"></i> Cancel Tournament
-                    </button>
                 </div>
             </div>
         </div>
@@ -781,37 +812,9 @@
         // Function to get proper image URL with CORS support
         function getImageUrl(imagePath) {
             if (!imagePath) return null;
-
-            // If it's already a full URL, return as is
-            if (imagePath.startsWith('http')) {
-                return imagePath;
-            }
-
-            // Extract filename from path (e.g., 'temp/image.jpg' -> 'image.jpg')
+            if (imagePath.startsWith('http')) return imagePath;
             const filename = imagePath.split('/').pop();
-
-            // Use the new static route for serving images with CORS
             return `${API_BASE_URL}/api/static/images/${filename}`;
-        }
-
-        // Function to load image with fallback options
-        function getImageWithFallback(imagePath) {
-            try {
-                // First try the new CORS-enabled route
-                const corsUrl = getImageUrl(imagePath);
-                if (corsUrl) {
-                    return corsUrl;
-                }
-
-                // Fallback to direct path
-                const directUrl = imagePath.startsWith('http') ? imagePath :
-                    imagePath.startsWith('/') ? `${API_BASE_URL}${imagePath}` :
-                        `${API_BASE_URL}/${imagePath}`;
-                return directUrl;
-            } catch (error) {
-                console.error('Error constructing image URL:', error);
-                return null;
-            }
         }
 
         // --- AUTHENTICATION & USER INFO ---
@@ -850,42 +853,26 @@
             document.getElementById('edit-max-teams').value = currentTournament.maxTeams || '';
             document.getElementById('edit-description').value = currentTournament.description || '';
 
-            // Format dates for datetime-local input
-            if (currentTournament.registrationStart) {
-                const regStartDate = new Date(currentTournament.registrationStart);
-                document.getElementById('edit-reg-start').value = regStartDate.toISOString().slice(0, 16);
-            }
-            if (currentTournament.registrationEnd) {
-                const regEndDate = new Date(currentTournament.registrationEnd);
-                document.getElementById('edit-reg-end').value = regEndDate.toISOString().slice(0, 16);
-            }
-            if (currentTournament.tournamentStart) {
-                const startDate = new Date(currentTournament.tournamentStart);
-                document.getElementById('edit-start-date').value = startDate.toISOString().slice(0, 16);
-            }
-            if (currentTournament.tournamentEnd) {
-                const endDate = new Date(currentTournament.tournamentEnd);
-                document.getElementById('edit-end-date').value = endDate.toISOString().slice(0, 16);
-            }
+            // Format dates
+            const toLocalISOString = date => new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
 
-            // Set format
+            if (currentTournament.registrationStart) document.getElementById('edit-reg-start').value = toLocalISOString(new Date(currentTournament.registrationStart));
+            if (currentTournament.registrationEnd) document.getElementById('edit-reg-end').value = toLocalISOString(new Date(currentTournament.registrationEnd));
+            if (currentTournament.tournamentStart) document.getElementById('edit-start-date').value = toLocalISOString(new Date(currentTournament.tournamentStart));
+            if (currentTournament.tournamentEnd) document.getElementById('edit-end-date').value = toLocalISOString(new Date(currentTournament.tournamentEnd));
+
             const format = currentTournament.format || currentTournament.tournamentFormat || currentTournament.gameFormat || '';
             document.getElementById('edit-format').value = format;
 
-            // Show current poster if available
             const posterPreview = document.getElementById('poster-preview');
-            if (currentTournament.posterImage || currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl) {
-                const posterPath = currentTournament.posterImage || currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl;
-                const sessionData = getSessionData();
+            const posterPath = currentTournament.posterImage || currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl;
+            const placeholder = `<div class="poster-placeholder"><i class="fas fa-image"></i><p>Click to upload poster</p></div>`;
 
-                const imageUrl = getImageWithFallback(posterPath);
-                if (imageUrl) {
-                    posterPreview.innerHTML = `<img src="${imageUrl}" alt="Tournament Poster" onerror="this.parentElement.innerHTML='<div class=\\'poster-placeholder\\'><i class=\\'fas fa-image\\'></i><p>Click to upload poster</p></div>'">`;
-                } else {
-                    posterPreview.innerHTML = `<div class="poster-placeholder"><i class="fas fa-image"></i><p>Click to upload poster</p></div>`;
-                }
+            if (posterPath) {
+                const imageUrl = getImageUrl(posterPath);
+                posterPreview.innerHTML = imageUrl ? `<img src="${imageUrl}" alt="Tournament Poster" onerror="this.parentElement.innerHTML='${placeholder}'">` : placeholder;
             } else {
-                posterPreview.innerHTML = `<div class="poster-placeholder"><i class="fas fa-image"></i><p>Click to upload poster</p></div>`;
+                posterPreview.innerHTML = placeholder;
             }
         }
 
@@ -895,25 +882,15 @@
 
         async function saveTournamentChanges(formData, slug, token) {
             try {
-                const response = await fetch(
-                    `${API_BASE_URL}/api/tournaments/${slug}`,
-                    {
-                        method: "PATCH",
-                        headers: {
-                            Authorization: `Bearer ${token}`, // DO NOT set Content-Type
-                        },
-                        body: formData,
-                    }
-                );
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}`, {
+                    method: "PATCH",
+                    headers: { Authorization: `Bearer ${token}` },
+                    body: formData,
+                });
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || "Unknown error occurred.");
-                }
+                if (!response.ok) throw new Error((await response.json()).message || "Unknown error.");
 
-                const result = await response.json();
                 alert("Tournament updated successfully!");
-                console.log("Updated:", result.data);
                 hideEditModal();
                 loadTournamentDetails(slug, token);
             } catch (error) {
@@ -926,7 +903,7 @@
             if (currentTournament) {
                 window.location.href = `tournament-brackets.html?id=${currentTournament._id}`;
             } else {
-                alert('Tournament data not loaded yet. Please wait and try again.');
+                alert('Tournament data not loaded yet.');
             }
         }
 
@@ -939,315 +916,211 @@
         }
 
         async function cancelTournament() {
-            if (!currentTournament) {
-                alert('Tournament data not loaded yet. Please wait and try again.');
-                return;
-            }
+            if (!currentTournament) { alert('Tournament data not loaded.'); return; }
 
             const sessionData = getSessionData();
-            if (!sessionData || !sessionData.token) {
-                alert('Authentication required. Please login again.');
-                return;
-            }
+            if (!sessionData || !sessionData.token) { alert('Authentication required.'); return; }
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament.slug}/cancel`, {
                     method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${sessionData.token}`,
-                        'Content-Type': 'application/json'
-                    }
+                    headers: { 'Authorization': `Bearer ${sessionData.token}`, 'Content-Type': 'application/json' }
                 });
 
-                if (response.ok) {
-                    alert('Tournament has been cancelled successfully.');
-                    hideCancelModal();
-                    window.location.reload();
-                } else {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to cancel tournament.');
-                }
+                if (!response.ok) throw new Error((await response.json()).message || 'Failed to cancel.');
+
+                alert('Tournament has been cancelled successfully.');
+                hideCancelModal();
+                window.location.reload();
             } catch (error) {
-                console.error('Cancel tournament error:', error);
                 alert('Failed to cancel tournament: ' + error.message);
             }
         }
 
         async function deleteTournament() {
-            if (!currentTournament) {
-                alert('Tournament data not loaded yet. Please wait and try again.');
-                return;
-            }
+            if (!currentTournament) { alert('Tournament data not loaded.'); return; }
 
-            if (!confirm('Are you sure you want to DELETE this tournament? This will permanently remove all tournament data and cannot be undone!')) {
-                return;
-            }
+            if (!confirm('Are you sure you want to DELETE this tournament? This is permanent!')) return;
 
             const sessionData = getSessionData();
-            if (!sessionData || !sessionData.token) {
-                alert('Authentication required. Please login again.');
-                return;
-            }
+            if (!sessionData || !sessionData.token) { alert('Authentication required.'); return; }
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament.slug}`, {
                     method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${sessionData.token}`,
-                        'Content-Type': 'application/json'
-                    }
+                    headers: { 'Authorization': `Bearer ${sessionData.token}` }
                 });
 
-                if (response.ok) {
-                    alert('Tournament has been deleted successfully.');
-                    window.location.href = 'admin-dashboard.html';
-                } else {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to delete tournament.');
-                }
+                if (!response.ok) throw new Error((await response.json()).message || 'Failed to delete.');
+
+                alert('Tournament has been deleted successfully.');
+                window.location.href = 'admin-dashboard.html';
             } catch (error) {
-                console.error('Delete tournament error:', error);
                 alert('Failed to delete tournament: ' + error.message);
             }
         }
 
         // --- DATA LOADING ---
         async function loadTournamentDetails(tournamentSlug, token) {
-            const headers = {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            };
-
             try {
-                const tournamentResponse = await fetch(`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}`, { headers });
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
 
-                if (!tournamentResponse.ok) {
-                    if (tournamentResponse.status === 404) {
-                        throw new Error('Tournament not found. Please check the slug.');
-                    }
-                    throw new Error('Failed to fetch tournament data.');
-                }
+                if (!response.ok) throw new Error(response.status === 404 ? 'Tournament not found.' : 'Failed to fetch data.');
 
-                const t = (await tournamentResponse.json()).data;
+                const t = (await response.json()).data;
                 currentTournament = t;
 
+                // Hero and Titles
                 document.getElementById('tournament-title').textContent = t.title;
-                document.getElementById('breadcrumb-tournament-name').textContent = t.title;
                 document.getElementById('tournament-game').textContent = t.game;
-                document.getElementById('info-status').textContent = t.status.charAt(0).toUpperCase() + t.status.slice(1);
-                document.getElementById('info-prize').textContent = `₹${(t.prizePool || 0).toLocaleString()}`;
-                // Recommended replacement
-                document.getElementById('info-fee').textContent = t.entryFee !== undefined ? `₹${t.entryFee.toLocaleString()} per team` : 'Not Specified';
-                document.getElementById('info-reg-start').textContent = t.registrationStart ? new Date(t.registrationStart).toLocaleDateString() : 'Not specified';
-                document.getElementById('info-reg-end').textContent = t.registrationEnd ? new Date(t.registrationEnd).toLocaleDateString() : 'Not specified';
-                document.getElementById('info-start-date').textContent = new Date(t.tournamentStart).toLocaleDateString();
-                document.getElementById('info-end-date').textContent = new Date(t.tournamentEnd).toLocaleDateString();
-                document.getElementById('info-tournament-id').textContent = t._id;
 
-                const format = t.format || t.tournamentFormat || t.gameFormat || 'Not specified';
-                document.getElementById('info-format').textContent = format;
-
-                // Handle poster image display with authentication
-                const posterElement = document.getElementById('tournament-poster');
-                if (t.posterImage || t.poster || t.thumbnailUrl || t.imageUrl) {
-                    const posterPath = t.posterImage || t.poster || t.thumbnailUrl || t.imageUrl;
-
-                    // Use new CORS-enabled image URL
-                    const imageUrl = getImageWithFallback(posterPath);
-                    if (imageUrl) {
-                        posterElement.innerHTML = `<img src="${imageUrl}" alt="Tournament Poster" onload="console.log('Poster loaded successfully')" onerror="this.parentElement.innerHTML='<div class=\\'poster-placeholder\\'><i class=\\'fas fa-image\\'></i><br>Poster not available</div>'">`;
-                    } else {
-                        posterElement.innerHTML = `<div class="poster-placeholder"><i class="fas fa-image"></i><br>Poster not available</div>`;
-                    }
-                } else {
-                    posterElement.innerHTML = `<div class="poster-placeholder"><i class="fas fa-image"></i><br>No poster available</div>`;
+                const posterPath = t.posterImage || t.poster || t.thumbnailUrl || t.imageUrl;
+                const heroElement = document.getElementById('tournament-hero');
+                if (posterPath) {
+                    const imageUrl = getImageUrl(posterPath);
+                    heroElement.style.backgroundImage = `url(${imageUrl})`;
                 }
 
+                // Details Card
+                document.getElementById('info-status').textContent = t.status.charAt(0).toUpperCase() + t.status.slice(1);
+                document.getElementById('info-prize').textContent = `₹${(t.prizePool || 0).toLocaleString()}`;
+                document.getElementById('info-fee').textContent = `₹${(t.entryFee || 0).toLocaleString()} per team`;
+                document.getElementById('info-format').textContent = t.format || t.tournamentFormat || 'Not specified';
+                document.getElementById('info-tournament-id').textContent = t._id;
+
+                // Schedule Card
+                const formatDate = (dateString) => dateString ? new Date(dateString).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A';
+                document.getElementById('info-reg-start').textContent = formatDate(t.registrationStart);
+                document.getElementById('info-reg-end').textContent = formatDate(t.registrationEnd);
+                document.getElementById('info-start-date').textContent = formatDate(t.tournamentStart);
+                document.getElementById('info-end-date').textContent = formatDate(t.tournamentEnd);
+
+                // Teams Section
                 document.getElementById('team-count-display').textContent = `(${(t.participants?.length || 0)}/${t.maxTeams})`;
 
                 const teamsContainer = document.getElementById('teams-list-container');
                 const teams = t.participants || [];
 
                 if (teams.length === 0) {
-                    teamsContainer.innerHTML = `<div class="empty-state">No teams have registered for this tournament yet.</div>`;
+                    teamsContainer.innerHTML = `<div class="empty-state">No teams have registered yet.</div>`;
                     return;
                 }
 
                 teamsContainer.innerHTML = teams.map(team => `
-                    <div class="team-item" data-team-id="${team._id}">
-                        <div class="team-header">
-                            <span class="team-name">${team.name || 'Unnamed Team'}</span>
-                            <div style="display: flex; align-items: center; gap: 1rem;">
-                                <span style="color: var(--muted); font-size: 0.9rem;">
-                                    ${team.players?.length || 0} players
-                                </span>
-                                <span style="
-                                    padding: 0.25rem 0.5rem;
-                                    border-radius: 4px;
-                                    font-size: 0.8rem;
-                                    font-weight: 600;
-                                    ${team.paymentStatus === 'paid' ? 'background: rgba(34, 197, 94, 0.2); color: #22c55e;' :
-                        team.paymentStatus === 'pending' ? 'background: rgba(251, 191, 36, 0.2); color: #fbbf24;' :
-                            'background: rgba(239, 68, 68, 0.2); color: #ef4444;'}
-                                ">
-                                    ${team.paymentStatus === 'paid' ? 'Paid' :
-                        team.paymentStatus === 'pending' ? 'Payment Pending' :
-                            'Payment Failed'}
-                                </span>
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                        </div>
-                        <div class="team-players">
-                            <div class="players-list">
-                                ${(team.players || []).map(player => `
-                                    <div class="player-item">
-                                        <div>
-                                            <span class="player-name">${player.name || 'Unknown Player'} ${player.isCaptain ? '(Captain)' : ''}</span>
-                                            <div style="font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem;">
-                                                <div>In-Game ID: ${player.inGameId || 'N/A'}</div>
-                                                <div>Phone: ${player.phoneNumber || 'N/A'}</div>
-                                            </div>
-                                        </div>
-                                        <span class="player-id">${player.email || 'No email'}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-
-                // Add click handlers for team expansion
-                document.querySelectorAll('.team-header').forEach(header => {
-                    header.addEventListener('click', function () {
-                        const teamItem = this.closest('.team-item');
-                        teamItem.classList.toggle('open');
-                    });
-                });
+<div class="team-item" data-team-id="${team._id}">
+<div class="team-header">
+<span class="team-name">${team.name || 'Unnamed Team'}</span>
+<div style="display: flex; align-items: center; gap: 1rem;">
+<span style="color: var(--muted); font-size: 0.9rem;">${team.players?.length || 0} players</span>
+<i class="fas fa-chevron-down"></i>
+</div>
+</div>
+<div class="team-players">
+<div class="players-list">
+${(team.players || []).map(player => `
+<div class="player-item">
+<div>
+<span class="player-name">${player.name || 'Unknown'} ${player.isCaptain ? '(C)' : ''}</span>
+<div style="font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem;">
+In-Game ID: ${player.inGameId || 'N/A'}
+</div>
+</div>
+<span class="player-id">${player.email || 'No email'}</span>
+</div>
+`).join('')}
+</div>
+</div>
+</div>
+`).join('');
 
             } catch (error) {
                 console.error('Error loading tournament details:', error);
                 document.getElementById('tournament-title').textContent = 'Error Loading Tournament';
-                document.getElementById('tournament-game').textContent = 'Please try refreshing the page.';
-
-                const teamsContainer = document.getElementById('teams-list-container');
-                teamsContainer.innerHTML = `<div class="empty-state">Error loading tournament data.</div>`;
-            }
-        }
-
-        // Add delete tournament button functionality
-        function addDeleteButton() {
-            const actionsContainer = document.querySelector('.tournament-actions');
-            if (actionsContainer && !document.getElementById('delete-tournament-btn')) {
-                const deleteBtn = document.createElement('button');
-                deleteBtn.id = 'delete-tournament-btn';
-                deleteBtn.className = 'btn btn-danger';
-                deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete Tournament';
-                deleteBtn.style.marginTop = '0.5rem';
-                deleteBtn.addEventListener('click', deleteTournament);
-                actionsContainer.appendChild(deleteBtn);
+                document.getElementById('tournament-game').textContent = error.message;
+                document.getElementById('teams-list-container').innerHTML = `<div class="empty-state">Could not load tournament data.</div>`;
             }
         }
 
         // --- PAGE INITIALIZATION AND EVENT LISTENERS ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Check for user session and handle auth
             const sessionData = getSessionData();
             if (!sessionData || !sessionData.token) {
                 window.location.href = 'auth.html';
-                return; // Stop execution if not authenticated
+                return;
             }
+
             if (sessionData.user) {
                 document.getElementById('admin-username').textContent = sessionData.user.username;
             }
 
-            // Get tournament info from URL
             const urlParams = new URLSearchParams(window.location.search);
             const tournamentSlug = urlParams.get('slug');
-            const authToken = sessionData.token;
 
-            // Load tournament details if slug exists
             if (tournamentSlug) {
-                loadTournamentDetails(tournamentSlug, authToken);
+                loadTournamentDetails(tournamentSlug, sessionData.token);
             } else {
                 document.getElementById('tournament-title').textContent = 'No Tournament Specified';
-                document.getElementById('tournament-game').textContent = 'Please provide a tournament slug in the URL.';
-                alert("No tournament slug found in URL.");
+                document.getElementById('tournament-game').textContent = 'Please provide a slug in the URL.';
             }
 
             // --- Main Button Event Listeners ---
             document.getElementById('edit-details-btn').addEventListener('click', editTournamentDetails);
             document.getElementById('manage-brackets-btn').addEventListener('click', manageBrackets);
             document.getElementById('cancel-tournament-btn').addEventListener('click', showCancelModal);
+            document.getElementById('delete-tournament-btn').addEventListener('click', deleteTournament);
             document.getElementById('confirm-cancel-btn').addEventListener('click', cancelTournament);
 
             // --- Modal Close Listeners ---
-            document.querySelectorAll('.close-modal').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const modal = e.target.closest('.modal');
-                    if (modal) modal.classList.remove('active');
-                });
-            });
-
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.addEventListener('click', (e) => {
-                    if (e.target === e.currentTarget) {
-                        e.currentTarget.classList.remove('active');
+            document.querySelectorAll('.close-modal, .modal').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    if (e.target === el) {
+                        el.closest('.modal')?.classList.remove('active');
                     }
                 });
             });
 
-            // --- Edit Form Poster Upload Listeners ---
-            document.getElementById('upload-poster-btn').addEventListener('click', () => {
-                document.getElementById('edit-poster').click();
-            });
+            // --- Edit Form Poster Upload ---
+            const posterInput = document.getElementById('edit-poster');
+            document.getElementById('upload-poster-btn').addEventListener('click', () => posterInput.click());
+            document.getElementById('poster-preview').addEventListener('click', () => posterInput.click());
 
-            document.getElementById('poster-preview').addEventListener('click', () => {
-                document.getElementById('edit-poster').click();
-            });
-
-            document.getElementById('edit-poster').addEventListener('change', (e) => {
+            posterInput.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    if (!file.type.startsWith('image/')) {
-                        alert('Please select a valid image file.');
+                    if (!file.type.startsWith('image/') || file.size > 5 * 1024 * 1024) {
+                        alert('Please select an image file under 5MB.');
                         return;
                     }
-                    if (file.size > 5 * 1024 * 1024) { // 5MB limit
-                        alert('File size must be less than 5MB.');
-                        return;
-                    }
+
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         document.getElementById('poster-preview').innerHTML =
-                            `<img src="${e.target.result}" alt="Tournament Poster Preview">`;
+                            `<img src="${e.target.result}" alt="Poster Preview">`;
                     };
                     reader.readAsDataURL(file);
                 }
             });
 
-            // --- Edit Form Submission Listener ---
-            document.getElementById('edit-tournament-form').addEventListener('submit', async (e) => {
+            // --- Form Submission ---
+            document.getElementById('edit-tournament-form').addEventListener('submit', (e) => {
                 e.preventDefault();
+
+                const authToken = getSessionData()?.token;
                 if (!tournamentSlug || !authToken) {
-                    alert("Could not save changes. Missing tournament slug or auth token.");
+                    alert("Could not save. Missing tournament slug or auth token.");
                     return;
                 }
-                const form = e.target;
-                const formData = new FormData(form);
-                await saveTournamentChanges(formData, tournamentSlug, authToken);
+
+                saveTournamentChanges(new FormData(e.target), tournamentSlug, authToken);
             });
 
-            // --- Team Accordion Listener (Event Delegation) ---
-            document.getElementById('teams-list-container').addEventListener('click', function (event) {
+            // --- Team Accordion (Event Delegation) ---
+            document.getElementById('teams-list-container').addEventListener('click', (event) => {
                 const header = event.target.closest('.team-header');
-                if (header) {
-                    const item = header.parentElement;
-                    item.classList.toggle('open');
-                }
+                if (header) header.parentElement.classList.toggle('open');
             });
-
-            // Call delete button function after loading
-            setTimeout(addDeleteButton, 1000);
         });
     </script>
 </body>
