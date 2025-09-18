@@ -292,6 +292,90 @@
       border-color: rgba(255, 215, 0, 0.3);
     }
 
+    /* Registration Message Section */
+    .registration-message {
+      padding: 2rem 0;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
+      border-top: 1px solid rgba(255, 215, 0, 0.2);
+      border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .registration-alert {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .alert-icon {
+      font-size: 2rem;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .alert-content {
+      flex: 1;
+    }
+
+    .alert-content h3 {
+      color: var(--accent);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+    }
+
+    .alert-content p {
+      color: var(--copy);
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .alert-action {
+      flex-shrink: 0;
+    }
+
+    .btn-register {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #000;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .btn-register:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+    }
+
+    /* Responsive registration message */
+    @media (max-width: 768px) {
+      .registration-alert {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+        padding: 1.5rem;
+      }
+
+      .alert-content h3 {
+        font-size: 1.1rem;
+      }
+
+      .alert-content p {
+        font-size: 0.9rem;
+      }
+    }
+
     /* Tournament Details Section */
     .tournament-details {
       padding: 4rem 0;
@@ -977,12 +1061,7 @@
             Loading tournament details...
           </p>
 
-          <div class="hero-stats">
-            <div class="stat-item">
-              <span class="stat-value" id="tournament-status">--</span>
-              <span class="stat-label">Status</span>
-            </div>
-          </div>
+
 
           <div class="hero-actions" id="hero-actions">
             <button class="btn-primary" id="primary-action">
@@ -1017,6 +1096,27 @@
               <span class="member-tag">soulcas</span>
               <span class="member-tag">Nivera</span>
             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Registration Status Message (only shown when registrations are open) -->
+    <section class="registration-message" id="registration-message" style="display: none;">
+      <div class="container">
+        <div class="registration-alert">
+          <div class="alert-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="alert-content">
+            <h3>Registrations are Open!</h3>
+            <p>Don't miss your chance to compete. Register your team now before spots fill up.</p>
+          </div>
+          <div class="alert-action">
+            <button class="btn-register" onclick="document.getElementById('primary-action').click()">
+              <i class="fas fa-user-plus"></i>
+              Register Now
+            </button>
           </div>
         </div>
       </div>
@@ -2353,9 +2453,8 @@
           today = new Date(tournamentDates.tournamentEnd.getTime() + 86400000); // 1 day after tournament
         }
       }
-      const statusElement = document.getElementById('tournament-status');
       const primaryActionBtn = document.getElementById('primary-action');
-
+      const registrationMessage = document.getElementById('registration-message');
       const leaderboardSection = document.getElementById('leaderboard-section');
       const heroActions = document.getElementById('hero-actions');
       const winnerSection = document.getElementById('winner-section');
@@ -2369,9 +2468,8 @@
 
       // Handle different tournament statuses
       if (today >= tournamentDates.registrationStart && today <= tournamentDates.registrationEnd) {
-        // Registration period - show register button
-        statusElement.textContent = 'Registrations Open';
-        statusElement.style.color = '#44ff44';
+        // Registration period - show register button and registration message
+        registrationMessage.style.display = 'block';
 
         heroActions.style.display = 'flex';
         primaryActionBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
@@ -2390,8 +2488,7 @@
 
       } else if (today < tournamentDates.registrationStart) {
         // Before registration starts
-        statusElement.textContent = 'Upcoming';
-        statusElement.style.color = '#FFD700';
+        registrationMessage.style.display = 'none';
 
         // Hide register button - registration not open yet
         heroActions.style.display = 'none';
@@ -2399,8 +2496,7 @@
 
       } else if (today >= tournamentDates.tournamentStart && today <= tournamentDates.tournamentEnd) {
         // Tournament is live - hide all buttons, show leaderboard
-        statusElement.textContent = 'Ongoing';
-        statusElement.style.color = '#ff4444';
+        registrationMessage.style.display = 'none';
 
         // Hide all action buttons when tournament is live
         heroActions.style.display = 'none';
@@ -2410,8 +2506,7 @@
 
       } else if (today > tournamentDates.registrationEnd && today < tournamentDates.tournamentStart) {
         // Registration closed, tournament not started
-        statusElement.textContent = 'Upcoming';
-        statusElement.style.color = '#FFD700';
+        registrationMessage.style.display = 'none';
 
         // Hide register button - registration closed
         heroActions.style.display = 'none';
@@ -2419,8 +2514,7 @@
 
       } else if (today > tournamentDates.tournamentEnd) {
         // Tournament finished - show leaderboard as final results
-        statusElement.textContent = 'Completed';
-        statusElement.style.color = '#9aa0a6';
+        registrationMessage.style.display = 'none';
 
         // Hide action buttons for completed tournaments
         heroActions.style.display = 'none';
@@ -2700,8 +2794,7 @@
       document.getElementById('tournament-title').textContent = tournament.title;
       document.getElementById('tournament-subtitle').textContent = tournament.description || 'Join this exciting tournament and compete for glory!';
 
-      // Update hero stats
-      document.getElementById('tournament-status').textContent = tournament.status.charAt(0).toUpperCase() + tournament.status.slice(1);
+
 
       // Update tournament overview with server data
       updateTournamentOverview(tournament);
