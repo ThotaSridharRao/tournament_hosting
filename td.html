@@ -1101,7 +1101,7 @@
                        window.location.hostname === '127.0.0.1' || 
                        window.location.protocol === 'file:';
         
-        const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://tournament-hosting-backend.onrender.com';
+        const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
         let currentTournament = null;
 
         // Function to get proper image URL with CORS support
@@ -1342,13 +1342,19 @@
         // --- DATA LOADING ---
         async function loadTournamentDetails(tournamentSlug, token) {
             try {
+                console.log('Loading tournament details for slug:', tournamentSlug);
                 const response = await fetch(`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
-                if (!response.ok) throw new Error(response.status === 404 ? 'Tournament not found.' : 'Failed to fetch data.');
+                if (!response.ok) {
+                    console.error('Failed to fetch tournament:', response.status, response.statusText);
+                    throw new Error(response.status === 404 ? 'Tournament not found.' : 'Failed to fetch data.');
+                }
 
-                const t = (await response.json()).data;
+                const responseData = await response.json();
+                console.log('Tournament data received:', responseData);
+                const t = responseData.data;
                 currentTournament = t;
 
                 // Hero and Titles

@@ -1431,10 +1431,6 @@
         // Modern authentication check using localStorage
         function checkAdminAuth() {
             try {
-                // Debug: Log what's in localStorage
-                console.log('Checking authentication...');
-                console.log('localStorage earena_session:', localStorage.getItem('earena_session'));
-                
                 // Get authentication data from localStorage
                 const authData = localStorage.getItem('earena_session');
                 
@@ -1445,21 +1441,16 @@
                 }
 
                 const sessionData = JSON.parse(authData);
-                console.log('Parsed session data:', sessionData);
                 
                 // Check if session data is valid
                 if (!sessionData.user || !sessionData.token) {
-                    console.error('Invalid session data structure. Redirecting to login.');
-                    console.log('Missing user or token:', { user: sessionData.user, token: sessionData.token });
                     redirectToAuth('login');
                     return false;
                 }
 
                 // Check if user is admin
-                console.log('User role:', sessionData.user.role);
                 if (sessionData.user.role !== 'admin') {
                     alert('Access Denied: You do not have admin privileges.');
-                    console.log('User is not admin. Role:', sessionData.user.role);
                     redirectToAuth('login');
                     return false;
                 }
@@ -1470,7 +1461,6 @@
                     usernameElement.textContent = sessionData.user.email;
                 }
 
-                console.log('Admin authentication successful');
                 return sessionData; // Return session data for use in other functions
                 
             } catch (error) {
