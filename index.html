@@ -1450,10 +1450,12 @@
                   <i class="fas fa-user"></i>
                   <span>My Account</span>
                 </a>
-                <button class="profile-action logout-action" onclick="logout()">
-                  <i class="fas fa-sign-out-alt"></i>
-                  <span>Logout</span>
-                </button>
+                <form action="https://t2-237c.onrender.com/logout" method="POST" style="display: inline; width: 100%;">
+                  <button type="submit" class="profile-action logout-action" style="width: 100%; border: none; background: none; font-family: inherit;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                  </button>
+                </form>
               </div>
             </div>
           </div>
@@ -1531,10 +1533,12 @@
             <span class="mobile-user-role" id="mobile-user-role-badge" style="display: none;">Admin</span>
           </div>
         </div>
-        <button class="mobile-logout-btn" onclick="logout()">
-          <i class="fas fa-sign-out-alt"></i>
-          Logout
-        </button>
+        <form action="https://t2-237c.onrender.com/logout" method="POST" style="display: inline; width: 100%;">
+          <button type="submit" class="mobile-logout-btn">
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+          </button>
+        </form>
       </div>
     </div>
   </div>

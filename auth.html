@@ -761,70 +761,60 @@
         <button class="auth-tab active" id="login-tab" onclick="switchTab('login')">Sign In</button>
         <button class="auth-tab" id="register-tab" onclick="switchTab('register')">Sign Up</button>
       </div>
-      <form class="auth-form" id="auth-form" novalidate>
-        <div class="error-message" id="error-message"></div>
-        <div class="success-message" id="success-message"></div>
-        <div id="login-form">
-          <div class="form-group">
-            <label class="form-label" for="login-email">Email Address</label>
-            <input type="email" id="login-email" name="email" class="form-input" placeholder="Enter your email address"
-              required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="login-password">Password</label>
-            <div class="password-group">
-              <input type="password" id="login-password" name="password" class="form-input"
-                placeholder="Enter your password" required>
-              <button type="button" class="password-toggle" onclick="togglePassword('login-password')">
-                <i class="fas fa-eye" id="login-password-icon"></i>
-              </button>
-            </div>
+      <div class="error-message" id="error-message"></div>
+      <div class="success-message" id="success-message"></div>
+      
+      <!-- Login Form -->
+      <form class="auth-form" id="login-form" action="https://t2-237c.onrender.com/login-form" method="POST">
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email Address</label>
+          <input type="email" id="login-email" name="email" class="form-input" placeholder="Enter your email address"
+            required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password</label>
+          <div class="password-group">
+            <input type="password" id="login-password" name="password" class="form-input"
+              placeholder="Enter your password" required>
+            <button type="button" class="password-toggle" onclick="togglePassword('login-password')">
+              <i class="fas fa-eye" id="login-password-icon"></i>
+            </button>
           </div>
         </div>
-        <div id="register-form" style="display: none;">
-          <div class="form-group">
-            <label class="form-label" for="register-username">Username</label>
-            <input type="text" id="register-username" name="username" class="form-input"
-              placeholder="Choose a unique username" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="register-email">Email Address</label>
-            <input type="email" id="register-email" name="email" class="form-input"
-              placeholder="Enter your email address" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="register-password">Password</label>
-            <div class="password-group">
-              <input type="password" id="register-password" name="password" class="form-input"
-                placeholder="Create a strong password" required>
-              <button type="button" class="password-toggle" onclick="togglePassword('register-password')">
-                <i class="fas fa-eye" id="register-password-icon"></i>
-              </button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="confirm-password">Confirm Password</label>
-            <div class="password-group">
-              <input type="password" id="confirm-password" name="confirmPassword" class="form-input"
-                placeholder="Confirm your password" required>
-              <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')">
-                <i class="fas fa-eye" id="confirm-password-icon"></i>
-              </button>
-            </div>
-          </div>
-          <div class="checkbox-group">
-            <label class="checkbox">
-              <input type="checkbox" id="terms-agreement" name="terms" required>
-              <span class="checkmark"></span>
-            </label>
-            <label class="checkbox-label" for="terms-agreement">
-              I agree to the <a href="#" class="auth-link">Terms of Service</a> and <a href="#"
-                class="auth-link">Privacy Policy</a>
-            </label>
+        <button type="submit" class="submit-btn">
+          <span>Sign In</span>
+        </button>
+      </form>
+      
+      <!-- Register Form -->
+      <form class="auth-form" id="register-form" action="https://t2-237c.onrender.com/register-form" method="POST" style="display: none;">
+        <div class="form-group">
+          <label class="form-label" for="register-email">Email Address</label>
+          <input type="email" id="register-email" name="email" class="form-input"
+            placeholder="Enter your email address" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="register-password">Password</label>
+          <div class="password-group">
+            <input type="password" id="register-password" name="password" class="form-input"
+              placeholder="Create a strong password" required>
+            <button type="button" class="password-toggle" onclick="togglePassword('register-password')">
+              <i class="fas fa-eye" id="register-password-icon"></i>
+            </button>
           </div>
         </div>
-        <button type="submit" class="submit-btn" id="submit-btn">
-          <span id="submit-text">Sign In</span>
+        <div class="checkbox-group">
+          <label class="checkbox">
+            <input type="checkbox" id="terms-agreement" name="terms" required>
+            <span class="checkmark"></span>
+          </label>
+          <label class="checkbox-label" for="terms-agreement">
+            I agree to the <a href="#" class="auth-link">Terms of Service</a> and <a href="#"
+              class="auth-link">Privacy Policy</a>
+          </label>
+        </div>
+        <button type="submit" class="submit-btn">
+          <span>Create Account</span>
         </button>
       </form>
       <div class="auth-footer">
@@ -891,18 +881,15 @@
 
       const authTitle = document.getElementById('auth-title');
       const authSubtitle = document.getElementById('auth-subtitle');
-      const submitText = document.getElementById('submit-text');
       const authFooterText = document.getElementById('auth-footer-text');
 
       if (tab === 'login') {
         authTitle.textContent = 'Welcome Back';
         authSubtitle.textContent = 'Sign in to your account to continue your gaming journey';
-        submitText.textContent = 'Sign In';
         authFooterText.innerHTML = 'Don\'t have an account? <a href="#" class="auth-link" onclick="switchTab(\'register\')">Sign up here</a>';
       } else {
         authTitle.textContent = 'Create Account';
         authSubtitle.textContent = 'Join EArena and start your competitive gaming journey';
-        submitText.textContent = 'Create Account';
         authFooterText.innerHTML = 'Already have an account? <a href="#" class="auth-link" onclick="switchTab(\'login\')">Sign in here</a>';
       }
       hideMessage();
@@ -1164,17 +1151,19 @@
           showSuccess('Login successful! Redirecting to your dashboard...');
 
           setTimeout(() => {
-            const userRoles = result.data.user.roles || [];
-
-            // Check for return URL in query parameters
+            // Check for return URL in query parameters first
             const urlParams = new URLSearchParams(window.location.search);
             const returnUrl = urlParams.get('returnUrl');
 
             if (returnUrl) {
               // Decode and redirect to the original page
               window.location.href = decodeURIComponent(returnUrl);
+            } else if (result.redirect_path) {
+              // Use backend-provided redirect path
+              window.location.href = result.redirect_path;
             } else {
-              // Default redirect based on user role
+              // Fallback: Default redirect based on user role
+              const userRoles = result.data.user.roles || [];
               window.location.href = userRoles.includes('admin') ? 'admin-dashboard.html' : 'index.html';
             }
           }, 1500);
@@ -1299,26 +1288,60 @@
         }
       }, 100);
     });
-    // Initialize when DOM is loaded
-    document.addEventListener('DOMContentLoaded', function () {
-      checkExistingSession();
-      addInputValidation();
-
-      // Check URL parameters for tab selection
+    // Handle URL parameters for error/success messages
+    function handleUrlParams() {
       const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get('error');
+      const success = urlParams.get('success');
       const tabParam = urlParams.get('tab');
-
+      
+      if (error) {
+        let errorMessage = 'An error occurred';
+        switch(error) {
+          case 'invalid_credentials':
+            errorMessage = 'Invalid email or password';
+            break;
+          case 'email_exists':
+            errorMessage = 'Email already exists';
+            break;
+          case 'login_failed':
+            errorMessage = 'Login failed. Please try again.';
+            break;
+          case 'registration_failed':
+            errorMessage = 'Registration failed. Please try again.';
+            break;
+        }
+        showError(errorMessage);
+      }
+      
+      if (success) {
+        let successMessage = 'Success!';
+        switch(success) {
+          case 'registration_successful':
+            successMessage = 'Registration successful! You can now sign in.';
+            switchTab('login');
+            break;
+        }
+        showSuccess(successMessage);
+      }
+      
       if (tabParam === 'register') {
         switchTab('register');
-        setTimeout(() => {
-          document.getElementById('register-username').focus();
-        }, 500);
-      } else {
-        // Focus first input on load (default login)
-        setTimeout(() => {
-          document.getElementById('login-email').focus();
-        }, 500);
       }
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function () {
+      handleUrlParams();
+      
+      // Focus first input on load
+      setTimeout(() => {
+        if (currentTab === 'login') {
+          document.getElementById('login-email').focus();
+        } else {
+          document.getElementById('register-email').focus();
+        }
+      }, 500);
     });
     // Add smooth transitions when switching tabs
     function addTabTransitions() {
