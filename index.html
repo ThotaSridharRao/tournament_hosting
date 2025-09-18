@@ -334,52 +334,140 @@
       transform: translateY(-1px);
     }
 
-    /* User Menu Styles */
-    .user-info {
+    /* Profile Dropdown Styles */
+    .profile-dropdown {
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      color: var(--copy);
-      font-weight: 600;
-      margin-right: 1rem;
     }
 
-    .role-badge {
+    .profile-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--copy);
+      cursor: pointer;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      font-size: 1.5rem;
+    }
+
+    .profile-icon:hover {
+      color: var(--accent);
+      background: rgba(255, 215, 0, 0.1);
+      transform: scale(1.1);
+    }
+
+    .profile-modal {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--panel);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      min-width: 280px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s var(--ease-out-quart);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      margin-top: 10px;
+    }
+
+    .profile-dropdown:hover .profile-modal {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .profile-photo {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-username {
+      font-weight: 700;
+      color: var(--copy);
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .profile-role {
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
       color: #000;
       padding: 0.25rem 0.5rem;
       border-radius: 12px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      display: inline-block;
     }
 
-    .logout-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+    .profile-actions {
+      padding: 0.5rem;
+    }
+
+    .profile-action {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
       color: var(--copy);
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
+      text-decoration: none;
+      border-radius: 8px;
       transition: all 0.3s ease;
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
+      width: 100%;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-family: inherit;
     }
 
-    .logout-btn:hover {
+    .profile-action:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    .logout-action:hover {
       background: rgba(255, 0, 0, 0.1);
-      border-color: rgba(255, 0, 0, 0.3);
       color: #ff6b6b;
+    }
+
+    .profile-action i {
+      width: 16px;
+      text-align: center;
     }
 
     #user-menu {
       display: flex;
       align-items: center;
-    }
-
-    .dashboard-link:hover {
-      color: var(--accent) !important;
     }
 
     /* Hamburger (mobile) */
@@ -1343,16 +1431,32 @@
         
         <!-- Logged in -->
         <div id="user-menu" style="display: none;">
-          <a href="user-dashboard.html" class="dashboard-link" id="user-dashboard-link" style="color: var(--copy); text-decoration: none; font-weight: 600; margin-right: 1rem; transition: color 0.3s ease;">
-            <i class="fas fa-user"></i> My Account
-          </a>
-          <div class="user-info">
-            <span id="user-username">User</span>
-            <span id="user-role-badge" class="role-badge" style="display: none;">Admin</span>
+          <div class="profile-dropdown">
+            <div class="profile-icon" id="profile-icon">
+              <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="profile-modal" id="profile-modal">
+              <div class="profile-header">
+                <div class="profile-photo">
+                  <i class="fas fa-user"></i>
+                </div>
+                <div class="profile-info">
+                  <div class="profile-username" id="modal-username">User</div>
+                  <div class="profile-role" id="modal-role-badge" style="display: none;">Admin</div>
+                </div>
+              </div>
+              <div class="profile-actions">
+                <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
+                  <i class="fas fa-user"></i>
+                  <span>My Account</span>
+                </a>
+                <button class="profile-action logout-action" onclick="logout()">
+                  <i class="fas fa-sign-out-alt"></i>
+                  <span>Logout</span>
+                </button>
+              </div>
+            </div>
           </div>
-          <button class="logout-btn" onclick="logout()">
-            <i class="fas fa-sign-out-alt"></i> Logout
-          </button>
         </div>
       </div>
 
@@ -2750,7 +2854,7 @@
           // Desktop navigation
           document.getElementById('auth-buttons').style.display = 'none';
           document.getElementById('user-menu').style.display = 'flex';
-          document.getElementById('user-username').textContent = user.username;
+          document.getElementById('modal-username').textContent = user.username;
           
           // Mobile navigation
           document.getElementById('mobile-auth-buttons').style.display = 'none';
@@ -2760,12 +2864,11 @@
           // Show admin features for admins
           if (userRoles.includes('admin')) {
             // Desktop
-            document.getElementById('user-role-badge').style.display = 'inline-block';
+            document.getElementById('modal-role-badge').style.display = 'inline-block';
             document.getElementById('host-nav-item').style.display = 'block';
             
             // Update dashboard links to admin dashboard
-            document.getElementById('user-dashboard-link').href = 'admin-dashboard.html';
-            document.getElementById('user-dashboard-link').innerHTML = '<i class="fas fa-cog"></i> My Account';
+            document.getElementById('modal-dashboard-link').href = 'admin-dashboard.html';
             
             // Mobile
             document.getElementById('mobile-user-role-badge').style.display = 'inline-block';
@@ -2774,8 +2877,7 @@
             document.getElementById('mobile-dashboard-link').innerHTML = '<i class="fas fa-cog"></i> My Account';
           } else {
             // Regular users get user dashboard
-            document.getElementById('user-dashboard-link').href = 'user-dashboard.html';
-            document.getElementById('user-dashboard-link').innerHTML = '<i class="fas fa-user"></i> My Account';
+            document.getElementById('modal-dashboard-link').href = 'user-dashboard.html';
             document.getElementById('mobile-dashboard-link').href = 'user-dashboard.html';
             document.getElementById('mobile-dashboard-link').innerHTML = '<i class="fas fa-user"></i> My Account';
           }
@@ -2798,7 +2900,7 @@
       // Desktop navigation
       document.getElementById('auth-buttons').style.display = 'flex';
       document.getElementById('user-menu').style.display = 'none';
-      document.getElementById('user-role-badge').style.display = 'none';
+      document.getElementById('modal-role-badge').style.display = 'none';
       document.getElementById('host-nav-item').style.display = 'none';
       
       // Mobile navigation
