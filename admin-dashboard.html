@@ -1280,36 +1280,57 @@
         
         const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
 
+        // Helper function to get auth token from cookies
+        function getAuthToken() {
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+            return getCookie('auth_token');
+        }
+
         // Check admin authentication
         function checkAdminAuth() {
-            const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
-            
-            if (!session) {
-                console.log('No session found, redirecting to login');
-                redirectToAuth();
-                return false;
+            // Helper function to get a specific cookie by its name
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+
+            const authToken = getCookie('auth_token');
+            const userDataCookie = getCookie('user_data');
+
+            // If either cookie is missing, the user is not authenticated
+            if (!authToken || !userDataCookie) {
+                console.error('Authentication cookies not found. Redirecting to login.');
+                redirectToAuth('login');
+                return false; // Stop execution
             }
 
             try {
-                const sessionData = JSON.parse(session);
-                const userRoles = sessionData.user?.roles || [];
-                
-                if (!userRoles.includes('admin')) {
-                    alert('Access denied. Admin privileges required.');
-                    redirectToAuth();
-                    return false;
+                // The user_data cookie is stored as "email|role"
+                // We decode it and split it to get the role
+                const [email, role] = decodeURIComponent(userDataCookie).split('|');
+
+                if (role !== 'admin') {
+                    alert('Access Denied: You do not have admin privileges.');
+                    redirectToAuth('login');
+                    return false; // Stop execution
                 }
-                
+
+                // If everything is correct, display the admin's email
                 const usernameElement = document.getElementById('admin-username');
-                if (usernameElement && sessionData.user) {
-                    usernameElement.textContent = sessionData.user.username;
+                if (usernameElement) {
+                    usernameElement.textContent = email;
                 }
-                
-                return sessionData;
+
+                return true; // Authentication successful
             } catch (error) {
-                console.error('Invalid session data:', error);
-                redirectToAuth();
-                return false;
+                console.error('Failed to parse user data cookie:', error);
+                redirectToAuth('login');
+                return false; // Stop execution
             }
         }
 
@@ -1325,8 +1346,8 @@
         
         // Load recent activity
         async function loadRecentActivity() {
-            const sessionData = getSessionData();
-            if (!sessionData || !sessionData.token) {
+            const authToken = getAuthToken();
+            if (!authToken) {
                 console.error('No authentication token found');
                 displayFallbackActivities();
                 return;
@@ -1336,7 +1357,7 @@
                 // Fetch recent activities for admin
                 const recentResponse = await fetch(`${API_BASE_URL}/api/activities/recent?limit=10&adminOnly=true`, {
                     headers: {
-                        'Authorization': `Bearer ${sessionData.token}`,
+                        'Authorization': `Bearer ${authToken}`,
                         'Content-Type': 'application/json'
                     }
                 });
@@ -1344,7 +1365,7 @@
                 // Fetch platform-wide activities
                 const platformResponse = await fetch(`${API_BASE_URL}/api/activities/platform?limit=15`, {
                     headers: {
-                        'Authorization': `Bearer ${sessionData.token}`,
+                        'Authorization': `Bearer ${authToken}`,
                         'Content-Type': 'application/json'
                     }
                 });
@@ -1464,15 +1485,14 @@
         // ======================= FUNCTION TO LOAD TOURNAMENTS (UPDATED) =======================
         async function loadAdminTournaments() {
             const container = document.getElementById('admin-tournament-list');
-            const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+            const authToken = getAuthToken();
             
-            if (!session) return;
+            if (!authToken) return;
             
             try {
-                const sessionData = JSON.parse(session);
                 const response = await fetch(`${API_BASE_URL}/api/tournaments`, {
                     headers: {
-                        'Authorization': `Bearer ${sessionData.token}`,
+                        'Authorization': `Bearer ${authToken}`,
                         'Content-Type': 'application/json'
                     }
                 });
@@ -1554,8 +1574,8 @@
                 return;
             }
 
-            const sessionData = getSessionData();
-            if (!sessionData || !sessionData.token) {
+            const authToken = getAuthToken();
+            if (!authToken) {
                 alert('Authentication required. Please login again.');
                 return;
             }
@@ -1573,7 +1593,7 @@
                 const response = await fetch(`${API_BASE_URL}/api/tournaments/${tournament.slug}`, {
                     method: 'DELETE',
                     headers: {
-                        'Authorization': `Bearer ${sessionData.token}`,
+                        'Authorization': `Bearer ${authToken}`,
                         'Content-Type': 'application/json'
                     }
                 });
@@ -1645,15 +1665,14 @@
                         submitBtn.textContent = 'Creating...';
                         submitBtn.disabled = true;
 
-                        const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
-                        const sessionData = JSON.parse(session);
+                        const authToken = getAuthToken();
 
                         const response = await fetch(`${API_BASE_URL}/api/tournaments`, {
                             method: 'POST',
                             headers: {
                                 // 2. DO NOT set Content-Type. The browser will automatically set it
                                 //    to 'multipart/form-data' when using FormData.
-                                'Authorization': `Bearer ${sessionData.token}`
+                                'Authorization': `Bearer ${authToken}`
                             },
                             body: formData // 3. Send the FormData object directly.
                         });
