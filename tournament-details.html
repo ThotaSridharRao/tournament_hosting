@@ -1248,7 +1248,24 @@
   </footer>
 
   <script>
-    const API_BASE_URL = 'https://tournament-hosting-backend.onrender.com';
+    // Auto-detect API URL based on environment
+    const API_BASE_URL = (() => {
+      // Check if we're running locally
+      const isLocal = window.location.hostname === 'localhost' || 
+                      window.location.hostname === '127.0.0.1' || 
+                      window.location.protocol === 'file:';
+      
+      const apiUrl = isLocal ? 'http://localhost:8000' : 'https://tournament-hosting-backend.onrender.com';
+      
+      console.log('🔧 Tournament Details Environment Detection:', {
+        hostname: window.location.hostname,
+        protocol: window.location.protocol,
+        isLocal: isLocal,
+        apiUrl: apiUrl
+      });
+      
+      return apiUrl;
+    })();
     let currentTournament = null;
 
     // Helper function to redirect to auth with return URL
@@ -2696,7 +2713,13 @@
       if (!tournamentSlug) {
         console.error('No tournament slug provided in URL');
         document.getElementById('tournament-title').textContent = 'Tournament Not Found';
-        document.getElementById('tournament-subtitle').textContent = 'Please provide a valid tournament slug in the URL.';
+        document.getElementById('tournament-subtitle').innerHTML = `
+          Please provide a valid tournament slug in the URL.<br>
+          <small style="color: #9aa0a6;">
+            Example: tournament-details.html?slug=your-tournament-slug<br>
+            <a href="tournament-list.html" style="color: #FFD700;">← View Available Tournaments</a>
+          </small>
+        `;
         return;
       }
 
