@@ -105,47 +105,135 @@
             color: var(--accent);
         }
 
-        .user-menu {
+        /* Profile Dropdown Styles */
+        .profile-dropdown {
             position: relative;
             display: flex;
             align-items: center;
-            gap: 1rem;
         }
 
-        .user-info {
+        .profile-icon {
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
             color: var(--copy);
-            font-weight: 500;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
         }
 
-        .admin-badge {
+        .profile-icon:hover {
+            color: var(--accent);
+            background: rgba(255, 215, 0, 0.1);
+            transform: scale(1.1);
+        }
+
+        .profile-modal {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            min-width: 280px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s var(--ease-out-quart);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            margin-top: 10px;
+        }
+
+        .profile-dropdown:hover .profile-modal {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-photo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-username {
+            font-weight: 700;
+            color: var(--copy);
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-role {
             background: linear-gradient(135deg, var(--accent), var(--accent-2));
             color: #000;
             padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
         }
 
-        .logout-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        .profile-actions {
+            padding: 0.5rem;
+        }
+
+        .profile-action {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
             color: var(--copy);
-            padding: 8px 16px;
-            border-radius: 6px;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.95rem;
+            width: 100%;
+            border: none;
+            background: none;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 500;
-            font-size: 14px;
+            font-family: inherit;
         }
 
-        .logout-btn:hover {
+        .profile-action:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .logout-action:hover {
             background: rgba(255, 0, 0, 0.1);
-            border-color: rgba(255, 0, 0, 0.3);
             color: #ff6b6b;
+        }
+
+        .profile-action i {
+            width: 16px;
+            text-align: center;
         }
 
         /* Main Content */
@@ -985,6 +1073,25 @@
                 display: none;
             }
 
+            .profile-modal {
+                min-width: 250px;
+                right: -10px;
+            }
+
+            .profile-header {
+                padding: 1rem;
+            }
+
+            .profile-photo {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .profile-username {
+                font-size: 1rem;
+            }
+
             .actions-grid {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
@@ -1078,14 +1185,35 @@
             <a href="#analytics">Analytics</a>
         </nav>
 
-        <div class="user-menu">
-            <div class="user-info">
-                <span id="admin-username">Admin</span>
-                <span class="admin-badge">Admin</span>
+        <div class="profile-dropdown">
+            <div class="profile-icon" id="profile-icon">
+                <i class="fas fa-user-circle"></i>
             </div>
-            <button class="logout-btn" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
+            <div class="profile-modal" id="profile-modal">
+                <div class="profile-header">
+                    <div class="profile-photo">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-username" id="admin-username">Admin</div>
+                        <div class="profile-role">Admin</div>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <a href="admin-dashboard.html" class="profile-action">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#settings" class="profile-action">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                    <button class="profile-action logout-action" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -1764,11 +1892,44 @@
         }
 
         // Initialize dashboard
+        // Profile dropdown functionality
+        function initializeProfileDropdown() {
+            const profileIcon = document.getElementById('profile-icon');
+            const profileModal = document.getElementById('profile-modal');
+            let isOpen = false;
+
+            // Toggle dropdown on click (for mobile)
+            profileIcon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                isOpen = !isOpen;
+                if (isOpen) {
+                    profileModal.style.opacity = '1';
+                    profileModal.style.visibility = 'visible';
+                    profileModal.style.transform = 'translateY(0)';
+                } else {
+                    profileModal.style.opacity = '0';
+                    profileModal.style.visibility = 'hidden';
+                    profileModal.style.transform = 'translateY(-10px)';
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!profileIcon.contains(e.target) && !profileModal.contains(e.target)) {
+                    isOpen = false;
+                    profileModal.style.opacity = '0';
+                    profileModal.style.visibility = 'hidden';
+                    profileModal.style.transform = 'translateY(-10px)';
+                }
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             if (checkAdminAuth()) {
                 loadDashboardStats();
                 loadRecentActivity();
                 loadAdminTournaments();
+                initializeProfileDropdown();
 
                 // Update data periodically
                 setInterval(loadDashboardStats, 30000);
