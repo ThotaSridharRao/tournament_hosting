@@ -798,6 +798,9 @@ if (currentTournament.format === 'kp' && currentTournament.kpSettings) {
 }
 document.getElementById('prize-pool').textContent = currentTournament.prizePool ? `₹${currentTournament.prizePool.toLocaleString()}` : 'TBD';
 
+// 🎯 NEW: Generate exact number of player rows based on tournament
+generatePlayerRows();
+
 // Update registration end date
 const regEndDate = currentTournament.registrationEnd ? 
 new Date(currentTournament.registrationEnd).toLocaleDateString('en-IN', { 
@@ -883,55 +886,79 @@ if (restrictedStatuses.includes(currentTournament.status)) {
 }
 
 // --- PLAYER MANAGEMENT ---
-function addPlayer() {
-playerCount++;
+function generatePlayerRows() {
+if (!currentTournament) return;
+
+// Get max players from tournament settings
+const maxPlayers = currentTournament.format === 'kp' && currentTournament.kpSettings 
+    ? currentTournament.kpSettings.maxPlayersPerTeam 
+    : 4; // Default to 4 players
+
+console.log(`🎯 Generating ${maxPlayers} player rows for tournament`);
+
+// Clear existing players
+const playersContainer = document.getElementById('players-container');
+playersContainer.innerHTML = '';
+playerCount = 0;
+
+// Generate exact number of player rows
+for (let i = 1; i <= maxPlayers; i++) {
+    addPlayerRow(i, maxPlayers);
+}
+
+// Hide the add player button since we have exact number
+const addBtn = document.getElementById('add-player-btn');
+if (addBtn) addBtn.style.display = 'none';
+
+// Update form instructions
+const instructionEl = document.querySelector('.form-instructions');
+if (instructionEl) {
+    instructionEl.textContent = `Please fill in details for all ${maxPlayers} team members. The first player will be the team captain.`;
+}
+}
+
+function addPlayerRow(playerNumber, totalPlayers) {
+playerCount = playerNumber;
+
 const playersContainer = document.getElementById('players-container');
 
 const playerForm = document.createElement('div');
 playerForm.className = 'player-form';
 playerForm.innerHTML = `
-<div class="form-group">
-<label for="player-name-${playerCount}">Player Name *</label>
-<input type="text" id="player-name-${playerCount}" name="players[${playerCount}][name]" required>
+<div class="player-header">
+    <h4>Player ${playerNumber} ${playerNumber === 1 ? '(Captain)' : ''}</h4>
+    ${playerNumber === 1 ? '<span class="captain-badge">Team Captain</span>' : ''}
 </div>
 <div class="form-group">
-<label for="player-email-${playerCount}">Email *</label>
-<input type="email" id="player-email-${playerCount}" name="players[${playerCount}][email]" required>
+    <label for="player-name-${playerNumber}">Player Name *</label>
+    <input type="text" id="player-name-${playerNumber}" name="players[${playerNumber}][name]" required>
 </div>
 <div class="form-group">
-<label for="player-phone-${playerCount}">Phone Number</label>
-<input type="tel" id="player-phone-${playerCount}" name="players[${playerCount}][phoneNumber]" placeholder="+91 9876543210">
+    <label for="player-email-${playerNumber}">Email *</label>
+    <input type="email" id="player-email-${playerNumber}" name="players[${playerNumber}][email]" required>
 </div>
 <div class="form-group">
-<label for="player-ingame-${playerCount}">In-Game ID *</label>
-<input type="text" id="player-ingame-${playerCount}" name="players[${playerCount}][inGameId]" required>
+    <label for="player-phone-${playerNumber}">Phone Number</label>
+    <input type="tel" id="player-phone-${playerNumber}" name="players[${playerNumber}][phoneNumber]" placeholder="+91 9876543210">
 </div>
 <div class="form-group">
-${playerCount === 1 ? '<span class="captain-badge">Captain</span>' : `
-<button type="button" class="btn btn-danger" onclick="removePlayer(this)">
-<i class="fas fa-trash"></i>
-</button>
-`}
+    <label for="player-ingame-${playerNumber}">In-Game ID *</label>
+    <input type="text" id="player-ingame-${playerNumber}" name="players[${playerNumber}][inGameId]" required>
 </div>
 `;
 
 playersContainer.appendChild(playerForm);
-
-// Limit to 6 players max
-if (playerCount >= 6) {
-document.getElementById('add-player-btn').style.display = 'none';
 }
+
+// Legacy functions (kept for compatibility)
+function addPlayer() {
+// This function is now replaced by generatePlayerRows()
+console.log('addPlayer() called - using new generatePlayerRows() instead');
 }
 
 function removePlayer(button) {
-const playerForm = button.closest('.player-form');
-playerForm.remove();
-playerCount--;
-
-// Show add button if under limit
-if (playerCount < 6) {
-document.getElementById('add-player-btn').style.display = 'block';
-}
+// Players can't be removed in new system - fixed number based on tournament
+console.log('removePlayer() called - not allowed in new system');
 }
 
 // --- FORM SUBMISSION ---
@@ -952,27 +979,49 @@ players: [],
 acceptTerms: formData.get('acceptTerms') === 'on'
 };
 
-// Collect player data
-for (let i = 1; i <= playerCount; i++) {
+// Collect player data - get exact number based on tournament
+const maxPlayers = currentTournament.format === 'kp' && currentTournament.kpSettings 
+    ? currentTournament.kpSettings.maxPlayersPerTeam 
+    : 4;
+
+console.log(`📦 Collecting data for ${maxPlayers} players`);
+
+for (let i = 1; i <= maxPlayers; i++) {
 const name = formData.get(`players[${i}][name]`);
 const email = formData.get(`players[${i}][email]`);
 const phoneNumber = formData.get(`players[${i}][phoneNumber]`);
 const inGameId = formData.get(`players[${i}][inGameId]`);
 
-if (name && email && inGameId) {
+// All players are required (no optional players)
+if (!name || !email || !inGameId) {
+    showError(`Please fill in all required fields for Player ${i}`);
+    return;
+}
+
 registrationData.players.push({
-name: name,
-email: email,
-phoneNumber: phoneNumber || '',
-inGameId: inGameId,
+name: name.trim(),
+email: email.trim().toLowerCase(),
+phoneNumber: phoneNumber ? phoneNumber.trim() : '',
+inGameId: inGameId.trim(),
 isCaptain: i === 1
 });
 }
+
+// Validate exact number of players
+const requiredPlayers = currentTournament.format === 'kp' && currentTournament.kpSettings 
+    ? currentTournament.kpSettings.maxPlayersPerTeam 
+    : 4;
+
+if (registrationData.players.length !== requiredPlayers) {
+showError(`This tournament requires exactly ${requiredPlayers} players. You have ${registrationData.players.length} players.`);
+return;
 }
 
-// Validate minimum players
-if (registrationData.players.length < 1) {
-showError('Please add at least one player to your team.');
+// Validate no duplicate emails
+const emails = registrationData.players.map(p => p.email.toLowerCase());
+const duplicateEmails = emails.filter((email, index) => emails.indexOf(email) !== index);
+if (duplicateEmails.length > 0) {
+showError(`Duplicate emails found: ${[...new Set(duplicateEmails)].join(', ')}. Each player must have a unique email.`);
 return;
 }
 
@@ -1219,8 +1268,8 @@ await testApiConnection();
 // Load tournament data
 loadTournamentData();
 
-// Add initial player (captain)
-addPlayer();
+// Player rows will be generated when tournament data loads
+// generatePlayerRows() is called from updateTournamentDisplay()
 
 // Form submission
 document.getElementById('registration-form').addEventListener('submit', (e) => {
