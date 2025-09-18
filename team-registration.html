@@ -1046,13 +1046,13 @@ const errorData = await response.json().catch(() => ({ message: 'Unknown error o
 console.error('Error response:', errorData);
 
 // Show detailed error information
-let errorMessage = errorData.message || `Registration failed with status ${response.status}`;
+let errorMessage = errorData.detail || errorData.message || errorData.error || `Registration failed with status ${response.status}`;
 if (response.status === 500) {
     errorMessage += '\n\nPossible causes:\n• Tournament does not exist\n• User not authenticated\n• Server database issues\n• Backend configuration problems';
 }
 console.error('Detailed error:', errorMessage);
 
-throw new Error(errorData.message || `Registration failed with status ${response.status}`);
+throw new Error(errorData.detail || errorData.message || errorData.error || `Registration failed with status ${response.status}`);
 }
 
 const result = await response.json();

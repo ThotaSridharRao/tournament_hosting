@@ -1770,7 +1770,7 @@
                     loadAdminTournaments(); // Refresh the list
                 } else {
                     const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to delete tournament');
+                    throw new Error(errorData.detail || errorData.message || errorData.error || 'Failed to delete tournament');
                 }
             } catch (error) {
                 console.error('Delete tournament error:', error);
@@ -1854,7 +1854,7 @@
                         } else {
                             // Log the full error response for debugging
                             console.error('Tournament creation failed:', result);
-                            throw new Error(result.error || result.message || 'Failed to create tournament');
+                            throw new Error(result.detail || result.error || result.message || 'Failed to create tournament');
                         }
                     } catch (error) {
                         console.error('Tournament creation error:', error);
