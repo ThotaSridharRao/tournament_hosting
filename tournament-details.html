@@ -2730,7 +2730,7 @@
           const sessionData = JSON.parse(session);
 
           // Call logout API
-          await fetch('https://tournament-hosting-backend.onrender.com/api/auth/logout', {
+          await fetch(`${apiUrl}/api/auth/logout`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${sessionData.token}`,

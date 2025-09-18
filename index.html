@@ -1901,7 +1901,12 @@
     let currentImageIndex = 0;
 
     // API Configuration
-    const API_BASE_URL = 'https://tournament-hosting-backend.onrender.com';
+    // Auto-detect API URL based on environment
+    const isLocal = window.location.hostname === 'localhost' || 
+                   window.location.hostname === '127.0.0.1' || 
+                   window.location.protocol === 'file:';
+    
+    const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://tournament-hosting-backend.onrender.com';
 
     // Hero content data - will be populated from API
     let heroData = [];
