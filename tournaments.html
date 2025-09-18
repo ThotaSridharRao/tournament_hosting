@@ -510,7 +510,7 @@
     </a>
 
     <div class="nav-actions">
-      <a href="auth.html?returnUrl=tournaments.html" class="login-link">Log in</a>
+      <a href="auth.html?tab=login&returnUrl=tournaments.html" class="login-link">Log in</a>
       <button class="header-cta" onclick="redirectToAuth()">Sign up</button>
     </div>
   </header>
@@ -587,7 +587,7 @@
           <h4>Company</h4>
           <ul>
             <li><a href="#">About</a></li>
-            <li><a href="auth.html?returnUrl=tournaments.html">Sign In</a></li>
+            <li><a href="auth.html?tab=login&returnUrl=tournaments.html">Sign In</a></li>
             <li><a href="#">Contact</a></li>
           </ul>
         </div>
@@ -600,10 +600,10 @@
 
   <script>
     // Helper function to redirect to auth with return URL
-    function redirectToAuth() {
+    function redirectToAuth(tab = 'register') {
       const currentUrl = window.location.href;
       const returnUrl = encodeURIComponent(currentUrl);
-      window.location.href = `auth.html?returnUrl=${returnUrl}`;
+      window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
     }
 
     // Simulated tournament data (would come from backend API)

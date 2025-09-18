@@ -544,6 +544,7 @@
       transition: all 0.3s ease;
       font-size: 0.95rem;
       cursor: pointer;
+      font-family: inherit;
     }
 
     .mobile-signup-btn:hover {
@@ -1335,7 +1336,7 @@
       <div class="nav-actions">
         <!-- Not logged in -->
         <div id="auth-buttons">
-          <a href="auth.html?returnUrl=index.html" class="login-link">Log in</a>
+          <a href="auth.html?tab=login&returnUrl=index.html" class="login-link">Log in</a>
           <button class="header-cta" aria-label="Sign up" id="sign-up-desktop"
             onclick="redirectToAuth()">Sign up</button>
         </div>
@@ -1402,14 +1403,14 @@
     <div class="mobile-nav-actions">
       <!-- Not logged in -->
       <div id="mobile-auth-buttons">
-        <a href="auth.html?returnUrl=index.html" class="mobile-login-btn">
+        <a href="auth.html?tab=login&returnUrl=index.html" class="mobile-login-btn">
           <i class="fas fa-sign-in-alt"></i>
           Log In
         </a>
-        <a href="auth.html?returnUrl=index.html" class="mobile-signup-btn">
+        <button class="mobile-signup-btn" onclick="redirectToAuth()">
           <i class="fas fa-user-plus"></i>
           Sign Up
-        </a>
+        </button>
       </div>
       
       <!-- Logged in -->
@@ -1753,7 +1754,7 @@
           <h4>Company</h4>
           <ul>
             <li><a href="#">About</a></li>
-            <li><a href="auth.html?returnUrl=index.html">Sign In</a></li>
+            <li><a href="auth.html?tab=login&returnUrl=index.html">Sign In</a></li>
             <li><a href="#">Contact</a></li>
           </ul>
         </div>
@@ -1766,10 +1767,10 @@
 
   <script>
     // Helper function to redirect to auth with return URL
-    function redirectToAuth() {
+    function redirectToAuth(tab = 'register') {
       const currentUrl = window.location.href;
       const returnUrl = encodeURIComponent(currentUrl);
-      window.location.href = `auth.html?returnUrl=${returnUrl}`;
+      window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
     }
 
     // Enhanced smooth interactions and animations

@@ -1265,10 +1265,10 @@
 
     <script>
         // Helper function to redirect to auth with return URL
-        function redirectToAuth() {
+        function redirectToAuth(tab = 'register') {
           const currentUrl = window.location.href;
           const returnUrl = encodeURIComponent(currentUrl);
-          window.location.href = `auth.html?returnUrl=${returnUrl}`;
+          window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
         }
 
         const API_BASE_URL = 'https://tournament-hosting-backend.onrender.com';

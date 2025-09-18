@@ -830,6 +830,141 @@
       document.getElementById('error-message').style.display = 'none';
       document.getElementById('success-message').style.display = 'none';
     }
+
+    function showWelcomeMessage(username) {
+      // Create welcome overlay
+      const welcomeOverlay = document.createElement('div');
+      welcomeOverlay.id = 'welcome-overlay';
+      welcomeOverlay.innerHTML = `
+        <div class="welcome-container">
+          <div class="welcome-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <h2 class="welcome-title">Welcome to EArena, ${username}!</h2>
+          <p class="welcome-message">Your account has been created successfully. Get ready to compete in exciting tournaments!</p>
+          <div class="welcome-progress">
+            <div class="progress-bar"></div>
+          </div>
+          <p class="welcome-redirect">Redirecting you to the homepage...</p>
+        </div>
+      `;
+      
+      // Add welcome overlay styles
+      const welcomeStyles = document.createElement('style');
+      welcomeStyles.textContent = `
+        #welcome-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.95);
+          backdrop-filter: blur(10px);
+          z-index: 10000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          animation: fadeIn 0.5s ease-out;
+        }
+        
+        .welcome-container {
+          background: var(--panel);
+          border: 1px solid var(--glass-border);
+          border-radius: var(--radius);
+          padding: 3rem 2rem;
+          text-align: center;
+          max-width: 500px;
+          width: 90%;
+          box-shadow: var(--shadow-lg);
+          animation: slideUp 0.6s ease-out;
+        }
+        
+        .welcome-icon {
+          font-size: 4rem;
+          color: var(--accent);
+          margin-bottom: 1.5rem;
+          animation: bounceIn 0.8s ease-out 0.2s both;
+        }
+        
+        .welcome-title {
+          font-size: 1.8rem;
+          font-weight: 700;
+          color: var(--copy);
+          margin-bottom: 1rem;
+          animation: slideUp 0.6s ease-out 0.4s both;
+        }
+        
+        .welcome-message {
+          color: var(--muted-light);
+          font-size: 1rem;
+          line-height: 1.6;
+          margin-bottom: 2rem;
+          animation: slideUp 0.6s ease-out 0.6s both;
+        }
+        
+        .welcome-progress {
+          width: 100%;
+          height: 4px;
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 2px;
+          overflow: hidden;
+          margin-bottom: 1rem;
+          animation: slideUp 0.6s ease-out 0.8s both;
+        }
+        
+        .progress-bar {
+          height: 100%;
+          background: linear-gradient(90deg, var(--accent), var(--accent-2));
+          width: 0%;
+          animation: progressFill 3s ease-out;
+        }
+        
+        .welcome-redirect {
+          color: var(--muted);
+          font-size: 0.9rem;
+          animation: slideUp 0.6s ease-out 1s both;
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+          from { 
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to { 
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes bounceIn {
+          0% {
+            opacity: 0;
+            transform: scale(0.3);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.1);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        
+        @keyframes progressFill {
+          from { width: 0%; }
+          to { width: 100%; }
+        }
+      `;
+      
+      document.head.appendChild(welcomeStyles);
+      document.body.appendChild(welcomeOverlay);
+    }
     function setLoading(loading) {
       const submitBtn = document.getElementById('submit-btn');
       const submitText = document.getElementById('submit-text');
@@ -935,7 +1070,7 @@
               window.location.href = decodeURIComponent(returnUrl);
             } else {
               // Default redirect based on user role
-              window.location.href = userRoles.includes('admin') ? 'admin-dashboard.html' : 'user-dashboard.html';
+              window.location.href = userRoles.includes('admin') ? 'admin-dashboard.html' : 'index.html';
             }
           }, 1500);
         } else {
@@ -998,12 +1133,13 @@
         const result = await response.json();
 
         if (response.ok && result.success) {
-          showSuccess('Account created successfully! Please sign in to continue.');
+          // Show welcome message
+          showWelcomeMessage(username);
+          
+          // Redirect to index.html after showing welcome message
           setTimeout(() => {
-            switchTab('login');
-            document.getElementById('login-email').value = email;
-            document.getElementById('login-email').focus();
-          }, 2000);
+            window.location.href = 'index.html';
+          }, 3000);
         } else {
           showError(result.error || 'Registration failed. Please try again.');
         }
@@ -1063,10 +1199,21 @@
       checkExistingSession();
       addInputValidation();
 
-      // Focus first input on load
-      setTimeout(() => {
-        document.getElementById('login-email').focus();
-      }, 500);
+      // Check URL parameters for tab selection
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get('tab');
+      
+      if (tabParam === 'register') {
+        switchTab('register');
+        setTimeout(() => {
+          document.getElementById('register-username').focus();
+        }, 500);
+      } else {
+        // Focus first input on load (default login)
+        setTimeout(() => {
+          document.getElementById('login-email').focus();
+        }, 500);
+      }
     });
     // Add smooth transitions when switching tabs
     function addTabTransitions() {
