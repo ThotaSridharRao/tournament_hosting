@@ -767,6 +767,137 @@
             color: var(--muted);
             font-style: italic;
         }
+
+        /* Profile Dropdown Styles */
+        .profile-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--copy);
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+        }
+
+        .profile-icon:hover {
+            color: var(--accent);
+            background: rgba(255, 215, 0, 0.1);
+            transform: scale(1.1);
+        }
+
+        .profile-modal {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            min-width: 280px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            margin-top: 10px;
+        }
+
+        .profile-dropdown:hover .profile-modal {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-photo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), #e0ac10);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-username {
+            font-weight: 700;
+            color: var(--copy);
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-role {
+            background: linear-gradient(135deg, var(--accent), #e0ac10);
+            color: #000;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+
+        .profile-actions {
+            padding: 0.5rem;
+        }
+
+        .profile-action {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--copy);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.95rem;
+            width: 100%;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .profile-action:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .logout-action:hover {
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff6b6b;
+        }
+
+        .profile-action i {
+            width: 16px;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -778,13 +909,31 @@
                 <span>Back to Dashboard</span>
             </a>
         </div>
-        <div class="user-menu">
-            <div class="user-info">
-                <span id="admin-username">Admin</span>
+        <div class="profile-dropdown">
+            <div class="profile-icon" id="profile-icon">
+                <i class="fas fa-user-circle"></i>
             </div>
-            <button class="logout-btn" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
+            <div class="profile-modal" id="profile-modal">
+                <div class="profile-header">
+                    <div class="profile-photo">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-username" id="admin-username">Admin</div>
+                        <div class="profile-role">Admin</div>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <a href="admin-dashboard.html" class="profile-action">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Admin Dashboard</span>
+                    </a>
+                    <button class="profile-action logout-action" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -966,6 +1115,7 @@
                             <option value="round-robin">Round Robin</option>
                             <option value="swiss">Swiss System</option>
                             <option value="group-stage">Group Stage</option>
+                            <option value="kp">KP Format (4 Qualifiers → Final)</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -978,6 +1128,38 @@
                     <label for="edit-description">Description</label>
                     <textarea id="edit-description" name="description" rows="4"
                         placeholder="Tournament description..."></textarea>
+                </div>
+
+                <!-- KP Format Settings (hidden by default) -->
+                <div id="edit-kp-settings" style="display: none;">
+                    <h4 style="color: var(--accent); margin: 1.5rem 0 1rem 0;">KP Match Schedule</h4>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-qualifier1-date">Qualifier 1 Date & Time</label>
+                            <input type="datetime-local" id="edit-qualifier1-date" name="qualifier1Date">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-qualifier2-date">Qualifier 2 Date & Time</label>
+                            <input type="datetime-local" id="edit-qualifier2-date" name="qualifier2Date">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-qualifier3-date">Qualifier 3 Date & Time</label>
+                            <input type="datetime-local" id="edit-qualifier3-date" name="qualifier3Date">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-qualifier4-date">Qualifier 4 Date & Time</label>
+                            <input type="datetime-local" id="edit-qualifier4-date" name="qualifier4Date">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-final-match-date">Final Match Date & Time</label>
+                        <input type="datetime-local" id="edit-final-match-date" name="finalMatchDate">
+                    </div>
                 </div>
 
                 <div class="form-group full-width">
@@ -1158,6 +1340,39 @@
 
             const format = currentTournament.format || currentTournament.tournamentFormat || currentTournament.gameFormat || '';
             document.getElementById('edit-format').value = format;
+            
+            // Handle KP format settings
+            const kpSettings = document.getElementById('edit-kp-settings');
+            if (format === 'kp' && currentTournament.kpSettings) {
+                kpSettings.style.display = 'block';
+                
+                // Populate KP match schedule if available
+                const schedule = currentTournament.kpSettings.matchSchedule || [];
+                schedule.forEach(match => {
+                    const matchDate = new Date(match.date);
+                    const dateString = toLocalISOString(matchDate);
+                    
+                    switch(match.match) {
+                        case 'Qualifier 1':
+                            document.getElementById('edit-qualifier1-date').value = dateString;
+                            break;
+                        case 'Qualifier 2':
+                            document.getElementById('edit-qualifier2-date').value = dateString;
+                            break;
+                        case 'Qualifier 3':
+                            document.getElementById('edit-qualifier3-date').value = dateString;
+                            break;
+                        case 'Qualifier 4':
+                            document.getElementById('edit-qualifier4-date').value = dateString;
+                            break;
+                        case 'Final Match':
+                            document.getElementById('edit-final-match-date').value = dateString;
+                            break;
+                    }
+                });
+            } else {
+                kpSettings.style.display = 'none';
+            }
 
             const posterPreview = document.getElementById('poster-preview');
             const posterPath = currentTournament.posterImage || currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl;
@@ -1699,6 +1914,16 @@ In-Game ID: ${player.inGameId || 'N/A'}
                             `<img src="${e.target.result}" alt="Poster Preview">`;
                     };
                     reader.readAsDataURL(file);
+                }
+            });
+
+            // --- Format Change Handler ---
+            document.getElementById('edit-format').addEventListener('change', (e) => {
+                const kpSettings = document.getElementById('edit-kp-settings');
+                if (e.target.value === 'kp') {
+                    kpSettings.style.display = 'block';
+                } else {
+                    kpSettings.style.display = 'none';
                 }
             });
 

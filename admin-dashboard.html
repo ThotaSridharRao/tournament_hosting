@@ -1359,21 +1359,75 @@
                 <!-- KP Format Settings (hidden by default) -->
                 <div id="kp-settings" style="display: none;">
                     <h4 style="color: var(--accent); margin: 1.5rem 0 1rem 0;">KP Tournament Settings</h4>
-                    <div class="form-group">
-                        <label for="group-size" class="form-label">Teams per Group</label>
-                        <input type="number" id="group-size" name="groupSize" class="form-input" value="25" min="1">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="group-size" class="form-label">Teams per Qualifier</label>
+                            <input type="number" id="group-size" name="groupSize" class="form-input" value="25" min="1" readonly>
+                            <small style="color: var(--muted); font-size: 0.8rem;">Fixed at 25 teams per qualifier for KP format</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="number-of-groups" class="form-label">Number of Qualifiers</label>
+                            <input type="number" id="number-of-groups" name="numberOfGroups" class="form-input" value="4" min="4" max="4" readonly>
+                            <small style="color: var(--muted); font-size: 0.8rem;">Fixed at 4 qualifiers for KP format</small>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="number-of-groups" class="form-label">Number of Groups</label>
-                        <input type="number" id="number-of-groups" name="numberOfGroups" class="form-input" value="4" min="1">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="qualifiers-per-group" class="form-label">Top Teams per Qualifier</label>
+                            <input type="number" id="qualifiers-per-group" name="qualifiersPerGroup" class="form-input" value="4" min="4" max="4" readonly>
+                            <small style="color: var(--muted); font-size: 0.8rem;">Top 4 teams from each qualifier advance to final</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="max-players-per-team" class="form-label">Max Players per Team</label>
+                            <input type="number" id="max-players-per-team" name="maxPlayersPerTeam" class="form-input" value="4" min="1" max="10">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="qualifiers-per-group" class="form-label">Qualifiers per Group</label>
-                        <input type="number" id="qualifiers-per-group" name="qualifiersPerGroup" class="form-input" value="4" min="1">
+
+                    <h5 style="color: var(--accent); margin: 1.5rem 0 1rem 0;">Prize Distribution</h5>
+                    <div class="prize-breakdown" style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
+                            <div>
+                                <div style="color: #FFD700; font-weight: bold;">1st Place</div>
+                                <div style="color: var(--muted); font-size: 0.9rem;">50% of Prize Pool</div>
+                            </div>
+                            <div>
+                                <div style="color: #C0C0C0; font-weight: bold;">2nd Place</div>
+                                <div style="color: var(--muted); font-size: 0.9rem;">30% of Prize Pool</div>
+                            </div>
+                            <div>
+                                <div style="color: #CD7F32; font-weight: bold;">3rd Place</div>
+                                <div style="color: var(--muted); font-size: 0.9rem;">20% of Prize Pool</div>
+                            </div>
+                        </div>
                     </div>
+
+                    <h5 style="color: var(--accent); margin: 1.5rem 0 1rem 0;">Match Schedule</h5>
+                    
                     <div class="form-group">
-                        <label for="max-players-per-team" class="form-label">Max Players per Team</label>
-                        <input type="number" id="max-players-per-team" name="maxPlayersPerTeam" class="form-input" value="4" min="1" max="10">
+                        <label for="qualifier1-date" class="form-label">Qualifier 1 Date & Time</label>
+                        <input type="datetime-local" id="qualifier1-date" name="qualifier1Date" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="qualifier2-date" class="form-label">Qualifier 2 Date & Time</label>
+                        <input type="datetime-local" id="qualifier2-date" name="qualifier2Date" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="qualifier3-date" class="form-label">Qualifier 3 Date & Time</label>
+                        <input type="datetime-local" id="qualifier3-date" name="qualifier3Date" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="qualifier4-date" class="form-label">Qualifier 4 Date & Time</label>
+                        <input type="datetime-local" id="qualifier4-date" name="qualifier4Date" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="final-match-date" class="form-label">Final Match Date & Time</label>
+                        <input type="datetime-local" id="final-match-date" name="finalMatchDate" class="form-input">
                     </div>
                 </div>
                 
@@ -1458,7 +1512,7 @@
                 // Display admin's email
                 const usernameElement = document.getElementById('admin-username');
                 if (usernameElement) {
-                    usernameElement.textContent = sessionData.user.email;
+                    usernameElement.textContent = sessionData.user.username || sessionData.user.email;
                 }
 
                 return sessionData; // Return session data for use in other functions

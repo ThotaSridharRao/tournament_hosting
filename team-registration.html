@@ -543,6 +543,142 @@ grid-column: span 1;
 grid-template-columns: 1fr;
 }
 }
+
+/* Profile Dropdown Styles */
+.profile-dropdown {
+position: relative;
+display: flex;
+align-items: center;
+}
+
+.profile-icon {
+width: 40px;
+height: 40px;
+display: flex;
+align-items: center;
+justify-content: center;
+color: var(--copy);
+cursor: pointer;
+border-radius: 50%;
+transition: all 0.3s ease;
+font-size: 1.5rem;
+}
+
+.profile-icon:hover {
+color: var(--accent);
+background: rgba(255, 215, 0, 0.1);
+transform: scale(1.1);
+}
+
+.profile-modal {
+position: absolute;
+top: 100%;
+right: 0;
+background: var(--panel);
+border: 1px solid rgba(255, 255, 255, 0.1);
+border-radius: 12px;
+min-width: 280px;
+opacity: 0;
+visibility: hidden;
+transform: translateY(-10px);
+transition: all 0.3s ease;
+box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+z-index: 1000;
+margin-top: 10px;
+}
+
+.profile-dropdown:hover .profile-modal {
+opacity: 1;
+visibility: visible;
+transform: translateY(0);
+}
+
+.profile-header {
+display: flex;
+align-items: center;
+gap: 1rem;
+padding: 1.5rem;
+border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.profile-photo {
+width: 50px;
+height: 50px;
+background: linear-gradient(135deg, var(--accent), #e0ac10);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+color: #000;
+font-size: 1.5rem;
+flex-shrink: 0;
+}
+
+.profile-info {
+flex: 1;
+}
+
+.profile-username {
+font-weight: 700;
+color: var(--copy);
+font-size: 1.1rem;
+margin-bottom: 0.25rem;
+}
+
+.profile-role {
+background: linear-gradient(135deg, var(--accent), #e0ac10);
+color: #000;
+padding: 0.25rem 0.5rem;
+border-radius: 12px;
+font-size: 0.7rem;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+display: inline-block;
+}
+
+.profile-actions {
+padding: 0.5rem;
+}
+
+.profile-action {
+display: flex;
+align-items: center;
+gap: 0.75rem;
+padding: 0.75rem 1rem;
+color: var(--copy);
+text-decoration: none;
+border-radius: 8px;
+transition: all 0.3s ease;
+font-weight: 600;
+font-size: 0.95rem;
+width: 100%;
+border: none;
+background: none;
+cursor: pointer;
+font-family: inherit;
+}
+
+.profile-action:hover {
+background: rgba(255, 255, 255, 0.05);
+color: var(--accent);
+transform: translateX(4px);
+}
+
+.logout-action:hover {
+background: rgba(255, 0, 0, 0.1);
+color: #ff6b6b;
+}
+
+.profile-action i {
+width: 16px;
+text-align: center;
+}
+
+#user-menu {
+display: flex;
+align-items: center;
+}
 </style>
 </head>
 <body>
@@ -558,9 +694,40 @@ grid-template-columns: 1fr;
 <span><span class="accent">E</span>Arena</span>
 </a>
 
-<div class="user-menu">
-<div class="user-info" id="user-info">
-<a href="auth.html?tab=login&returnUrl=team-registration.html" style="color: var(--copy); text-decoration: none;">Login</a>
+<div class="nav-actions">
+<!-- Not logged in -->
+<div id="guest-menu">
+<a href="auth.html?tab=login&returnUrl=team-registration.html" class="login-link">Log in</a>
+</div>
+
+<!-- Logged in -->
+<div id="user-menu" style="display: none;">
+<div class="profile-dropdown">
+<div class="profile-icon" id="profile-icon">
+<i class="fas fa-user-circle"></i>
+</div>
+<div class="profile-modal" id="profile-modal">
+<div class="profile-header">
+<div class="profile-photo">
+<i class="fas fa-user"></i>
+</div>
+<div class="profile-info">
+<div class="profile-username" id="modal-username">User</div>
+<div class="profile-role" id="modal-role-badge" style="display: none;">Admin</div>
+</div>
+</div>
+<div class="profile-actions">
+<a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
+<i class="fas fa-user"></i>
+<span>My Account</span>
+</a>
+<button class="profile-action logout-action" onclick="logout()">
+<i class="fas fa-sign-out-alt"></i>
+<span>Logout</span>
+</button>
+</div>
+</div>
+</div>
 </div>
 </div>
 </header>
@@ -1261,7 +1428,53 @@ errorContainer.innerHTML = `<div class="success-message"><i class="fas fa-check-
 }
 
 // --- EVENT LISTENERS ---
+// Profile dropdown functionality
+function initializeProfileDropdown() {
+const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+
+if (session) {
+try {
+const sessionData = JSON.parse(session);
+const user = sessionData.user;
+
+// Show user menu, hide guest menu
+document.getElementById('user-menu').style.display = 'flex';
+document.getElementById('guest-menu').style.display = 'none';
+
+// Update profile info
+document.getElementById('modal-username').textContent = user.username || user.email || 'User';
+
+// Show admin badge if user is admin
+const roleBadge = document.getElementById('modal-role-badge');
+const dashboardLink = document.getElementById('modal-dashboard-link');
+
+if (user.role === 'admin') {
+roleBadge.style.display = 'inline-block';
+roleBadge.textContent = 'Admin';
+dashboardLink.href = 'admin-dashboard.html';
+dashboardLink.innerHTML = '<i class="fas fa-shield-alt"></i><span>Admin Dashboard</span>';
+} else {
+roleBadge.style.display = 'none';
+dashboardLink.href = 'user-dashboard.html';
+dashboardLink.innerHTML = '<i class="fas fa-user"></i><span>My Account</span>';
+}
+} catch (error) {
+console.error('Error parsing session data:', error);
+// Show guest menu if session is invalid
+document.getElementById('user-menu').style.display = 'none';
+document.getElementById('guest-menu').style.display = 'flex';
+}
+} else {
+// Show guest menu if no session
+document.getElementById('user-menu').style.display = 'none';
+document.getElementById('guest-menu').style.display = 'flex';
+}
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+// Initialize profile dropdown
+initializeProfileDropdown();
+
 // Test API connection first
 await testApiConnection();
 

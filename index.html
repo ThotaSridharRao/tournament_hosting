@@ -2427,6 +2427,41 @@
       }
     }
 
+    // Tournament status calculation function
+    function calculateTournamentStatus(tournament) {
+      const now = new Date();
+      
+      const regStart = new Date(tournament.registrationStart);
+      const regEnd = new Date(tournament.registrationEnd);
+      const tournStart = new Date(tournament.tournamentStart);
+      const tournEnd = new Date(tournament.tournamentEnd);
+      
+      if (now < regStart) {
+        return 'upcoming';
+      } else if (now >= regStart && now <= regEnd) {
+        return 'registration_open';
+      } else if (now > regEnd && now < tournStart) {
+        return 'registration_closed';
+      } else if (now >= tournStart && now <= tournEnd) {
+        return 'live';
+      } else {
+        return 'completed';
+      }
+    }
+
+    // Get status display text and badge class
+    function getStatusDisplay(status) {
+      const statusMap = {
+        'upcoming': { text: 'Upcoming', class: 'upcoming' },
+        'registration_open': { text: 'Registration Open', class: 'registration-open' },
+        'registration_closed': { text: 'Registration Closed', class: 'registration-closed' },
+        'live': { text: 'Live', class: 'live' },
+        'completed': { text: 'Completed', class: 'completed' }
+      };
+      
+      return statusMap[status] || { text: 'Unknown', class: 'unknown' };
+    }
+
     // Legacy function for backward compatibility
     async function populateTournamentSections() {
       return populateAllSections();
@@ -2601,9 +2636,11 @@
     }
 
     function populateUpcomingTournaments(tournaments) {
-      const upcomingTournaments = tournaments.filter(t =>
-        t.status === 'upcoming' || t.status === 'registration'
-      ).slice(0, 3);
+      // Calculate dynamic status and filter upcoming tournaments
+      const upcomingTournaments = tournaments
+        .map(t => ({ ...t, status: calculateTournamentStatus(t) }))
+        .filter(t => t.status === 'upcoming' || t.status === 'registration_open')
+        .slice(0, 3);
 
       const upcomingList = document.querySelector('#upcoming-title').parentElement.querySelector('.tournament-list');
 
@@ -2630,7 +2667,11 @@
     }
 
     function populateLiveTournaments(tournaments) {
-      const liveTournaments = tournaments.filter(t => t.status === 'live').slice(0, 3);
+      // Calculate dynamic status and filter live tournaments
+      const liveTournaments = tournaments
+        .map(t => ({ ...t, status: calculateTournamentStatus(t) }))
+        .filter(t => t.status === 'live')
+        .slice(0, 3);
 
       const liveList = document.querySelector('#live-title').parentElement.querySelector('.tournament-list');
 

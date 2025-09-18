@@ -1026,6 +1026,142 @@
         font-size: 0.9rem;
       }
     }
+
+    /* Profile Dropdown Styles */
+    .profile-dropdown {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .profile-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--copy);
+      cursor: pointer;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      font-size: 1.5rem;
+    }
+
+    .profile-icon:hover {
+      color: var(--accent);
+      background: rgba(255, 215, 0, 0.1);
+      transform: scale(1.1);
+    }
+
+    .profile-modal {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--panel);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      min-width: 280px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s var(--ease-out-quart);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      margin-top: 10px;
+    }
+
+    .profile-dropdown:hover .profile-modal {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .profile-photo {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-username {
+      font-weight: 700;
+      color: var(--copy);
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .profile-role {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #000;
+      padding: 0.25rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    .profile-actions {
+      padding: 0.5rem;
+    }
+
+    .profile-action {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      color: var(--copy);
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      font-size: 0.95rem;
+      width: 100%;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .profile-action:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    .logout-action:hover {
+      background: rgba(255, 0, 0, 0.1);
+      color: #ff6b6b;
+    }
+
+    .profile-action i {
+      width: 16px;
+      text-align: center;
+    }
+
+    #user-menu {
+      display: flex;
+      align-items: center;
+    }
   </style>
 </head>
 
@@ -1041,8 +1177,41 @@
     </a>
 
     <div class="nav-actions">
-      <a href="auth.html?tab=login&returnUrl=tournament-details.html" class="login-link">Log in</a>
-      <button class="header-cta" onclick="redirectToAuth()">Sign up</button>
+      <!-- Not logged in -->
+      <div id="guest-menu">
+        <a href="auth.html?tab=login&returnUrl=tournament-details.html" class="login-link">Log in</a>
+        <button class="header-cta" onclick="redirectToAuth()">Sign up</button>
+      </div>
+      
+      <!-- Logged in -->
+      <div id="user-menu" style="display: none;">
+        <div class="profile-dropdown">
+          <div class="profile-icon" id="profile-icon">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <div class="profile-modal" id="profile-modal">
+            <div class="profile-header">
+              <div class="profile-photo">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="profile-info">
+                <div class="profile-username" id="modal-username">User</div>
+                <div class="profile-role" id="modal-role-badge" style="display: none;">Admin</div>
+              </div>
+            </div>
+            <div class="profile-actions">
+              <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
+                <i class="fas fa-user"></i>
+                <span>My Account</span>
+              </a>
+              <button class="profile-action logout-action" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -1477,9 +1646,9 @@
       if (now < registrationStart) {
         return 'upcoming';
       } else if (now >= registrationStart && now <= registrationEnd) {
-        return 'registration';
+        return 'registration_open';
       } else if (now > registrationEnd && now < tournamentStart) {
-        return 'upcoming';
+        return 'registration_closed';
       } else if (now >= tournamentStart && now <= tournamentEnd) {
         return 'live';
       } else {
@@ -2767,6 +2936,9 @@
 
         const data = await response.json();
         currentTournament = data.data;
+        
+        // Calculate and set dynamic status
+        currentTournament.status = calculateTournamentStatus(currentTournament);
 
         // Update page with tournament data
         updateTournamentDisplay(currentTournament);
@@ -2895,20 +3067,77 @@
 
       if (tournament.format === 'kp' && tournament.kpSettings) {
         const kp = tournament.kpSettings;
+        
+        // Calculate prize amounts
+        const prizePool = tournament.prizePool || 0;
+        const firstPrize = Math.round(prizePool * (kp.prizeDistribution?.first || 0.5));
+        const secondPrize = Math.round(prizePool * (kp.prizeDistribution?.second || 0.3));
+        const thirdPrize = Math.round(prizePool * (kp.prizeDistribution?.third || 0.2));
+        
         formatHtml = `
+          <div style="margin-bottom: 2rem;">
+            <h4 style="color: var(--accent); margin-bottom: 1rem;">KP Tournament Format</h4>
+            <ul style="list-style: none; padding: 0;">
+              <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <strong>Structure:</strong> ${kp.numberOfGroups} Qualifiers → Final Match
+              </li>
+              <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <strong>Teams per Qualifier:</strong> ${kp.groupSize} teams each
+              </li>
+              <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <strong>Advancement:</strong> Top ${kp.qualifiersPerGroup} teams from each qualifier
+              </li>
+              <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <strong>Final Match:</strong> ${kp.qualifiersPerGroup * kp.numberOfGroups} teams compete
+              </li>
+              <li style="padding: 0.5rem 0;">
+                <strong>Team Size:</strong> Maximum ${kp.maxPlayersPerTeam} players per team
+              </li>
+            </ul>
+          </div>
+          
+          <div style="margin-bottom: 2rem;">
+            <h4 style="color: var(--accent); margin-bottom: 1rem;">Prize Distribution</h4>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+              <div style="background: rgba(255, 215, 0, 0.1); padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid rgba(255, 215, 0, 0.3);">
+                <div style="color: #FFD700; font-weight: bold; font-size: 1.1rem;">🥇 1st Place</div>
+                <div style="color: var(--copy); font-size: 1.2rem; font-weight: bold; margin: 0.5rem 0;">₹${firstPrize.toLocaleString()}</div>
+                <div style="color: var(--muted); font-size: 0.9rem;">50% of Prize Pool</div>
+              </div>
+              <div style="background: rgba(192, 192, 192, 0.1); padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid rgba(192, 192, 192, 0.3);">
+                <div style="color: #C0C0C0; font-weight: bold; font-size: 1.1rem;">🥈 2nd Place</div>
+                <div style="color: var(--copy); font-size: 1.2rem; font-weight: bold; margin: 0.5rem 0;">₹${secondPrize.toLocaleString()}</div>
+                <div style="color: var(--muted); font-size: 0.9rem;">30% of Prize Pool</div>
+              </div>
+              <div style="background: rgba(205, 127, 50, 0.1); padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid rgba(205, 127, 50, 0.3);">
+                <div style="color: #CD7F32; font-weight: bold; font-size: 1.1rem;">🥉 3rd Place</div>
+                <div style="color: var(--copy); font-size: 1.2rem; font-weight: bold; margin: 0.5rem 0;">₹${thirdPrize.toLocaleString()}</div>
+                <div style="color: var(--muted); font-size: 0.9rem;">20% of Prize Pool</div>
+              </div>
+            </div>
+          </div>
+          
+          ${kp.matchSchedule && kp.matchSchedule.length > 0 ? `
+          <div style="margin-bottom: 2rem;">
+            <h4 style="color: var(--accent); margin-bottom: 1rem;">Match Schedule</h4>
+            <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px;">
+              ${kp.matchSchedule.map(match => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                  <div>
+                    <div style="font-weight: bold; color: var(--copy);">${match.match}</div>
+                    <div style="color: var(--muted); font-size: 0.9rem;">${match.teams} teams</div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="color: var(--accent); font-weight: bold;">${new Date(match.date).toLocaleDateString()}</div>
+                    <div style="color: var(--muted); font-size: 0.9rem;">${new Date(match.date).toLocaleTimeString()}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          ` : ''}
+          
           <ul style="list-style: none; padding: 0;">
-            <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-              <strong>Format:</strong> KP (Kill Points) Tournament
-            </li>
-            <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-              <strong>Groups:</strong> ${kp.numberOfGroups} groups of ${kp.groupSize} teams each
-            </li>
-            <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-              <strong>Qualifiers:</strong> Top ${kp.qualifiersPerGroup} teams from each group advance
-            </li>
-            <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-              <strong>Team Size:</strong> Maximum ${kp.maxPlayersPerTeam} players per team
-            </li>
             <li style="padding: 0.5rem 0;">
               <strong>Entry Fee:</strong> ₹${tournament.entryFee || 0} per team (one-time payment)
             </li>
@@ -3169,7 +3398,51 @@
       winnerSection.style.display = 'block';
     }
 
+    // Profile dropdown functionality
+    function initializeProfileDropdown() {
+      const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+      
+      if (session) {
+        try {
+          const sessionData = JSON.parse(session);
+          const user = sessionData.user;
+          
+          // Show user menu, hide guest menu
+          document.getElementById('user-menu').style.display = 'flex';
+          document.getElementById('guest-menu').style.display = 'none';
+          
+          // Update profile info
+          document.getElementById('modal-username').textContent = user.username || user.email || 'User';
+          
+          // Show admin badge if user is admin
+          const roleBadge = document.getElementById('modal-role-badge');
+          const dashboardLink = document.getElementById('modal-dashboard-link');
+          
+          if (user.role === 'admin') {
+            roleBadge.style.display = 'inline-block';
+            roleBadge.textContent = 'Admin';
+            dashboardLink.href = 'admin-dashboard.html';
+            dashboardLink.innerHTML = '<i class="fas fa-shield-alt"></i><span>Admin Dashboard</span>';
+          } else {
+            roleBadge.style.display = 'none';
+            dashboardLink.href = 'user-dashboard.html';
+            dashboardLink.innerHTML = '<i class="fas fa-user"></i><span>My Account</span>';
+          }
+        } catch (error) {
+          console.error('Error parsing session data:', error);
+          // Show guest menu if session is invalid
+          document.getElementById('user-menu').style.display = 'none';
+          document.getElementById('guest-menu').style.display = 'flex';
+        }
+      } else {
+        // Show guest menu if no session
+        document.getElementById('user-menu').style.display = 'none';
+        document.getElementById('guest-menu').style.display = 'flex';
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+      initializeProfileDropdown();
       checkUserAuthentication();
       loadTournamentFromAPI();
     });
