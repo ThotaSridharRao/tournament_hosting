@@ -1370,10 +1370,10 @@
         format: 'Battle Royale',
         maxTeams: 24,
         dates: {
-          registrationStart: new Date('2025-09-10'),
-          registrationEnd: new Date('2025-09-20'),
-          tournamentStart: new Date('2025-09-25'),
-          tournamentEnd: new Date('2025-10-02')
+          registrationStart: new Date(Date.now() - 86400000), // Started 1 day ago
+          registrationEnd: new Date(Date.now() + 7 * 86400000), // Ends in 7 days
+          tournamentStart: new Date(Date.now() + 10 * 86400000), // Starts in 10 days
+          tournamentEnd: new Date(Date.now() + 17 * 86400000) // Ends in 17 days
         },
         status: 'upcoming',
         backgroundImage: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80'
@@ -1450,10 +1450,10 @@
             maxTeams: tournament.maxTeams || 16,
             status: tournament.status || 'upcoming',
             dates: {
-              registrationStart: tournament.registrationStart ? new Date(tournament.registrationStart) : new Date(),
-              registrationEnd: tournament.registrationEnd ? new Date(tournament.registrationEnd) : new Date(),
-              tournamentStart: tournament.tournamentStart ? new Date(tournament.tournamentStart) : new Date(),
-              tournamentEnd: tournament.tournamentEnd ? new Date(tournament.tournamentEnd) : new Date()
+              registrationStart: tournament.registrationStart ? new Date(tournament.registrationStart) : new Date(Date.now() - 86400000),
+              registrationEnd: tournament.registrationEnd ? new Date(tournament.registrationEnd) : new Date(Date.now() + 7 * 86400000),
+              tournamentStart: tournament.tournamentStart ? new Date(tournament.tournamentStart) : new Date(Date.now() + 10 * 86400000),
+              tournamentEnd: tournament.tournamentEnd ? new Date(tournament.tournamentEnd) : new Date(Date.now() + 17 * 86400000)
             },
             backgroundImage: tournament.backgroundImage || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'
           };
@@ -2438,7 +2438,7 @@
       const statusOverride = urlParams.get('status'); // upcoming, live, completed
       const winner = urlParams.get('winner');
 
-      let today = new Date('2025-09-14'); // Simulating today's date
+      let today = new Date(); // Use actual current date
       let tournamentStatus = currentTournament.status;
 
       // Override status if provided in URL
@@ -2465,6 +2465,14 @@
         displayCompletedTournament(winner);
         return;
       }
+
+      // Debug: Check dates
+      console.log('Date Check:', {
+        today: today,
+        regStart: tournamentDates.registrationStart,
+        regEnd: tournamentDates.registrationEnd,
+        isInRegistrationPeriod: today >= tournamentDates.registrationStart && today <= tournamentDates.registrationEnd
+      });
 
       // Handle different tournament statuses
       if (today >= tournamentDates.registrationStart && today <= tournamentDates.registrationEnd) {
