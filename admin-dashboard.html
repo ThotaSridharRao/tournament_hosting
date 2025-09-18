@@ -1265,7 +1265,15 @@
 
     <script>
         // Helper function to redirect to auth with return URL
-        function redirectToAuth(tab = 'register') {
+        function redirectToAuth(tab = 'login') {
+          // Clear any old authentication data
+          localStorage.removeItem('earena_session');
+          sessionStorage.removeItem('earena_session');
+          
+          // Clear any old cookies
+          document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+          document.cookie = 'user_data=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+          
           const currentUrl = window.location.href;
           const returnUrl = encodeURIComponent(currentUrl);
           window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
@@ -1278,57 +1286,69 @@
         
         const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
 
-        // Helper function to get auth token from cookies
+        // Helper function to get auth token from localStorage
         function getAuthToken() {
-            function getCookie(name) {
-                const value = `; ${document.cookie}`;
-                const parts = value.split(`; ${name}=`);
-                if (parts.length === 2) return parts.pop().split(';').shift();
+            try {
+                const authData = localStorage.getItem('earena_session');
+                if (!authData) return null;
+                
+                const sessionData = JSON.parse(authData);
+                return sessionData.token;
+            } catch (error) {
+                console.error('Failed to get auth token:', error);
+                return null;
             }
-            return getCookie('auth_token');
         }
 
-        // Check admin authentication
+        // Modern authentication check using localStorage
         function checkAdminAuth() {
-            // Helper function to get a specific cookie by its name
-            function getCookie(name) {
-                const value = `; ${document.cookie}`;
-                const parts = value.split(`; ${name}=`);
-                if (parts.length === 2) return parts.pop().split(';').shift();
-            }
-
-            const authToken = getCookie('auth_token');
-            const userDataCookie = getCookie('user_data');
-
-            // If either cookie is missing, the user is not authenticated
-            if (!authToken || !userDataCookie) {
-                console.error('Authentication cookies not found. Redirecting to login.');
-                redirectToAuth('login');
-                return false; // Stop execution
-            }
-
             try {
-                // The user_data cookie is stored as "email|role"
-                // We decode it and split it to get the role
-                const [email, role] = decodeURIComponent(userDataCookie).split('|');
-
-                if (role !== 'admin') {
-                    alert('Access Denied: You do not have admin privileges.');
+                // Debug: Log what's in localStorage
+                console.log('Checking authentication...');
+                console.log('localStorage earena_session:', localStorage.getItem('earena_session'));
+                
+                // Get authentication data from localStorage
+                const authData = localStorage.getItem('earena_session');
+                
+                if (!authData) {
+                    console.error('No authentication data found in localStorage. Redirecting to login.');
                     redirectToAuth('login');
-                    return false; // Stop execution
+                    return false;
                 }
 
-                // If everything is correct, display the admin's email
+                const sessionData = JSON.parse(authData);
+                console.log('Parsed session data:', sessionData);
+                
+                // Check if session data is valid
+                if (!sessionData.user || !sessionData.token) {
+                    console.error('Invalid session data structure. Redirecting to login.');
+                    console.log('Missing user or token:', { user: sessionData.user, token: sessionData.token });
+                    redirectToAuth('login');
+                    return false;
+                }
+
+                // Check if user is admin
+                console.log('User role:', sessionData.user.role);
+                if (sessionData.user.role !== 'admin') {
+                    alert('Access Denied: You do not have admin privileges.');
+                    console.log('User is not admin. Role:', sessionData.user.role);
+                    redirectToAuth('login');
+                    return false;
+                }
+
+                // Display admin's email
                 const usernameElement = document.getElementById('admin-username');
                 if (usernameElement) {
-                    usernameElement.textContent = email;
+                    usernameElement.textContent = sessionData.user.email;
                 }
 
-                return true; // Authentication successful
+                console.log('Admin authentication successful');
+                return sessionData; // Return session data for use in other functions
+                
             } catch (error) {
-                console.error('Failed to parse user data cookie:', error);
+                console.error('Failed to parse authentication data:', error);
                 redirectToAuth('login');
-                return false; // Stop execution
+                return false;
             }
         }
 
