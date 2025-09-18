@@ -2637,57 +2637,50 @@
 
 
 
-      // Handle different tournament statuses
-      if (today >= tournamentDates.registrationStart && today <= tournamentDates.registrationEnd) {
-        // Registration period - show register button and registration message
-        registrationMessage.style.display = 'block';
+      // Use dynamic status instead of date comparisons
+      const dynamicStatus = calculateTournamentStatus(currentTournament);
+      
+      switch (dynamicStatus) {
+        case 'registration_open':
+          // Registration period - show register button and registration message
+          registrationMessage.style.display = 'block';
+          heroActions.style.display = 'flex';
+          primaryActionBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
+          primaryActionBtn.onclick = () => {
+            if (!requireAuthentication('register for tournaments')) {
+              return;
+            }
+            // User is authenticated, redirect to registration page
+            const tournamentSlug = new URLSearchParams(window.location.search).get('slug') || new URLSearchParams(window.location.search).get('id');
+            window.location.href = `team-registration.html?slug=${tournamentSlug}`;
+          };
+          leaderboardSection.style.display = 'none';
+          break;
 
-        heroActions.style.display = 'flex';
-        primaryActionBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
-        primaryActionBtn.onclick = () => {
-          if (!requireAuthentication('register for tournaments')) {
-            return;
-          }
+        case 'upcoming':
+          // Before registration starts
+          registrationMessage.style.display = 'none';
+          heroActions.style.display = 'none';
+          leaderboardSection.style.display = 'none';
+          break;
 
-          // User is authenticated, proceed with registration
-          const userSession = getUserSession();
-          showRegistrationModal(userSession.user);
-        };
+        case 'live':
+          // Tournament is live - hide all buttons, show leaderboard
+          registrationMessage.style.display = 'none';
+          heroActions.style.display = 'none';
+          leaderboardSection.style.display = 'block';
+          break;
 
-        // Hide leaderboard during registration
-        leaderboardSection.style.display = 'none';
+        case 'registration_closed':
+          // Registration closed, tournament not started
+          registrationMessage.style.display = 'none';
+          heroActions.style.display = 'none';
+          leaderboardSection.style.display = 'none';
+          break;
 
-      } else if (today < tournamentDates.registrationStart) {
-        // Before registration starts
-        registrationMessage.style.display = 'none';
-
-        // Hide register button - registration not open yet
-        heroActions.style.display = 'none';
-        leaderboardSection.style.display = 'none';
-
-      } else if (today >= tournamentDates.tournamentStart && today <= tournamentDates.tournamentEnd) {
-        // Tournament is live - hide all buttons, show leaderboard
-        registrationMessage.style.display = 'none';
-
-        // Hide all action buttons when tournament is live
-        heroActions.style.display = 'none';
-
-        // Show leaderboard section
-        leaderboardSection.style.display = 'block';
-
-      } else if (today > tournamentDates.registrationEnd && today < tournamentDates.tournamentStart) {
-        // Registration closed, tournament not started
-        registrationMessage.style.display = 'none';
-
-        // Hide register button - registration closed
-        heroActions.style.display = 'none';
-        leaderboardSection.style.display = 'none';
-
-      } else if (today > tournamentDates.tournamentEnd) {
-        // Tournament finished - show leaderboard as final results
-        registrationMessage.style.display = 'none';
-
-        // Hide action buttons for completed tournaments
+        case 'completed':
+          // Tournament finished - show leaderboard as final results
+          registrationMessage.style.display = 'none';
         heroActions.style.display = 'none';
         leaderboardSection.style.display = 'block';
 
@@ -3268,16 +3261,12 @@
 
 
 
-      // Determine effective status based on dates
+      // Use the dynamic status from calculateTournamentStatus
       let effectiveStatus = tournament.status;
-      if (isRegistrationOpen && (tournament.status === 'upcoming' || tournament.status === 'registration')) {
-        effectiveStatus = 'registration-open';
-      }
 
       switch (effectiveStatus) {
         case 'upcoming':
-        case 'registration':
-        case 'registration-open':
+        case 'registration_open':
           primaryAction.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
           primaryAction.onclick = () => {
 
