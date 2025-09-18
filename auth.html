@@ -765,7 +765,7 @@
       <div class="success-message" id="success-message"></div>
       
       <!-- Login Form -->
-      <form class="auth-form" id="login-form" action="https://t2-237c.onrender.com/login-form" method="POST">
+      <form class="auth-form" id="login-form">
         <div class="form-group">
           <label class="form-label" for="login-email">Email Address</label>
           <input type="email" id="login-email" name="email" class="form-input" placeholder="Enter your email address"
@@ -781,13 +781,13 @@
             </button>
           </div>
         </div>
-        <button type="submit" class="submit-btn">
-          <span>Sign In</span>
+        <button type="submit" class="submit-btn" id="login-submit-btn">
+          <span id="login-submit-text">Sign In</span>
         </button>
       </form>
       
       <!-- Register Form -->
-      <form class="auth-form" id="register-form" action="https://t2-237c.onrender.com/register-form" method="POST" style="display: none;">
+      <form class="auth-form" id="register-form" style="display: none;">
         <div class="form-group">
           <label class="form-label" for="register-email">Email Address</label>
           <input type="email" id="register-email" name="email" class="form-input"
@@ -813,8 +813,8 @@
               class="auth-link">Privacy Policy</a>
           </label>
         </div>
-        <button type="submit" class="submit-btn">
-          <span>Create Account</span>
+        <button type="submit" class="submit-btn" id="register-submit-btn">
+          <span id="register-submit-text">Create Account</span>
         </button>
       </form>
       <div class="auth-footer">
@@ -968,8 +968,141 @@
         input.style.boxShadow = '0 0 0 4px rgba(255, 215, 0, 0.1)';
       }
     }
-    // --- Removed outdated JavaScript functions ---
-    // Forms now submit directly to backend, no JavaScript handling needed
+    // --- Modern Authentication Functions ---
+    
+    // Handle login form submission
+    async function handleLogin(event) {
+      event.preventDefault();
+      
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      
+      if (!validateEmail(email)) {
+        showError('Please enter a valid email address');
+        return;
+      }
+      
+      if (!password) {
+        showError('Please enter your password');
+        return;
+      }
+      
+      setLoading('login', true);
+      
+      try {
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', password);
+        
+        const response = await fetch(`${API_BASE_URL}/login-form`, {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          // Store authentication data
+          const authData = {
+            user: result.data.user,
+            token: result.data.token,
+            expiresIn: result.data.expiresIn,
+            loginTime: new Date().toISOString()
+          };
+          
+          localStorage.setItem('earena_session', JSON.stringify(authData));
+          
+          showSuccess('Login successful! Redirecting...');
+          
+          // Redirect based on backend response
+          setTimeout(() => {
+            window.location.href = result.redirect_path;
+          }, 1500);
+          
+        } else {
+          showError(result.error || 'Login failed. Please try again.');
+        }
+        
+      } catch (error) {
+        console.error('Login error:', error);
+        showError('Connection error. Please check your internet connection.');
+      } finally {
+        setLoading('login', false);
+      }
+    }
+    
+    // Handle registration form submission
+    async function handleRegister(event) {
+      event.preventDefault();
+      
+      const email = document.getElementById('register-email').value.trim();
+      const password = document.getElementById('register-password').value;
+      const termsAgreed = document.getElementById('terms-agreement').checked;
+      
+      if (!validateEmail(email)) {
+        showError('Please enter a valid email address');
+        return;
+      }
+      
+      if (!validatePassword(password)) {
+        showError('Password must be at least 8 characters long');
+        return;
+      }
+      
+      if (!termsAgreed) {
+        showError('Please agree to the Terms of Service and Privacy Policy');
+        return;
+      }
+      
+      setLoading('register', true);
+      
+      try {
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', password);
+        
+        const response = await fetch(`${API_BASE_URL}/register-form`, {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          showSuccess(result.message);
+          
+          // Switch to login tab after successful registration
+          setTimeout(() => {
+            switchTab('login');
+            document.getElementById('login-email').value = email;
+            document.getElementById('login-email').focus();
+          }, 2000);
+          
+        } else {
+          showError(result.error || 'Registration failed. Please try again.');
+        }
+        
+      } catch (error) {
+        console.error('Registration error:', error);
+        showError('Connection error. Please check your internet connection.');
+      } finally {
+        setLoading('register', false);
+      }
+    }
+    
+    // Loading state management
+    function setLoading(formType, isLoading) {
+      const submitBtn = document.getElementById(`${formType}-submit-btn`);
+      const submitText = document.getElementById(`${formType}-submit-text`);
+      
+      if (isLoading) {
+        submitBtn.disabled = true;
+        submitText.innerHTML = '<span class="loading"></span> Processing...';
+      } else {
+        submitBtn.disabled = false;
+        submitText.textContent = formType === 'login' ? 'Sign In' : 'Create Account';
+      }
+    }
     // Handle URL parameters for error/success messages
     function handleUrlParams() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -1015,6 +1148,10 @@
     // Initialize when DOM is loaded
     document.addEventListener('DOMContentLoaded', function () {
       handleUrlParams();
+      
+      // Add form event listeners
+      document.getElementById('login-form').addEventListener('submit', handleLogin);
+      document.getElementById('register-form').addEventListener('submit', handleRegister);
       
       // Focus first input on load
       setTimeout(() => {

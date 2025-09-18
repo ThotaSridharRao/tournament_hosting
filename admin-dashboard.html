@@ -1083,11 +1083,9 @@
                 <span id="admin-username">Admin</span>
                 <span class="admin-badge">Admin</span>
             </div>
-            <form action="https://t2-237c.onrender.com/logout" method="POST" style="display: inline;">
-                <button type="submit" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </form>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
         </div>
     </header>
 
@@ -1334,9 +1332,30 @@
             }
         }
 
-        // Logout function
+        // Modern logout function
         async function logout() {
-            // ... (logout logic remains the same)
+            try {
+                // Clear local storage
+                localStorage.removeItem('earena_session');
+                sessionStorage.removeItem('earena_session');
+                
+                // Call logout API
+                await fetch(`${API_BASE_URL}/api/auth/logout`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${getAuthToken()}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                // Redirect to home page
+                window.location.href = 'index.html';
+                
+            } catch (error) {
+                console.error('Logout error:', error);
+                // Even if API call fails, still redirect
+                window.location.href = 'index.html';
+            }
         }
 
         // Load dashboard stats
