@@ -566,6 +566,11 @@ grid-template-columns: 1fr;
 </header>
 
 <main class="main-content">
+<!-- Testing Mode Banner -->
+<div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 12px 24px; border-radius: 8px; margin-bottom: 24px; text-align: center; font-weight: 600; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+    <i class="fas fa-flask"></i> TESTING MODE ACTIVE - No payment required for registration
+</div>
+
 <div class="registration-container">
 <div class="registration-form">
 <div class="form-header">
@@ -615,7 +620,7 @@ grid-template-columns: 1fr;
 </div>
 
 <button type="submit" class="btn btn-primary" style="width: 100%;" id="register-btn">
-<i class="fas fa-credit-card"></i> Register Team & Pay ₹100
+<i class="fas fa-user-plus"></i> Register Team (Testing Mode)
 </button>
 </form>
 </div>
@@ -813,7 +818,7 @@ if (restrictedStatuses.includes(currentTournament.status)) {
     // Registration is open
     console.log('Registration is open!');
     document.getElementById('register-btn').disabled = false;
-    document.getElementById('register-btn').textContent = 'Register Team';
+    document.getElementById('register-btn').innerHTML = '<i class="fas fa-user-plus"></i> Register Team (Testing Mode)';
     
     // Clear any error messages
     const errorContainer = document.getElementById('error-container');
@@ -940,13 +945,35 @@ throw new Error(errorData.message || `Registration failed with status ${response
 
 const result = await response.json();
 
-// Show success message
-showSuccess('Team registered successfully! Redirecting to payment...');
+// TESTING MODE: Auto-approve team registration
+console.log('TESTING MODE: Auto-approving team registration');
+const teamId = result.data.team._id;
 
-// Redirect to payment or dashboard
+try {
+    const approveResponse = await fetch(`${API_BASE_URL}/api/teams/${teamId}/approve-testing`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': `Bearer ${sessionData.token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (approveResponse.ok) {
+        console.log('Team auto-approved for testing');
+        showSuccess('Team registered and approved successfully! (Testing mode - no payment required)');
+    } else {
+        console.warn('Auto-approval failed, but registration was successful');
+        showSuccess('Team registered successfully! (Testing mode - no payment required)');
+    }
+} catch (approveError) {
+    console.warn('Auto-approval error:', approveError);
+    showSuccess('Team registered successfully! (Testing mode - no payment required)');
+}
+
+// Redirect directly to dashboard without payment
 setTimeout(() => {
 window.location.href = `team-dashboard.html?tournament=${currentTournament.slug}`;
-}, 2000);
+}, 1500);
 
 } catch (error) {
 console.error('Registration error:', error);
@@ -977,19 +1004,19 @@ function loadRegistrationSummary(tournament) {
     const entryFee = tournament.entryFee || 0;
     
     container.innerHTML = `
-        <h4><i class="fas fa-receipt"></i> Registration Summary</h4>
+        <h4><i class="fas fa-receipt"></i> Registration Summary (Testing Mode)</h4>
         <div class="summary-item">
             <span>Tournament Entry Fee</span>
-            <span>₹${entryFee.toLocaleString()}</span>
+            <span style="text-decoration: line-through; color: var(--muted);">₹${entryFee.toLocaleString()}</span>
         </div>
         <div class="summary-total">
             <div class="summary-item">
                 <span>Total Due Now</span>
-                <span>₹${entryFee.toLocaleString()}</span>
+                <span style="color: var(--success); font-weight: bold;">₹0 (FREE)</span>
             </div>
         </div>
-        <p style="font-size: 0.85rem; color: var(--muted); margin-top: 1rem;">
-            One-time payment for the entire tournament. No additional fees required.
+        <p style="font-size: 0.85rem; color: var(--success); margin-top: 1rem; font-weight: 600;">
+            <i class="fas fa-flask"></i> Testing Mode: No payment required for registration.
         </p>
     `;
 }
@@ -1044,10 +1071,11 @@ function loadPaymentStructure(tournament) {
         // KP Format payment structure
         const entryFee = tournament.entryFee || 200;
         container.innerHTML = `
-            <h4><i class="fas fa-coins"></i> KP Tournament Payment</h4>
-            <div class="round-payment">
+            <h4><i class="fas fa-coins"></i> KP Tournament Payment (Testing Mode)</h4>
+            <div class="round-payment" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);">
                 <span class="round-name">Entry Fee</span>
-                <span class="round-fee">₹${entryFee.toLocaleString()}</span>
+                <span class="round-fee" style="text-decoration: line-through; color: var(--muted);">₹${entryFee.toLocaleString()}</span>
+                <span style="color: var(--success); font-weight: bold; margin-left: 10px;">FREE</span>
             </div>
             <div class="kp-structure">
                 <h5 style="color: var(--accent); margin: 1rem 0 0.5rem 0;">Tournament Structure:</h5>
@@ -1071,21 +1099,22 @@ function loadPaymentStructure(tournament) {
                     </div>
                 </div>
             </div>
-            <p style="font-size: 0.85rem; color: var(--muted); margin-top: 1rem;">
-                One-time payment of ₹${entryFee.toLocaleString()} per team. No additional fees for qualifying rounds.
+            <p style="font-size: 0.85rem; color: var(--success); margin-top: 1rem; font-weight: 600;">
+                <i class="fas fa-flask"></i> Testing Mode: No payment required for registration.
             </p>
         `;
     } else {
         // Traditional tournament payment structure
         const entryFee = tournament.entryFee || 100;
         container.innerHTML = `
-            <h4><i class="fas fa-coins"></i> Payment Structure</h4>
-            <div class="round-payment">
+            <h4><i class="fas fa-coins"></i> Payment Structure (Testing Mode)</h4>
+            <div class="round-payment" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);">
                 <span class="round-name">Entry Fee</span>
-                <span class="round-fee">₹${entryFee.toLocaleString()}</span>
+                <span class="round-fee" style="text-decoration: line-through; color: var(--muted);">₹${entryFee.toLocaleString()}</span>
+                <span style="color: var(--success); font-weight: bold; margin-left: 10px;">FREE</span>
             </div>
-            <p style="font-size: 0.85rem; color: var(--muted); margin-top: 1rem;">
-                Entry fee for ${tournament.format || 'tournament'} format.
+            <p style="font-size: 0.85rem; color: var(--success); margin-top: 1rem; font-weight: 600;">
+                <i class="fas fa-flask"></i> Testing Mode: No payment required for registration.
             </p>
         `;
     }
