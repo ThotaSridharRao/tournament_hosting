@@ -679,8 +679,8 @@ const API_BASE_URL = (() => {
                   window.location.hostname === '127.0.0.1' || 
                   window.location.protocol === 'file:';
   
-  // Force local backend since we made model changes there
-  const apiUrl = 'http://localhost:8000';
+  // Use production backend when deployed, local when developing
+  const apiUrl = isLocal ? 'http://localhost:8000' : 'https://tournament-hosting-backend.onrender.com';
   
   console.log('🔧 Environment Detection:', {
     hostname: window.location.hostname,
