@@ -679,7 +679,8 @@ const API_BASE_URL = (() => {
                   window.location.hostname === '127.0.0.1' || 
                   window.location.protocol === 'file:';
   
-  const apiUrl = isLocal ? 'http://localhost:8000' : 'https://tournament-hosting-backend.onrender.com';
+  // Force local backend since we made model changes there
+  const apiUrl = 'http://localhost:8000';
   
   console.log('🔧 Environment Detection:', {
     hostname: window.location.hostname,
@@ -978,6 +979,7 @@ return;
 // Debug logging
 console.log('Submitting registration data:', registrationData);
 console.log('Tournament slug:', currentTournament.slug);
+console.log('API URL being used:', API_BASE_URL);
 
 // Submit registration
 const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament.slug}/register`, {
@@ -1040,8 +1042,16 @@ window.location.href = `team-dashboard.html?tournament=${currentTournament.slug}
 console.error('Registration error:', error);
 let errorMessage = error.message;
 
-// Provide more user-friendly error messages
-if (error.message.includes('Team name already exists')) {
+// Handle duplicate key errors specifically
+if (error.message.includes('E11000 duplicate key error')) {
+    if (error.message.includes('name_1_tournament_1')) {
+        errorMessage = 'A team with this name already exists in this tournament. Please choose a different team name.';
+    } else if (error.message.includes('email_1_tournament_1')) {
+        errorMessage = 'One of your players is already registered in this tournament with another team. Please check the email addresses.';
+    } else {
+        errorMessage = 'Registration failed due to duplicate data. Please check your team name and player emails.';
+    }
+} else if (error.message.includes('Team name already exists')) {
     errorMessage = 'This team name is already taken. Please choose a different team name.';
 } else if (error.message.includes('already registered in a team')) {
     errorMessage = 'You are already registered in a team for this tournament.';
