@@ -1043,31 +1043,16 @@
         <div class="details-grid">
           <div class="details-main">
             <h2 style="color: var(--accent); margin-bottom: 1.5rem;">Tournament Overview</h2>
-            <p style="margin-bottom: 1.5rem; line-height: 1.6;">
-              The PUBG Global Series 2025 represents the pinnacle of competitive PUBG esports. This premier tournament
-              brings together the world's most skilled teams to compete for glory and a massive prize pool of $500,000.
-            </p>
-            <p style="margin-bottom: 1.5rem; line-height: 1.6;">
-              Taking place over 7 intense days, teams will battle through multiple stages including group play,
-              playoffs, and the grand finals. Each match will test strategy, skill, and teamwork as squads fight for
-              survival in the ultimate battle royale experience.
-            </p>
+            <div id="tournament-overview">
+              <p style="margin-bottom: 1.5rem; line-height: 1.6; color: var(--muted);">
+                Loading tournament details...
+              </p>
+            </div>
 
             <h3 style="color: var(--accent); margin: 2rem 0 1rem 0;">Tournament Format</h3>
-            <ul style="list-style: none; padding: 0;">
-              <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                <strong>Group Stage:</strong> 32 teams divided into 4 groups of 8 teams each
-              </li>
-              <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                <strong>Playoffs:</strong> Top 16 teams advance to knockout rounds
-              </li>
-              <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                <strong>Grand Finals:</strong> Final 4 teams compete for the championship
-              </li>
-              <li style="padding: 0.5rem 0;">
-                <strong>Prize Distribution:</strong> Prizes awarded to top 16 teams
-              </li>
-            </ul>
+            <div id="tournament-format-details">
+              <p style="color: var(--muted);">Loading format details...</p>
+            </div>
           </div>
 
           <div class="details-sidebar">
@@ -2768,6 +2753,9 @@
         document.getElementById('tournament-duration').textContent = diffDays;
       }
 
+      // Update tournament overview with server data
+      updateTournamentOverview(tournament);
+
       // Update tournament info
       document.getElementById('game-name').textContent = tournament.game || 'TBD';
       document.getElementById('tournament-format').textContent = tournament.format || tournament.tournamentFormat || 'TBD';
@@ -2808,6 +2796,70 @@
 
       // Update action buttons based on tournament status
       updateActionButtons(tournament);
+    }
+
+    function updateTournamentOverview(tournament) {
+      const overviewContainer = document.getElementById('tournament-overview');
+      const formatContainer = document.getElementById('tournament-format-details');
+      
+      // Update overview with tournament description
+      const description = tournament.description || 'No description available for this tournament.';
+      overviewContainer.innerHTML = `
+        <p style="margin-bottom: 1.5rem; line-height: 1.6;">
+          ${description}
+        </p>
+        ${tournament.prizePool ? `
+        <p style="margin-bottom: 1.5rem; line-height: 1.6;">
+          Compete for a prize pool of <strong style="color: var(--accent);">₹${tournament.prizePool.toLocaleString()}</strong> 
+          in this ${tournament.game || 'gaming'} tournament.
+        </p>
+        ` : ''}
+      `;
+
+      // Update format details based on tournament type
+      let formatHtml = '';
+      
+      if (tournament.format === 'kp' && tournament.kpSettings) {
+        const kp = tournament.kpSettings;
+        formatHtml = `
+          <ul style="list-style: none; padding: 0;">
+            <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+              <strong>Format:</strong> KP (Kill Points) Tournament
+            </li>
+            <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+              <strong>Groups:</strong> ${kp.numberOfGroups} groups of ${kp.groupSize} teams each
+            </li>
+            <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+              <strong>Qualifiers:</strong> Top ${kp.qualifiersPerGroup} teams from each group advance
+            </li>
+            <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+              <strong>Team Size:</strong> Maximum ${kp.maxPlayersPerTeam} players per team
+            </li>
+            <li style="padding: 0.5rem 0;">
+              <strong>Entry Fee:</strong> ₹${tournament.entryFee || 0} per team (one-time payment)
+            </li>
+          </ul>
+        `;
+      } else {
+        formatHtml = `
+          <ul style="list-style: none; padding: 0;">
+            <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+              <strong>Format:</strong> ${tournament.format || 'Standard Tournament'}
+            </li>
+            <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+              <strong>Max Teams:</strong> ${tournament.maxTeams || 'Unlimited'}
+            </li>
+            <li style="padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+              <strong>Game:</strong> ${tournament.game || 'TBD'}
+            </li>
+            <li style="padding: 0.5rem 0;">
+              <strong>Entry Fee:</strong> ${tournament.entryFee ? `₹${tournament.entryFee.toLocaleString()}` : 'Free'}
+            </li>
+          </ul>
+        `;
+      }
+      
+      formatContainer.innerHTML = formatHtml;
     }
 
     function updateCustomScheduleDisplay(scheduleEvents) {
