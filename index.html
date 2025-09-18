@@ -1344,7 +1344,7 @@
         <!-- Logged in -->
         <div id="user-menu" style="display: none;">
           <a href="user-dashboard.html" class="dashboard-link" id="user-dashboard-link" style="color: var(--copy); text-decoration: none; font-weight: 600; margin-right: 1rem; transition: color 0.3s ease;">
-            <i class="fas fa-tachometer-alt"></i> Dashboard
+            <i class="fas fa-user"></i> My Account
           </a>
           <div class="user-info">
             <span id="user-username">User</span>
@@ -1416,7 +1416,7 @@
       <!-- Logged in -->
       <div id="mobile-user-menu" style="display: none;">
         <a href="user-dashboard.html" class="mobile-link" id="mobile-dashboard-link" style="padding: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: var(--copy); text-decoration: none; font-weight: 600;">
-          <i class="fas fa-tachometer-alt"></i> My Dashboard
+          <i class="fas fa-user"></i> My Account
         </a>
         <div class="mobile-user-info">
           <div class="mobile-user-avatar">
@@ -2765,19 +2765,19 @@
             
             // Update dashboard links to admin dashboard
             document.getElementById('user-dashboard-link').href = 'admin-dashboard.html';
-            document.getElementById('user-dashboard-link').innerHTML = '<i class="fas fa-cog"></i> Admin Dashboard';
+            document.getElementById('user-dashboard-link').innerHTML = '<i class="fas fa-cog"></i> My Account';
             
             // Mobile
             document.getElementById('mobile-user-role-badge').style.display = 'inline-block';
             document.getElementById('mobile-host-section').style.display = 'block';
             document.getElementById('mobile-dashboard-link').href = 'admin-dashboard.html';
-            document.getElementById('mobile-dashboard-link').innerHTML = '<i class="fas fa-cog"></i> Admin Dashboard';
+            document.getElementById('mobile-dashboard-link').innerHTML = '<i class="fas fa-cog"></i> My Account';
           } else {
             // Regular users get user dashboard
             document.getElementById('user-dashboard-link').href = 'user-dashboard.html';
-            document.getElementById('user-dashboard-link').innerHTML = '<i class="fas fa-tachometer-alt"></i> Dashboard';
+            document.getElementById('user-dashboard-link').innerHTML = '<i class="fas fa-user"></i> My Account';
             document.getElementById('mobile-dashboard-link').href = 'user-dashboard.html';
-            document.getElementById('mobile-dashboard-link').innerHTML = '<i class="fas fa-tachometer-alt"></i> My Dashboard';
+            document.getElementById('mobile-dashboard-link').innerHTML = '<i class="fas fa-user"></i> My Account';
           }
           
           return true;
