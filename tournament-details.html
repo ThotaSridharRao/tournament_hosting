@@ -1227,12 +1227,7 @@
 
       const apiUrl = isLocal ? 'http://localhost:8000' : 'https://tournament-hosting-backend.onrender.com';
 
-      console.log('🔧 Tournament Details Environment Detection:', {
-        hostname: window.location.hostname,
-        protocol: window.location.protocol,
-        isLocal: isLocal,
-        apiUrl: apiUrl
-      });
+
 
       return apiUrl;
     })();
@@ -2910,7 +2905,7 @@
       const primaryAction = document.getElementById('primary-action');
 
 
-      console.log('Tournament status:', tournament.status); // Debug log
+
 
       // Check if registration is open based on dates
       const now = new Date();
@@ -2918,7 +2913,7 @@
       const regEnd = new Date(tournament.registrationEnd);
       const isRegistrationOpen = now >= regStart && now <= regEnd;
 
-      console.log('Registration dates:', { now, regStart, regEnd, isRegistrationOpen }); // Debug log
+
 
       // Determine effective status based on dates
       let effectiveStatus = tournament.status;
@@ -2932,44 +2927,36 @@
         case 'registration-open':
           primaryAction.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
           primaryAction.onclick = () => {
-            console.log('Register button clicked'); // Debug log
+
             // Check if user is logged in
             const sessionData = getSessionData();
-            console.log('Session data:', sessionData); // Debug log
+
             if (sessionData && sessionData.token) {
               // User is logged in, redirect to registration page
               const tournamentSlug = new URLSearchParams(window.location.search).get('slug') || new URLSearchParams(window.location.search).get('id');
-              console.log('Redirecting to registration page with slug:', tournamentSlug); // Debug log
+
               window.location.href = `team-registration.html?slug=${tournamentSlug}`;
             } else {
               // User not logged in, redirect to auth
-              console.log('User not logged in, redirecting to auth'); // Debug log
+
               redirectToAuth();
             }
           };
-          secondaryAction.style.display = 'inline-block';
-          secondaryAction.innerHTML = '<i class="fas fa-info-circle"></i> Learn More';
           break;
 
         case 'registration-closed':
           primaryAction.innerHTML = '<i class="fas fa-clock"></i> Registration Closed';
           primaryAction.disabled = true;
-          secondaryAction.style.display = 'inline-block';
-          secondaryAction.innerHTML = '<i class="fas fa-eye"></i> View Details';
           break;
 
         case 'ongoing':
           primaryAction.innerHTML = '<i class="fas fa-play"></i> Watch Live';
           primaryAction.onclick = () => alert('Live stream coming soon!');
-          secondaryAction.style.display = 'inline-block';
-          secondaryAction.innerHTML = '<i class="fas fa-trophy"></i> View Leaderboard';
           break;
 
         case 'completed':
           primaryAction.innerHTML = '<i class="fas fa-trophy"></i> View Results';
           primaryAction.onclick = () => document.getElementById('winner-section').scrollIntoView();
-          secondaryAction.style.display = 'inline-block';
-          secondaryAction.innerHTML = '<i class="fas fa-history"></i> Tournament History';
           break;
 
         default:
