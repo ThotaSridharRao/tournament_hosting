@@ -174,18 +174,18 @@
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)),
+        linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2)),
         radial-gradient(circle at 30% 40%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 70% 60%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
       z-index: 1;
     }
 
-    /* Additional overlay for poster images */
+    /* Additional overlay for poster images - lighter for better image visibility */
     .tournament-hero::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
       z-index: 1;
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -229,6 +229,7 @@
 
     .hero-stats {
       display: flex;
+      justify-content: center;
       gap: 2rem;
       flex-wrap: wrap;
       margin-bottom: 2rem;
@@ -978,18 +979,6 @@
 
           <div class="hero-stats">
             <div class="stat-item">
-              <span class="stat-value" id="prize-pool">--</span>
-              <span class="stat-label">Prize Pool</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-value" id="team-count">--</span>
-              <span class="stat-label">Teams</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-value" id="tournament-duration">--</span>
-              <span class="stat-label">Days</span>
-            </div>
-            <div class="stat-item">
               <span class="stat-value" id="tournament-status">--</span>
               <span class="stat-label">Status</span>
             </div>
@@ -999,10 +988,6 @@
             <button class="btn-primary" id="primary-action">
               <i class="fas fa-user-plus"></i>
               Register Now
-            </button>
-            <button class="btn-secondary" id="secondary-action" style="display: none;">
-              <i class="fas fa-info-circle"></i>
-              Learn More
             </button>
           </div>
         </div>
@@ -2375,7 +2360,7 @@
       }
       const statusElement = document.getElementById('tournament-status');
       const primaryActionBtn = document.getElementById('primary-action');
-      const secondaryActionBtn = document.getElementById('secondary-action');
+
       const leaderboardSection = document.getElementById('leaderboard-section');
       const heroActions = document.getElementById('hero-actions');
       const winnerSection = document.getElementById('winner-section');
@@ -2388,9 +2373,9 @@
       }
 
       // Handle different tournament statuses
-      if (tournamentStatus === 'upcoming' || (today >= tournamentDates.registrationStart && today <= tournamentDates.registrationEnd)) {
-        // Registration period - show both buttons, hide leaderboard
-        statusElement.textContent = 'Registration Open';
+      if (today >= tournamentDates.registrationStart && today <= tournamentDates.registrationEnd) {
+        // Registration period - show register button
+        statusElement.textContent = 'Registrations Open';
         statusElement.style.color = '#44ff44';
 
         heroActions.style.display = 'flex';
@@ -2405,19 +2390,21 @@
           showRegistrationModal(userSession.user);
         };
 
-        // Show secondary button during registration
-        secondaryActionBtn.style.display = 'block';
-        secondaryActionBtn.innerHTML = '<i class="fas fa-info-circle"></i> Learn More';
-        secondaryActionBtn.onclick = () => {
-          document.querySelector('.tournament-details').scrollIntoView({ behavior: 'smooth' });
-        };
-
         // Hide leaderboard during registration
         leaderboardSection.style.display = 'none';
 
-      } else if (tournamentStatus === 'live' || (today >= tournamentDates.tournamentStart && today <= tournamentDates.tournamentEnd)) {
+      } else if (today < tournamentDates.registrationStart) {
+        // Before registration starts
+        statusElement.textContent = 'Upcoming';
+        statusElement.style.color = '#FFD700';
+
+        // Hide register button - registration not open yet
+        heroActions.style.display = 'none';
+        leaderboardSection.style.display = 'none';
+
+      } else if (today >= tournamentDates.tournamentStart && today <= tournamentDates.tournamentEnd) {
         // Tournament is live - hide all buttons, show leaderboard
-        statusElement.textContent = 'Live';
+        statusElement.textContent = 'Ongoing';
         statusElement.style.color = '#ff4444';
 
         // Hide all action buttons when tournament is live
@@ -2426,28 +2413,23 @@
         // Show leaderboard section
         leaderboardSection.style.display = 'block';
 
-      } else {
-        // Other states - show single button, hide leaderboard
-        heroActions.style.display = 'flex';
-        secondaryActionBtn.style.display = 'none';
+      } else if (today > tournamentDates.registrationEnd && today < tournamentDates.tournamentStart) {
+        // Registration closed, tournament not started
+        statusElement.textContent = 'Upcoming';
+        statusElement.style.color = '#FFD700';
+
+        // Hide register button - registration closed
+        heroActions.style.display = 'none';
         leaderboardSection.style.display = 'none';
 
-        if (today > tournamentDates.registrationEnd && today < tournamentDates.tournamentStart) {
-          // Registration closed, tournament not started
-          statusElement.textContent = 'Registration Closed';
-          statusElement.style.color = '#ff4444';
+      } else if (today > tournamentDates.tournamentEnd) {
+        // Tournament finished - show leaderboard as final results
+        statusElement.textContent = 'Completed';
+        statusElement.style.color = '#9aa0a6';
 
-          primaryActionBtn.innerHTML = '<i class="fas fa-calendar"></i> View Schedule';
-          primaryActionBtn.onclick = () => {
-            document.querySelector('.schedule-section').scrollIntoView({ behavior: 'smooth' });
-          };
-
-        } else if (tournamentStatus === 'completed' || today > tournamentDates.tournamentEnd) {
-          // Tournament finished - show leaderboard as final results
-          statusElement.textContent = 'Completed';
-          statusElement.style.color = '#9aa0a6';
-
-          primaryActionBtn.innerHTML = '<i class="fas fa-trophy"></i> View Results';
+        // Hide action buttons for completed tournaments
+        heroActions.style.display = 'none';
+        leaderboardSection.style.display = 'block';
           primaryActionBtn.onclick = () => {
             document.querySelector('#leaderboard-section').scrollIntoView({ behavior: 'smooth' });
           };
@@ -2740,18 +2722,7 @@
       document.getElementById('tournament-subtitle').textContent = tournament.description || 'Join this exciting tournament and compete for glory!';
 
       // Update hero stats
-      document.getElementById('prize-pool').textContent = tournament.prizePool ? `₹${tournament.prizePool.toLocaleString()}` : 'TBD';
-      document.getElementById('team-count').textContent = tournament.participants?.length || 0;
       document.getElementById('tournament-status').textContent = tournament.status.charAt(0).toUpperCase() + tournament.status.slice(1);
-
-      // Calculate duration
-      if (tournament.tournamentStart && tournament.tournamentEnd) {
-        const start = new Date(tournament.tournamentStart);
-        const end = new Date(tournament.tournamentEnd);
-        const diffTime = Math.abs(end - start);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        document.getElementById('tournament-duration').textContent = diffDays;
-      }
 
       // Update tournament overview with server data
       updateTournamentOverview(tournament);
@@ -2781,11 +2752,11 @@
       updateScheduleTimeline(tournament.scheduleEvents || []);
 
       // Update hero background if poster exists
-      const posterPath = tournament.posterImage || tournament.poster || tournament.thumbnailUrl || tournament.imageUrl;
+      const posterPath = tournament.posterImage || tournament.poster || tournament.thumbnailUrl || tournament.imageUrl || tournament.backgroundImage;
       const heroElement = document.querySelector('.tournament-hero');
 
       if (posterPath) {
-        const imageUrl = getImageUrl(posterPath);
+        const imageUrl = posterPath.startsWith('http') ? posterPath : getImageUrl(posterPath);
         heroElement.style.backgroundImage = `url(${imageUrl})`;
         heroElement.style.backgroundSize = 'cover';
         heroElement.style.backgroundPosition = 'center';
@@ -2953,7 +2924,7 @@
 
     function updateActionButtons(tournament) {
       const primaryAction = document.getElementById('primary-action');
-      const secondaryAction = document.getElementById('secondary-action');
+
 
       console.log('Tournament status:', tournament.status); // Debug log
 
@@ -3028,8 +2999,7 @@
       // For now, we'll use the participants data from the tournament object
       const teams = tournament.participants || [];
 
-      // Update team count in hero stats
-      document.getElementById('team-count').textContent = teams.length;
+
 
       // If tournament is ongoing or completed, show leaderboard
       if (tournament.status === 'ongoing' || tournament.status === 'completed') {
