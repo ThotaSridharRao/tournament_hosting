@@ -1706,74 +1706,73 @@
         // ======================= FUNCTION TO LOAD TOURNAMENTS =======================
         // ======================= FUNCTION TO LOAD TOURNAMENTS (UPDATED) =======================
         async function loadAdminTournaments() {
-            const container = document.getElementById('admin-tournament-list');
-            const authToken = getAuthToken();
-            
-            if (!authToken) return;
-            
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/tournaments`, {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
+    const container = document.getElementById('admin-tournament-list');
+    const authToken = getAuthToken();
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch tournaments');
-                }
+    if (!authToken) return;
 
-                const result = await response.json();
-                const tournaments = result.data || [];
-
-                // Store tournaments data for delete function
-                sessionStorage.setItem('admin_tournaments', JSON.stringify(tournaments));
-
-                if (tournaments.length === 0) {
-                    container.innerHTML = `<div class="tournament-item-empty">No tournaments found.</div>`;
-                    return;
-                }
-
-                container.innerHTML = tournaments.slice(0, 5).map(t => {
-                    const now = new Date();
-                    const start = new Date(t.tournamentStart);
-                    const end = new Date(t.tournamentEnd);
-                    let statusClass = 'upcoming';
-                    let statusText = 'Upcoming';
-
-                    if (now >= start && now <= end) {
-                        statusClass = 'live';
-                        statusText = 'Live';
-                    } else if (now > end) {
-                        statusClass = 'completed';
-                        statusText = 'Completed';
-                    }
-
-                    // === THIS IS THE MODIFIED PART ===
-                    return `
-                        <div class="admin-tournament-item">
-                            <div class="admin-tournament-info">
-                                <a href="td.html?slug=${t.slug}" class="tournament-link name">${t.title}</a>
-                                <span class="game">${t.game}</span>
-                            </div>
-                            <div>
-                                <span class="tournament-status ${statusClass}">${statusText}</span>
-                            </div>
-                            <div class="tournament-participants">${t.participants?.length || 0}/${getMaxTeamsForDisplay(t)} teams</div>
-                            <div class="tournament-prize">₹${(t.prizePool || 0).toLocaleString()}</div>
-                            <div class="tournament-actions">
-                                <button class="btn-icon" onclick="editTournament(event, '${t._id}')" title="Edit"><i class="fas fa-pen-to-square"></i></button>
-                                <button class="btn-icon delete" onclick="deleteTournament(event, '${t._id}')" title="Delete"><i class="fas fa-trash-can"></i></button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-
-            } catch (error) {
-                console.error('Error loading tournaments:', error);
-                container.innerHTML = `<div class="tournament-item-empty">Error loading tournaments.</div>`;
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/tournaments`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
             }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch tournaments');
         }
+
+        const result = await response.json();
+        const tournaments = result.data || [];
+
+        sessionStorage.setItem('admin_tournaments', JSON.stringify(tournaments));
+
+        if (tournaments.length === 0) {
+            container.innerHTML = `<div class="tournament-item-empty">No tournaments found.</div>`;
+            return;
+        }
+
+        // Correctly generate the HTML for each tournament
+        container.innerHTML = tournaments.slice(0, 5).map(t => {
+            // This return statement now includes the correct status dropdown
+            return `
+                <div class="admin-tournament-item">
+                    <div class="admin-tournament-info">
+                        <a href="td.html?slug=${t.slug}" class="tournament-link name">${t.title}</a>
+                        <span class="game">${t.game}</span>
+                    </div>
+
+                    {/* === START: CORRECTED STATUS DROPDOWN === */}
+                    <div>
+                        <select
+                            class="form-select"
+                            style="padding: 0.5rem; font-size: 0.85rem; border-radius: 6px; background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); color: var(--copy);"
+                            onchange="updateTournamentStatus('${t.slug}', this.value)">
+                            <option value="upcoming" ${t.status === 'upcoming' ? 'selected' : ''}>Upcoming</option>
+                            <option value="registration_open" ${t.status === 'registration_open' ? 'selected' : ''}>Reg. Open</option>
+                            <option value="registration_closed" ${t.status === 'registration_closed' ? 'selected' : ''}>Reg. Closed</option>
+                            <option value="ongoing" ${t.status === 'ongoing' ? 'selected' : ''}>Ongoing</option>
+                            <option value="ended" ${t.status === 'ended' ? 'selected' : ''}>Ended</option>
+                        </select>
+                    </div>
+                    {/* === END: CORRECTED STATUS DROPDOWN === */}
+
+                    <div class="tournament-participants">${t.participants?.length || 0}/${getMaxTeamsForDisplay(t)} teams</div>
+                    <div class="tournament-prize">₹${(t.prizePool || 0).toLocaleString()}</div>
+                    <div class="tournament-actions">
+                        <button class="btn-icon" onclick="editTournament(event, '${t._id}')" title="Edit"><i class="fas fa-pen-to-square"></i></button>
+                        <button class="btn-icon delete" onclick="deleteTournament(event, '${t._id}')" title="Delete"><i class="fas fa-trash-can"></i></button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+    } catch (error) {
+        console.error('Error loading tournaments:', error);
+        container.innerHTML = `<div class="tournament-item-empty">Error loading tournaments.</div>`;
+    }
+}
 
         // === TOURNAMENT MANAGEMENT FUNCTIONS ===
         function editTournament(event, tournamentId) {
@@ -2000,6 +1999,58 @@
                 if (openModal) hideModal(openModal.id);
             }
         });
+
+        // INSIDE: the <script> tag at the bottom of the page
+
+/**
+ * Updates the status of a tournament via API call.
+ * @param {string} tournamentSlug - The unique slug of the tournament.
+ * @param {string} newStatus - The new status to set.
+ */
+async function updateTournamentStatus(tournamentSlug, newStatus) {
+  const authToken = getAuthToken();
+  if (!authToken) {
+    alert('Authentication error. Please log in again.');
+    return;
+  }
+
+  // Confirmation dialog
+  if (!confirm(`Are you sure you want to change the status to "${newStatus}"?`)) {
+    // If user cancels, refresh the list to reset the dropdown
+    loadAdminTournaments();
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/tournaments/${tournamentSlug}/status`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      },
+      // The backend expects a JSON object with the status field
+      body: JSON.stringify({
+        status: newStatus
+      })
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.success) {
+      alert('Tournament status updated successfully!');
+      // Refresh the tournament list to reflect the change
+      loadAdminTournaments();
+    } else {
+      // If the API returns an error, show it and refresh the list
+      throw new Error(result.detail || 'Failed to update status.');
+    }
+  } catch (error) {
+    console.error('Error updating tournament status:', error);
+    alert(`Error: ${error.message}`);
+    // Refresh the list to reset the dropdown to its original state
+    loadAdminTournaments();
+  }
+}
     </script>
 </body>
 </html>
