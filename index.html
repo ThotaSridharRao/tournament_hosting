@@ -2890,38 +2890,59 @@
     // Authentication and User Management
     // In index.html
 
+// In index.html
+
 function checkUserAuthentication() {
   const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
   
   if (session) {
     try {
       const sessionData = JSON.parse(session);
-      // VVVV CHANGE THIS LINE VVVV
       const user = sessionData.user || sessionData.data?.user; 
       
-      // If user object is still not found, exit
       if (!user) {
         clearUserSession();
-        return;
+        return false; // User object not found, exit
       }
 
       const userRoles = user?.roles || (user.role ? [user.role] : []);
+      const username = user.username || user.name || 'User'; // Get the username
+
+      // --- START: ADDED CODE ---
+      // Update ALL UI elements with user data here
       
-      // Desktop navigation
+      // Desktop profile dropdown
+      document.getElementById('modal-username').textContent = username;
+      
+      // Mobile user info
+      document.getElementById('mobile-user-username').textContent = username;
+      // --- END: ADDED CODE ---
+
+      // Desktop navigation (this part is already correct)
       document.getElementById('auth-buttons').style.display = 'none';
       document.getElementById('user-menu').style.display = 'flex';
-      // VVVV AND CHANGE THIS LINE VVVV
-      document.getElementById('modal-username').textContent = user.username || 'User';
       
-      // Mobile navigation
+      // Mobile navigation (this part is already correct)
       document.getElementById('mobile-auth-buttons').style.display = 'none';
       document.getElementById('mobile-user-menu').style.display = 'flex';
-      // VVVV AND CHANGE THIS LINE VVVV
-      document.getElementById('mobile-user-username').textContent = user.username || 'User';
       
       // Show admin features for admins
       if (userRoles.includes('admin')) {
-        // ... (rest of the function is fine)
+        // --- START: MOVED & UPDATED CODE ---
+        // Desktop
+        document.getElementById('modal-role-badge').style.display = 'inline-block';
+        document.getElementById('host-nav-item').style.display = 'block'; // Or 'inline-block'/'flex'
+        
+        // Mobile
+        document.getElementById('mobile-user-role-badge').style.display = 'inline-block';
+        document.getElementById('mobile-host-section').style.display = 'block';
+        // --- END: MOVED & UPDATED CODE ---
+      } else {
+        // Ensure admin elements are hidden for regular users
+        document.getElementById('modal-role-badge').style.display = 'none';
+        document.getElementById('host-nav-item').style.display = 'none';
+        document.getElementById('mobile-user-role-badge').style.display = 'none';
+        document.getElementById('mobile-host-section').style.display = 'none';
       }
       
       return true;
@@ -2932,6 +2953,8 @@ function checkUserAuthentication() {
     }
   }
   
+  // No session found, ensure logged-out state
+  clearUserSession();
   return false;
 }
 
@@ -3064,74 +3087,6 @@ function checkUserAuthentication() {
 
 
 
-  // Use your deployed backend URL
-  // const API_BASE_URL = "https://t2-237c.onrender.com";
-
-  async function loadUserProfile() {
-    try {
-      const token = document.cookie.split('; ')
-        .find(row => row.startsWith('auth_token='))
-        ?.split('=')[1];
-
-      console.log("Token found in cookies:", token);
-
-      if (!token) {
-        console.log("No token found, user not logged in.");
-        return;
-      }
-
-      const res = await fetch(`https://t2-237c.onrender.com/me`, {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      });
-
-      console.log("Fetch /me status:", res.status);
-
-      if (!res.ok) {
-        console.warn("Failed to fetch user profile, status:", res.status);
-        return;
-      }
-
-      const data = await res.json();
-      console.log("User data from /me:", data);
-
-      const modalUsername = document.getElementById("modal-username");
-      if (modalUsername) {
-        modalUsername.textContent = data.username || data.email;
-      }
-
-      const modalRoleBadge = document.getElementById("modal-role-badge");
-      if (modalRoleBadge) {
-        if (data.role && data.role.toLowerCase() === "admin") {
-          modalRoleBadge.style.display = "block";
-          modalRoleBadge.textContent = "Admin";
-        } else {
-          modalRoleBadge.style.display = "none";
-        }
-      }
-
-      // Mobile menu
-      const mobileUsername = document.getElementById("mobile-user-username");
-      if (mobileUsername) {
-        mobileUsername.textContent = data.username || data.email;
-      }
-      const mobileRoleBadge = document.getElementById("mobile-user-role-badge");
-      if (mobileRoleBadge) {
-        if (data.role && data.role.toLowerCase() === "admin") {
-          mobileRoleBadge.style.display = "inline-block";
-          mobileRoleBadge.textContent = "Admin";
-        } else {
-          mobileRoleBadge.style.display = "none";
-        }
-      }
-
-    } catch (err) {
-      console.error("Error loading user profile:", err);
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", loadUserProfile);
 
 
 
