@@ -1834,7 +1834,6 @@
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        // backend returns { success: true, data: [...] }
         const body = await response.json();
         const tournaments = Array.isArray(body) ? body : (body.data || []);
 
@@ -1849,11 +1848,11 @@
           id: t._id || t.id,
           slug: t.slug,
           title: t.title || t.name || 'Untitled Tournament',
-          prizePool: `Prize Pool: ${t.prizePool != null ? ('$' + t.prizePool) : '$0'}`,
+          prizePool: `Prize Pool: $${(t.prizePool || 0).toLocaleString()}`,
           description: t.description || 'Join this exciting tournament!',
           detailsLink: `tournament-details.html?slug=${t.slug || t._id || t.id}`,
-          poster: t.backgroundImage || t.poster || t.image || null,
-          status: t.status || 'upcoming',
+          poster: t.posterImage || t.backgroundImage || t.poster || t.image || null,
+          status: calculateTournamentStatus(t),
           game: t.game || 'Gaming'
         }));
 
@@ -1996,43 +1995,6 @@
       console.error('Unable to load tournament data. Please check your connection.');
     }
 
-    // Notification system removed and replaced with console logs
-    /* function showNotification(message, type = 'info') {
-      const notification = document.createElement('div');
-      notification.style.cssText = `
-        position: fixed;
-        top: 80px;
-        right: 20px;
-        background: ${type === 'error' ? 'rgba(255, 0, 0, 0.9)' : 'rgba(0, 255, 0, 0.9)'};
-        color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        z-index: 10000;
-        font-weight: 600;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        transform: translateX(100%);
-        transition: transform 0.3s ease;
-      `;
-
-      notification.textContent = message;
-      document.body.appendChild(notification);
-
-      // Animate in
-      setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-      }, 100);
-
-      // Auto remove
-      setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
-        setTimeout(() => {
-          if (document.body.contains(notification)) {
-            document.body.removeChild(notification);
-          }
-        }, 300);
-      }, 5000);
-    } */
-
     function updateHeroContent(index) {
       if (!heroData || heroData.length === 0) return;
 
@@ -2108,7 +2070,6 @@
 
     // Additional API Functions
     async function fetchRecentMatches() {
-      // Placeholder: In a real app, this would fetch data from an API
       console.warn("Using placeholder for fetchRecentMatches");
       return null;
     }
@@ -2156,9 +2117,8 @@
       try {
         console.log('Fetching all content data...');
 
-        // Fetch all data concurrently for better performance
         const [
-          tournaments,
+          tournamentsResponse,
           recentMatches,
           liveMatches,
           upcomingMatches,
@@ -2166,7 +2126,7 @@
           featured,
           stats
         ] = await Promise.allSettled([
-          fetchTournaments(),
+          fetch(`${API_BASE_URL}/api/tournaments`),
           fetchRecentMatches(),
           fetchLiveMatches(),
           fetchUpcomingMatches(),
@@ -2175,41 +2135,33 @@
           fetchTournamentStats()
         ]);
 
-        // Process tournaments
-        if (tournaments.status === 'fulfilled' && tournaments.value?.length > 0) {
-          populateUpcomingTournaments(tournaments.value);
-          populateLiveTournaments(tournaments.value);
+        let tournaments = [];
+        if (tournamentsResponse.status === 'fulfilled' && tournamentsResponse.value.ok) {
+            const body = await tournamentsResponse.value.json();
+            tournaments = body.data || [];
         }
 
-        // Process recent matches
+
+        if (tournaments.length > 0) {
+          populateUpcomingTournaments(tournaments);
+          populateLiveTournaments(tournaments);
+          // Assuming the main fetchTournaments function for the hero is separate or handled
+        }
+
         if (recentMatches.status === 'fulfilled' && recentMatches.value) {
           populateRecentMatches(recentMatches.value);
         }
 
-        // Process live matches (update live section)
         if (liveMatches.status === 'fulfilled' && liveMatches.value) {
           updateLiveMatches(liveMatches.value);
         }
 
-        // Process upcoming matches (update upcoming section)
         if (upcomingMatches.status === 'fulfilled' && upcomingMatches.value) {
           updateUpcomingMatches(upcomingMatches.value);
         }
 
-        // Process sponsored content
         if (sponsoredContent.status === 'fulfilled' && sponsoredContent.value) {
           populateSponsoredContent(sponsoredContent.value);
-        }
-
-        // Process featured tournaments
-        if (featured.status === 'fulfilled' && featured.value) {
-          console.log('Featured tournaments:', featured.value);
-        }
-
-        // Process stats
-        if (stats.status === 'fulfilled' && stats.value) {
-          console.log('Tournament stats:', stats.value);
-          updateStatsDisplay(stats.value);
         }
 
         console.log('All content sections populated successfully');
@@ -2240,36 +2192,15 @@
       }
     }
 
-    // Get status display text and badge class
-    function getStatusDisplay(status) {
-      const statusMap = {
-        'upcoming': { text: 'Upcoming', class: 'upcoming' },
-        'registration_open': { text: 'Registration Open', class: 'registration-open' },
-        'registration_closed': { text: 'Registration Closed', class: 'registration-closed' },
-        'live': { text: 'Live', class: 'live' },
-        'completed': { text: 'Completed', class: 'completed' }
-      };
-      
-      return statusMap[status] || { text: 'Unknown', class: 'unknown' };
-    }
-
-    // Legacy function for backward compatibility
-    async function populateTournamentSections() {
-      return populateAllSections();
-    }
-
     function updateStatsDisplay(stats) {
-      // Update any statistics displays on the page
       if (stats.totalTournaments) {
         const statsElements = document.querySelectorAll('[data-stat="tournaments"]');
         statsElements.forEach(el => el.textContent = stats.totalTournaments);
       }
-
       if (stats.totalPrizePool) {
         const prizeElements = document.querySelectorAll('[data-stat="prize-pool"]');
         prizeElements.forEach(el => el.textContent = stats.totalPrizePool);
       }
-
       if (stats.activePlayers) {
         const playerElements = document.querySelectorAll('[data-stat="players"]');
         playerElements.forEach(el => el.textContent = stats.activePlayers);
@@ -2279,22 +2210,11 @@
     // Recent Matches Population
     function populateRecentMatches(matches) {
       const recentMatchesList = document.querySelector('#recent-matches-title').parentElement.querySelector('.tournament-list');
-
       if (recentMatchesList && matches && matches.length > 0) {
         recentMatchesList.innerHTML = matches.slice(0, 5).map(match => {
           const matchDate = match.date ? new Date(match.date) : new Date();
-          const formattedDate = matchDate.toLocaleDateString('en-US', {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric'
-          });
-
-          const shortDate = matchDate.toLocaleDateString('en-US', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-          });
-
+          const formattedDate = matchDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+          const shortDate = matchDate.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric' });
           let statusDisplay = '';
           if (match.status === 'live') {
             statusDisplay = `<div style="margin-top:0.4rem; font-weight:700; color:var(--accent);">Live</div>`;
@@ -2303,7 +2223,6 @@
           } else if (match.winner) {
             statusDisplay = `<div style="margin-top:0.4rem; font-weight:700; color:var(--muted);">Winner: ${match.winner}</div>`;
           }
-
           return `
             <li>
               <div>
@@ -2315,8 +2234,7 @@
                 <div style="font-size:.82rem; color:var(--muted)">${shortDate}</div>
                 ${statusDisplay}
               </div>
-            </li>
-          `;
+            </li>`;
         }).join('');
       }
     }
@@ -2324,7 +2242,6 @@
     // Update Live Matches in the Live Section
     function updateLiveMatches(liveMatches) {
       const liveList = document.querySelector('#live-title').parentElement.querySelector('.tournament-list');
-
       if (liveList && liveMatches && liveMatches.length > 0) {
         liveList.innerHTML = liveMatches.slice(0, 3).map(match => `
           <li>
@@ -2338,24 +2255,17 @@
                 <a href="${match.watchLink || `tournament-details.html?slug=${match.tournamentSlug || match.tournamentId || match.id}`}" aria-label="Watch ${match.title}">Watch</a>
               </div>
             </div>
-          </li>
-        `).join('');
+          </li>`).join('');
       }
     }
 
     // Update Upcoming Matches in the Upcoming Section
     function updateUpcomingMatches(upcomingMatches) {
       const upcomingList = document.querySelector('#upcoming-title').parentElement.querySelector('.tournament-list');
-
       if (upcomingList && upcomingMatches && upcomingMatches.length > 0) {
         upcomingList.innerHTML = upcomingMatches.slice(0, 3).map(match => {
           const startDate = match.startDate ? new Date(match.startDate) : new Date();
-          const formattedDate = startDate.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-          });
-
+          const formattedDate = startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
           return `
             <li>
               <div>
@@ -2363,8 +2273,7 @@
                 <p>Starts: ${formattedDate}</p>
               </div>
               <div style="text-align:right;color:var(--muted)">${formattedDate}</div>
-            </li>
-          `;
+            </li>`;
         }).join('');
       }
     }
@@ -2372,10 +2281,8 @@
     // Populate Sponsored Content
     function populateSponsoredContent(sponsoredData) {
       const sponsoredPanel = document.querySelector('#ad-title').parentElement;
-
       if (sponsoredPanel && sponsoredData) {
         const content = Array.isArray(sponsoredData) ? sponsoredData[0] : sponsoredData;
-
         const contentDiv = sponsoredPanel.querySelector('div[style*="text-align:center"]');
         if (contentDiv && content) {
           contentDiv.innerHTML = `
@@ -2388,52 +2295,37 @@
             <a href="${content.link || content.url || '#'}" 
                style="display:inline-block; margin-top:1rem; padding:.5rem 1rem; background:var(--accent); color:var(--bg); font-weight:700; border-radius:6px;">
               ${content.buttonText || 'Learn More'}
-            </a>
-          `;
+            </a>`;
         }
       }
     }
 
     function populateUpcomingTournaments(tournaments) {
-      // Calculate dynamic status and filter upcoming tournaments
       const upcomingTournaments = tournaments
-        .map(t => ({ ...t, status: calculateTournamentStatus(t) }))
-        .filter(t => t.status === 'upcoming' || t.status === 'registration_open')
+        .filter(t => calculateTournamentStatus(t) === 'upcoming' || calculateTournamentStatus(t) === 'registration_open')
         .slice(0, 3);
-
       const upcomingList = document.querySelector('#upcoming-title').parentElement.querySelector('.tournament-list');
-
       if (upcomingList && upcomingTournaments.length > 0) {
         upcomingList.innerHTML = upcomingTournaments.map(tournament => {
-          const startDate = tournament.startDate ? new Date(tournament.startDate) : new Date();
-          const formattedDate = startDate.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-          });
-
+          const startDate = tournament.tournamentStart ? new Date(tournament.tournamentStart) : new Date();
+          const formattedDate = startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
           return `
             <li>
               <div>
                 <h4><a href="tournament-details.html?slug=${tournament.slug || tournament._id || tournament.id}" style="color: var(--copy); text-decoration: none;">${tournament.title || tournament.name}</a></h4>
-                <p>Prize Pool: ${tournament.prizePool != null ? ('$' + tournament.prizePool) : 'TBA'}</p>
+                <p>Prize Pool: $${(tournament.prizePool || 0).toLocaleString()}</p>
               </div>
               <div style="text-align:right;color:var(--muted)">${formattedDate}</div>
-            </li>
-          `;
+            </li>`;
         }).join('');
       }
     }
 
     function populateLiveTournaments(tournaments) {
-      // Calculate dynamic status and filter live tournaments
       const liveTournaments = tournaments
-        .map(t => ({ ...t, status: calculateTournamentStatus(t) }))
-        .filter(t => t.status === 'live')
+        .filter(t => calculateTournamentStatus(t) === 'live')
         .slice(0, 3);
-
       const liveList = document.querySelector('#live-title').parentElement.querySelector('.tournament-list');
-
       if (liveList && liveTournaments.length > 0) {
         liveList.innerHTML = liveTournaments.map(tournament => `
           <li>
@@ -2447,10 +2339,8 @@
                 <a href="tournament-details.html?slug=${tournament.slug || tournament._id || tournament.id}" aria-label="View ${tournament.title}">Watch</a>
               </div>
             </div>
-          </li>
-        `).join('');
+          </li>`).join('');
       } else if (liveList) {
-        // Show placeholder if no live tournaments
         liveList.innerHTML = `
           <li>
             <div>
@@ -2460,64 +2350,38 @@
             <div style="text-align:right;color:var(--muted)">
               <a href="tournaments.html">Browse All</a>
             </div>
-          </li>
-        `;
+          </li>`;
       }
     }
 
-    // Mobile menu toggle with smooth animation
+    // Mobile menu toggle
     const hamburger = document.querySelector('.hamburger');
     const mobileNav = document.getElementById('mobile-nav');
 
-
     function toggleMobileMenu() {
       const isOpen = hamburger.getAttribute('aria-expanded') === 'true';
-
       hamburger.setAttribute('aria-expanded', !isOpen);
       mobileNav.classList.toggle('is-open');
       mobileNav.hidden = isOpen;
-
-      // Prevent body scroll when menu is open
-      if (!isOpen) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = '';
-      }
+      document.body.style.overflow = isOpen ? '' : 'hidden';
     }
 
     if (hamburger) {
       hamburger.addEventListener('click', toggleMobileMenu);
     }
-
-
-
-    // Close mobile menu when clicking outside
     document.addEventListener('click', function (event) {
-      const isClickInsideNav = mobileNav.contains(event.target);
-      const isClickOnHamburger = hamburger.contains(event.target);
-
-      if (!isClickInsideNav && !isClickOnHamburger && mobileNav.classList.contains('is-open')) {
+      if (!mobileNav.contains(event.target) && !hamburger.contains(event.target) && mobileNav.classList.contains('is-open')) {
         toggleMobileMenu();
       }
     });
-
-    // Mobile dropdown functionality
     document.querySelectorAll('.mobile-nav-title').forEach(title => {
       title.addEventListener('click', function () {
-        const section = this.parentElement;
-        const items = section.querySelector('.mobile-nav-items');
+        const items = this.parentElement.querySelector('.mobile-nav-items');
         const arrow = this.querySelector('.mobile-arrow');
-
         if (items) {
           const isOpen = items.style.display === 'block';
-
-          if (isOpen) {
-            items.style.display = 'none';
-            arrow.textContent = '▼';
-          } else {
-            items.style.display = 'block';
-            arrow.textContent = '▲';
-          }
+          items.style.display = isOpen ? 'none' : 'block';
+          if(arrow) arrow.textContent = isOpen ? '▼' : '▲';
         }
       });
     });
@@ -2528,56 +2392,9 @@
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
-    });
-
-    // Add loading animation for video clips
-    const videoClips = document.querySelectorAll('.video-clip');
-
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }
-      });
-    }, observerOptions);
-
-    videoClips.forEach((clip, index) => {
-      clip.style.opacity = '0';
-      clip.style.transform = 'translateY(30px)';
-      clip.style.transition = `all 0.6s var(--ease-out-quart) ${index * 0.1}s`;
-      observer.observe(clip);
-    });
-
-    // Enhanced panel animations
-    const panels = document.querySelectorAll('.panel');
-
-    panels.forEach((panel, index) => {
-      panel.style.opacity = '0';
-      panel.style.transform = 'translateY(20px)';
-      panel.style.transition = `all 0.6s var(--ease-out-quart) ${index * 0.1}s`;
-
-      const panelObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-          }
-        });
-      }, { threshold: 0.1 });
-
-      panelObserver.observe(panel);
     });
 
     // Add ripple effect to buttons
@@ -2586,235 +2403,151 @@
       const circle = document.createElement('span');
       const diameter = Math.max(button.clientWidth, button.clientHeight);
       const radius = diameter / 2;
-
       circle.style.width = circle.style.height = `${diameter}px`;
       circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
       circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
       circle.classList.add('ripple');
-
       const ripple = button.getElementsByClassName('ripple')[0];
-      if (ripple) {
-        ripple.remove();
-      }
-
+      if (ripple) ripple.remove();
       button.appendChild(circle);
     }
-
-    // Add ripple styles
     const rippleStyle = document.createElement('style');
     rippleStyle.textContent = `
-      .btn--primary {
-        position: relative;
-        overflow: hidden;
-      }
-      
-      .ripple {
-        position: absolute;
-        border-radius: 50%;
-        background-color: rgba(255, 255, 255, 0.3);
-        transform: scale(0);
-        animation: ripple-animation 0.6s linear;
-        pointer-events: none;
-      }
-      
-      @keyframes ripple-animation {
-        to {
-          transform: scale(4);
-          opacity: 0;
-        }
-      }
-    `;
+      .btn--primary, .header-cta { position: relative; overflow: hidden; }
+      .ripple { position: absolute; border-radius: 50%; background-color: rgba(255, 255, 255, 0.3); transform: scale(0); animation: ripple-animation 0.6s linear; pointer-events: none; }
+      @keyframes ripple-animation { to { transform: scale(4); opacity: 0; } }`;
     document.head.appendChild(rippleStyle);
-
-    // Apply ripple effect to buttons
     document.querySelectorAll('.btn--primary, .header-cta').forEach(button => {
       button.addEventListener('click', createRipple);
     });
 
     // Connection status monitoring
-    function checkConnectionStatus() {
-      return navigator.onLine;
-    }
-
-    // Add connection status listeners
     window.addEventListener('online', () => {
       console.log('Connection restored! Refreshing all content...');
       populateAllSections().catch(console.error);
     });
-
     window.addEventListener('offline', () => {
       console.warn('Connection lost. Some features may not work properly.');
     });
 
     // Authentication and User Management
-    // In index.html
+    function checkUserAuthentication() {
+        const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+        if (!session) {
+            clearUserSession();
+            return;
+        }
 
-// In index.html
+        try {
+            const sessionData = JSON.parse(session);
+            const user = sessionData?.data?.user;
+            const token = sessionData?.data?.token;
 
-function checkUserAuthentication() {
-  const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
-  
-  if (session) {
-    try {
-      const sessionData = JSON.parse(session);
-      const user = sessionData.user || sessionData.data?.user; 
-      
-      if (!user) {
-        clearUserSession();
-        return false; // User object not found, exit
-      }
+            if (!user || !token) {
+                clearUserSession();
+                return;
+            }
 
-      const userRoles = user?.roles || (user.role ? [user.role] : []);
-      const username = user.username || user.name || 'User'; // Get the username
+            const username = user.username || user.email.split('@')[0];
+            const isAdmin = user.roles && user.roles.includes('admin');
 
-      // --- START: ADDED CODE ---
-      // Update ALL UI elements with user data here
-      
-      // Desktop profile dropdown
-      document.getElementById('modal-username').textContent = username;
-      
-      // Mobile user info
-      document.getElementById('mobile-user-username').textContent = username;
-      // --- END: ADDED CODE ---
+            // Update UI
+            document.getElementById('modal-username').textContent = username;
+            document.getElementById('mobile-user-username').textContent = username;
 
-      // Desktop navigation (this part is already correct)
-      document.getElementById('auth-buttons').style.display = 'none';
-      document.getElementById('user-menu').style.display = 'flex';
-      
-      // Mobile navigation (this part is already correct)
-      document.getElementById('mobile-auth-buttons').style.display = 'none';
-      document.getElementById('mobile-user-menu').style.display = 'flex';
-      
-      // Show admin features for admins
-      if (userRoles.includes('admin')) {
-        // --- START: MOVED & UPDATED CODE ---
-        // Desktop
-        document.getElementById('modal-role-badge').style.display = 'inline-block';
-        document.getElementById('host-nav-item').style.display = 'block'; // Or 'inline-block'/'flex'
-        
-        // Mobile
-        document.getElementById('mobile-user-role-badge').style.display = 'inline-block';
-        document.getElementById('mobile-host-section').style.display = 'block';
-        // --- END: MOVED & UPDATED CODE ---
-      } else {
-        // Ensure admin elements are hidden for regular users
+            document.getElementById('auth-buttons').style.display = 'none';
+            document.getElementById('user-menu').style.display = 'flex';
+            document.getElementById('mobile-auth-buttons').style.display = 'none';
+            document.getElementById('mobile-user-menu').style.display = 'flex';
+
+            if (isAdmin) {
+                document.getElementById('modal-role-badge').style.display = 'inline-block';
+                document.getElementById('host-nav-item').style.display = 'block';
+                document.getElementById('mobile-user-role-badge').style.display = 'inline-block';
+                document.getElementById('mobile-host-section').style.display = 'block';
+            } else {
+                clearAdminUI();
+            }
+        } catch (error) {
+            console.error('Invalid session data:', error);
+            clearUserSession();
+        }
+    }
+    
+    function clearAdminUI() {
         document.getElementById('modal-role-badge').style.display = 'none';
         document.getElementById('host-nav-item').style.display = 'none';
         document.getElementById('mobile-user-role-badge').style.display = 'none';
         document.getElementById('mobile-host-section').style.display = 'none';
-      }
-      
-      return true;
-    } catch (error) {
-      console.error('Invalid session data:', error);
-      clearUserSession();
-      return false;
     }
-  }
-  
-  // No session found, ensure logged-out state
-  clearUserSession();
-  return false;
-}
+
 
     function clearUserSession() {
       localStorage.removeItem('earena_session');
       sessionStorage.removeItem('earena_session');
       
-      // Desktop navigation
       document.getElementById('auth-buttons').style.display = 'flex';
       document.getElementById('user-menu').style.display = 'none';
-      document.getElementById('modal-role-badge').style.display = 'none';
-      document.getElementById('host-nav-item').style.display = 'none';
-      
-      // Mobile navigation
       document.getElementById('mobile-auth-buttons').style.display = 'flex';
       document.getElementById('mobile-user-menu').style.display = 'none';
-      document.getElementById('mobile-user-role-badge').style.display = 'none';
-      document.getElementById('mobile-host-section').style.display = 'none';
+      clearAdminUI();
     }
 
     async function logout() {
       try {
         const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
-        
         if (session) {
           const sessionData = JSON.parse(session);
-          
-          // Call logout API
-          await fetch(`${API_BASE_URL}/api/auth/logout`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${sessionData.token}`,
-              'Content-Type': 'application/json'
-            }
-          });
+          const token = sessionData?.data?.token;
+          if (token) {
+              await fetch(`${API_BASE_URL}/api/auth/logout`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+              });
+          }
         }
       } catch (error) {
         console.error('Logout API error:', error);
       } finally {
         clearUserSession();
         console.log('Logged out successfully');
+        window.location.reload();
       }
     }
 
-    // Initialize the page with API data
+    // Initialize the page
     document.addEventListener('DOMContentLoaded', async () => {
       console.log('Initializing EArena homepage...');
-
-      // Check user authentication first
       checkUserAuthentication();
-
-      // Check connection status
-      if (!checkConnectionStatus()) {
-        console.error('No internet connection detected.');
-        return;
-      }
-
-      try {
-        // Add loading indicator to the page
+      if (navigator.onLine) {
         addGlobalLoadingIndicator();
-
-        // Fetch and populate all content data
-        await populateAllSections();
-        console.log('Tournament data loaded successfully');
-
-      } catch (error) {
-        console.error('Failed to initialize tournament data:', error);
-      } finally {
-        removeGlobalLoadingIndicator();
+        try {
+          await fetchTournaments(); 
+          await populateAllSections();
+          console.log('Content loaded successfully');
+        } catch (error) {
+          console.error('Failed to initialize page content:', error);
+        } finally {
+          removeGlobalLoadingIndicator();
+        }
+      } else {
+        console.error('No internet connection detected.');
+        showErrorState();
       }
     });
 
     // Global loading indicator
     function addGlobalLoadingIndicator() {
+      if (document.getElementById('global-loader')) return;
       const loader = document.createElement('div');
       loader.id = 'global-loader';
-      loader.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, var(--accent), var(--accent-2));
-        z-index: 10001;
-        animation: loading-bar 2s ease-in-out infinite;
-      `;
-
-      // Add CSS animation
+      loader.style.cssText = `position: fixed; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); z-index: 10001; animation: loading-bar 2s ease-in-out infinite;`;
       if (!document.querySelector('#loading-animation-style')) {
         const style = document.createElement('style');
         style.id = 'loading-animation-style';
-        style.textContent = `
-          @keyframes loading-bar {
-            0% { transform: translateX(-100%); }
-            50% { transform: translateX(0%); }
-            100% { transform: translateX(100%); }
-          }
-        `;
+        style.textContent = `@keyframes loading-bar { 0% { transform: translateX(-100%); } 50% { transform: translateX(0%); } 100% { transform: translateX(100%); } }`;
         document.head.appendChild(style);
       }
-
       document.body.appendChild(loader);
     }
 
@@ -2822,32 +2555,9 @@ function checkUserAuthentication() {
       const loader = document.getElementById('global-loader');
       if (loader) {
         loader.style.opacity = '0';
-        setTimeout(() => {
-          if (document.body.contains(loader)) {
-            document.body.removeChild(loader);
-          }
-        }, 300);
+        setTimeout(() => loader.remove(), 300);
       }
     }
-
-    // Fallback initialization if DOMContentLoaded already fired
-    if (document.readyState === 'loading') {
-      // Document is still loading, DOMContentLoaded will fire
-    } else {
-      // Document has already loaded
-      if (checkConnectionStatus()) {
-        populateAllSections().catch(console.error);
-      } else {
-        console.error('No internet connection detected.');
-      }
-    }
-
-
-
-
-
-
-
   </script>
 </body>
 
