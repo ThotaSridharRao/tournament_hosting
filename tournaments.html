@@ -1006,6 +1006,7 @@
     };
 
     // Fetch tournaments from API
+    // Fetch tournaments from API
     async function fetchTournaments() {
       try {
         console.log('Fetching from:', `${API_BASE_URL}/api/tournaments`);
@@ -1041,7 +1042,8 @@
               tournamentEnd: tournament.tournamentEnd,
               posterImage: tournament.posterImage,
               detailsLink: `tournament-details.html?slug=${tournament.slug}`
-            }));
+            }; // Corrected this block
+          });
         } else {
           throw new Error(result.error || 'Failed to fetch tournaments');
         }
