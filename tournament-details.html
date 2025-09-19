@@ -1399,7 +1399,7 @@
 
             <div class="info-card">
               <h3><i class="fas fa-trophy"></i> Prizes</h3>
-              <ul class="info-list">
+              <ul class="info-list" id="prize-list"> 
                 <li>
                   <span class="info-label">1st Place</span>
                   <span class="info-value">$200,000</span>
@@ -3066,61 +3066,6 @@
       }
     }
 
-    function updateTournamentDisplay(tournament) {
-      // Update page title
-      document.getElementById('page-title').textContent = `${tournament.title} | EArena`;
-
-      // Update hero section
-      document.getElementById('tournament-title').textContent = tournament.title;
-      document.getElementById('tournament-subtitle').textContent = tournament.description || 'Join this exciting tournament and compete for glory!';
-
-
-
-      // Update tournament overview with server data
-      updateTournamentOverview(tournament);
-
-      // Update tournament info
-      document.getElementById('game-name').textContent = tournament.game || 'TBD';
-      document.getElementById('tournament-format').textContent = tournament.format || tournament.tournamentFormat || 'TBD';
-      document.getElementById('entry-fee').textContent = tournament.entryFee ? `₹${tournament.entryFee.toLocaleString()}` : 'Free';
-      document.getElementById('max-teams').textContent = tournament.maxTeams || 'Unlimited';
-
-      // Update schedule
-      const formatDate = (dateString) => dateString ? new Date(dateString).toLocaleDateString('en-IN', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      }) : 'TBD';
-
-      document.getElementById('reg-start-date').textContent = formatDate(tournament.registrationStart);
-      document.getElementById('reg-end-date').textContent = formatDate(tournament.registrationEnd);
-      document.getElementById('tournament-start-date').textContent = formatDate(tournament.tournamentStart);
-      document.getElementById('tournament-end-date').textContent = formatDate(tournament.tournamentEnd);
-
-      // Update custom schedule events
-      updateCustomScheduleDisplay(tournament.scheduleEvents || []);
-
-      // Update main schedule timeline
-      updateScheduleTimeline(tournament.scheduleEvents || []);
-
-      // Update hero background if poster exists
-      const posterPath = tournament.posterImage || tournament.poster || tournament.thumbnailUrl || tournament.imageUrl || tournament.backgroundImage;
-      const heroElement = document.querySelector('.tournament-hero');
-
-      if (posterPath) {
-        const imageUrl = posterPath.startsWith('http') ? posterPath : getImageUrl(posterPath);
-        heroElement.style.backgroundImage = `url(${imageUrl})`;
-        heroElement.style.backgroundSize = 'cover';
-        heroElement.style.backgroundPosition = 'center';
-        heroElement.classList.add('has-poster'); // Add class for dark overlay
-      } else {
-        heroElement.classList.remove('has-poster'); // Remove class if no poster
-      }
-
-      // Update action buttons based on tournament status
-      updateActionButtons(tournament);
-    }
-
     function updateTournamentOverview(tournament) {
       const overviewContainer = document.getElementById('tournament-overview');
       const formatContainer = document.getElementById('tournament-format-details');
@@ -3145,12 +3090,7 @@
       if (tournament.format === 'kp' && tournament.kpSettings) {
         const kp = tournament.kpSettings;
         
-        // Calculate prize amounts
-        const prizePool = tournament.prizePool || 0;
-        const firstPrize = Math.round(prizePool * (kp.prizeDistribution?.first || 0.5));
-        const secondPrize = Math.round(prizePool * (kp.prizeDistribution?.second || 0.3));
-        const thirdPrize = Math.round(prizePool * (kp.prizeDistribution?.third || 0.2));
-        
+        // PRIZE DISTRIBUTION IS REMOVED FROM THIS SECTION
         formatHtml = `
           <div style="margin-bottom: 2rem;">
             <h4 style="color: var(--accent); margin-bottom: 1rem;">KP Tournament Format</h4>
@@ -3172,29 +3112,6 @@
               </li>
             </ul>
           </div>
-          
-          <div style="margin-bottom: 2rem;">
-            <h4 style="color: var(--accent); margin-bottom: 1rem;">Prize Distribution</h4>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
-              <div style="background: rgba(255, 215, 0, 0.1); padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid rgba(255, 215, 0, 0.3);">
-                <div style="color: #FFD700; font-weight: bold; font-size: 1.1rem;">🥇 1st Place</div>
-                <div style="color: var(--copy); font-size: 1.2rem; font-weight: bold; margin: 0.5rem 0;">₹${firstPrize.toLocaleString()}</div>
-                <div style="color: var(--muted); font-size: 0.9rem;">50% of Prize Pool</div>
-              </div>
-              <div style="background: rgba(192, 192, 192, 0.1); padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid rgba(192, 192, 192, 0.3);">
-                <div style="color: #C0C0C0; font-weight: bold; font-size: 1.1rem;">🥈 2nd Place</div>
-                <div style="color: var(--copy); font-size: 1.2rem; font-weight: bold; margin: 0.5rem 0;">₹${secondPrize.toLocaleString()}</div>
-                <div style="color: var(--muted); font-size: 0.9rem;">30% of Prize Pool</div>
-              </div>
-              <div style="background: rgba(205, 127, 50, 0.1); padding: 1rem; border-radius: 8px; text-align: center; border: 1px solid rgba(205, 127, 50, 0.3);">
-                <div style="color: #CD7F32; font-weight: bold; font-size: 1.1rem;">🥉 3rd Place</div>
-                <div style="color: var(--copy); font-size: 1.2rem; font-weight: bold; margin: 0.5rem 0;">₹${thirdPrize.toLocaleString()}</div>
-                <div style="color: var(--muted); font-size: 0.9rem;">20% of Prize Pool</div>
-              </div>
-            </div>
-          </div>
-          
-
           
           <ul style="list-style: none; padding: 0;">
             <li style="padding: 0.5rem 0;">
@@ -3222,6 +3139,73 @@
       }
 
       formatContainer.innerHTML = formatHtml;
+    }
+
+    function updatePrizes(tournament) {
+        const prizeList = document.getElementById('prize-list');
+        if (!prizeList) return;
+
+        let prizesHtml = '';
+        if (tournament.prizeDistribution) {
+            prizesHtml = `
+                <li>
+                  <span class="info-label">1st Place</span>
+                  <span class="info-value">₹${tournament.prizeDistribution.first.toLocaleString()}</span>
+                </li>
+                <li>
+                  <span class="info-label">2nd Place</span>
+                  <span class="info-value">₹${tournament.prizeDistribution.second.toLocaleString()}</span>
+                </li>
+                <li>
+                  <span class="info-label">3rd Place</span>
+                  <span class="info-value">₹${tournament.prizeDistribution.third.toLocaleString()}</span>
+                </li>
+            `;
+        } else if (tournament.prizePool) {
+            prizesHtml = `
+                <li>
+                  <span class="info-label">Total Prize</span>
+                  <span class="info-value">₹${tournament.prizePool.toLocaleString()}</span>
+                </li>
+            `;
+        } else {
+            prizesHtml = `
+                <li>
+                  <span class="info-label">Prizes</span>
+                  <span class="info-value">To be announced</span>
+                </li>
+            `;
+        }
+        prizeList.innerHTML = prizesHtml;
+    }
+
+    function updateTournamentDisplay(tournament) {
+      // Update page title and hero section
+      document.getElementById('page-title').textContent = `${tournament.title} | EArena`;
+      document.getElementById('tournament-title').textContent = tournament.title;
+      document.getElementById('tournament-subtitle').textContent = tournament.description || 'Join this exciting tournament!';
+
+      // Update the main content sections
+      updateTournamentOverview(tournament);
+      updatePrizes(tournament);
+
+      // Update sidebar info
+      document.getElementById('game-name').textContent = tournament.game || 'TBD';
+      document.getElementById('tournament-format').textContent = tournament.format || 'TBD';
+      document.getElementById('entry-fee').textContent = tournament.entryFee ? `₹${tournament.entryFee.toLocaleString()}` : 'Free';
+      document.getElementById('max-teams').textContent = tournament.maxTeams || 'Unlimited';
+      
+      // Update schedule dates in sidebar
+      const formatDate = (dateString) => new Date(dateString).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+      document.getElementById('reg-start-date').textContent = formatDate(tournament.registrationStart);
+      document.getElementById('reg-end-date').textContent = formatDate(tournament.registrationEnd);
+      document.getElementById('tournament-start-date').textContent = formatDate(tournament.tournamentStart);
+      document.getElementById('tournament-end-date').textContent = formatDate(tournament.tournamentEnd);
+      
+      // Call other update functions
+      updateCustomScheduleDisplay(tournament.scheduleEvents);
+      updateScheduleTimeline(tournament.scheduleEvents);
+      updateActionButtons(tournament);
     }
 
     function updateCustomScheduleDisplay(scheduleEvents) {
