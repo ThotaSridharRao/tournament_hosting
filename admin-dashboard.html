@@ -1742,8 +1742,6 @@
                         <a href="td.html?slug=${t.slug}" class="tournament-link name">${t.title}</a>
                         <span class="game">${t.game}</span>
                     </div>
-
-                    {/* === START: CORRECTED STATUS DROPDOWN === */}
                     <div>
                         <select
                             class="form-select"
@@ -1756,7 +1754,6 @@
                             <option value="ended" ${t.status === 'ended' ? 'selected' : ''}>Ended</option>
                         </select>
                     </div>
-                    {/* === END: CORRECTED STATUS DROPDOWN === */}
 
                     <div class="tournament-participants">${t.participants?.length || 0}/${getMaxTeamsForDisplay(t)} teams</div>
                     <div class="tournament-prize">₹${(t.prizePool || 0).toLocaleString()}</div>
