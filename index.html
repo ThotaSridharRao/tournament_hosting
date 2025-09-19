@@ -889,6 +889,35 @@
       box-shadow: var(--focus);
     }
 
+    /* =========================
+       Greeting Section
+       ========================= */
+    .greeting-section {
+      text-align: center;
+      padding: clamp(3rem, 6vw, 6rem) 1rem;
+      margin-top: -5vh; /* Overlaps with hero fade for a seamless transition */
+      position: relative;
+      z-index: 5;
+    }
+
+    .greeting-title {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      color: var(--copy);
+      margin: 0 0 1rem 0;
+      line-height: 1.2;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+    }
+
+    .greeting-subtitle {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--muted);
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+    }
+
     #tournaments-heading {
       font-size: clamp(2.5rem, 4vw, 3.5rem);
       font-weight: 800;
@@ -1642,6 +1671,14 @@
 
         <a class="btn--primary" href="tournament-details.html?slug=test-tournament"
           id="cta-learn-more">Tournament Details</a>
+      </div>
+    </section>
+
+    <!-- Greeting Section -->
+    <section class="greeting-section" aria-labelledby="greeting-title">
+      <div class="container">
+        <h2 id="greeting-title" class="greeting-title">Your Proving Ground Awaits</h2>
+        <p class="greeting-subtitle">Welcome to EArena, the heart of competitive gaming. Discover tournaments, challenge rivals, and forge your legacy.</p>
       </div>
     </section>
 
@@ -2608,4 +2645,5 @@
 </body>
 
 </html>
+
 
