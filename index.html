@@ -883,6 +883,122 @@
 
 
     /* =========================
+       Tournaments Section
+       ========================= */
+    .tournaments-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .tournament-card {
+      background: linear-gradient(145deg, var(--panel-bg-top), var(--panel-bg-bottom));
+      border-radius: var(--radius);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+      border-top: 1px solid #555;
+      border-left: 1px solid #555;
+      border-right: 1px solid #111;
+      border-bottom: 1px solid #111;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: var(--copy);
+      transition: all 0.3s var(--ease-out-quart);
+    }
+
+    .tournament-card:hover {
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    }
+
+    .tournament-card__poster {
+      height: 180px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .tournament-card__poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s var(--ease-out-quart);
+    }
+    
+    .tournament-card:hover .tournament-card__poster img {
+      transform: scale(1.05);
+    }
+    
+    .tournament-card__status {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(5px);
+      color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .status-badge--live { background: #ff3b30; }
+    .status-badge--registration_open { background: #34c759; }
+    .status-badge--upcoming { background: #007aff; }
+    .status-badge--completed { background: #8e8e93; }
+    .status-badge--registration_closed { background: #ff9500; }
+
+    .tournament-card__info {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .tournament-card__title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+      line-height: 1.3;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    .tournament-card__meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-top: auto;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tournament-card__prize, .tournament-card__format {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    
+    .tournament-card__prize span {
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+      font-size: 1.1rem;
+    }
+    
+    .tournament-card__format span {
+      font-weight: 700;
+      color: var(--copy);
+      display: block;
+      font-size: 1rem;
+      text-transform: capitalize;
+    }
+
+
+    /* =========================
        Matches / Panels Grid
        ========================= */
     main {
@@ -1510,172 +1626,13 @@
       </div>
     </section>
 
-    <!-- Matches / Tournaments -->
+    <!-- Tournaments -->
     <section id="tournaments" class="section container" aria-labelledby="tournaments-heading">
-      <h2 id="tournaments-heading" style="font-size:1.6rem; margin-bottom:1rem; color:var(--copy); text-shadow: 1px 1px 2px #000;">Matches &
-        Tournaments</h2>
-
-      <div class="panels">
-        <!-- Left Column: Recent Matches Details -->
-        <article class="panel main-panel" role="listitem" aria-labelledby="recent-matches-title">
-          <h3 id="recent-matches-title"><i class="fa-solid fa-hourglass-end" style="margin-right:.5rem"></i>Recent
-            Matches</h3>
-          <ul class="tournament-list">
-            <li>
-              <div>
-                <h4>BGMI 2025 Series Match 1</h4>
-                <p>ESL Masters — BGMI</p>
-              </div>
-              <div style="text-align:right">
-                <div style="font-weight:700; color:var(--muted)">28 Aug 2025</div>
-                <div style="font-size:.82rem; color:var(--muted)">28.08.2025</div>
-                <div style="margin-top:0.4rem; font-weight:700; color:var(--accent);">Live</div>
-              </div>
-            </li>
-            <li>
-              <div>
-                <h4>BGMI 2025 Series Quarter Finals</h4>
-                <p>PUBG Players Tour — KRAFTON</p>
-              </div>
-              <div style="text-align:right">
-                <div style="font-weight:700; color:var(--muted)">27 Aug 2025</div>
-                <div style="font-size:.82rem; color:var(--muted)">27.08.2025</div>
-                <div style="margin-top:0.4rem; font-weight:700; color:var(--muted);">Result: Team Alpha wins</div>
-              </div>
-            </li>
-            <li>
-              <div>
-                <h4>BGMI 2025 Series Semi Finals</h4>
-                <p>PUBG Players Tour — KRAFTON</p>
-              </div>
-              <div style="text-align:right">
-                <div style="font-weight:700; color:var(--muted)">26 Aug 2025</div>
-                <div style="font-size:.82rem; color:var(--muted)">26.08.2025</div>
-                <div style="margin-top:0.4rem; font-weight:700; color:var(--accent);">Live</div>
-              </div>
-            </li>
-            <li>
-              <div>
-                <h4>BGMI India Invitational</h4>
-                <p>IEM Katowice — BGMI</p>
-              </div>
-              <div style="text-align:right">
-                <div style="font-weight:700; color:var(--muted)">25 Aug 2025</div>
-                <div style="font-size:.82rem; color:var(--muted)">25.08.2025</div>
-                <div style="margin-top:0.4rem; font-weight:700; color:var(--muted);">Result: Team Bravo wins</div>
-              </div>
-            </li>
-            <li>
-              <div>
-                <h4>BGMI 2025 Series Match 5</h4>
-                <p>PUBG Players Tour — KRAFTON</p>
-              </div>
-              <div style="text-align:right">
-                <div style="font-weight:700; color:var(--muted)">24 Aug 2025</div>
-                <div style="font-size:.82rem; color:var(--muted)">24.08.2025</div>
-                <div style="margin-top:0.4rem; font-weight:700; color:var(--muted);">Result: Team Gamma wins</div>
-              </div>
-            </li>
-            <li>
-              <div>
-                <h4>BGMI 2025 Series Match 4</h4>
-                <p>ESL Masters — BGMI</p>
-              </div>
-              <div style="text-align:right">
-                <div style="font-weight:700; color:var(--muted)">23 Aug 2025</div>
-                <div style="font-size:.82rem; color:var(--muted)">23.08.2025</div>
-                <div style="margin-top:0.4rem; font-weight:700; color:var(--accent);">Live</div>
-              </div>
-            </li>
-            <li>
-              <div>
-                <h4>BGMI 2025 Series Match 3</h4>
-                <p>IEM Katowice — BGMI</p>
-              </div>
-              <div style="text-align:right">
-                <div style="font-weight:700; color:var(--muted)">22 Aug 2025</div>
-                <div style="font-size:.82rem; color:var(--muted)">22.08.2025</div>
-                <div style="margin-top:0.4rem; font-weight:700; color:var(--muted);">Result: Team Delta wins</div>
-              </div>
-            </li>
-            <li>
-              <div>
-                <h4>BGMI 2025 Series Match 2</h4>
-                <p>ESL Masters — BGMI</p>
-              </div>
-              <div style="text-align:right">
-                <div style="font-weight:700; color:var(--muted)">21 Aug 2025</div>
-                <div style="font-size:.82rem; color:var(--muted)">21.08.2025</div>
-                <div style="margin-top:0.4rem; font-weight:700; color:var(--muted);">Result: Team Echo wins</div>
-              </div>
-            </li>
-          </ul>
-        </article>
-
-        <!-- Right Column: Upcoming & Live -->
-        <div class="right-column">
-          <!-- Upcoming tournaments -->
-          <article class="panel panel--small" role="listitem" aria-labelledby="upcoming-title">
-            <h3 id="upcoming-title"><i class="fa-solid fa-calendar-alt" style="margin-right:.5rem"></i>Upcoming</h3>
-            <ul class="tournament-list" aria-label="Upcoming tournaments">
-              <li>
-                <div>
-                  <h4>Grand Final: TBA vs TBA</h4>
-                  <p>Starts: Jan 22, 2025</p>
-                </div>
-                <div style="text-align:right;color:var(--muted)">22 Jan 2025</div>
-              </li>
-              <li>
-                <div>
-                  <h4>Qualifier 1: Team I vs Team J</h4>
-                  <p>Starts: Jan 21, 2025</p>
-                </div>
-                <div style="text-align:right;color:var(--muted)">21 Jan 2025</div>
-              </li>
-            </ul>
-          </article>
-
-          <!-- Live matches -->
-          <article class="panel panel--small" role="listitem" aria-labelledby="live-title">
-            <h3 id="live-title"><i class="fa-solid fa-satellite-dish" style="margin-right:.5rem"></i>Live</h3>
-            <ul class="tournament-list" aria-label="Live matches">
-              <li>
-                <div>
-                  <h4>VP <span style="font-weight:600; color:var(--muted); margin:0 .5rem">VS</span> M80</h4>
-                  <p>BLAST Open Fall 2025</p>
-                </div>
-                <div style="text-align:right">
-                  <span class="live-badge" aria-hidden="true">LIVE</span>
-                  <div style="margin-top:.4rem"><a href="#" aria-label="Watch VP vs M80">Watch</a></div>
-                </div>
-              </li>
-              <li>
-                <div>
-                  <h4>RRO <span style="font-weight:600; color:var(--muted); margin:0 .5rem">VS</span> VES</h4>
-                  <p>Indonesia Kings League Fall 2025</p>
-                </div>
-                <div style="text-align:right">
-                  <span class="live-badge" aria-hidden="true">LIVE</span>
-                  <div style="margin-top:.4rem"><a href="#" aria-label="Watch RRO vs VES">Watch</a></div>
-                </div>
-              </li>
-            </ul>
-          </article>
-
-          <!-- Advertisement Panel -->
-          <article class="panel panel--small" role="listitem" aria-labelledby="ad-title">
-            <h3 id="ad-title"><i class="fa-solid fa-bullhorn" style="margin-right:.5rem"></i>Sponsored</h3>
-            <div style="text-align:center;">
-              <p style="color:var(--copy); font-size:1.1rem; font-weight:bold; margin-bottom:.5rem;">Elevate Your Game!
-              </p>
-              <p style="color:var(--muted); font-size:.9rem; line-height:1.4;">
-                Join the new season with our exclusive gaming gear.
-              </p>
-              <a href="#"
-                 class="header-cta" style="margin-top:1rem; display:inline-block; text-decoration:none;">Shop Now</a>
-            </div>
-          </article>
-        </div>
+      <h2 id="tournaments-heading" style="font-size:1.6rem; margin-bottom:1rem; color:var(--copy); text-shadow: 1px 1px 2px #000;">
+        Tournaments
+      </h2>
+      <div id="tournaments-grid" class="tournaments-grid">
+        <!-- Tournament cards will be injected here by JavaScript -->
       </div>
     </section>
 
@@ -1844,17 +1801,24 @@
         console.log('Fetched tournaments (normalized):', tournaments);
 
         // Transform data for hero
-        heroData = tournaments.slice(0, 3).map(t => ({
-          id: t._id || t.id,
-          slug: t.slug,
-          title: t.title || t.name || 'Untitled Tournament',
-          prizePool: `Prize Pool: $${(t.prizePool || 0).toLocaleString()}`,
-          description: t.description || 'Join this exciting tournament!',
-          detailsLink: `tournament-details.html?slug=${t.slug || t._id || t.id}`,
-          poster: t.posterImage || t.backgroundImage || t.poster || t.image || null,
-          status: calculateTournamentStatus(t),
-          game: t.game || 'Gaming'
-        }));
+        heroData = tournaments.slice(0, 3).map(t => {
+          const rawPoster = t.posterImage || t.backgroundImage || t.poster || t.image || null;
+          let finalPoster = rawPoster;
+          if (rawPoster && !rawPoster.startsWith('http')) {
+            finalPoster = `${API_BASE_URL}/${rawPoster.replace(/^\//, '')}`;
+          }
+          return {
+            id: t._id || t.id,
+            slug: t.slug,
+            title: t.title || t.name || 'Untitled Tournament',
+            prizePool: `Prize Pool: $${(t.prizePool || 0).toLocaleString()}`,
+            description: t.description || 'Join this exciting tournament!',
+            detailsLink: `tournament-details.html?slug=${t.slug || t._id || t.id}`,
+            poster: finalPoster,
+            status: calculateTournamentStatus(t),
+            game: t.game || 'Gaming'
+          };
+        });
 
         isDataLoaded = true;
         hideLoadingState();
@@ -2143,12 +2107,11 @@
 
 
         if (tournaments.length > 0) {
-          populateUpcomingTournaments(tournaments);
-          populateLiveTournaments(tournaments);
-          // Assuming the main fetchTournaments function for the hero is separate or handled
+          populateTournamentsGrid(tournaments);
         }
 
-        if (recentMatches.status === 'fulfilled' && recentMatches.value) {
+        // The following functions are now deprecated in favor of the new grid
+        /* if (recentMatches.status === 'fulfilled' && recentMatches.value) {
           populateRecentMatches(recentMatches.value);
         }
 
@@ -2159,9 +2122,11 @@
         if (upcomingMatches.status === 'fulfilled' && upcomingMatches.value) {
           updateUpcomingMatches(upcomingMatches.value);
         }
+        */
 
         if (sponsoredContent.status === 'fulfilled' && sponsoredContent.value) {
-          populateSponsoredContent(sponsoredContent.value);
+          // You might want to keep sponsored content or integrate it differently
+          // populateSponsoredContent(sponsoredContent.value);
         }
 
         console.log('All content sections populated successfully');
@@ -2191,6 +2156,65 @@
         return 'completed';
       }
     }
+    
+    function getStatusDisplayInfo(status) {
+        const map = {
+            'upcoming': { text: 'Upcoming', class: 'upcoming' },
+            'registration_open': { text: 'Registering', class: 'registration_open' },
+            'registration_closed': { text: 'Registration Closed', class: 'registration_closed' },
+            'live': { text: 'Live Now', class: 'live' },
+            'completed': { text: 'Completed', class: 'completed' }
+        };
+        return map[status] || { text: status.replace(/_/g, ' '), class: 'default' };
+    }
+
+    function populateTournamentsGrid(tournaments) {
+        const grid = document.getElementById('tournaments-grid');
+        if (!grid) return;
+
+        if (tournaments.length === 0) {
+            grid.innerHTML = '<p>No tournaments available at the moment. Check back soon!</p>';
+            return;
+        }
+
+        grid.innerHTML = tournaments.slice(0, 6).map(tournament => { // Displaying up to 6 tournaments
+            const status = calculateTournamentStatus(tournament);
+            const statusInfo = getStatusDisplayInfo(status);
+            
+            const rawPoster = tournament.posterImage || tournament.backgroundImage || null;
+            let finalPoster = 'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop'; // Default fallback
+            if (rawPoster && !rawPoster.startsWith('http')) {
+                finalPoster = `${API_BASE_URL}/${rawPoster.replace(/^\//, '')}`;
+            } else if (rawPoster) {
+                finalPoster = rawPoster;
+            }
+
+            return `
+                <a href="tournament-details.html?slug=${tournament.slug}" class="tournament-card">
+                    <div class="tournament-card__poster">
+                        <img src="${finalPoster}" alt="${tournament.title} Poster" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop';">
+                        <div class="tournament-card__status status-badge--${statusInfo.class}">
+                            ${statusInfo.text}
+                        </div>
+                    </div>
+                    <div class="tournament-card__info">
+                        <h3 class="tournament-card__title">${tournament.title}</h3>
+                        <div class="tournament-card__meta">
+                            <div class="tournament-card__prize">
+                                Prize Pool
+                                <span>$${(tournament.prizePool || 0).toLocaleString()}</span>
+                            </div>
+                            <div class="tournament-card__format">
+                                Format
+                                <span>${tournament.format || 'TBA'}</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }).join('');
+    }
+
 
     function updateStatsDisplay(stats) {
       if (stats.totalTournaments) {
@@ -2562,4 +2586,6 @@
 </body>
 
 </html>
+
+
 
