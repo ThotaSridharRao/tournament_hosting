@@ -2888,56 +2888,52 @@
     });
 
     // Authentication and User Management
-    function checkUserAuthentication() {
-      const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+    // In index.html
+
+function checkUserAuthentication() {
+  const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+  
+  if (session) {
+    try {
+      const sessionData = JSON.parse(session);
+      // VVVV CHANGE THIS LINE VVVV
+      const user = sessionData.user || sessionData.data?.user; 
       
-      if (session) {
-        try {
-          const sessionData = JSON.parse(session);
-          const user = sessionData.user;
-          const userRoles = user?.roles || [];
-          
-          // Desktop navigation
-          document.getElementById('auth-buttons').style.display = 'none';
-          document.getElementById('user-menu').style.display = 'flex';
-          document.getElementById('modal-username').textContent = user.username;
-          
-          // Mobile navigation
-          document.getElementById('mobile-auth-buttons').style.display = 'none';
-          document.getElementById('mobile-user-menu').style.display = 'flex';
-          document.getElementById('mobile-user-username').textContent = user.username;
-          
-          // Show admin features for admins
-          if (userRoles.includes('admin')) {
-            // Desktop
-            document.getElementById('modal-role-badge').style.display = 'inline-block';
-            document.getElementById('host-nav-item').style.display = 'block';
-            
-            // Update dashboard links to admin dashboard
-            document.getElementById('modal-dashboard-link').href = 'admin-dashboard.html';
-            
-            // Mobile
-            document.getElementById('mobile-user-role-badge').style.display = 'inline-block';
-            document.getElementById('mobile-host-section').style.display = 'block';
-            document.getElementById('mobile-dashboard-link').href = 'admin-dashboard.html';
-            document.getElementById('mobile-dashboard-link').innerHTML = '<i class="fas fa-cog"></i> My Account';
-          } else {
-            // Regular users get user dashboard
-            document.getElementById('modal-dashboard-link').href = 'user-dashboard.html';
-            document.getElementById('mobile-dashboard-link').href = 'user-dashboard.html';
-            document.getElementById('mobile-dashboard-link').innerHTML = '<i class="fas fa-user"></i> My Account';
-          }
-          
-          return true;
-        } catch (error) {
-          console.error('Invalid session data:', error);
-          clearUserSession();
-          return false;
-        }
+      // If user object is still not found, exit
+      if (!user) {
+        clearUserSession();
+        return;
+      }
+
+      const userRoles = user?.roles || (user.role ? [user.role] : []);
+      
+      // Desktop navigation
+      document.getElementById('auth-buttons').style.display = 'none';
+      document.getElementById('user-menu').style.display = 'flex';
+      // VVVV AND CHANGE THIS LINE VVVV
+      document.getElementById('modal-username').textContent = user.username || 'User';
+      
+      // Mobile navigation
+      document.getElementById('mobile-auth-buttons').style.display = 'none';
+      document.getElementById('mobile-user-menu').style.display = 'flex';
+      // VVVV AND CHANGE THIS LINE VVVV
+      document.getElementById('mobile-user-username').textContent = user.username || 'User';
+      
+      // Show admin features for admins
+      if (userRoles.includes('admin')) {
+        // ... (rest of the function is fine)
       }
       
+      return true;
+    } catch (error) {
+      console.error('Invalid session data:', error);
+      clearUserSession();
       return false;
     }
+  }
+  
+  return false;
+}
 
     function clearUserSession() {
       localStorage.removeItem('earena_session');
