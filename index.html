@@ -1827,8 +1827,9 @@
           const rawPoster = t.posterImage || t.backgroundImage || t.poster || t.image || null;
           let finalPoster = rawPoster;
           if (rawPoster && !rawPoster.startsWith('http')) {
-            const cleanPosterPath = rawPoster.replace(/^\//, '');
-            finalPoster = `${API_BASE_URL}/assets/${cleanPosterPath}`;
+              const cleanPosterPath = rawPoster.replace(/^\//, '');
+              // The path should now correctly point to /uploads/
+              finalPoster = `${API_BASE_URL}/${cleanPosterPath}`;
           }
           return {
             id: t._id || t.id,
@@ -2208,7 +2209,7 @@
             let finalPoster = 'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop'; // Default fallback
             if (rawPoster && !rawPoster.startsWith('http')) {
                 const cleanPosterPath = rawPoster.replace(/^\//, '');
-                finalPoster = `${API_BASE_URL}/assets/${cleanPosterPath}`;
+                finalPoster = `${API_BASE_URL}/${cleanPosterPath}`;
             } else if (rawPoster) {
                 finalPoster = rawPoster;
             }
