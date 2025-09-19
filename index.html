@@ -893,7 +893,7 @@
        ========================= */
     .tournaments-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted width */
       gap: 2rem;
       margin-top: 2rem;
     }
@@ -912,7 +912,6 @@
         text-decoration: none;
         color: var(--copy);
         transition: all 0.3s var(--ease-out-quart);
-        min-width: 280px; /* Min-width added */
     }
 
 
@@ -1826,7 +1825,7 @@
           let finalPoster = rawPoster;
           if (rawPoster && !rawPoster.startsWith('http')) {
             const cleanPosterPath = rawPoster.replace(/^\//, '');
-            finalPoster = `${API_BASE_URL}/${cleanPosterPath}`;
+            finalPoster = `${API_BASE_URL}/assets/${cleanPosterPath}`;
           }
           return {
             id: t._id || t.id,
@@ -2608,6 +2607,8 @@
 </body>
 
 </html>
+
+
 
 
 
