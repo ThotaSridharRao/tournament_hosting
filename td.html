@@ -1488,7 +1488,7 @@
                     ${group.qualified.length > 0 ? `
                         <div class="kp-group-qualified">
                             <strong>Qualified:</strong><br>
-                            ${group.qualified.map(team => `<span class="kp-qualified-team">${team.name}</span>`).join('')}
+                            ${group.qualified.map(team => `<span class="kp-qualified-team">${team.teamName}</span>`).join('')}
                         </div>
                     ` : ''}
                 </div>
@@ -1622,7 +1622,7 @@
                 teamsContainer.innerHTML = teams.map(team => `
 <div class="team-item" data-team-id="${team._id}">
 <div class="team-header">
-<span class="team-name">${team.name || 'Unnamed Team'}</span>
+<span class="team-name">${team.teamName || 'Unnamed Team'}</span>
 <div style="display: flex; align-items: center; gap: 1rem;">
 <span style="color: var(--muted); font-size: 0.9rem;">${team.players?.length || 0} players</span>
 <i class="fas fa-chevron-down"></i>
