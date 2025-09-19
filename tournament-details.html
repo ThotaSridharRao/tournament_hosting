@@ -901,6 +901,12 @@
       border: 1px solid rgba(59, 130, 246, 0.3);
     }
 
+    .event-type-badge.system-match {
+      background: rgba(34, 197, 94, 0.2);
+      color: #22c55e;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
     .timeline-item.system-event {
       border-left: 3px solid var(--accent);
       padding-left: 1rem;
@@ -3188,25 +3194,7 @@
             </div>
           </div>
           
-          ${kp.matchSchedule && kp.matchSchedule.length > 0 ? `
-          <div style="margin-bottom: 2rem;">
-            <h4 style="color: var(--accent); margin-bottom: 1rem;">Match Schedule</h4>
-            <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px;">
-              ${kp.matchSchedule.map(match => `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                  <div>
-                    <div style="font-weight: bold; color: var(--copy);">${match.match}</div>
-                    <div style="color: var(--muted); font-size: 0.9rem;">${match.teams} teams</div>
-                  </div>
-                  <div style="text-align: right;">
-                    <div style="color: var(--accent); font-weight: bold;">${new Date(match.date).toLocaleDateString()}</div>
-                    <div style="color: var(--muted); font-size: 0.9rem;">${new Date(match.date).toLocaleTimeString()}</div>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-          ` : ''}
+
           
           <ul style="list-style: none; padding: 0;">
             <li style="padding: 0.5rem 0;">
@@ -3273,7 +3261,7 @@
       `;
     }
 
-    // Update main schedule timeline with tournament events and admin updates
+    // Update main schedule timeline with tournament events, match schedules, and admin updates
     function updateScheduleTimeline(scheduleEvents) {
       const container = document.getElementById('schedule-timeline');
 
@@ -3328,6 +3316,21 @@
             isSystemEvent: true
           });
         }
+
+        // Add match schedule events for KP tournaments
+        if (currentTournament.format === 'kp' && currentTournament.kpSettings && currentTournament.kpSettings.matchSchedule) {
+          currentTournament.kpSettings.matchSchedule.forEach(match => {
+            const matchDate = new Date(match.date);
+            tournamentEvents.push({
+              date: matchDate.toISOString().split('T')[0],
+              time: matchDate.toTimeString().split(' ')[0],
+              title: match.match,
+              description: `${match.teams} teams competing`,
+              type: 'match',
+              isSystemEvent: true
+            });
+          });
+        }
       }
 
       // Combine tournament events with admin updates (scheduleEvents)
@@ -3373,6 +3376,8 @@
             eventTypeLabel = 'Registration';
           } else if (event.type === 'tournament') {
             eventTypeLabel = 'Tournament';
+          } else if (event.type === 'match') {
+            eventTypeLabel = 'Match';
           }
         } else {
           eventTypeLabel = 'Admin Update';
