@@ -893,9 +893,10 @@
        ========================= */
     .tournaments-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted width */
+      grid-template-columns: repeat(auto-fill, 300px); /* Fixed width columns */
       gap: 2rem;
       margin-top: 2rem;
+      justify-content: center; /* Center the grid items */
     }
 
     /* Glassmorphism Tournament Card */
@@ -912,6 +913,8 @@
         text-decoration: none;
         color: var(--copy);
         transition: all 0.3s var(--ease-out-quart);
+        width: 300px; /* Fixed width */
+        height: 420px; /* Fixed height */
     }
 
 
@@ -2607,9 +2610,4 @@
 </body>
 
 </html>
-
-
-
-
-
 
