@@ -1217,7 +1217,7 @@ if (!name || !email || !inGameId) {
 registrationData.players.push({
 name: name.trim(),
 email: email.trim().toLowerCase(),
-gameId: inGameId.trim(),
+inGameId: inGameId.trim(),
 role: i === 1 ? 'Captain' : 'Player'
 });
 }
