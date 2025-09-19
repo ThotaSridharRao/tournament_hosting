@@ -3062,6 +3062,67 @@ function checkUserAuthentication() {
       }
     }
 
+
+    // =========================
+// Load current user profile
+// =========================
+async function loadUserProfile() {
+  try {
+    const token = document.cookie.split('; ')
+      .find(row => row.startsWith('auth_token='))
+      ?.split('=')[1];
+
+    if (!token) return; // user not logged in
+
+    const res = await fetch(`${API_BASE_URL}/me`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    if (!res.ok) return;
+
+    const data = await res.json();
+
+    // Desktop modal
+    const modalUsername = document.getElementById("modal-username");
+    const modalRoleBadge = document.getElementById("modal-role-badge");
+
+    if (modalUsername) {
+      modalUsername.textContent = data.username || data.email;
+    }
+    if (modalRoleBadge) {
+      if (data.role && data.role.toLowerCase() === "admin") {
+        modalRoleBadge.style.display = "block";
+        modalRoleBadge.textContent = "Admin";
+      } else {
+        modalRoleBadge.style.display = "none";
+      }
+    }
+
+    // Mobile menu
+    const mobileUsername = document.getElementById("mobile-user-username");
+    const mobileRoleBadge = document.getElementById("mobile-user-role-badge");
+
+    if (mobileUsername) {
+      mobileUsername.textContent = data.username || data.email;
+    }
+    if (mobileRoleBadge) {
+      if (data.role && data.role.toLowerCase() === "admin") {
+        mobileRoleBadge.style.display = "inline-block";
+        mobileRoleBadge.textContent = "Admin";
+      } else {
+        mobileRoleBadge.style.display = "none";
+      }
+    }
+  } catch (err) {
+    console.error("Failed to load user profile:", err);
+  }
+}
+
+// Run once page loads
+document.addEventListener("DOMContentLoaded", loadUserProfile);
+
+
+
   </script>
 </body>
 
