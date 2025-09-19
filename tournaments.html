@@ -989,30 +989,29 @@
         console.log('API Response:', result);
 
         if (result.success) {
-          // Transform backend data to match frontend format
-          return result.data.map(tournament => {
-            // Calculate dynamic status
-
-            return {
-              id: tournament._id,
-              slug: tournament.slug,
-              title: tournament.title,
-              description: tournament.description || '',
-              game: tournament.game || 'Unknown',
-              status: tournament.status,
-              badge: getStatusBadge(dynamicStatus),
-              prizePool: tournament.prizePool || 0,
-              maxTeams: tournament.maxTeams || 16,
-              participants: tournament.participants || [],
-              registrationStart: tournament.registrationStart,
-              registrationEnd: tournament.registrationEnd,
-              tournamentStart: tournament.tournamentStart,
-              tournamentEnd: tournament.tournamentEnd,
-              posterImage: tournament.posterImage,
-              detailsLink: `tournament-details.html?slug=${tournament.slug}`
-            }; // Corrected this block
-          });
-        } else {
+  // Transform backend data to match frontend format
+  return result.data.map(tournament => {
+    return {
+      id: tournament._id,
+      slug: tournament.slug,
+      title: tournament.title,
+      description: tournament.description || '',
+      game: tournament.game || 'Unknown',
+      status: tournament.status,
+      // FIX: Changed dynamicStatus to tournament.status
+      badge: getStatusBadge(tournament.status),
+      prizePool: tournament.prizePool || 0,
+      maxTeams: tournament.maxTeams || 16,
+      participants: tournament.participants || [],
+      registrationStart: tournament.registrationStart,
+      registrationEnd: tournament.registrationEnd,
+      tournamentStart: tournament.tournamentStart,
+      tournamentEnd: tournament.tournamentEnd,
+      posterImage: tournament.posterImage,
+      detailsLink: `tournament-details.html?slug=${tournament.slug}`
+    };
+  });
+} else {
           throw new Error(result.error || 'Failed to fetch tournaments');
         }
       } catch (error) {
