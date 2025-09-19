@@ -265,37 +265,6 @@
       text-transform: uppercase;
     }
 
-    .tournament-status {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      padding: 0.25rem 0.75rem;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .status-live {
-      background: #ff4444;
-      color: white;
-    }
-
-    .status-upcoming {
-      background: #44ff44;
-      color: #000;
-    }
-
-    .status-registration {
-      background: #4444ff;
-      color: white;
-    }
-
-    .status-completed {
-      background: #888888;
-      color: white;
-    }
-
     .tournament-content {
       padding: 1.5rem;
     }
@@ -995,14 +964,14 @@
     const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
 
     // Status configurations
+    // Simplified status configurations
     const statusConfig = {
-      live: { class: 'status-live', text: 'Live' },
-      upcoming: { class: 'status-upcoming', text: 'Upcoming' },
-      registration_open: { class: 'status-registration', text: 'Registration Open' },
-      registration_closed: { class: 'status-closed', text: 'Registration Closed' },
-      completed: { class: 'status-completed', text: 'Completed' },
-      // Add fallback for any unknown status
-      default: { class: 'status-upcoming', text: 'Unknown' }
+      upcoming: "Upcoming",
+      registration_open: "Registration Open",
+      registration_closed: "Registration Closed",
+      ongoing: "Ongoing",
+      ended: "Ended",
+      live: "Live" // Kept for backward compatibility if needed
     };
 
     // Fetch tournaments from API
@@ -1023,7 +992,6 @@
           // Transform backend data to match frontend format
           return result.data.map(tournament => {
             // Calculate dynamic status
-            const dynamicStatus = calculateTournamentStatus(tournament);
 
             return {
               id: tournament._id,
@@ -1031,7 +999,7 @@
               title: tournament.title,
               description: tournament.description || '',
               game: tournament.game || 'Unknown',
-              status: dynamicStatus,
+              status: tournament.status,
               badge: getStatusBadge(dynamicStatus),
               prizePool: tournament.prizePool || 0,
               maxTeams: tournament.maxTeams || 16,
@@ -1054,27 +1022,6 @@
       }
     }
 
-    // Tournament status calculation function
-    function calculateTournamentStatus(tournament) {
-      const now = new Date();
-
-      const regStart = new Date(tournament.registrationStart);
-      const regEnd = new Date(tournament.registrationEnd);
-      const tournStart = new Date(tournament.tournamentStart);
-      const tournEnd = new Date(tournament.tournamentEnd);
-
-      if (now < regStart) {
-        return 'upcoming';
-      } else if (now >= regStart && now <= regEnd) {
-        return 'registration_open';
-      } else if (now > regEnd && now < tournStart) {
-        return 'registration_closed';
-      } else if (now >= tournStart && now <= tournEnd) {
-        return 'live';
-      } else {
-        return 'completed';
-      }
-    }
 
     // Get status badge text
     function getStatusBadge(status) {
@@ -1132,8 +1079,7 @@
       return `
         <div class="tournament-card" data-status="${tournament.status}" data-game="${tournament.game}">
           <div class="tournament-image" style="background-image: url('${tournament.posterImage || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'}'); background-size: cover; background-position: center;">
-            <div class="tournament-badge">${tournament.badge}</div>
-            <div class="tournament-status ${statusInfo.class}">${statusInfo.text}</div>
+            <div class="tournament-badge">${statusConfig[tournament.status] || 'Unknown'}</div>
           </div>
           <div class="tournament-content">
             <h3 class="tournament-title">${tournament.title}</h3>
