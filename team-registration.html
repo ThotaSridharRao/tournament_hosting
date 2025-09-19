@@ -1612,12 +1612,10 @@ submitRegistration(formData);
 document.getElementById('add-player-btn').addEventListener('click', addPlayer);
 
 // Check user authentication
+// User info is handled by the profile dropdown in the header
 const sessionData = getSessionData();
 if (sessionData && sessionData.user) {
-document.getElementById('user-info').innerHTML = `
-<span>Welcome, ${sessionData.user.username}</span>
-<a href="#" onclick="logout()" style="color: var(--muted); margin-left: 1rem;">Logout</a>
-`;
+    console.log('User logged in:', sessionData.user.username || sessionData.user.email);
 }
 });
 
