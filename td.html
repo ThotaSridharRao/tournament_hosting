@@ -950,6 +950,14 @@
                 <div class="dashboard-section" id="teams-section">
                     <div class="section-header">
                         <h2 class="section-title">Registered Teams</h2>
+                        <div style="display: flex; gap: 0.75rem;">
+                            <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;" onclick="exportToExcel()">
+                                <i class="fas fa-file-excel"></i> Export to Excel
+                            </button>
+                            <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;" onclick="exportToPDF()">
+                                <i class="fas fa-file-pdf"></i> Export to PDF
+                            </button>
+                        </div>
                         <span class="team-count" id="team-count-display">(0/0)</span>
                     </div>
                     <div class="team-accordion" id="teams-list-container">
@@ -1310,6 +1318,121 @@
             redirectToAuth();
         }
 
+        // --- EXPORT FUNCTIONS ---
+        async function exportToExcel() {
+            if (!currentTournament) {
+                alert('Tournament data not loaded.');
+                return;
+            }
+
+            try {
+                const sessionData = getSessionData();
+                if (!sessionData || !sessionData.token) {
+                    alert('Please login to export data.');
+                    return;
+                }
+
+                // Show loading state
+                const button = event.target.closest('button');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
+                button.disabled = true;
+
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament.slug}/export/excel`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${sessionData.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Export failed: ${response.status}`);
+                }
+
+                // Create download link
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${currentTournament.title}_teams.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                // Reset button
+                button.innerHTML = originalText;
+                button.disabled = false;
+
+            } catch (error) {
+                console.error('Excel export error:', error);
+                alert('Failed to export to Excel. Please try again.');
+                
+                // Reset button on error
+                const button = event.target.closest('button');
+                button.innerHTML = '<i class="fas fa-file-excel"></i> Export to Excel';
+                button.disabled = false;
+            }
+        }
+
+        async function exportToPDF() {
+            if (!currentTournament) {
+                alert('Tournament data not loaded.');
+                return;
+            }
+
+            try {
+                const sessionData = getSessionData();
+                if (!sessionData || !sessionData.token) {
+                    alert('Please login to export data.');
+                    return;
+                }
+
+                // Show loading state
+                const button = event.target.closest('button');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting...';
+                button.disabled = true;
+
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament.slug}/export/pdf`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${sessionData.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Export failed: ${response.status}`);
+                }
+
+                // Create download link
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${currentTournament.title}_teams.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                // Reset button
+                button.innerHTML = originalText;
+                button.disabled = false;
+
+            } catch (error) {
+                console.error('PDF export error:', error);
+                alert('Failed to export to PDF. Please try again.');
+                
+                // Reset button on error
+                const button = event.target.closest('button');
+                button.innerHTML = '<i class="fas fa-file-pdf"></i> Export to PDF';
+                button.disabled = false;
+            }
+        }
+
         // --- TOURNAMENT ACTIONS ---
         function editTournamentDetails() {
             if (currentTournament) {
@@ -1611,40 +1734,68 @@
                 // Handle KP format tournaments
                 handleKPFormat(t);
 
+                // --- NEW TEAMS SECTION LOGIC ---
                 const teamsContainer = document.getElementById('teams-list-container');
                 const teams = t.participants || [];
+                document.getElementById('team-count-display').textContent = `(${(teams.length || 0)}/${t.maxTeams})`;
 
                 if (teams.length === 0) {
                     teamsContainer.innerHTML = `<div class="empty-state">No teams have registered yet.</div>`;
-                    return;
-                }
+                } else if (t.format === 'kp' && t.kpSettings) {
+                    // Handle KP Format Group Display
+                    const { numberOfGroups, groupSize } = t.kpSettings;
+                    let groupsHTML = '';
 
-                teamsContainer.innerHTML = teams.map(team => `
-<div class="team-item" data-team-id="${team._id}">
-<div class="team-header">
-<span class="team-name">${team.teamName || 'Unnamed Team'}</span>
-<div style="display: flex; align-items: center; gap: 1rem;">
-<span style="color: var(--muted); font-size: 0.9rem;">${team.players?.length || 0} players</span>
-<i class="fas fa-chevron-down"></i>
-</div>
-</div>
-<div class="team-players">
-<div class="players-list">
-${(team.players || []).map(player => `
-<div class="player-item">
-<div>
-<span class="player-name">${player.name || 'Unknown'} ${player.isCaptain ? '(C)' : ''}</span>
-<div style="font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem;">
-In-Game ID: ${player.inGameId || 'N/A'}
-</div>
-</div>
-<span class="player-id">${player.email || 'No email'}</span>
-</div>
-`).join('')}
-</div>
-</div>
-</div>
-`).join('');
+                    for (let i = 1; i <= numberOfGroups; i++) {
+                        // Distribute teams into groups based on registration order
+                        const groupTeams = teams.slice((i - 1) * groupSize, i * groupSize);
+                        groupsHTML += `
+                            <div class="dashboard-section" style="margin-bottom: 1rem; background: rgba(0,0,0,0.2);">
+                                <div class="section-header">
+                                    <h3 class="section-title">Group ${i}</h3>
+                                    <span class="team-count">(${groupTeams.length}/${groupSize})</span>
+                                </div>
+                                ${groupTeams.length > 0 ? groupTeams.map(team => `
+                                    <div class="team-item">
+                                        <div class="team-header">
+                                            <span class="team-name">${team.teamName || 'Unnamed Team'}</span>
+                                            <span style="color: var(--muted); font-size: 0.9rem;">${team.players?.length || 0} players</span>
+                                        </div>
+                                    </div>
+                                `).join('') : '<div class="empty-state" style="padding: 1rem 0;">No teams in this group yet.</div>'}
+                            </div>
+                        `;
+                    }
+                    teamsContainer.innerHTML = groupsHTML;
+                } else {
+                    // Handle Standard List Display
+                    teamsContainer.innerHTML = teams.map(team => `
+                        <div class="team-item" data-team-id="${team.teamId}">
+                            <div class="team-header">
+                                <span class="team-name">${team.teamName || 'Unnamed Team'}</span>
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <span style="color: var(--muted); font-size: 0.9rem;">${team.players?.length || 0} players</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="team-players">
+                                <div class="players-list">
+                                    ${(team.players || []).map(player => `
+                                        <div class="player-item">
+                                            <div>
+                                                <span class="player-name">${player.name || 'Unknown'} ${player.isCaptain ? '(C)' : ''}</span>
+                                                <div style="font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem;">
+                                                    In-Game ID: ${player.inGameId || 'N/A'}
+                                                </div>
+                                            </div>
+                                            <span class="player-id">${player.email || 'No email'}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
 
             } catch (error) {
                 console.error('Error loading tournament details:', error);
