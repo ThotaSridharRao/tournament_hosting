@@ -2909,6 +2909,54 @@
       }
     }
 
+    // Check user registration status for the tournament
+    async function checkUserRegistrationStatus(tournamentSlug, session) {
+      if (!session || !session.token) {
+        // User is not logged in, button is already "Register"
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/tournaments/${tournamentSlug}/registration-status`, {
+          headers: {
+            'Authorization': `Bearer ${session.token}`
+          }
+        });
+
+        const result = await response.json();
+        
+        if (result.success && result.data.isRegistered) {
+          const primaryActionBtn = document.getElementById('primary-action');
+          if (primaryActionBtn) {
+            primaryActionBtn.innerHTML = '<i class="fas fa-check-circle"></i> You are Registered';
+            primaryActionBtn.disabled = true;
+            primaryActionBtn.style.background = 'rgba(34, 197, 94, 0.8)';
+            primaryActionBtn.style.cursor = 'not-allowed';
+            primaryActionBtn.style.opacity = '0.8';
+            
+            // Remove click handler
+            primaryActionBtn.onclick = null;
+            
+            console.log('User is already registered for this tournament:', result.data.teamName);
+          }
+        }
+      } catch (error) {
+        console.error('Could not check registration status:', error);
+        // Don't show error to user, just keep the register button as is
+      }
+    }
+
+    // Helper function to get session data
+    function getSessionData() {
+      try {
+        const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+        return session ? JSON.parse(session) : null;
+      } catch (error) {
+        console.error('Error parsing session data:', error);
+        return null;
+      }
+    }
+
     // Initialize tournament page when DOM loads
     async function loadTournamentFromAPI() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -3433,7 +3481,13 @@
     document.addEventListener('DOMContentLoaded', () => {
       initializeProfileDropdown();
       checkUserAuthentication();
-      loadTournamentFromAPI();
+      loadTournamentFromAPI().then(() => {
+        // After tournament data is loaded, check the registration status
+        const session = getSessionData();
+        if (currentTournament) {
+          checkUserRegistrationStatus(currentTournament.slug, session);
+        }
+      });
     });
   </script>
 </body>
