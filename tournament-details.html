@@ -883,6 +883,36 @@
       color: #9ca3af;
     }
 
+    .event-type-badge.system-registration {
+      background: rgba(255, 215, 0, 0.2);
+      color: var(--accent);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+
+    .event-type-badge.system-tournament {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .event-type-badge.admin-update {
+      background: rgba(59, 130, 246, 0.2);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .timeline-item.system-event {
+      border-left: 3px solid var(--accent);
+      padding-left: 1rem;
+      background: rgba(255, 215, 0, 0.05);
+    }
+
+    .timeline-item.admin-event {
+      border-left: 3px solid #3b82f6;
+      padding-left: 1rem;
+      background: rgba(59, 130, 246, 0.05);
+    }
+
     /* Section Headers */
     .section-header {
       text-align: center;
@@ -3243,11 +3273,67 @@
       `;
     }
 
-    // Update main schedule timeline
+    // Update main schedule timeline with tournament events and admin updates
     function updateScheduleTimeline(scheduleEvents) {
       const container = document.getElementById('schedule-timeline');
 
-      if (!scheduleEvents || scheduleEvents.length === 0) {
+      // Create tournament events from dates
+      const tournamentEvents = [];
+      
+      if (currentTournament) {
+        // Add registration start event
+        if (currentTournament.registrationStart) {
+          tournamentEvents.push({
+            date: currentTournament.registrationStart.split('T')[0],
+            time: currentTournament.registrationStart.split('T')[1]?.split('.')[0] || '00:00:00',
+            title: 'Registration Opens',
+            description: 'Team registration begins for this tournament',
+            type: 'registration',
+            isSystemEvent: true
+          });
+        }
+
+        // Add registration end event
+        if (currentTournament.registrationEnd) {
+          tournamentEvents.push({
+            date: currentTournament.registrationEnd.split('T')[0],
+            time: currentTournament.registrationEnd.split('T')[1]?.split('.')[0] || '23:59:59',
+            title: 'Registration Closes',
+            description: 'Last chance to register your team',
+            type: 'registration',
+            isSystemEvent: true
+          });
+        }
+
+        // Add tournament start event
+        if (currentTournament.tournamentStart) {
+          tournamentEvents.push({
+            date: currentTournament.tournamentStart.split('T')[0],
+            time: currentTournament.tournamentStart.split('T')[1]?.split('.')[0] || '00:00:00',
+            title: 'Tournament Begins',
+            description: 'The tournament officially starts',
+            type: 'tournament',
+            isSystemEvent: true
+          });
+        }
+
+        // Add tournament end event
+        if (currentTournament.tournamentEnd) {
+          tournamentEvents.push({
+            date: currentTournament.tournamentEnd.split('T')[0],
+            time: currentTournament.tournamentEnd.split('T')[1]?.split('.')[0] || '23:59:59',
+            title: 'Tournament Ends',
+            description: 'Tournament concludes and winners are announced',
+            type: 'tournament',
+            isSystemEvent: true
+          });
+        }
+      }
+
+      // Combine tournament events with admin updates (scheduleEvents)
+      const allEvents = [...tournamentEvents, ...(scheduleEvents || [])];
+
+      if (allEvents.length === 0) {
         container.innerHTML = `
           <div class="empty-schedule">
             <i class="fas fa-calendar-alt"></i>
@@ -3259,7 +3345,7 @@
       }
 
       // Sort events by date and time
-      const sortedEvents = [...scheduleEvents].sort((a, b) => {
+      const sortedEvents = [...allEvents].sort((a, b) => {
         const dateA = new Date(`${a.date} ${a.time}`);
         const dateB = new Date(`${b.date} ${b.time}`);
         return dateA - dateB;
@@ -3277,14 +3363,30 @@
           hour12: false
         });
 
+        // Determine event type and styling
+        let eventTypeClass = event.type || 'other';
+        let eventTypeLabel = event.type || 'Event';
+        
+        if (event.isSystemEvent) {
+          eventTypeClass = `system-${event.type}`;
+          if (event.type === 'registration') {
+            eventTypeLabel = 'Registration';
+          } else if (event.type === 'tournament') {
+            eventTypeLabel = 'Tournament';
+          }
+        } else {
+          eventTypeLabel = 'Admin Update';
+          eventTypeClass = 'admin-update';
+        }
+
         return `
-          <div class="timeline-item">
+          <div class="timeline-item ${event.isSystemEvent ? 'system-event' : 'admin-event'}">
             <div class="timeline-date">
               <div class="timeline-day">${formattedDate}</div>
               <div class="timeline-time">${formattedTime}</div>
             </div>
             <div class="timeline-content">
-              <span class="event-type-badge ${event.type || 'other'}">${event.type || 'Event'}</span>
+              <span class="event-type-badge ${eventTypeClass}">${eventTypeLabel}</span>
               <h3 class="timeline-title">${event.title}</h3>
               ${event.description ? `<p class="timeline-desc">${event.description}</p>` : ''}
             </div>

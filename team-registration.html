@@ -1493,7 +1493,7 @@ mainContent.innerHTML = `
                 </div>
                 <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
                     <span style="color: var(--muted);">Team Captain:</span>
-                    <span style="font-weight: 600; color: var(--copy);">${teamData.players?.[0]?.name || 'N/A'}</span>
+                    <span style="font-weight: 600; color: var(--copy);">${teamData.captainName || teamData.players?.[0]?.name || 'N/A'}</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; padding: 0.75rem 0;">
                     <span style="color: var(--muted);">Players:</span>

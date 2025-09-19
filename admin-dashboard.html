@@ -1692,6 +1692,17 @@
             platformActivityList.innerHTML = activityHTML;
         }
 
+        // Helper function to get max teams for display (handles KP format)
+        function getMaxTeamsForDisplay(tournament) {
+            if (tournament.format === 'kp' && tournament.kpSettings) {
+                // KP format: numberOfGroups * groupSize = total capacity
+                const groups = tournament.kpSettings.numberOfGroups || 4;
+                const groupSize = tournament.kpSettings.groupSize || 25;
+                return groups * groupSize; // 4 * 25 = 100 teams
+            }
+            return tournament.maxTeams || 'Unlimited';
+        }
+
         // ======================= FUNCTION TO LOAD TOURNAMENTS =======================
         // ======================= FUNCTION TO LOAD TOURNAMENTS (UPDATED) =======================
         async function loadAdminTournaments() {
@@ -1748,7 +1759,7 @@
                             <div>
                                 <span class="tournament-status ${statusClass}">${statusText}</span>
                             </div>
-                            <div class="tournament-participants">${t.participants?.length || 0}/${t.maxTeams} teams</div>
+                            <div class="tournament-participants">${t.participants?.length || 0}/${getMaxTeamsForDisplay(t)} teams</div>
                             <div class="tournament-prize">₹${(t.prizePool || 0).toLocaleString()}</div>
                             <div class="tournament-actions">
                                 <button class="btn-icon" onclick="editTournament(event, '${t._id}')" title="Edit"><i class="fas fa-pen-to-square"></i></button>
