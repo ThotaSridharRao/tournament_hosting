@@ -1152,69 +1152,68 @@
          * Sends a request to the backend to update the tournament's status.
          * This is triggered when the admin selects a new status from the dropdown.
          */
-        async function updateTournamentStatus() {
-            const statusSelect = document.getElementById('info-status');
-            const newStatus = statusSelect.value;
+        /**
+ * Sends a request to the backend to update the tournament's status.
+ * This is triggered when the admin selects a new status from the dropdown.
+ */
+async function updateTournamentStatus() {
+    const statusSelect = document.getElementById('info-status');
+    const newStatus = statusSelect.value;
 
-            if (!currentTournament) {
-                alert('Tournament data not loaded.');
-                return;
-            }
-            
-            const sessionData = getSessionData();
-            if (!sessionData || !sessionData.token) {
-                alert('Authentication required.');
-                return;
-            }
+    if (!currentTournament) {
+        alert('Tournament data not loaded.');
+        return;
+    }
+    
+    const sessionData = getSessionData();
+    if (!sessionData || !sessionData.token) {
+        alert('Authentication required.');
+        return;
+    }
 
-            const statusText = newStatus.replace(/_/g, ' ');
-            if (!confirm(`Are you sure you want to change the status to "${statusText}"?`)) {
-                // Revert dropdown to original status if user cancels
-                statusSelect.value = currentTournament.status;
-                updateStatusIndicator(currentTournament.status);
-                return;
-            }
+    const statusText = newStatus.replace(/_/g, ' ');
+    if (!confirm(`Are you sure you want to change the status to "${statusText}"?`)) {
+        statusSelect.value = currentTournament.status;
+        updateStatusIndicator(currentTournament.status);
+        return;
+    }
 
-            console.log(`Updating status to: ${newStatus}`);
-            statusSelect.disabled = true;
+    console.log(`Updating status to: ${newStatus}`);
+    statusSelect.disabled = true;
 
-            try {
-                // The backend will need a PATCH endpoint that accepts a JSON body.
-                const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament.slug}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Authorization': `Bearer ${sessionData.token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ status: newStatus })
-                });
+    try {
+        // === THIS IS THE CORRECTED LINE ===
+        const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament.slug}/status`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${sessionData.token}`,
+                'Content-Type': 'application/json'
+            },
+            // This body format is correct for the /status endpoint
+            body: JSON.stringify({ status: newStatus })
+        });
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.detail || 'Failed to update status.');
-                }
-
-                const result = await response.json();
-                
-                // Update the local tournament object with the new data from the server
-                currentTournament = result.data;
-                
-                // Update the UI
-                updateStatusIndicator(currentTournament.status);
-                
-                alert('Tournament status updated successfully!');
-                
-            } catch (error) {
-                console.error('Error updating status:', error);
-                alert(`Error: ${error.message}`);
-                // Revert dropdown to original status on failure
-                statusSelect.value = currentTournament.status;
-                updateStatusIndicator(currentTournament.status);
-            } finally {
-                statusSelect.disabled = false;
-            }
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Failed to update status.');
         }
 
+        const result = await response.json();
+        
+        currentTournament = result.data;
+        updateStatusIndicator(currentTournament.status);
+        
+        alert('Tournament status updated successfully!');
+        
+    } catch (error) {
+        console.error('Error updating status:', error);
+        alert(`Error: ${error.message}`);
+        statusSelect.value = currentTournament.status;
+        updateStatusIndicator(currentTournament.status);
+    } finally {
+        statusSelect.disabled = false;
+    }
+}
 
         // --- DATA LOADING ---
         async function loadTournamentDetails(tournamentSlug, token) {
