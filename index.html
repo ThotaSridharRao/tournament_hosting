@@ -1389,34 +1389,36 @@
     
     // Authentication and User Management
     function checkUserAuthentication() {
-        const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
-        const authButtons = document.getElementById('auth-buttons');
-        const userMenu = document.getElementById('user-menu');
+      const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+      const authButtons = document.getElementById('auth-buttons');
+      const userMenu = document.getElementById('user-menu');
 
-        if (!session) {
-            authButtons.style.display = 'block';
-            userMenu.style.display = 'none';
-            return;
+      if (!session) {
+        authButtons.style.display = 'block';
+        userMenu.style.display = 'none';
+        return;
+      }
+
+      try {
+        const sessionData = JSON.parse(session);
+
+        // ✅ Works with your backend response format
+        const user = sessionData?.data?.user || sessionData?.user;
+        const token = sessionData?.data?.token || sessionData?.token;
+
+        if (user && token) {
+          const username = user.username || user.email.split('@')[0];
+          document.getElementById('modal-username').textContent = username;
+          authButtons.style.display = 'none';
+          userMenu.style.display = 'block';
+        } else {
+          clearUserSession();
         }
-
-        try {
-            const sessionData = JSON.parse(session);
-            const user = sessionData?.data?.user;
-            const token = sessionData?.data?.token;
-
-            if (user && token) {
-                const username = user.username || user.email.split('@')[0];
-                document.getElementById('modal-username').textContent = username;
-                authButtons.style.display = 'none';
-                userMenu.style.display = 'block';
-            } else {
-                clearUserSession();
-            }
-        } catch (error) {
-            console.error('Invalid session data:', error);
-            clearUserSession();
-        }
+      } catch {
+        clearUserSession();
+      }
     }
+
 
     function clearUserSession() {
       localStorage.removeItem('earena_session');
