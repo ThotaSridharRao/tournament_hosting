@@ -90,6 +90,7 @@
       -moz-osx-font-smoothing: grayscale;
       line-height: 1.6;
       -webkit-text-size-adjust: 100%;
+      overflow-x: hidden; /* Prevent horizontal scrollbars */
     }
 
     a {
@@ -173,9 +174,7 @@
         top: 0;
         width: 100%;
         padding: 1rem 2rem;
-        background: rgba(15, 15, 35, 0.9);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+        background: var(--bg-dark);
         border-bottom: 1px solid var(--border-color);
         z-index: 1200;
         transition: all 0.3s var(--ease-out-quart);
@@ -193,7 +192,7 @@
     }
 
     header.site-header.scrolled {
-      background: rgba(15, 15, 35, 0.98);
+      background: var(--bg-medium);
       box-shadow: 0 2px 20px rgba(0, 255, 136, 0.1);
     }
     
@@ -272,8 +271,7 @@
       position: absolute;
       top: 100%;
       left: 0;
-      background: rgba(30, 30, 30, 0.8);
-      backdrop-filter: blur(10px);
+      background: var(--bg-medium);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 8px;
       min-width: 200px;
@@ -521,8 +519,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(15, 15, 35, 0.98);
-      backdrop-filter: blur(15px);
+      background: var(--bg-dark);
       z-index: 1100;
       display: flex;
       flex-direction: column;
@@ -558,113 +555,46 @@
        Hero section
        ========================= */
     .hero {
-      min-height: 100vh;
+      height: 90vh;
+      min-height: 700px;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       position: relative;
       padding: 2rem;
+      overflow: hidden;
     }
 
-    .hero__bg-slider {
-      position: absolute;
-      inset: 0;
-    }
-
-    .hero__bg-slider img {
-      position: absolute;
+    .hero-container {
+      background: transparent;
+      border: none;
+      border-radius: 20px;
+      padding: clamp(2rem, 5vw, 4rem);
+      box-shadow: none;
+      max-width: 1100px;
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: all 3s var(--ease-in-out-quart);
-      transform: scale(1.1) rotate(0.5deg);
-      filter: brightness(0.8) contrast(1.1);
-    }
-
-    .hero__bg-slider img.active {
-      opacity: 1;
-      transform: scale(1) rotate(0deg);
-      filter: brightness(1) contrast(1.2);
-    }
-
-
-    .hero__overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, var(--bg-dark) 15%, transparent 80%);
-      z-index: 1;
     }
 
     .hero__content {
       position: relative;
       z-index: 2;
-      max-width: 800px;
-      transition: all 1.2s var(--ease-out-quart);
-      opacity: 0;
-      transform: translateY(40px);
-    }
-
-    .hero__content.active {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .hero__content {
-      position: relative;
-      z-index: 2;
-      width: min(94%, var(--container));
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      padding: 3rem;
-      max-width: 700px;
-      transition: all 1.2s var(--ease-out-quart);
-      opacity: 0;
-      transform: translateY(40px) translateX(-20px);
-    }
-
-    .hero__content.active {
-      opacity: 1;
-      transform: translateY(0) translateX(0);
-    }
-
-    .hero__content>* {
-      transition: all 0.8s var(--ease-out-quart);
-      transform: translateY(20px);
-      opacity: 0;
-    }
-
-    .hero__content.active>* {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    .hero__content.active>*:nth-child(1) {
-      transition-delay: 0.1s;
-    }
-
-    .hero__content.active>*:nth-child(2) {
-      transition-delay: 0.2s;
-    }
-
-    .hero__content.active>*:nth-child(3) {
-      transition-delay: 0.3s;
-    }
-
-    .hero__content.active>*:nth-child(4) {
-      transition-delay: 0.4s;
+      transition: all 0.6s var(--ease-out-quart);
+      opacity: 1; /* Default to visible */
+      transform: translateY(0); /* Default to visible */
+      width: auto;
+      padding: 0;
     }
     
     .hero__content .tournament-name {
-      font-size: 4rem;
+      font-size: clamp(2.5rem, 6vw, 5rem);
       margin-bottom: 1rem;
       background: linear-gradient(45deg, #ffffff, var(--accent-green), var(--accent-blue));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
       animation: glow 2s ease-in-out infinite alternate;
+      text-shadow: none;
     }
     
     @keyframes glow {
@@ -673,16 +603,15 @@
     }
 
     .hero__content .prize-pool {
-        font-size: 1.2rem;
+        font-size: clamp(1rem, 2vw, 1.25rem);
         margin-bottom: 2rem;
         opacity: 0.9;
         line-height: 1.6;
         color: var(--text-primary);
         text-shadow: none;
-    }
-
-    .hero__content p {
-        display:none; /* Merged into prize-pool for new design */
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .hero-buttons {
@@ -749,35 +678,6 @@
         box-shadow: 0 15px 35px rgba(0, 255, 136, 0.4);
     }
 
-
-    /* =========================
-       Greeting/Tournaments Section
-       ========================= */
-    .greeting-section {
-      text-align: center;
-      padding: clamp(3rem, 6vw, 6rem) 1rem;
-      position: relative;
-      z-index: 5;
-    }
-
-    .greeting-title {
-      font-size: clamp(2.2rem, 5vw, 3.5rem);
-      font-weight: 800;
-      color: var(--copy);
-      margin: 0 0 1rem 0;
-      line-height: 1.2;
-      text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
-    }
-
-    .greeting-subtitle {
-      font-size: clamp(1rem, 2vw, 1.25rem);
-      color: var(--muted);
-      max-width: 700px;
-      margin: 0 auto;
-      line-height: 1.6;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-    }
-
     #tournaments-heading {
       text-align: center;
       font-size: 2.5rem;
@@ -792,6 +692,9 @@
     /* =========================
        Tournaments Section
        ========================= */
+    #tournaments {
+        padding-top: 0;
+    }
     .tournaments-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -897,94 +800,177 @@
       padding: 5rem 2rem;
     }
     
-    .highlights-section, .why-section, .cta-section {
+    .highlights-section, .cta-section {
         display: none; /* Hide all old sections */
     }
 
-    /* Stats Section */
-    .stats-section {
+    /* Why Choose Us Section */
+    .why-section {
       background: rgba(0, 0, 0, 0.3);
       text-align: center;
     }
 
-    .stats-container {
-      max-width: 1000px;
-      margin: 0 auto;
+    .why-header {
+        margin-bottom: 3rem;
+    }
+
+    .why-title {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(45deg, var(--accent-green), var(--accent-blue));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .why-title .accent {
+        display: none;
+    }
+    
+    .why-subtitle {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .why-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 3rem;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    .stat-item {
-      padding: 2rem 0;
+    .why-item {
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      border: 1px solid transparent;
+      transition: var(--ease);
+    }
+    
+    .why-item:hover {
+        border-color: var(--border-color);
+        transform: translateY(-5px);
     }
 
-    .stat-number {
+    .why-item .fa, .why-item .fa-solid {
       font-size: 3rem;
-      font-weight: bold;
-      background: linear-gradient(45deg, var(--accent-green), var(--accent-blue));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      display: block;
+      color: var(--accent-green);
+      margin-bottom: 1.5rem;
     }
 
-    .stat-label {
-      font-size: 1.1rem;
-      opacity: 0.9;
-      margin-top: 0.5rem;
+    .why-item h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
     }
 
+    .why-item p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
 
     /* =========================
        Footer
        ========================= */
     footer.site-footer {
       background: rgba(15, 15, 35, 0.95);
-      padding: 3rem 2rem 2rem;
+      padding: 5rem 2rem 2rem;
       text-align: center;
       border-top: 1px solid var(--border-color);
       margin-top: 0;
+      position: relative;
+      z-index: 10;
+      overflow: hidden;
     }
 
     .footer-grid {
       max-width: 1200px;
-      margin: 0 auto 2rem auto;
+      margin: 0 auto 3rem auto;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2.5rem;
       text-align: left;
+    }
+    
+    @media (min-width: 1024px) {
+      .footer-grid {
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+      }
     }
 
     .footer-column h4 {
       color: var(--accent-green);
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+      font-weight: 700;
     }
 
     .footer-column ul a, .footer-column p {
-      color: var(--text-primary);
+      color: var(--text-secondary);
       text-decoration: none;
       opacity: 0.8;
       transition: all 0.3s ease;
       display: block;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
     }
     
     .footer-column ul a:hover {
         opacity: 1;
         color: var(--accent-green);
+        transform: translateX(5px);
     }
     
     .footer-brand .brand {
         font-size: 1.5rem;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1rem;
     }
 
+    .footer-brand p {
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .social-links a {
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      color: var(--accent-blue);
+      transform: translateY(-3px);
+    }
 
     .footer-bottom {
       border-top: 1px solid rgba(255, 255, 255, 0.1);
       padding-top: 2rem;
       opacity: 0.7;
+      font-size: 0.9rem;
+    }
+    
+    /* Animation for smoothness */
+    footer.site-footer .footer-grid, footer.site-footer .footer-bottom {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+
+    footer.site-footer.in-view .footer-grid, footer.site-footer.in-view .footer-bottom {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    footer.site-footer.in-view .footer-bottom {
+        transition-delay: 0.2s;
     }
 
     /* =========================
@@ -1014,7 +1000,7 @@
     }
 
     @media (max-width: 768px) {
-        .hero h1 {
+        .hero h1, .hero__content .tournament-name {
             font-size: 2.5rem;
         }
         .hero-buttons {
@@ -1127,33 +1113,18 @@
   <main id="main">
     <!-- HERO -->
     <section class="hero" aria-labelledby="hero-title">
-      <div class="hero__bg-slider">
-        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop" alt="Esports event with crowd" class="active" />
-        <img src="https://images.unsplash.com/photo-1585624838339-35939229208b?q=80&w=2070&auto=format&fit=crop" alt="Gamer with professional setup" />
-        <img src="https://images.unsplash.com/photo-1609815788836-8339b601dfa3?q=80&w=1974&auto=format&fit=crop" alt="Esports arena stage" />
-      </div>
-
-      <div class="hero__overlay"></div>
-
-      <div class="hero__content" role="region" aria-label="Hero">
-        <h1 id="hero-title" class="tournament-name">Elite Gaming Tournaments</h1>
-        <div id="prize-pool" class="prize-pool">
-          Compete with the best players worldwide. Join exclusive tournaments, climb the ranks, and claim your victory in the ultimate gaming battleground.
+        <div class="hero-container">
+            <div class="hero__content" role="region" aria-label="Hero">
+                <h1 id="hero-title" class="tournament-name">Your Proving Ground Awaits</h1>
+                <div id="prize-pool" class="prize-pool">
+                Welcome to EArena, the heart of competitive gaming. Discover tournaments, challenge rivals, and forge your legacy.
+                </div>
+                
+                <div class="hero-buttons">
+                    <a href="#tournaments" class="btn-primary" id="cta-learn-more">Browse Tournaments</a>
+                </div>
+            </div>
         </div>
-        
-        <div class="hero-buttons">
-            <a href="#tournaments" class="btn-primary" id="cta-learn-more">Browse Tournaments</a>
-            <a href="#" class="btn-secondary">Watch Live</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Greeting Section -->
-    <section class="greeting-section" aria-labelledby="greeting-title">
-      <div class="container">
-        <h2 id="greeting-title" class="greeting-title">Your Proving Ground Awaits</h2>
-        <p class="greeting-subtitle">Welcome to EArena, the heart of competitive gaming. Discover tournaments, challenge rivals, and forge your legacy.</p>
-      </div>
     </section>
 
     <!-- Tournaments -->
@@ -1170,49 +1141,37 @@
     <section class="section why-section" aria-labelledby="why-heading">
       <div class="container">
         <div class="why-header">
-          <h2 id="why-heading" class="why-title">Why choose <span class="accent">E</span>Arena?</h2>
+          <h2 id="why-heading" class="why-title">Why Choose <span class="accent">E</span>Arena?</h2>
           <p class="why-subtitle">Join the ultimate esports platform designed for champions</p>
         </div>
         <div class="why-grid" role="list">
           <div class="why-item" role="listitem">
             <i class="fa-solid fa-users" aria-hidden="true"></i>
-            <h3 style="margin:.6rem 0 .25rem 0; color:var(--copy)">Thriving community</h3>
-            <p style="color:var(--muted)">Join thousands of passionate players. Team up, scrim, and find matches fast.
-            </p>
+            <h3>Thriving Community</h3>
+            <p>Join thousands of passionate players. Team up, scrim, and find matches fast.</p>
           </div>
 
-      <h2 id="tournaments-heading" class="section-title">
-        Featured Tournaments
-      </h2>
-      <div id="tournaments-grid" class="tournaments-grid">
-        <!-- Tournament cards will be injected here by JavaScript -->
+          <div class="why-item" role="listitem">
+            <i class="fa-solid fa-trophy" aria-hidden="true"></i>
+            <h3>Epic Prizes</h3>
+            <p>Free tournaments with cash prizes and exclusive gear.</p>
+          </div>
+
+          <div class="why-item" role="listitem">
+            <i class="fa-solid fa-hand-holding-dollar" aria-hidden="true"></i>
+            <h3>Free to Play</h3>
+            <p>Your skill matters—no entry fees for most events.</p>
+          </div>
+
+          <div class="why-item" role="listitem">
+            <i class="fa-solid fa-shield-alt" aria-hidden="true"></i>
+            <h3>Fair Play</h3>
+            <p>Advanced anti-cheat systems and transparent rules.</p>
+          </div>
+        </div>
       </div>
     </section>
     
-    <!-- Stats Section -->
-    <section class="section stats-section">
-        <div class="container stats-container">
-            <div class="stat-item">
-                <span class="stat-number">500+</span>
-                <div class="stat-label">Tournaments Hosted</div>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">$2M+</span>
-                <div class="stat-label">Prize Money Awarded</div>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">50K+</span>
-                <div class="stat-label">Active Players</div>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">24/7</span>
-                <div class="stat-label">Live Support</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Why Choose Us, CTA -> These are removed in favor of the new design's flow -->
-
   </main>
 
   <footer class="site-footer">
@@ -1221,6 +1180,12 @@
         <div class="footer-column footer-brand">
           <a href="index.html" class="brand">EArena</a>
           <p>The ultimate destination for competitive gaming.</p>
+           <div class="social-links">
+              <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+              <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+              <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+              <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+            </div>
         </div>
         <div class="footer-column">
           <h4>Tournaments</h4>
@@ -1280,11 +1245,6 @@
       lastScrollY = currentScrollY;
     });
 
-    // Hero background slider with smooth transitions
-    const heroImages = document.querySelectorAll('.hero__bg-slider img');
-    const heroContent = document.querySelector('.hero__content');
-    let currentImageIndex = 0;
-
     // API Configuration
     // Auto-detect API URL based on environment
     const isLocal = window.location.hostname === 'localhost' || 
@@ -1293,17 +1253,11 @@
     
     const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
 
-    // Hero content data - will be populated from API
-    let heroData = [];
-    let isDataLoaded = false;
-
     // API Functions
     async function fetchTournaments(retryCount = 0) {
       const maxRetries = 3;
 
       try {
-        showLoadingState();
-
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s
 
@@ -1329,37 +1283,7 @@
         }
 
         console.log('Fetched tournaments (normalized):', tournaments);
-
-        // Transform data for hero
-        heroData = tournaments.slice(0, 3).map(t => {
-          const rawPoster = t.posterImage || t.backgroundImage || t.poster || t.image || null;
-          let finalPoster = rawPoster;
-          if (rawPoster && !rawPoster.startsWith('http')) {
-              const cleanPosterPath = rawPoster.replace(/^\//, '');
-              // The path should now correctly point to /uploads/
-              finalPoster = `${API_BASE_URL}/${cleanPosterPath}`;
-          }
-          return {
-            id: t._id || t.id,
-            slug: t.slug,
-            title: t.title || t.name || 'Untitled Tournament',
-            prizePool: `Prize Pool: ₹${(t.prizePool || 0).toLocaleString('en-IN')}`,
-            description: t.description || 'Join this exciting tournament!',
-            detailsLink: `tournament-details.html?slug=${t.slug || t._id || t.id}`,
-            poster: finalPoster,
-            status: calculateTournamentStatus(t),
-            game: t.game || 'Gaming'
-          };
-        });
-
-        isDataLoaded = true;
-        hideLoadingState();
-
-        if (heroData.length > 0) {
-          updateHeroContent(0);
-          startHeroSlider();
-        }
-
+        
         return tournaments;
       } catch (error) {
         console.error(`Error fetching tournaments (attempt ${retryCount + 1}):`, error);
@@ -1369,244 +1293,38 @@
           return fetchTournaments(retryCount + 1);
         }
 
-        hideLoadingState();
         showErrorState();
-
-        // fallback demo content
-        heroData = [{
-          title: "EArena Championships",
-          prizePool: "Prize Pool: ₹1,00,000",
-          description: "Experience the ultimate gaming competition. Connect to see live tournaments and join the action!",
-          detailsLink: "tournaments.html"
-        }];
-
-        if (heroData.length > 0) {
-          updateHeroContent(0);
-        }
-
+        
         return [];
       }
     }
 
     // Loading and Error States
     function showLoadingState() {
-      const heroTitle = document.getElementById('hero-title');
-      const prizePool = document.getElementById('prize-pool');
-      const description = document.getElementById('tournament-description');
-
-      if (heroTitle) heroTitle.textContent = 'Loading Tournaments...';
-      if (prizePool) prizePool.textContent = 'Fetching latest data...';
-      if (description) description.textContent = 'Please wait while we load the most exciting tournaments for you.';
-
-      // Add loading animation to CTA button
       const ctaButton = document.getElementById('cta-learn-more');
       if (ctaButton) {
         ctaButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
         ctaButton.style.pointerEvents = 'none';
       }
-
-      // Show loading states for other sections
-      showSectionLoadingStates();
     }
 
-    function showSectionLoadingStates() {
-      // Recent matches loading
-      const recentMatchesList = document.querySelector('#recent-matches-title')?.parentElement?.querySelector('.tournament-list');
-      if (recentMatchesList) {
-        recentMatchesList.innerHTML = `
-          <li style="opacity: 0.6;">
-            <div>
-              <h4><i class="fas fa-spinner fa-spin"></i> Loading recent matches...</h4>
-              <p>Fetching latest match data</p>
-            </div>
-          </li>
-        `;
-      }
-
-      // Upcoming tournaments loading
-      const upcomingList = document.querySelector('#upcoming-title')?.parentElement?.querySelector('.tournament-list');
-      if (upcomingList) {
-        upcomingList.innerHTML = `
-          <li style="opacity: 0.6;">
-            <div>
-              <h4><i class="fas fa-spinner fa-spin"></i> Loading upcoming tournaments...</h4>
-              <p>Fetching schedule data</p>
-            </div>
-          </li>
-        `;
-      }
-
-      // Live matches loading
-      const liveList = document.querySelector('#live-title')?.parentElement?.querySelector('.tournament-list');
-      if (liveList) {
-        liveList.innerHTML = `
-          <li style="opacity: 0.6;">
-            <div>
-              <h4><i class="fas fa-spinner fa-spin"></i> Loading live matches...</h4>
-              <p>Checking for live tournaments</p>
-            </div>
-          </li>
-        `;
-      }
-    }
 
     function hideLoadingState() {
       const ctaButton = document.getElementById('cta-learn-more');
       if (ctaButton) {
-        ctaButton.innerHTML = 'Tournament Details';
+        ctaButton.innerHTML = 'Browse Tournaments';
         ctaButton.style.pointerEvents = 'auto';
       }
     }
 
     function showErrorState() {
-      const heroTitle = document.getElementById('hero-title');
-      const prizePool = document.getElementById('prize-pool');
-      const description = document.getElementById('tournament-description');
-
-      if (heroTitle) heroTitle.textContent = 'Connection Error';
-      if (prizePool) prizePool.textContent = 'Unable to load tournaments';
-      if (description) description.textContent = 'We\'re having trouble connecting to our servers. Please refresh the page or try again later.';
-
-      const ctaButton = document.getElementById('cta-learn-more');
-      if (ctaButton) {
-        ctaButton.innerHTML = '<i class="fas fa-refresh"></i> Retry';
-        ctaButton.onclick = async (e) => {
-          e.preventDefault();
-          ctaButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Retrying...';
-          ctaButton.style.pointerEvents = 'none';
-
-          try {
-            await populateAllSections();
-          } catch (error) {
-            console.error('Retry failed:', error);
-            setTimeout(() => {
-              ctaButton.innerHTML = '<i class="fas fa-refresh"></i> Retry';
-              ctaButton.style.pointerEvents = 'auto';
-            }, 2000);
-          }
-        };
-      }
-
-      // Show error notification
       console.error('Unable to load tournament data. Please check your connection.');
     }
 
-    function updateHeroContent(index) {
-      if (!heroData || heroData.length === 0) return;
-
-      const data = heroData[index];
-      if (!data) return;
-
-      // Fade out content
-      heroContent.classList.remove('active');
-
-      setTimeout(() => {
-        // Update content
-        const heroTitle = document.getElementById('hero-title');
-        const prizePool = document.getElementById('prize-pool');
-        const description = document.getElementById('tournament-description');
-        const detailsButton = document.getElementById('cta-learn-more');
-
-        if (heroTitle) heroTitle.textContent = data.title;
-        if (prizePool) prizePool.textContent = data.prizePool;
-        if (description) description.textContent = data.description;
-        if (prizePool) prizePool.textContent = data.prizePool; // Update prize pool in the hero
-
-        // Update button link
-        if (detailsButton && data.detailsLink) {
-          detailsButton.href = data.detailsLink;
-          detailsButton.onclick = null; // Remove any error retry handlers
-        }
-
-        // Update background image if available
-        if (data.poster) {
-          updateHeroBackground(data.poster, index);
-        }
-
-        // Fade in content
-        heroContent.classList.add('active');
-      }, 300);
-    }
-
-    function updateHeroBackground(posterUrl, index) {
-      const heroImages = document.querySelectorAll('.hero__bg-slider img');
-      if (heroImages[index]) {
-        // Create a new image to test if the URL is valid
-        const img = new Image();
-        img.onload = () => {
-          heroImages[index].src = posterUrl;
-        };
-        img.onerror = () => {
-          console.warn(`Failed to load poster image: ${posterUrl}`);
-          // Keep the default image
-        };
-        img.src = posterUrl;
-      }
-    }
-
-    function nextHeroSlide() {
-      if (!isDataLoaded || heroData.length === 0) return;
-
-      const heroImages = document.querySelectorAll('.hero__bg-slider img');
-      if (heroImages.length === 0) return;
-
-      heroImages[currentImageIndex].classList.remove('active');
-      currentImageIndex = (currentImageIndex + 1) % Math.min(heroData.length, heroImages.length);
-      heroImages[currentImageIndex].classList.add('active');
-      updateHeroContent(currentImageIndex);
-    }
-
-    function startHeroSlider() {
-      if (heroData.length > 1) {
-        setInterval(nextHeroSlide, 6000);
-      }
-    }
-
-    // Initialize hero
-    heroContent.classList.add('active');
-
     // Additional API Functions
-    async function fetchRecentMatches() {
-      console.warn("Using placeholder for fetchRecentMatches");
-      return null;
-    }
-    
-    async function fetchLiveMatches() {
-      console.warn("Using placeholder for fetchLiveMatches");
-      return null;
-    }
-    
-    async function fetchUpcomingMatches() {
-      console.warn("Using placeholder for fetchUpcomingMatches");
-      return null;
-    }
-    
-    async function fetchSponsoredContent() {
-      console.warn("Using placeholder for fetchSponsoredContent");
-      return null;
-    }
-
     async function fetchTournamentStats() {
         console.warn("Using placeholder for fetchTournamentStats");
         return null;
-    }
-
-    async function fetchFeaturedTournaments() {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/tournaments/featured`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          }
-        });
-        if (response.ok) {
-          const body = await response.json();
-          return Array.isArray(body) ? body : (body.data || []);
-        }
-      } catch (error) {
-        console.warn('Featured tournaments endpoint not available:', error);
-      }
-      return null;
     }
 
     // Main Content Population Function
@@ -1614,18 +1332,19 @@
       try {
         console.log('Fetching all content data...');
 
+        showLoadingState();
+
         const [
           tournamentsResponse,
           stats
         ] = await Promise.allSettled([
-          fetch(`${API_BASE_URL}/api/tournaments`),
+          fetchTournaments(),
           fetchTournamentStats()
         ]);
 
         let tournaments = [];
-        if (tournamentsResponse.status === 'fulfilled' && tournamentsResponse.value.ok) {
-            const body = await tournamentsResponse.value.json();
-            tournaments = body.data || [];
+        if (tournamentsResponse.status === 'fulfilled') {
+            tournaments = tournamentsResponse.value;
         }
 
 
@@ -1640,6 +1359,8 @@
         console.log('All content sections populated successfully');
       } catch (error) {
         console.error('Error populating content sections:', error);
+      } finally {
+        hideLoadingState();
       }
     }
 
@@ -1717,22 +1438,6 @@
         }).join('');
     }
 
-
-    function updateStatsDisplay(stats) {
-      if (!stats) return;
-      document.querySelector('.stats-container .stat-item:nth-child(1) .stat-number').textContent = stats.totalTournaments ? `${stats.totalTournaments}+` : '500+';
-      document.querySelector('.stats-container .stat-item:nth-child(2) .stat-number').textContent = stats.totalPrizePool ? `$${(stats.totalPrizePool/1000000).toFixed(1)}M+` : '$2M+';
-      document.querySelector('.stats-container .stat-item:nth-child(3) .stat-number').textContent = stats.activePlayers ? `${Math.floor(stats.activePlayers/1000)}K+` : '50K+';
-    }
-
-    // Deprecated functions from old design
-    function populateRecentMatches() {}
-    function updateLiveMatches() {}
-    function updateUpcomingMatches() {}
-    function populateSponsoredContent() {}
-    function populateUpcomingTournaments() {}
-    function populateLiveTournaments() {}
-
     // Mobile menu toggle
     const hamburger = document.querySelector('.hamburger');
     const mobileNav = document.getElementById('mobile-nav');
@@ -1769,22 +1474,6 @@
         toggleMobileMenu();
       }
     });
-    
-    // Animate stats on scroll
-    function animateStats() {
-        const statNumbers = document.querySelectorAll('.stat-number');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const target = entry.target;
-                    target.style.animation = 'glow 1.5s ease-in-out';
-                    observer.unobserve(target); // Animate only once
-                }
-            });
-        }, { threshold: 0.8 });
-        statNumbers.forEach(stat => observer.observe(stat));
-    }
-
 
     // Smooth scroll for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1853,18 +1542,13 @@
 
             // Update UI
             document.getElementById('modal-username').textContent = username;
-            document.getElementById('mobile-user-username').textContent = username;
-
+            
             document.getElementById('auth-buttons').style.display = 'none';
             document.getElementById('user-menu').style.display = 'flex';
-            document.getElementById('mobile-auth-buttons').style.display = 'none';
-            document.getElementById('mobile-user-menu').style.display = 'flex';
 
             if (isAdmin) {
                 document.getElementById('modal-role-badge').style.display = 'inline-block';
                 document.getElementById('host-nav-item').style.display = 'block';
-                document.getElementById('mobile-user-role-badge').style.display = 'inline-block';
-                document.getElementById('mobile-host-section').style.display = 'block';
             } else {
                 clearAdminUI();
             }
@@ -1877,8 +1561,6 @@
     function clearAdminUI() {
         document.getElementById('modal-role-badge').style.display = 'none';
         document.getElementById('host-nav-item').style.display = 'none';
-        document.getElementById('mobile-user-role-badge').style.display = 'none';
-        document.getElementById('mobile-host-section').style.display = 'none';
     }
 
 
@@ -1888,8 +1570,6 @@
       
       document.getElementById('auth-buttons').style.display = 'flex';
       document.getElementById('user-menu').style.display = 'none';
-      document.getElementById('mobile-auth-buttons').style.display = 'flex';
-      document.getElementById('mobile-user-menu').style.display = 'none';
       clearAdminUI();
     }
 
@@ -1918,56 +1598,34 @@
     // Initialize the page
     document.addEventListener('DOMContentLoaded', async () => {
       console.log('Initializing EArena homepage...');
+      document.querySelector('.hero__content').classList.add('active');
       createParticles();
-      animateStats();
+      animateFooter();
       checkUserAuthentication();
       if (navigator.onLine) {
-        addGlobalLoadingIndicator();
-        try {
-          await fetchTournaments(); 
-          await populateAllSections();
-          console.log('Content loaded successfully');
-        } catch (error) {
-          console.error('Failed to initialize page content:', error);
-        } finally {
-          removeGlobalLoadingIndicator();
-        }
+        await populateAllSections();
       } else {
         console.error('No internet connection detected.');
         showErrorState();
       }
     });
 
-    // Global loading indicator
-    function addGlobalLoadingIndicator() {
-      if (document.getElementById('global-loader')) return;
-      const loader = document.createElement('div');
-      loader.id = 'global-loader';
-      loader.style.cssText = `position: fixed; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); z-index: 10001; animation: loading-bar 2s ease-in-out infinite;`;
-      if (!document.querySelector('#loading-animation-style')) {
-        const style = document.createElement('style');
-        style.id = 'loading-animation-style';
-        style.textContent = `@keyframes loading-bar { 0% { transform: translateX(-100%); } 50% { transform: translateX(0%); } 100% { transform: translateX(100%); } }`;
-        document.head.appendChild(style);
-      }
-      document.body.appendChild(loader);
+    function animateFooter() {
+        const footer = document.querySelector('.site-footer');
+        if (!footer) return;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    footer.classList.add('in-view');
+                    observer.unobserve(footer);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        observer.observe(footer);
     }
 
-    function removeGlobalLoadingIndicator() {
-      const loader = document.getElementById('global-loader');
-      if (loader) {
-        loader.style.opacity = '0';
-        setTimeout(() => loader.remove(), 300);
-      }
-    }
-
-    function removeGlobalLoadingIndicator() {
-      const loader = document.getElementById('global-loader');
-      if (loader) {
-        loader.style.opacity = '0';
-        setTimeout(() => loader.remove(), 300);
-      }
-    }
 
     // Create animated particles
     function createParticles() {
@@ -1989,5 +1647,4 @@
 </body>
 
 </html>
-
 
