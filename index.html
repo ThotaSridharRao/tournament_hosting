@@ -95,6 +95,12 @@
     
     @media (min-width: 1600px) {
       body {
+        font-size: 17px;
+      }
+    }
+
+    @media (min-width: 1920px) {
+      body {
         font-size: 18px; /* Increase base font size on large screens */
       }
     }
@@ -340,7 +346,7 @@
       justify-content: center;
       text-align: center;
       position: relative;
-      padding: 10rem 2rem 4rem 2rem; /* Adjusted top padding */
+      padding: 6.4rem 2rem 4rem 2rem; /* Adjusted top padding */
       overflow: hidden;
     }
     
@@ -395,19 +401,19 @@
     }
     
     .hero__content .tournament-name {
-      font-size: clamp(2.8rem, 6vw, 5.5rem);
+      font-size: clamp(2.8rem, 7vw, 6.5rem);
       margin-bottom: 1rem;
       font-weight: 800;
       letter-spacing: -2px;
     }
     
     .hero__content .prize-pool {
-        font-size: clamp(1.1rem, 2vw, 1.5rem);
+        font-size: clamp(1.1rem, 2.5vw, 1.6rem);
         margin-bottom: 2.5rem;
         opacity: 0.9;
         line-height: 1.7;
         color: var(--text-secondary);
-        max-width: 600px;
+        max-width: 800px;
         margin-left: auto;
         margin-right: auto;
     }
@@ -533,13 +539,13 @@
     }
 
     .games-title {
-        font-size: clamp(2.2rem, 4vw, 3rem);
+        font-size: clamp(2.2rem, 5vw, 3.5rem);
         margin-bottom: 1rem;
         font-weight: 800;
     }
 
     .games-subtitle {
-        font-size: clamp(1.1rem, 2vw, 1.4rem);
+        font-size: clamp(1.1rem, 2.5vw, 1.6rem);
         color: var(--text-secondary);
         max-width: 600px;
         margin: 0 auto;
@@ -547,7 +553,7 @@
 
     .games-carousel-wrapper {
         position: relative;
-        max-width: 1200px;
+        max-width: 1400px; /* Increased width */
         margin: 0 auto;
     }
 
@@ -629,7 +635,7 @@
     }
 
     .news-title {
-        font-size: clamp(2.2rem, 4vw, 3rem);
+        font-size: clamp(2.2rem, 5vw, 3.5rem);
         margin-bottom: 4rem;
         font-weight: 800;
     }
@@ -696,7 +702,7 @@
         text-align: center;
     }
     .faq-title {
-        font-size: clamp(2.2rem, 4vw, 3rem);
+        font-size: clamp(2.2rem, 5vw, 3.5rem);
         margin-bottom: 4rem;
         font-weight: 800;
     }
@@ -752,7 +758,7 @@
     }
     
     #tournaments-heading {
-      font-size: clamp(2.2rem, 4vw, 3rem);
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
       margin-bottom: 3rem;
       text-align: center;
       font-weight: 800;
@@ -790,13 +796,13 @@
     }
     
     .tournament-card__title {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
     }
     
     .prize-pool {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         color: var(--text-secondary);
         margin-bottom: 1rem;
     }
@@ -810,7 +816,7 @@
     }
     
     .tournament-info {
-        font-size: 0.9rem;
+        font-size: 1rem;
         color: var(--text-secondary);
     }
 
@@ -908,6 +914,12 @@
         .game-card {
             flex-basis: 20%;
             max-width: 20%;
+        }
+    }
+    
+    @media (min-width: 1920px) {
+        .tournaments-grid {
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Increased min card width */
         }
     }
     
