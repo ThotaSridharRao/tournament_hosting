@@ -661,7 +661,7 @@
       const sessionData = getSessionData();
       const guestMenu = document.getElementById('guest-menu');
       const userMenu = document.getElementById('user-menu');
-      const user = sessionData?.data?.user;
+      const user = sessionData?.data?.user || sessionData?.user;
 
       if (user) {
         document.getElementById('modal-username').textContent = user.username || user.email.split('@')[0];
