@@ -105,6 +105,12 @@
       text-decoration: none;
     }
 
+    .header-left, .header-right {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
     .back-btn {
       color: var(--text-secondary);
       transition: all 0.3s ease;
@@ -141,11 +147,36 @@
         background: #ff6347; /* Lighter orange-red */
         transform: translateY(-2px);
     }
+    
+    .hamburger {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+    
+    .mobile-nav {
+        display: none;
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: #111;
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    .mobile-nav.active {
+        display: flex;
+    }
 
     /* Main content */
     main {
-      margin-top: 80px; /* Adjust for header height */
-      min-height: calc(100vh - 80px);
+      padding-top: 80px; /* Adjust for header height */
     }
 
     /* Tournament Hero */
@@ -564,35 +595,37 @@
       font-size: 1rem;
     }
 
-    /* Profile Dropdown Styles */
+    /* UPDATED: Profile Dropdown Styles */
     .profile-dropdown {
       position: relative;
-      display: flex;
-      align-items: center;
     }
 
     .profile-icon {
-      width: 36px;
-      height: 36px;
-      color: var(--text-secondary);
-      cursor: pointer;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      transition: all 0.3s ease;
-      font-size: 1.8rem;
-    }
-
-    .profile-icon:hover {
+      background-color: var(--panel-bg);
       color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+    
+    .profile-icon:hover {
+        background-color: var(--primary-color);
     }
 
     .profile-modal {
       position: absolute;
       top: 140%; 
       right: 0;
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 8px;
-      min-width: 220px;
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      min-width: 240px;
       opacity: 0;
       visibility: hidden;
       transform: translateY(10px);
@@ -608,12 +641,26 @@
     }
 
     .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
       padding: 1rem;
-      border-bottom: 1px solid #333;
-      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .profile-photo {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: var(--text-primary);
     }
     
-    .profile-username {
+    .profile-info .profile-username {
       font-weight: 600;
       color: var(--copy);
       font-size: 1rem;
@@ -629,16 +676,13 @@
       gap: 0.75rem;
       padding: 0.75rem 1rem;
       color: var(--text-secondary);
-      text-decoration: none;
       border-radius: 6px;
       transition: all 0.3s ease;
-      font-weight: 500;
       font-size: 0.9rem;
       width: 100%;
       border: none;
       background: none;
       cursor: pointer;
-      font-family: inherit;
       text-align: left;
     }
 
@@ -664,6 +708,15 @@
     .empty-schedule { text-align: center; padding: 3rem 1rem; color: var(--muted); }
 
     /* Responsive */
+    @media (max-width: 920px) {
+        .header-right {
+            display: none;
+        }
+        .hamburger {
+            display: block;
+        }
+    }
+
     @media (max-width: 768px) {
       .details-grid { grid-template-columns: 1fr; }
       .timeline-item { flex-direction: column; gap: 1rem; }
@@ -679,40 +732,58 @@
 <body>
   <header class="site-header">
     <div class="header-container">
-      <a href="index.html" class="brand">EArena</a>
-      
-      <a href="index.html" class="back-btn">
-        <i class="fas fa-arrow-left"></i>
-        Back to Tournaments
-      </a>
-
-      <div class="nav-actions">
-          <div id="auth-buttons" style="display: none;">
-              <a href="#" class="header-cta" aria-label="Join Us" onclick="redirectToAuth()">Join Us</a>
-          </div>
-          <div id="user-menu" style="display: none;">
-              <div class="profile-dropdown">
-                  <i class="fas fa-user-circle profile-icon"></i>
-                  <div class="profile-modal">
-                      <div class="profile-header">
-                          <div class="profile-username" id="modal-username">User</div>
-                      </div>
-                      <div class="profile-actions">
-                          <a href="user-dashboard.html" class="profile-action">
-                              <i class="fas fa-user"></i>
-                              <span>My Account</span>
-                          </a>
-                          <button class="profile-action" onclick="logout()">
-                              <i class="fas fa-sign-out-alt"></i>
-                              <span>Logout</span>
-                          </button>
-                      </div>
-                  </div>
-              </div>
-          </div>
+      <div class="header-left">
+        <a href="index.html" class="brand">EArena</a>
+        <a href="index.html" class="back-btn">
+          <i class="fas fa-arrow-left"></i>
+          <span>Back to Tournaments</span>
+        </a>
       </div>
+      
+      <div class="header-right">
+        <div class="nav-actions">
+            <div id="auth-buttons">
+                <a href="#" class="header-cta" aria-label="Join Us" onclick="redirectToAuth()">Join Us</a>
+            </div>
+            <div id="user-menu" style="display: none;">
+                <div class="profile-dropdown">
+                    <div class="profile-icon"><i class="fas fa-user"></i></div>
+                    <div class="profile-modal">
+                        <div class="profile-header">
+                          <div class="profile-photo"><i class="fas fa-user"></i></div>
+                          <div class="profile-info">
+                            <div class="profile-username" id="modal-username">User</div>
+                          </div>
+                        </div>
+                        <div class="profile-actions">
+                            <a href="user-dashboard.html" class="profile-action">
+                                <i class="fas fa-user-circle"></i>
+                                <span>My Account</span>
+                            </a>
+                            <button class="profile-action" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+      <button class="hamburger" id="hamburger-btn"><i class="fas fa-bars"></i></button>
     </div>
   </header>
+
+  <nav class="mobile-nav" id="mobile-nav-menu">
+      <a href="index.html" class="back-btn">Back to Tournaments</a>
+      <div id="mobile-auth-buttons">
+          <a href="#" class="header-cta" aria-label="Join Us" onclick="redirectToAuth()">Join Us</a>
+      </div>
+      <div id="mobile-user-menu" style="display: none;">
+          <a href="user-dashboard.html" class="profile-action">My Account</a>
+          <button class="profile-action" onclick="logout()">Logout</button>
+      </div>
+  </nav>
 
   <main>
     <!-- Tournament Hero -->
@@ -922,8 +993,6 @@
   </footer>
 
   <script>
-    // This script is a simplified version of the original to ensure functionality after the redesign.
-    // It fetches tournament data and updates the UI accordingly.
     const API_BASE_URL = 'https://t2-237c.onrender.com';
     let currentTournament = null;
 
@@ -931,7 +1000,7 @@
       const returnUrl = encodeURIComponent(window.location.href);
       window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
     }
-
+    
     async function getTournamentData(slug) {
       try {
         const response = await fetch(`${API_BASE_URL}/api/tournaments/slug/${slug}`);
@@ -940,21 +1009,9 @@
         return result.data;
       } catch (error) {
         console.error("Failed to fetch tournament data:", error);
-        // Fallback for demonstration
-        return { 
-          title: "Demo Tournament", 
-          description: "This is a fallback tournament because the API could not be reached.",
-          status: "registration_open",
-          game: "Valorant",
-          format: "5v5",
-          entryFee: "Free",
-          maxTeams: 16,
-          registrationStart: new Date(),
-          registrationEnd: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-          tournamentStart: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000),
-          tournamentEnd: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
-          prizeDistribution: { first: 50000, second: 25000, third: 10000}
-        };
+        document.getElementById('tournament-title').textContent = "Error Loading Tournament";
+        document.getElementById('tournament-subtitle').textContent = "Could not connect to the server. Please try again later.";
+        return null;
       }
     }
 
@@ -972,16 +1029,67 @@
         return 'completed';
     }
     
+    function updateSchedule(tournament) {
+        const container = document.getElementById('schedule-timeline');
+        if (!container) return;
+
+        let allEvents = [];
+        allEvents.push({ date: new Date(tournament.registrationStart), title: 'Registration Opens' });
+        allEvents.push({ date: new Date(tournament.registrationEnd), title: 'Registration Closes' });
+        allEvents.push({ date: new Date(tournament.tournamentStart), title: 'Tournament Begins' });
+        allEvents.push({ date: new Date(tournament.tournamentEnd), title: 'Tournament Ends' });
+
+        if (tournament.scheduleEvents) {
+            tournament.scheduleEvents.forEach(event => {
+                allEvents.push({
+                    date: new Date(`${event.date}T${event.time}`),
+                    title: event.title,
+                    description: event.description,
+                });
+            });
+        }
+
+        if (tournament.format === 'kp' && tournament.kpSettings && tournament.kpSettings.matchSchedule) {
+            tournament.kpSettings.matchSchedule.forEach(match => {
+                allEvents.push({
+                    date: new Date(match.date),
+                    title: match.match,
+                    description: `${match.teams} teams competing`,
+                });
+            });
+        }
+
+        allEvents.sort((a, b) => a.date - b.date);
+
+        if (allEvents.length <= 4) {
+             container.innerHTML = `<div class="empty-schedule"><i class="fas fa-calendar-times"></i><p>No detailed schedule has been posted yet.</p></div>`;
+        } else {
+            container.innerHTML = allEvents.map(event => {
+                const day = event.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                const time = event.date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                return `
+                    <div class="timeline-item">
+                        <div class="timeline-date">
+                            <div class="timeline-day">${day}</div>
+                            <div class="timeline-time">${time}</div>
+                        </div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">${event.title}</h3>
+                            ${event.description ? `<p class="timeline-desc">${event.description}</p>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    }
+
     function updateUI(tournament) {
+        if (!tournament) return;
+
         document.title = `${tournament.title} | EArena`;
         document.getElementById('tournament-title').textContent = tournament.title;
         document.getElementById('tournament-subtitle').textContent = tournament.description || "The ultimate esports challenge awaits.";
         
-        // Overview
-        document.getElementById('tournament-overview').innerHTML = `<p>${tournament.description || "Detailed overview will be available soon."}</p>`;
-        document.getElementById('tournament-format-details').innerHTML = `<p>Format specifics will be updated here.</p>`;
-
-        // Info Card
         document.getElementById('game-name').textContent = tournament.game;
         document.getElementById('tournament-format').textContent = tournament.format;
         document.getElementById('entry-fee').textContent = tournament.entryFee > 0 ? `₹${tournament.entryFee}` : 'Free';
@@ -993,7 +1101,6 @@
         document.getElementById('tournament-start-date').textContent = formatDate(tournament.tournamentStart);
         document.getElementById('tournament-end-date').textContent = formatDate(tournament.tournamentEnd);
 
-        // Prizes
         const prizeList = document.getElementById('prize-list');
         prizeList.innerHTML = '';
         if (tournament.prizeDistribution) {
@@ -1004,7 +1111,6 @@
             });
         }
 
-        // Action Buttons & Status
         const status = calculateTournamentStatus(tournament);
         const primaryActionBtn = document.getElementById('primary-action');
         const regMessage = document.getElementById('registration-message');
@@ -1013,12 +1119,20 @@
         regMessage.style.display = 'none';
         leaderboard.style.display = 'none';
         primaryActionBtn.style.display = 'flex';
+        primaryActionBtn.disabled = false;
 
         switch(status) {
             case 'registration_open':
                 regMessage.style.display = 'block';
                 primaryActionBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
-                primaryActionBtn.onclick = () => redirectToAuth();
+                primaryActionBtn.onclick = () => { 
+                    const session = getSessionData();
+                    if (!session) {
+                        redirectToAuth();
+                    } else {
+                        window.location.href = `team-registration.html?slug=${tournament.slug}`;
+                    }
+                };
                 break;
             case 'live':
                 leaderboard.style.display = 'block';
@@ -1030,35 +1144,62 @@
                 primaryActionBtn.innerHTML = '<i class="fas fa-trophy"></i> View Results';
                 primaryActionBtn.onclick = () => leaderboard.scrollIntoView({ behavior: 'smooth' });
                 break;
-            default: // upcoming or registration_closed
+            default:
                 primaryActionBtn.innerHTML = '<i class="fas fa-clock"></i> Registration Closed';
                 primaryActionBtn.disabled = true;
                 break;
         }
+        updateSchedule(tournament);
+    }
+    
+    function getSessionData() {
+      const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+      try {
+        return session ? JSON.parse(session) : null;
+      } catch (e) {
+        return null;
+      }
     }
     
     function checkUserAuthentication() {
-        const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+        const sessionData = getSessionData();
         const authButtons = document.getElementById('auth-buttons');
         const userMenu = document.getElementById('user-menu');
+        const mobileAuthButtons = document.getElementById('mobile-auth-buttons');
+        const mobileUserMenu = document.getElementById('mobile-user-menu');
 
-        if (!session) {
-            authButtons.style.display = 'flex';
+        const isLoggedIn = sessionData && sessionData.data && sessionData.data.user;
+
+        if (isLoggedIn) {
+            const user = sessionData.data.user;
+            document.getElementById('modal-username').textContent = user.username || 'User';
+            authButtons.style.display = 'none';
+            userMenu.style.display = 'block';
+            mobileAuthButtons.style.display = 'none';
+            mobileUserMenu.style.display = 'block';
+        } else {
+            authButtons.style.display = 'block';
             userMenu.style.display = 'none';
-            return;
+            mobileAuthButtons.style.display = 'block';
+            mobileUserMenu.style.display = 'none';
         }
+    }
 
+    async function checkUserRegistrationStatus(slug, session) {
+        if (!session || !session.data || !session.data.token) return;
         try {
-            const sessionData = JSON.parse(session);
-            const user = sessionData?.data?.user;
-            if (user) {
-                document.getElementById('modal-username').textContent = user.username || 'User';
-                authButtons.style.display = 'none';
-                userMenu.style.display = 'block';
+            const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/registration-status`, {
+                headers: { 'Authorization': `Bearer ${session.data.token}` }
+            });
+            const result = await response.json();
+            if (result.success && result.data.isRegistered) {
+                const primaryActionBtn = document.getElementById('primary-action');
+                primaryActionBtn.innerHTML = '<i class="fas fa-check-circle"></i> You are Registered';
+                primaryActionBtn.disabled = true;
+                primaryActionBtn.onclick = null;
             }
         } catch (error) {
-            authButtons.style.display = 'flex';
-            userMenu.style.display = 'none';
+            console.error('Could not check registration status:', error);
         }
     }
 
@@ -1070,13 +1211,31 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const slug = urlParams.get('slug') || 'default-tournament-slug';
-      
-      currentTournament = await getTournamentData(slug);
-      updateUI(currentTournament);
-      checkUserAuthentication();
-    });
+      const slug = urlParams.get('slug');
 
+      if (!slug) {
+        document.getElementById('tournament-title').textContent = "Tournament Not Found";
+        document.getElementById('tournament-subtitle').textContent = "No tournament was specified. Please go back and select a tournament.";
+        return;
+      }
+      
+      checkUserAuthentication();
+      currentTournament = await getTournamentData(slug);
+      if (currentTournament) {
+        updateUI(currentTournament);
+        const session = getSessionData();
+        if(session) {
+          checkUserRegistrationStatus(currentTournament.slug, session);
+        }
+      }
+      
+      // Hamburger Menu Toggle
+      const hamburger = document.getElementById('hamburger-btn');
+      const mobileNav = document.getElementById('mobile-nav-menu');
+      hamburger.addEventListener('click', () => {
+          mobileNav.classList.toggle('active');
+      });
+    });
   </script>
 </body>
 
