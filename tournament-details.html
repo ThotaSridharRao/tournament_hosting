@@ -107,6 +107,10 @@
       display: flex;
       align-items: center;
       overflow: hidden;
+      /* --- ADD THESE LINES --- */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
 
     .tournament-hero::before {
@@ -734,6 +738,16 @@
 
     function updateUI(tournament) {
         if (!tournament) return;
+
+        // --- ADD THIS NEW CODE BLOCK ---
+        const heroSection = document.querySelector('.tournament-hero');
+        if (tournament.posterImage) {
+            // Constructs the full image URL from the relative path provided by the backend
+            const fullImageUrl = `${API_BASE_URL}${tournament.posterImage}`;
+            heroSection.style.backgroundImage = `url('${fullImageUrl}')`;
+        }
+        // --- END OF NEW CODE BLOCK ---
+
         document.getElementById('page-title').textContent = `${tournament.title} | EArena`;
         document.getElementById('tournament-title').textContent = tournament.title;
         document.getElementById('tournament-subtitle').textContent = tournament.description || 'Join this exciting tournament!';
