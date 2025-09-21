@@ -864,38 +864,62 @@
             }
         }
 
-        async function handleUpdateFormSubmit(event) {
+        async function handleScheduleUpdateSubmit(event) {
             event.preventDefault();
             const form = event.target;
             const slug = form.querySelector('input[name="slug"]').value;
-             if (slug === 'dev-test-championship') {
-                alert("This is a mock tournament and cannot be updated.");
-                renderOperation('update');
-                return;
-            }
 
-            const btn = form.querySelector('.submit-btn');
-            btn.textContent = 'Saving...'; btn.disabled = true;
+            // Remove this mock tournament block entirely:
+            // if (slug === 'dev-test-championship') {
+            //     alert("This is a mock tournament. Schedule cannot be updated.");
+            //     renderOperation('update');
+            //     return;
+            // }
+
+            const btn = form.querySelector('button[type="submit"]');
+            btn.textContent = 'Saving...'; 
+            btn.disabled = true;
 
             try {
-                const formData = new FormData(form);
-                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}`, {
-                    method: 'PATCH',
-                    headers: { 'Authorization': `Bearer ${getSessionData()?.token}` },
-                    body: formData
+                const events = [];
+                const container = document.getElementById('schedule-events-container');
+                const eventBlocks = container.querySelectorAll('.schedule-event');
+                
+                eventBlocks.forEach(block => {
+                    const datetimeValue = block.querySelector('input[name*="[datetime]"]').value;
+                    const [date, time] = datetimeValue ? datetimeValue.split('T') : [null, null];
+
+                    events.push({
+                        title: block.querySelector('input[name*="[title]"]').value,
+                        description: block.querySelector('input[name*="[description]"]').value,
+                        datetime: datetimeValue,
+                        date: date,
+                        time: time ? time + ":00" : null
+                    });
                 });
+
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/schedule`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${getSessionData()?.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ schedule: events })
+                });
+
                 const result = await response.json();
                 if (response.ok && result.success) {
-                    alert('Tournament updated successfully!');
-                    await loadAdminTournaments();
+                    alert('Schedule updated successfully!');
+                    await loadAdminTournaments(); // Reload tournaments
                     renderOperation('update');
                 } else {
-                    throw new Error(result.detail || 'Failed to update tournament.');
+                    throw new Error(result.detail || result.error || 'Failed to update schedule.');
                 }
             } catch (error) {
+                console.error('Schedule update error:', error);
                 alert('Error: ' + error.message);
             } finally {
-                btn.textContent = 'Save Changes';
+                btn.textContent = 'Confirm Schedule';
                 btn.disabled = false;
             }
         }
