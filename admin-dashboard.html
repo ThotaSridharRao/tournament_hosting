@@ -408,46 +408,28 @@
                 return;
             }
 
-            if (format === 'kp-slots-pdf' && tournament.format === 'kp') {
-                const participants = tournament.participants || [];
-                if (participants.length === 0) {
-                    alert("No teams registered yet. Cannot generate KP slots PDF.");
-                    return;
-                }
-                
-                const token = getSessionData()?.token;
-                if (!token) {
-                    alert("Authentication required. Please log in again.");
-                    return;
-                }
-                
-                window.open(`${API_BASE_URL}/api/tournaments/${slug}/export/kp-slots-pdf?token=${token}`, '_blank');
-                return;
-            }
-
-            // Regular export logic with proper variable definitions
             const participants = tournament.participants || [];
             if (participants.length === 0) {
                 alert("This tournament has no registered participants to export.");
                 return;
             }
 
-            const headers = ["Team Name", "Player Name", "In-Game ID", "Email", "Captain?"];
-            const rows = [];
-            
-            participants.forEach(team => {
-                (team.players || []).forEach(player => {
-                    rows.push([
-                        team.teamName || "N/A",
-                        player.name || "N/A", 
-                        player.inGameId || "N/A",
-                        player.email || "N/A",
-                        player.isCaptain ? "Yes" : "No"
-                    ]);
-                });
-            });
-
             if (format === 'excel') {
+                const headers = ["Team Name", "Player Name", "In-Game ID", "Email", "Captain?"];
+                const rows = [];
+                
+                participants.forEach(team => {
+                    (team.players || []).forEach(player => {
+                        rows.push([
+                            team.teamName || "N/A",
+                            player.name || "N/A", 
+                            player.inGameId || "N/A",
+                            player.email || "N/A",
+                            player.isCaptain ? "Yes" : "No"
+                        ]);
+                    });
+                });
+
                 let csvContent = "data:text/csv;charset=utf-8," 
                     + headers.join(",") + "\n" 
                     + rows.map(e => e.join(",")).join("\n");
@@ -463,66 +445,36 @@
             } else if (format === 'pdf') {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
+                
                 doc.text(`Participants for ${tournament.title}`, 14, 16);
+                
+                const headers = ["S.No", "Team Name", "Team Members", "In-Game ID", "Email"];
+                const rows = [];
+                let serialNo = 1;
+                
+                participants.forEach(team => {
+                    const players = team.players || [];
+                    const teamName = team.teamName || "N/A";
+                    
+                    players.forEach((player, index) => {
+                        rows.push([
+                            index === 0 ? serialNo.toString() : "", // S.No only on first player of team
+                            index === 0 ? teamName : "", // Team name only on first player of team
+                            player.name || "N/A",
+                            player.inGameId || "N/A",
+                            player.email || "N/A"
+                        ]);
+                    });
+                    serialNo++;
+                });
+
                 doc.autoTable({
                     head: [headers],
                     body: rows,
-                    startY: 20
+                    startY: 25
                 });
                 doc.save(`${slug}_participants.pdf`);
             }
-        }
-
-        function renderTournamentList(containerId, tournaments, actionType) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            if (!tournaments || tournaments.length === 0) {
-                container.innerHTML = '<p style="text-align: center; padding: 1.5rem 0;">No tournaments to display.</p>';
-                return;
-            }
-            container.innerHTML = tournaments.map(t => {
-                const title = t.title || t.name || "Untitled";
-                const participants = `${t.participant_count || (t.participants?.length || 0)} / ${t.maxTeams || t.max_participants || 'N/A'}`;
-                const prize = `₹${(t.prizePool || t.prize_pool || 0).toLocaleString()}`;
-                let actionsHtml = '';
-                switch (actionType) {
-                    case 'manage':
-                        actionsHtml = `
-                            <a href="details.html?slug=${t.slug}" class="btn-icon" title="Manage"><i class="fas fa-arrow-right"></i></a>
-                            <button class="btn-icon" onclick="editTournament('${t.slug}')" title="Edit"><i class="fas fa-pencil-alt"></i></button>
-                            `;
-                        break;
-                    case 'update':
-                        actionsHtml = `
-                            <button class="submit-btn" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="editTournament('${t.slug}')">Edit Details</button>
-                            <button class="submit-btn btn-info" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="updateStatus('${t.slug}')">Update Status</button>
-                            <button class="submit-btn btn-warning" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="updateSchedule('${t.slug}')">Update Schedule</button>
-                        `;
-                        break;
-                    case 'delete':
-                        actionsHtml = `<button class="submit-btn delete" style="width:auto; padding: 0.5rem 1rem; margin-top:0; background-color: #c82333;" onclick="deleteTournament(event, '${t.slug}')">Confirm Delete</button>`;
-                        break;
-                    case 'download':
-                        if (t.format === 'kp') {
-                            actionsHtml = `
-                                <button class="btn-icon" onclick="downloadData('${t.slug}', 'excel')" title="Download Excel"><i class="fas fa-file-excel" style="font-size: 1.2rem; color: #28a745;"></i></button>
-                                <button class="btn-icon" onclick="downloadData('${t.slug}', 'pdf')" title="Download PDF"><i class="fas fa-file-pdf" style="font-size: 1.2rem; color: #dc3545;"></i></button>
-                                <button class="btn-icon" onclick="downloadData('${t.slug}', 'kp-slots-pdf')" title="Download KP Slots PDF"><i class="fas fa-file-pdf" style="font-size: 1.2rem; color: #ff6347;"></i></button>`;
-                        } else {
-                            actionsHtml = `
-                                <button class="btn-icon" onclick="downloadData('${t.slug}', 'excel')" title="Download Excel"><i class="fas fa-file-excel" style="font-size: 1.2rem; color: #28a745;"></i></button>
-                                <button class="btn-icon" onclick="downloadData('${t.slug}', 'pdf')" title="Download PDF"><i class="fas fa-file-pdf" style="font-size: 1.2rem; color: #dc3545;"></i></button>`;
-                        }
-                        break;
-                }
-                return `
-                    <div class="admin-tournament-item">
-                        <div class="admin-tournament-info">
-                            <a href="details.html?slug=${t.slug}" class="name">${title}</a><div class="game">${t.game}</div>
-                        </div>
-                        <div class="tournament-participants">${participants}</div><div class="tournament-prize">${prize}</div><div class="tournament-actions">${actionsHtml}</div>
-                    </div>`;
-            }).join('');
         }
 
         function removeScheduleEvent(button) {
