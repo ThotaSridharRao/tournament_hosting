@@ -401,6 +401,51 @@
             renderOperation('edit', tournamentToEdit);
         }
 
+        function renderTournamentList(containerId, tournaments, actionType) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    if (!tournaments || tournaments.length === 0) {
+        container.innerHTML = '<p style="text-align: center; padding: 1.5rem 0;">No tournaments to display.</p>';
+        return;
+    }
+    container.innerHTML = tournaments.map(t => {
+        const title = t.title || t.name || "Untitled";
+        const participants = `${t.participant_count || (t.participants?.length || 0)} / ${t.maxTeams || t.max_participants || 'N/A'}`;
+        const prize = `₹${(t.prizePool || t.prize_pool || 0).toLocaleString()}`;
+        let actionsHtml = '';
+        switch (actionType) {
+            case 'manage':
+                actionsHtml = `
+                    <a href="details.html?slug=${t.slug}" class="btn-icon" title="Manage"><i class="fas fa-arrow-right"></i></a>
+                    <button class="btn-icon" onclick="editTournament('${t.slug}')" title="Edit"><i class="fas fa-pencil-alt"></i></button>
+                    `;
+                break;
+            case 'update':
+                actionsHtml = `
+                    <button class="submit-btn" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="editTournament('${t.slug}')">Edit Details</button>
+                    <button class="submit-btn btn-info" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="updateStatus('${t.slug}')">Update Status</button>
+                    <button class="submit-btn btn-warning" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="updateSchedule('${t.slug}')">Update Schedule</button>
+                `;
+                break;
+            case 'delete':
+                actionsHtml = `<button class="submit-btn delete" style="width:auto; padding: 0.5rem 1rem; margin-top:0; background-color: #c82333;" onclick="deleteTournament(event, '${t.slug}')">Confirm Delete</button>`;
+                break;
+            case 'download':
+                actionsHtml = `
+                    <button class="btn-icon" onclick="downloadData('${t.slug}', 'excel')" title="Download Excel"><i class="fas fa-file-excel" style="font-size: 1.2rem; color: #28a745;"></i></button>
+                    <button class="btn-icon" onclick="downloadData('${t.slug}', 'pdf')" title="Download PDF"><i class="fas fa-file-pdf" style="font-size: 1.2rem; color: #dc3545;"></i></button>`;
+                break;
+        }
+        return `
+            <div class="admin-tournament-item">
+                <div class="admin-tournament-info">
+                    <a href="details.html?slug=${t.slug}" class="name">${title}</a><div class="game">${t.game}</div>
+                </div>
+                <div class="tournament-participants">${participants}</div><div class="tournament-prize">${prize}</div><div class="tournament-actions">${actionsHtml}</div>
+            </div>`;
+    }).join('');
+}
+
         function downloadData(slug, format) {
             const tournament = adminTournaments.find(t => t.slug === slug);
             if (!tournament) {
