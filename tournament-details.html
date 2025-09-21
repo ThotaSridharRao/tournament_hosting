@@ -21,7 +21,7 @@
       --accent: #ff4500; 
       --accent-2: #e65c00; 
       --glass: rgba(255, 255, 255, 0.05);
-      --radius: 12px;
+      --radius: 16px; /* Slightly larger radius for glass effect */
       --container: 1200px;
       --ease: 180ms cubic-bezier(.2, .9, .2, 1);
     }
@@ -64,7 +64,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 2rem;
-      background: rgba(26, 26, 26, 0.5); /* Glassmorphism change */
+      background: rgba(26, 26, 26, 0.5); 
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       z-index: 1200;
@@ -80,7 +80,7 @@
     
     .header-cta {
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #fff; /* CHANGED: Font color to white */
+      color: #fff;
       border: none;
       padding: 0.5rem 1rem;
       border-radius: 6px;
@@ -165,33 +165,6 @@
       box-shadow: 0 10px 30px rgba(255, 69, 0, 0.3);
     }
 
-    /* Registration Message Section */
-    .registration-message {
-      padding: 2rem 0;
-      background: linear-gradient(135deg, rgba(255, 69, 0, 0.1), rgba(255, 69, 0, 0.05));
-      border-top: 1px solid rgba(255, 69, 0, 0.2);
-      border-bottom: 1px solid rgba(255, 69, 0, 0.2);
-    }
-    
-    .registration-alert {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      background: rgba(255, 69, 0, 0.1);
-      border: 1px solid rgba(255, 69, 0, 0.3);
-      border-radius: 12px;
-      padding: 1.5rem 2rem;
-    }
-    
-    .alert-icon {
-      font-size: 2rem;
-      color: var(--accent);
-    }
-    
-    .alert-content h3 {
-      color: var(--accent);
-    }
-
     /* Tournament Details Section */
     .tournament-details {
       padding: 4rem 0;
@@ -204,13 +177,20 @@
       margin-top: 2rem;
     }
 
+    /* UPDATED: Glassmorphism for all cards */
     .details-main, .info-card {
-      background: var(--glass); /* Glassmorphism change */
+      background: var(--glass);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
+      border-radius: var(--radius);
       padding: 2.5rem;
+    }
+
+    .details-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem; /* UPDATED: Increased spacing */
     }
 
     .info-card h3 {
@@ -222,51 +202,6 @@
     .info-list li:last-child { border-bottom: none; }
     .info-label { color: var(--muted); }
     .info-value { font-weight: 600; }
-
-    /* Leaderboard Section */
-    .leaderboard-section {
-      padding: 4rem 0;
-      background: #000000;
-    }
-
-    .leaderboard-table {
-      background: var(--glass);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      overflow: hidden;
-      margin-top: 2rem;
-    }
-
-    .leaderboard-header {
-      background: rgba(255, 69, 0, 0.1);
-      padding: 1rem 1.5rem;
-      display: grid;
-      grid-template-columns: 60px 1fr 2fr;
-      gap: 1rem;
-      font-weight: 700;
-      color: var(--accent);
-      text-transform: uppercase;
-    }
-
-    .leaderboard-row {
-      padding: 1rem 1.5rem;
-      display: grid;
-      grid-template-columns: 60px 1fr 2fr;
-      gap: 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
-      align-items: center;
-    }
-
-    .leaderboard-row:hover {
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .rank.first { color: var(--accent); }
-    .team-info { display: flex; align-items: center; gap: 0.75rem; }
-    .team-avatar { width: 40px; height: 40px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #000; }
     
     /* Schedule Section */
     .schedule-section { padding: 4rem 0; }
@@ -324,10 +259,9 @@
       <i class="fas fa-arrow-left"></i>
       Back to Home
     </a>
-    <!-- REMOVED: Centered Brand Logo -->
     <div class="nav-actions">
       <div id="guest-menu">
-        <button class="header-cta" onclick="redirectToAuth()">Join Us</button> <!-- CHANGED: Text -->
+        <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
       </div>
       <div id="user-menu" style="display: none;">
         <div class="profile-dropdown">
@@ -358,7 +292,6 @@
   </header>
 
   <main>
-    <!-- Tournament Hero -->
     <section class="tournament-hero">
       <div class="container">
         <div class="hero-content">
@@ -376,20 +309,6 @@
       </div>
     </section>
 
-    <!-- Registration Status Message -->
-    <section class="registration-message" id="registration-message" style="display: none;">
-      <div class="container">
-        <div class="registration-alert">
-          <div class="alert-icon"><i class="fas fa-clock"></i></div>
-          <div class="alert-content">
-            <h3>Registrations are Open!</h3>
-            <p>Register your team now before spots fill up.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Tournament Details -->
     <section class="tournament-details" id="tournament-details-section">
       <div class="container">
         <div class="details-grid">
@@ -432,25 +351,6 @@
       </div>
     </section>
 
-    <!-- Leaderboard Section -->
-    <section class="leaderboard-section" id="leaderboard-section" style="display: none;">
-      <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">Leaderboard</h2>
-          <p class="section-subtitle">Current standings and team performance.</p>
-        </div>
-        <div class="leaderboard-table" id="leaderboard-table">
-          <div class="leaderboard-header">
-            <div>Rank</div>
-            <div>Team</div>
-            <div>Players</div>
-          </div>
-          <div id="leaderboard-rows"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Schedule Section -->
     <section class="schedule-section">
       <div class="container">
         <div class="section-header">
@@ -502,20 +402,6 @@
       }
     }
 
-    function calculateTournamentStatus(tournament) {
-      const now = new Date();
-      const registrationStart = new Date(tournament.registrationStart);
-      const registrationEnd = new Date(tournament.registrationEnd);
-      const tournamentStart = new Date(tournament.tournamentStart);
-      const tournamentEnd = new Date(tournament.tournamentEnd);
-
-      if (now < registrationStart) return 'upcoming';
-      if (now >= registrationStart && now <= registrationEnd) return 'registration_open';
-      if (now > registrationEnd && now < tournamentStart) return 'registration_closed';
-      if (now >= tournamentStart && now <= tournamentEnd) return 'live';
-      return 'completed';
-    }
-
     function updateUI(tournament) {
         if (!tournament) return;
         document.getElementById('page-title').textContent = `${tournament.title} | EArena`;
@@ -525,17 +411,31 @@
         const overviewContainer = document.getElementById('tournament-overview');
         overviewContainer.innerHTML = `<p>${tournament.description || "No description available."}</p>`;
         
+        // UPDATED: More descriptive tournament format display
         const formatContainer = document.getElementById('tournament-format-details');
-        let formatHtml = `<p><strong>Format:</strong> ${tournament.format || 'Standard'}</p>`;
+        let formatHTML = '';
         if (tournament.format === 'kp' && tournament.kpSettings) {
-            const kp = tournament.kpSettings;
-            formatHtml += `<ul style="list-style-position: inside; padding-left: 1rem;">
-              <li>Groups: ${kp.numberOfGroups}</li>
-              <li>Teams per Group: ${kp.groupSize}</li>
-              <li>Qualifiers: Top ${kp.qualifiersPerGroup} from each group</li>
-            </ul>`;
+            const settings = tournament.kpSettings;
+            formatHTML = `
+                <p style="margin-bottom: 1rem; line-height: 1.7;">
+                    This tournament follows the highly competitive <strong>Kill Points (KP)</strong> format. Teams will battle through a series of qualifiers to earn their spot in the Grand Finals. Both placement and kill points are crucial for advancing.
+                </p>
+                <p style="margin-bottom: 1.5rem; font-weight: 600; color: var(--accent);">Key Rules:</p>
+                <ul style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 1rem;">
+                    <li style="display: flex; align-items: start; gap: 0.75rem;"><i class="fas fa-sitemap" style="color: var(--accent); margin-top: 5px;"></i><div><strong>Structure:</strong> The tournament consists of ${settings.numberOfGroups || 'multiple'} qualifier groups leading to a final championship match.</div></li>
+                    <li style="display: flex; align-items: start; gap: 0.75rem;"><i class="fas fa-users" style="color: var(--accent); margin-top: 5px;"></i><div><strong>Group Stage:</strong> Each of the ${settings.numberOfGroups || 'qualifier'} groups will consist of ${settings.groupSize || 'several'} teams battling for dominance.</div></li>
+                    <li style="display: flex; align-items: start; gap: 0.75rem;"><i class="fas fa-trophy" style="color: var(--accent); margin-top: 5px;"></i><div><strong>Advancement:</strong> Only the top <strong>${settings.qualifiersPerGroup || 'few'} teams</strong> from each group will advance to the next stage.</div></li>
+                </ul>
+            `;
+        } else {
+            formatHTML = `
+                <p style="margin-bottom: 1rem; line-height: 1.7;">
+                    This tournament features a <strong>${tournament.format ? tournament.format.replace('_', ' ') : 'Standard'}</strong> format. Teams will compete in a straightforward bracket to determine the champion.
+                </p>
+                 <p>More detailed rules will be posted in the schedule section below.</p>
+            `;
         }
-        formatContainer.innerHTML = formatHtml;
+        formatContainer.innerHTML = formatHTML;
 
         document.getElementById('game-name').textContent = tournament.game || 'TBD';
         document.getElementById('tournament-format').textContent = tournament.format || 'TBD';
@@ -555,108 +455,8 @@
                 prizeList.innerHTML += `<li><span class="info-label">${place.charAt(0).toUpperCase() + place.slice(1)} Place</span><span class="info-value">₹${amount.toLocaleString('en-IN')}</span></li>`;
             });
         }
-        updateStatusUI(tournament);
-        updateSchedule(tournament);
-        renderLeaderboard(tournament.participants || []);
     }
     
-    function updateStatusUI(tournament) {
-        const status = calculateTournamentStatus(tournament);
-        const primaryActionBtn = document.getElementById('primary-action');
-        const registrationMessage = document.getElementById('registration-message');
-        const leaderboardSection = document.getElementById('leaderboard-section');
-        
-        registrationMessage.style.display = 'none';
-        leaderboardSection.style.display = 'none';
-        primaryActionBtn.style.display = 'flex';
-        primaryActionBtn.disabled = false;
-        switch(status) {
-            case 'registration_open':
-                registrationMessage.style.display = 'block';
-                primaryActionBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
-                primaryActionBtn.onclick = () => {
-                    const sessionData = getSessionData();
-                    if (sessionData && sessionData.data.user) {
-                        window.location.href = `team-registration.html?slug=${currentTournament.slug}`;
-                    } else {
-                        redirectToAuth('register');
-                    }
-                };
-                break;
-            case 'live':
-                leaderboardSection.style.display = 'block';
-                primaryActionBtn.style.display = 'none';
-                break;
-            case 'completed':
-                leaderboardSection.style.display = 'block';
-                leaderboardSection.querySelector('.section-title').textContent = 'Final Results';
-                primaryActionBtn.style.display = 'none';
-                break;
-            default:
-                primaryActionBtn.innerHTML = '<i class="fas fa-clock"></i> Registration Closed';
-                primaryActionBtn.disabled = true;
-                break;
-        }
-    }
-    
-    function renderLeaderboard(participants) {
-        const leaderboardRows = document.getElementById('leaderboard-rows');
-        if (!participants || participants.length === 0) {
-            leaderboardRows.innerHTML = `<div style="text-align:center; padding: 2rem; color: var(--muted);">No teams have registered yet.</div>`;
-            return;
-        }
-        leaderboardRows.innerHTML = participants.map((team, index) => {
-            const rank = index + 1;
-            const rankClass = rank === 1 ? 'first' : '';
-            const playersList = team.players.map(p => p.name).join(', ');
-            return `
-                <div class="leaderboard-row">
-                    <div class="rank ${rankClass}">#${rank}</div>
-                    <div class="team-info">
-                        <div class="team-avatar">${team.teamName.charAt(0).toUpperCase()}</div>
-                        <div>${team.teamName}</div>
-                    </div>
-                    <div>${playersList}</div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    function updateSchedule(tournament) {
-        const container = document.getElementById('schedule-timeline');
-        let allEvents = [];
-        
-        allEvents.push({ date: new Date(tournament.registrationStart), title: 'Registration Opens' });
-        allEvents.push({ date: new Date(tournament.registrationEnd), title: 'Registration Closes' });
-        allEvents.push({ date: new Date(tournament.tournamentStart), title: 'Tournament Begins' });
-        allEvents.push({ date: new Date(tournament.tournamentEnd), title: 'Tournament Ends' });
-
-        if (tournament.scheduleEvents) {
-            tournament.scheduleEvents.forEach(event => allEvents.push({ date: new Date(`${event.date}T${event.time}`), title: event.title, description: event.description }));
-        }
-        if (tournament.format === 'kp' && tournament.kpSettings && tournament.kpSettings.matchSchedule) {
-            tournament.kpSettings.matchSchedule.forEach(match => allEvents.push({ date: new Date(match.date), title: match.match, description: `${match.teams} teams competing` }));
-        }
-        allEvents.sort((a, b) => a.date - b.date);
-        if (allEvents.length <= 4 && !tournament.scheduleEvents && !(tournament.kpSettings && tournament.kpSettings.matchSchedule)) {
-             container.innerHTML = `<div class="empty-schedule" style="text-align:center; padding: 2rem;"><p>No detailed schedule has been posted yet.</p></div>`;
-        } else {
-            container.innerHTML = allEvents.map(event => {
-                const day = event.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                const time = event.date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-                return `
-                    <div class="timeline-item">
-                        <div class="timeline-date"><div class="timeline-day">${day}</div><div class="timeline-time">${time}</div></div>
-                        <div class="timeline-content">
-                            <h3 class="timeline-title">${event.title}</h3>
-                            ${event.description ? `<p class="timeline-desc">${event.description}</p>` : ''}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-    }
-
     function checkUserAuthentication() {
       const sessionData = getSessionData();
       const guestMenu = document.getElementById('guest-menu');
