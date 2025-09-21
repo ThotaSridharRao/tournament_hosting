@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity=""
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="navbar.css">
 
   <style>
     /* Theme variables */
@@ -52,63 +53,6 @@
     .container {
       width: min(94%, var(--container));
       margin: 0 auto;
-    }
-
-    /* Header Styles */
-    header.site-header {
-      position: fixed;
-      inset: 0 0 auto 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 2rem;
-      background: rgba(26, 26, 26, 0.5); 
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      z-index: 1200;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      height: 60px;
-    }
-    
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    
-    .header-cta {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #fff;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    /* --- ADD THIS NEW RULE FOR THE CLOSE BUTTON --- */
-    .mobile-nav-close {
-        position: absolute;
-        top: 1rem;
-        right: 1.5rem;
-        background: none;
-        border: none;
-        color: var(--muted);
-        font-size: 1.75rem;
-        cursor: pointer;
-        line-height: 1;
-        transition: color 0.2s ease, transform 0.3s ease;
-    }
-
-    .mobile-nav-close:hover {
-        color: var(--copy);
-        transform: rotate(90deg);
-    }
-
-    .header-cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(255, 69, 0, 0.3);
     }
 
     /* Main content */
@@ -797,20 +741,6 @@
     const API_BASE_URL = 'https://t2-237c.onrender.com';
     let currentTournament = null;
 
-    function redirectToAuth(tab = 'register') {
-      const returnUrl = encodeURIComponent(window.location.href);
-      window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
-    }
-
-    function getSessionData() {
-      const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
-      try {
-        return session ? JSON.parse(session) : null;
-      } catch (error) {
-        return null;
-      }
-    }
-
     async function getTournamentData(tournamentSlug) {
       try {
         const response = await fetch(`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}`);
@@ -1016,112 +946,24 @@
                 break;
         }
     }
-    
-    function checkUserAuthentication() {
-      const sessionData = getSessionData();
-      const guestMenu = document.getElementById('guest-menu');
-      const userMenu = document.getElementById('user-menu');
-      const user = sessionData?.data?.user || sessionData?.user;
-
-      if (user) {
-        document.getElementById('modal-username').textContent = user.username || user.email.split('@')[0];
-        guestMenu.style.display = 'none';
-        userMenu.style.display = 'flex';
-      } else {
-        guestMenu.style.display = 'flex';
-        userMenu.style.display = 'none';
-      }
-    }
-
-    function logout() {
-      localStorage.removeItem('earena_session');
-      sessionStorage.removeItem('earena_session');
-      window.location.reload();
-    }
-
-     // --- ADD THIS ENTIRE NEW FUNCTION ---
-    function setupMobileNav() {
-      const sessionData = getSessionData();
-      const mobileNavContainer = document.getElementById('mobile-nav');
-      const user = sessionData?.data?.user || sessionData?.user;
-
-      // --- NEW: Added a close button template ---
-      const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
-
-      if (user) {
-        // Logged-in user view
-        const username = user.username || user.email.split('@')[0];
-        mobileNavContainer.innerHTML = `
-          ${closeButtonHTML}
-          <div class="profile-header">
-            <div class="profile-photo"><i class="fas fa-user"></i></div>
-            <div class="profile-info">
-              <div class="profile-username">${username}</div>
-            </div>
-          </div>
-          <div class="profile-actions">
-            <a href="user-dashboard.html" class="profile-action">
-              <i class="fas fa-user-cog"></i>
-              <span>My Account</span>
-            </a>
-            <button class="profile-action" onclick="logout()">
-              <i class="fas fa-sign-out-alt"></i>
-              <span>Logout</span>
-            </button>
-          </div>
-        `;
-      } else {
-        // Guest view
-        mobileNavContainer.innerHTML = `
-          ${closeButtonHTML}
-          <div class="guest-view">
-            <i class="fas fa-gamepad"></i>
-            <p>Join the arena to register for tournaments, track your stats, and win prizes!</p>
-            <button class="btn-primary" style="width: 100%; margin-top: 1rem;" onclick="redirectToAuth()">Join Us Now</button>
-          </div>
-        `;
-      }
-    }
 
     document.addEventListener('DOMContentLoaded', async () => {
-      // --- SETUP UI INTERACTIONS FIRST ---
-      const hamburger = document.querySelector('.hamburger');
-      const mobileNav = document.getElementById('mobile-nav');
-
-      // Function to close the mobile nav
-      function closeMobileNav() {
-        mobileNav.classList.remove('is-open');
-        hamburger.setAttribute('aria-expanded', 'false');
+      // --- PAGE-SPECIFIC LOGIC ---
+      const urlParams = new URLSearchParams(window.location.search);
+      const slug = urlParams.get('slug');
+      
+      if (!slug) {
+        document.getElementById('tournament-title').textContent = "Tournament Not Found";
+        document.getElementById('tournament-subtitle').textContent = "Please provide a valid tournament URL.";
+        return;
       }
-
-      // Toggle nav with hamburger button
-      hamburger.addEventListener('click', () => {
-        const isOpen = mobileNav.classList.toggle('is-open');
-        hamburger.setAttribute('aria-expanded', isOpen);
-      });
-
-      // Close nav by clicking the close button or outside the panel
-      document.addEventListener('click', (event) => {
-        // Check if the nav is open before proceeding
-        if (!mobileNav.classList.contains('is-open')) return;
-
-        // Close if the 'X' button is clicked
-        const closeButton = event.target.closest('.mobile-nav-close');
-        if (closeButton) {
-          closeMobileNav();
-          return;
-        }
-
-        // Close if click is outside the nav and not on the hamburger
-        const isClickInsideNav = event.target.closest('#mobile-nav');
-        const isClickOnHamburger = event.target.closest('.hamburger');
-        if (!isClickInsideNav && !isClickOnHamburger) {
-          closeMobileNav();
-        }
-      });
       
-      setupMobileNav();
+      currentTournament = await getTournamentData(slug);
+      if (currentTournament) {
+        updateUI(currentTournament);
+      }
       
+      // FAQ Accordion Logic
       const faqItems = document.querySelectorAll('.faq-item');
       faqItems.forEach(item => {
           const question = item.querySelector('.faq-question');
@@ -1133,25 +975,9 @@
               item.classList.toggle('active');
           });
       });
-      
-      // --- NOW, HANDLE TOURNAMENT-SPECIFIC DATA ---
-      const urlParams = new URLSearchParams(window.location.search);
-      const slug = urlParams.get('slug');
-      
-      if (!slug) {
-        document.getElementById('tournament-title').textContent = "Tournament Not Found";
-        document.getElementById('tournament-subtitle').textContent = "Please provide a valid tournament URL.";
-        return;
-      }
-      
-      checkUserAuthentication();
-      
-      currentTournament = await getTournamentData(slug);
-      if (currentTournament) {
-        updateUI(currentTournament);
-      }
     });
   </script>
+  <script src="navbar.js"></script>
 </body>
 
 </html>
