@@ -21,7 +21,7 @@
       --accent: #ff4500; 
       --accent-2: #e65c00; 
       --glass: rgba(255, 255, 255, 0.05);
-      --radius: 16px; /* Slightly larger radius for glass effect */
+      --radius: 16px;
       --container: 1200px;
       --ease: 180ms cubic-bezier(.2, .9, .2, 1);
     }
@@ -41,8 +41,6 @@
       font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       background: linear-gradient(180deg, var(--bg), #070707 140%);
       color: var(--copy);
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
       line-height: 1.45;
     }
 
@@ -177,7 +175,6 @@
       margin-top: 2rem;
     }
 
-    /* UPDATED: Glassmorphism for all cards */
     .details-main, .info-card {
       background: var(--glass);
       backdrop-filter: blur(10px);
@@ -190,7 +187,7 @@
     .details-sidebar {
       display: flex;
       flex-direction: column;
-      gap: 2.5rem; /* UPDATED: Increased spacing */
+      gap: 2.5rem;
     }
 
     .info-card h3 {
@@ -203,6 +200,42 @@
     .info-label { color: var(--muted); }
     .info-value { font-weight: 600; }
     
+    /* Leaderboard Section */
+    .leaderboard-section { padding: 4rem 0; }
+    .leaderboard-table {
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+    .leaderboard-header {
+      background: rgba(255, 69, 0, 0.1);
+      padding: 1rem 1.5rem;
+      display: grid;
+      grid-template-columns: 60px 1fr 2fr;
+      gap: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .leaderboard-row {
+      padding: 1rem 1.5rem;
+      display: grid;
+      grid-template-columns: 60px 1fr 2fr;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      align-items: center;
+    }
+    .leaderboard-row:last-child { border-bottom: none; }
+    .leaderboard-row:hover { background: rgba(255, 255, 255, 0.05); }
+    .rank.first { color: var(--accent); }
+    .team-info { display: flex; align-items: center; gap: 0.75rem; }
+    .team-avatar { width: 40px; height: 40px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #000; }
+
     /* Schedule Section */
     .schedule-section { padding: 4rem 0; }
     .schedule-timeline { margin-top: 2rem; }
@@ -220,13 +253,127 @@
     .section-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; margin-bottom: 1rem; }
     .section-subtitle { font-size: 1.1rem; color: var(--muted); max-width: 600px; margin: 0 auto; }
 
+    /* NEW: FAQ Section */
+    .faq-section {
+        padding: 4rem 0;
+    }
+    .faq-grid {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: left;
+    }
+    .faq-item {
+        background: var(--glass);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: var(--radius);
+        margin-bottom: 1rem;
+    }
+    .faq-question {
+        width: 100%;
+        background: none;
+        border: none;
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        color: var(--copy);
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-align: left;
+    }
+    .faq-question i {
+        transition: transform 0.3s ease;
+        color: var(--accent);
+    }
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+    }
+    .faq-answer p {
+        color: var(--muted);
+        padding: 0 1.5rem 1.5rem 1.5rem;
+        margin: 0;
+        line-height: 1.7;
+    }
+    .faq-item.active .faq-answer {
+        max-height: 200px; /* Adjust as needed */
+    }
+    .faq-item.active .faq-question i {
+        transform: rotate(45deg);
+    }
+
+
     /* Footer Styles */
     footer.site-footer {
-      padding: 2.5rem 1rem;
-      background: rgba(26, 26, 26, 0.5); /* Glassmorphism change */
+      padding: 4rem 2rem 2rem;
+      background: rgba(10, 10, 10, 0.5);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .footer-grid {
+      max-width: 1200px;
+      margin: 0 auto 3rem auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2.5rem;
+      text-align: left;
+    }
+    .footer-column h4 {
+      color: var(--copy);
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    .footer-column ul {
+      list-style: none;
+      padding: 0;
+    }
+    .footer-column ul a, .footer-column p {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s ease;
+      display: block;
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+    }
+    .footer-column ul a:hover {
+        color: var(--accent);
+    }
+    .footer-brand .brand {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        color: var(--copy);
+    }
+    .footer-brand p {
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+    .social-links {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .social-links a {
+      color: var(--muted);
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+    .social-links a:hover {
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
     }
     
     /* Profile Dropdown Styles */
@@ -246,7 +393,7 @@
     @media (max-width: 768px) {
       .details-grid { grid-template-columns: 1fr; }
       .hero-actions { flex-direction: column; }
-      .btn-primary, .btn-secondary { text-align: center; }
+      .btn-primary { text-align: center; }
       .timeline-item { flex-direction: column; gap: 1rem; }
       .timeline-date { text-align: left; }
     }
@@ -351,6 +498,25 @@
       </div>
     </section>
 
+    <section class="leaderboard-section" id="leaderboard-section" style="display: none;">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Leaderboard</h2>
+          <p class="section-subtitle">Current standings based on registered teams.</p>
+        </div>
+        <div class="leaderboard-table" id="leaderboard-table">
+          <div class="leaderboard-header">
+            <div>Rank</div>
+            <div>Team</div>
+            <div>Players</div>
+          </div>
+          <div id="leaderboard-rows">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="schedule-section">
       <div class="container">
         <div class="section-header">
@@ -360,12 +526,97 @@
         <div class="schedule-timeline" id="schedule-timeline"></div>
       </div>
     </section>
+
+    <!-- NEW: FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+            </div>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>What do I need to get started?</span>
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>All you need is an account and the game you want to compete in! Check the specific tournament rules for any additional requirements, but generally, it's that simple to start your competitive journey.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>How are prizes awarded?</span>
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Prizes are typically awarded within 7-14 business days after a tournament concludes and results are verified. Winnings are sent via the payment method you have on file in your user account.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>What is the fair play policy?</span>
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>We have a zero-tolerance policy for cheating, hacking, or any form of unsportsmanlike conduct. All players must adhere to our code of conduct, and we use advanced anti-cheat software to ensure a fair playing field.</p>
+                    </div>
+                </div>
+                 <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Can I stream my matches?</span>
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolutely! We encourage players to stream their matches. Just be sure to check the specific tournament rules, as some events may have restrictions or require a stream delay.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
   </main>
 
   <footer class="site-footer">
-      <div class="container footer-bottom">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-column footer-brand">
+          <a href="index.html" class="brand">EArena</a>
+          <p>The ultimate destination for competitive gaming.</p>
+           <div class="social-links">
+              <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+              <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+              <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+              <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+        <div class="footer-column">
+          <h4>Tournaments</h4>
+          <ul>
+            <li><a href="#">Browse All</a></li>
+            <li><a href="#">Live Matches</a></li>
+            <li><a href="#">Upcoming</a></li>
+            <li><a href="#">Past Results</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Community</h4>
+          <ul>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">Forums</a></li>
+            <li><a href="#">Support</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
         <p>&copy; 2025 EArena. All rights reserved.</p>
       </div>
+    </div>
   </footer>
 
   <script>
@@ -402,6 +653,68 @@
       }
     }
 
+    function updateSchedule(tournament) {
+        const container = document.getElementById('schedule-timeline');
+        if (!container) return;
+        let allEvents = [];
+        
+        allEvents.push({ date: new Date(tournament.registrationStart), title: 'Registration Opens' });
+        allEvents.push({ date: new Date(tournament.registrationEnd), title: 'Registration Closes' });
+        allEvents.push({ date: new Date(tournament.tournamentStart), title: 'Tournament Begins' });
+        allEvents.push({ date: new Date(tournament.tournamentEnd), title: 'Tournament Ends' });
+
+        if (tournament.scheduleEvents) {
+            tournament.scheduleEvents.forEach(event => allEvents.push({ date: new Date(`${event.date}T${event.time}`), title: event.title, description: event.description }));
+        }
+        if (tournament.format === 'kp' && tournament.kpSettings && tournament.kpSettings.matchSchedule) {
+            tournament.kpSettings.matchSchedule.forEach(match => allEvents.push({ date: new Date(match.date), title: match.match, description: `${match.teams} teams competing` }));
+        }
+
+        allEvents.sort((a, b) => a.date - b.date);
+
+        if (allEvents.length <= 4 && !tournament.scheduleEvents && !(tournament.kpSettings && tournament.kpSettings.matchSchedule)) {
+             container.innerHTML = `<div class="empty-schedule" style="text-align:center; padding: 2rem;"><p>No detailed match schedule has been posted yet.</p></div>`;
+             return;
+        }
+        
+        container.innerHTML = allEvents.map(event => {
+            const day = event.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            const time = event.date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+            return `
+                <div class="timeline-item">
+                    <div class="timeline-date"><div class="timeline-day">${day}</div><div class="timeline-time">${time}</div></div>
+                    <div class="timeline-content">
+                        <h3 class="timeline-title">${event.title}</h3>
+                        ${event.description ? `<p class="timeline-desc">${event.description}</p>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderLeaderboard(participants) {
+        const leaderboardRows = document.getElementById('leaderboard-rows');
+        if (!participants || participants.length === 0) {
+            leaderboardRows.innerHTML = `<div style="text-align:center; padding: 2rem; color: var(--muted);">No teams have registered yet.</div>`;
+            return;
+        }
+        leaderboardRows.innerHTML = participants.map((team, index) => {
+            const rank = index + 1;
+            const rankClass = rank === 1 ? 'first' : '';
+            const playersList = team.players.map(p => p.name).join(', ');
+            return `
+                <div class="leaderboard-row">
+                    <div class="rank ${rankClass}">#${rank}</div>
+                    <div class="team-info">
+                        <div class="team-avatar">${team.teamName.charAt(0).toUpperCase()}</div>
+                        <div>${team.teamName}</div>
+                    </div>
+                    <div>${playersList}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
     function updateUI(tournament) {
         if (!tournament) return;
         document.getElementById('page-title').textContent = `${tournament.title} | EArena`;
@@ -411,29 +724,20 @@
         const overviewContainer = document.getElementById('tournament-overview');
         overviewContainer.innerHTML = `<p>${tournament.description || "No description available."}</p>`;
         
-        // UPDATED: More descriptive tournament format display
         const formatContainer = document.getElementById('tournament-format-details');
         let formatHTML = '';
         if (tournament.format === 'kp' && tournament.kpSettings) {
             const settings = tournament.kpSettings;
             formatHTML = `
-                <p style="margin-bottom: 1rem; line-height: 1.7;">
-                    This tournament follows the highly competitive <strong>Kill Points (KP)</strong> format. Teams will battle through a series of qualifiers to earn their spot in the Grand Finals. Both placement and kill points are crucial for advancing.
-                </p>
-                <p style="margin-bottom: 1.5rem; font-weight: 600; color: var(--accent);">Key Rules:</p>
+                <p style="margin-bottom: 1rem; line-height: 1.7;">This tournament follows the <strong>Kill Points (KP)</strong> format.</p>
                 <ul style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 1rem;">
-                    <li style="display: flex; align-items: start; gap: 0.75rem;"><i class="fas fa-sitemap" style="color: var(--accent); margin-top: 5px;"></i><div><strong>Structure:</strong> The tournament consists of ${settings.numberOfGroups || 'multiple'} qualifier groups leading to a final championship match.</div></li>
-                    <li style="display: flex; align-items: start; gap: 0.75rem;"><i class="fas fa-users" style="color: var(--accent); margin-top: 5px;"></i><div><strong>Group Stage:</strong> Each of the ${settings.numberOfGroups || 'qualifier'} groups will consist of ${settings.groupSize || 'several'} teams battling for dominance.</div></li>
-                    <li style="display: flex; align-items: start; gap: 0.75rem;"><i class="fas fa-trophy" style="color: var(--accent); margin-top: 5px;"></i><div><strong>Advancement:</strong> Only the top <strong>${settings.qualifiersPerGroup || 'few'} teams</strong> from each group will advance to the next stage.</div></li>
+                    <li style="display: flex; align-items: start; gap: 0.75rem;"><i class="fas fa-sitemap" style="color: var(--accent); margin-top: 5px;"></i><div><strong>Structure:</strong> ${settings.numberOfGroups || 'multiple'} qualifier groups.</div></li>
+                    <li style="display: flex; align-items: start; gap: 0.75rem;"><i class="fas fa-users" style="color: var(--accent); margin-top: 5px;"></i><div><strong>Groups:</strong> ${settings.groupSize || 'several'} teams per group.</div></li>
+                    <li style="display: flex; align-items: start; gap: 0.75rem;"><i class="fas fa-trophy" style="color: var(--accent); margin-top: 5px;"></i><div><strong>Advancement:</strong> Top <strong>${settings.qualifiersPerGroup || 'few'} teams</strong> advance.</div></li>
                 </ul>
             `;
         } else {
-            formatHTML = `
-                <p style="margin-bottom: 1rem; line-height: 1.7;">
-                    This tournament features a <strong>${tournament.format ? tournament.format.replace('_', ' ') : 'Standard'}</strong> format. Teams will compete in a straightforward bracket to determine the champion.
-                </p>
-                 <p>More detailed rules will be posted in the schedule section below.</p>
-            `;
+            formatHTML = `<p>This tournament features a <strong>${tournament.format ? tournament.format.replace('_', ' ') : 'Standard'}</strong> format.</p>`;
         }
         formatContainer.innerHTML = formatHTML;
 
@@ -454,6 +758,46 @@
             Object.entries(tournament.prizeDistribution).forEach(([place, amount]) => {
                 prizeList.innerHTML += `<li><span class="info-label">${place.charAt(0).toUpperCase() + place.slice(1)} Place</span><span class="info-value">₹${amount.toLocaleString('en-IN')}</span></li>`;
             });
+        }
+        
+        updateStatusAndLeaderboard(tournament);
+        updateSchedule(tournament);
+    }
+    
+    function updateStatusAndLeaderboard(tournament) {
+        const status = calculateTournamentStatus(tournament);
+        const primaryActionBtn = document.getElementById('primary-action');
+        const leaderboardSection = document.getElementById('leaderboard-section');
+        
+        leaderboardSection.style.display = 'none';
+        primaryActionBtn.style.display = 'flex';
+        primaryActionBtn.disabled = false;
+
+        switch(status) {
+            case 'registration_open':
+                primaryActionBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
+                primaryActionBtn.onclick = () => {
+                    const sessionData = getSessionData();
+                    if (sessionData && sessionData.data.user) {
+                        window.location.href = `team-registration.html?slug=${currentTournament.slug}`;
+                    } else {
+                        redirectToAuth('register');
+                    }
+                };
+                break;
+            case 'live':
+            case 'completed':
+                leaderboardSection.style.display = 'block';
+                primaryActionBtn.style.display = 'none';
+                renderLeaderboard(tournament.participants || []);
+                if(status === 'completed') {
+                    leaderboardSection.querySelector('.section-title').textContent = 'Final Results';
+                }
+                break;
+            default:
+                primaryActionBtn.innerHTML = '<i class="fas fa-clock"></i> Registration Closed';
+                primaryActionBtn.disabled = true;
+                break;
         }
     }
     
@@ -492,6 +836,19 @@
       if (currentTournament) {
         updateUI(currentTournament);
       }
+      
+      // NEW: Initialize FAQ Accordion
+      const faqItems = document.querySelectorAll('.faq-item');
+      faqItems.forEach(item => {
+          const question = item.querySelector('.faq-question');
+          question.addEventListener('click', () => {
+              const currentlyActive = document.querySelector('.faq-item.active');
+              if (currentlyActive && currentlyActive !== item) {
+                  currentlyActive.classList.remove('active');
+              }
+              item.classList.toggle('active');
+          });
+      });
     });
   </script>
 </body>
