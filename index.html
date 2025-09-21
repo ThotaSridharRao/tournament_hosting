@@ -61,6 +61,83 @@
         animation-iteration-count: 1 !important;
       }
     }
+    /* --- ADD THIS ENTIRE BLOCK FOR MOBILE NAV --- */
+    .mobile-nav {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 300px;
+      height: 100%;
+      background: #1a1a1a; /* Using a color from your theme */
+      z-index: 2000;
+      transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+      padding-top: 60px;
+      display: flex;
+      flex-direction: column;
+    }
+    .mobile-nav.is-open { right: 0; }
+    .mobile-nav-close { position: absolute; top: 1rem; right: 1.5rem; background: none; border: none; color: var(--text-secondary); font-size: 1.75rem; cursor: pointer; transition: all 0.2s ease; }
+    .mobile-nav-close:hover { color: var(--text-primary); }
+    .mobile-nav .guest-view { padding: 2rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-top: 2rem; }
+    .mobile-nav .guest-view i { font-size: 3rem; color: var(--primary-color); }
+    .mobile-nav .guest-view p { color: var(--text-secondary); line-height: 1.6; }
+    /* --- END OF BLOCK --- */
+
+    /* --- ADD THIS MISSING BLOCK TO INDEX.HTML --- */
+    .mobile-nav .profile-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .mobile-nav .profile-photo {
+      width: 50px;
+      height: 50px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    
+    .mobile-nav .profile-username {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    
+    .mobile-nav .profile-actions {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .mobile-nav .profile-action {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+    }
+
+    .mobile-nav .profile-action:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+    }
 
     /* =========================
        Base resets & accessibility
@@ -1081,15 +1158,14 @@
             </div>
         </div>
 
-        <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-nav">
-          <i class="fas fa-bars"></i>
-        </button>
+        <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <i class="fas fa-bars"></i>
+      </button>
     </div>
   </header>
 
-  <!-- Mobile nav (toggle) -->
   <div id="mobile-nav" class="mobile-nav" hidden>
-  </div>
+    </div>
 
   <main id="main">
     <!-- HERO -->
@@ -1459,6 +1535,96 @@
       }
     }
 
+    // --- ADD THIS ENTIRE BLOCK OF JAVASCRIPT ---
+
+    // This function builds the content of the mobile menu
+    function setupMobileNav() {
+      const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+      const mobileNavContainer = document.getElementById('mobile-nav');
+      let user = null;
+      if (session) {
+          try {
+              const sessionData = JSON.parse(session);
+              user = sessionData?.data?.user || sessionData?.user;
+          } catch { user = null; }
+      }
+
+      const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
+
+      if (user) {
+        // Logged-in view
+        const username = user.username || user.email.split('@')[0];
+        mobileNavContainer.innerHTML = `
+          ${closeButtonHTML}
+          <div class="profile-header" style="padding: 1.5rem; border-bottom: 1px solid #333;">
+            <div class="profile-username">${username}</div>
+          </div>
+          <div class="profile-actions">
+            <a href="user-dashboard.html" class="profile-action">
+              <i class="fas fa-user-cog"></i> <span>My Account</span>
+            </a>
+            <a href="#tournaments" class="profile-action">
+              <i class="fas fa-trophy"></i> <span>Tournaments</span>
+            </a>
+            <button class="profile-action" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+            </button>
+          </div>
+        `;
+      } else {
+        // Guest view
+        mobileNavContainer.innerHTML = `
+          ${closeButtonHTML}
+          <div class="guest-view">
+            <i class="fas fa-gamepad"></i>
+            <p>Join the arena to compete in tournaments and win prizes!</p>
+            <button class="header-cta" style="width: 100%; margin-top: 1rem;" onclick="redirectToAuth()">Join Us Now</button>
+          </div>
+        `;
+      }
+    }
+
+    // This function adds all the click behaviors
+    function initializeMobileNav() {
+        const hamburger = document.querySelector('.hamburger');
+        const mobileNav = document.getElementById('mobile-nav');
+
+        function closeMobileNav() {
+            mobileNav.classList.remove('is-open');
+            mobileNav.hidden = true;
+            hamburger.setAttribute('aria-expanded', 'false');
+        }
+
+        hamburger.addEventListener('click', () => {
+            const isOpen = mobileNav.classList.toggle('is-open');
+            mobileNav.hidden = !isOpen;
+            hamburger.setAttribute('aria-expanded', isOpen);
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!mobileNav.classList.contains('is-open')) return;
+            const closeButton = event.target.closest('.mobile-nav-close');
+            if (closeButton) {
+                closeMobileNav();
+                return;
+            }
+            const isClickInsideNav = event.target.closest('#mobile-nav');
+            const isClickOnHamburger = event.target.closest('.hamburger');
+            if (!isClickInsideNav && !isClickOnHamburger) {
+                closeMobileNav();
+            }
+        });
+        
+        // Also close the nav when a link inside it is clicked
+        mobileNav.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
+                closeMobileNav();
+            }
+        });
+    }
+
+    // --- END OF NEW BLOCK ---
+
 
     // Smooth scroll for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1561,6 +1727,8 @@
     document.addEventListener('DOMContentLoaded', async () => {
       console.log('Initializing EArena homepage...');
       checkUserAuthentication();
+      setupMobileNav(); // <-- ADD THIS
+      initializeMobileNav(); // <-- AND THIS
       if (navigator.onLine) {
         await populateAllSections();
       } else {
