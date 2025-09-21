@@ -10,6 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- jsPDF for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     
     <style>
         /* =========================
@@ -144,6 +147,10 @@
             color: var(--text-primary);
             background-color: rgba(255, 255, 255, 0.1);
         }
+
+        /* Drag and Drop Styles */
+        .schedule-event { cursor: grab; user-select: none; }
+        .schedule-event.dragging { opacity: 0.5; background: rgba(255, 69, 0, 0.1); }
         
         /* Responsive */
         @media (max-width: 1024px) {
@@ -282,7 +289,14 @@
             _id: "mock123", title: "Dev Test Championship", game: "Valorant", slug: "dev-test-championship", description: "This is a mock tournament for development and testing purposes.",
             registrationStart: "2025-09-20T10:00:00", registrationEnd: "2025-09-30T23:59:00", tournamentStart: "2025-10-05T12:00:00", tournamentEnd: "2025-10-07T22:00:00",
             prizePool: 50000, maxTeams: 64, participant_count: 27, format: "single-elimination", posterImage: "https://placehold.co/600x400/1a1a1a/ff4500?text=Dev+Tournament", status: "registration_open",
-            participants: [], entryFee: 100, maxPlayersPerTeam: 5
+            participants: [
+                { teamName: "Mock Team A", players: [{ name: "Player 1", email: "p1@mock.com", inGameId: "MockP1", isCaptain: true }, { name: "Player 2", email: "p2@mock.com", inGameId: "MockP2" }] },
+                { teamName: "Mock Team B", players: [{ name: "Player 3", email: "p3@mock.com", inGameId: "MockP3", isCaptain: true }] }
+            ], entryFee: 100, maxPlayersPerTeam: 5,
+            scheduleEvents: [
+                { title: "Check-in Opens", description: "Teams must check in", date: "2025-10-05", time: "11:00:00" },
+                { title: "Round 1 Begins", description: "First set of matches", date: "2025-10-05", time: "12:00:00" }
+            ]
         };
         let adminTournaments = [mockTournament];
         
@@ -357,7 +371,6 @@
 
         function updateStatus(slug) {
             console.log("Update status clicked for:", slug); // Debugging trace added
-            // Allow the UI to render for the mock tournament. The block will be in the submit handler.
             const tournament = adminTournaments.find(t => t.slug === slug);
             if (!tournament) {
                 alert('Tournament not found!');
@@ -388,8 +401,76 @@
             renderOperation('edit', tournamentToEdit);
         }
 
-        async function downloadData(slug, format) {
-            // ... (existing downloadData function)
+        function downloadData(slug, format) {
+            const tournament = adminTournaments.find(t => t.slug === slug);
+            if (!tournament) {
+                alert("Tournament not found!");
+                return;
+            }
+
+            if (format === 'kp-slots-pdf' && tournament.format === 'kp') {
+                const participants = tournament.participants || [];
+                if (participants.length === 0) {
+                    alert("No teams registered yet. Cannot generate KP slots PDF.");
+                    return;
+                }
+                
+                const token = getSessionData()?.token;
+                if (!token) {
+                    alert("Authentication required. Please log in again.");
+                    return;
+                }
+                
+                window.open(`${API_BASE_URL}/api/tournaments/${slug}/export/kp-slots-pdf?token=${token}`, '_blank');
+                return;
+            }
+
+            // Regular export logic with proper variable definitions
+            const participants = tournament.participants || [];
+            if (participants.length === 0) {
+                alert("This tournament has no registered participants to export.");
+                return;
+            }
+
+            const headers = ["Team Name", "Player Name", "In-Game ID", "Email", "Captain?"];
+            const rows = [];
+            
+            participants.forEach(team => {
+                (team.players || []).forEach(player => {
+                    rows.push([
+                        team.teamName || "N/A",
+                        player.name || "N/A", 
+                        player.inGameId || "N/A",
+                        player.email || "N/A",
+                        player.isCaptain ? "Yes" : "No"
+                    ]);
+                });
+            });
+
+            if (format === 'excel') {
+                let csvContent = "data:text/csv;charset=utf-8," 
+                    + headers.join(",") + "\n" 
+                    + rows.map(e => e.join(",")).join("\n");
+                
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `${slug}_participants.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+            } else if (format === 'pdf') {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.text(`Participants for ${tournament.title}`, 14, 16);
+                doc.autoTable({
+                    head: [headers],
+                    body: rows,
+                    startY: 20
+                });
+                doc.save(`${slug}_participants.pdf`);
+            }
         }
 
         function renderTournamentList(containerId, tournaments, actionType) {
@@ -401,7 +482,7 @@
             }
             container.innerHTML = tournaments.map(t => {
                 const title = t.title || t.name || "Untitled";
-                const participants = `${t.participant_count || 0} / ${t.maxTeams || t.max_participants || 'N/A'}`;
+                const participants = `${t.participant_count || (t.participants?.length || 0)} / ${t.maxTeams || t.max_participants || 'N/A'}`;
                 const prize = `₹${(t.prizePool || t.prize_pool || 0).toLocaleString()}`;
                 let actionsHtml = '';
                 switch (actionType) {
@@ -422,9 +503,16 @@
                         actionsHtml = `<button class="submit-btn delete" style="width:auto; padding: 0.5rem 1rem; margin-top:0; background-color: #c82333;" onclick="deleteTournament(event, '${t.slug}')">Confirm Delete</button>`;
                         break;
                     case 'download':
-                        actionsHtml = `
-                            <button class="btn-icon" onclick="downloadData('${t.slug}', 'excel')" title="Download Excel"><i class="fas fa-file-excel" style="font-size: 1.2rem; color: #28a745;"></i></button>
-                            <button class="btn-icon" onclick="downloadData('${t.slug}', 'pdf')" title="Download PDF"><i class="fas fa-file-pdf" style="font-size: 1.2rem; color: #dc3545;"></i></button>`;
+                        if (t.format === 'kp') {
+                            actionsHtml = `
+                                <button class="btn-icon" onclick="downloadData('${t.slug}', 'excel')" title="Download Excel"><i class="fas fa-file-excel" style="font-size: 1.2rem; color: #28a745;"></i></button>
+                                <button class="btn-icon" onclick="downloadData('${t.slug}', 'pdf')" title="Download PDF"><i class="fas fa-file-pdf" style="font-size: 1.2rem; color: #dc3545;"></i></button>
+                                <button class="btn-icon" onclick="downloadData('${t.slug}', 'kp-slots-pdf')" title="Download KP Slots PDF"><i class="fas fa-file-pdf" style="font-size: 1.2rem; color: #ff6347;"></i></button>`;
+                        } else {
+                            actionsHtml = `
+                                <button class="btn-icon" onclick="downloadData('${t.slug}', 'excel')" title="Download Excel"><i class="fas fa-file-excel" style="font-size: 1.2rem; color: #28a745;"></i></button>
+                                <button class="btn-icon" onclick="downloadData('${t.slug}', 'pdf')" title="Download PDF"><i class="fas fa-file-pdf" style="font-size: 1.2rem; color: #dc3545;"></i></button>`;
+                        }
                         break;
                 }
                 return `
@@ -436,7 +524,18 @@
                     </div>`;
             }).join('');
         }
-        
+
+        function removeScheduleEvent(button) {
+            const eventDiv = button.closest('.schedule-event');
+            eventDiv.remove();
+            
+            // Check if no events left, show placeholder
+            const container = document.getElementById('schedule-events-container');
+            if (container.children.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color: var(--muted); margin: 1rem 0;">No schedule events yet. Click "Add Event" to create one.</p>';
+            }
+        }
+
         function getCreateFormHTML() {
             return `
                 <h3 class="operation-title">Create New Tournament</h3>
@@ -547,6 +646,37 @@
         }
         
         function getUpdateScheduleHTML(t) {
+            const scheduleEvents = t.scheduleEvents || [];
+            const eventsHtml = scheduleEvents.map((event, index) => {
+                // Handle different datetime formats
+                let eventDateTime = '';
+                if (event.datetime) {
+                    eventDateTime = event.datetime.slice(0, 16);
+                } else if (event.date && event.time) {
+                    eventDateTime = `${event.date}T${event.time.slice(0, 5)}`;
+                }
+
+                return `
+                    <div class="schedule-event" draggable="true" data-index="${index}" style="border:1px solid var(--border-color); padding:1rem; border-radius:8px; margin-bottom:1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Event Title</label>
+                            <input type="text" name="events[${index}][title]" class="form-input" value="${event.title || ''}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description (1 line)</label>
+                            <input type="text" name="events[${index}][description]" class="form-input" value="${event.description || ''}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date & Time</label>
+                            <input type="datetime-local" name="events[${index}][datetime]" class="form-input" value="${eventDateTime}" required>
+                        </div>
+                        <button type="button" class="btn-icon delete" onclick="removeScheduleEvent(this)" style="float: right; color: #ff6b6b;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+
             return `
                 <div class="operation-title-header">
                     <h3 class="operation-title">Update Schedule: ${t.title}</h3>
@@ -556,7 +686,7 @@
                     <input type="hidden" name="slug" value="${t.slug}">
                     
                     <div id="schedule-events-container">
-                        <!-- Schedule events will be injected here -->
+                        ${eventsHtml || '<p style="text-align:center; color: var(--muted); margin: 1rem 0;">No schedule events yet. Click "Add Event" to create one.</p>'}
                     </div>
                     
                     <button type="button" class="submit-btn btn-info" onclick="addScheduleEvent()">+ Add Event</button>
@@ -638,7 +768,10 @@
                 if (form) form.addEventListener('submit', handleStatusUpdateSubmit);
             } else if (operationName === 'scheduleUpdate') {
                 const form = document.getElementById('update-schedule-form');
-                if (form) form.addEventListener('submit', handleScheduleUpdateSubmit);
+                if (form) {
+                    form.addEventListener('submit', handleScheduleUpdateSubmit);
+                    initDragAndDrop(); // Initialize drag and drop for the schedule editor
+                }
             } else if (['update', 'delete', 'download'].includes(operationName)) {
                 renderTournamentList(`${operationName}-tournament-list`, adminTournaments, operationName);
             }
@@ -675,10 +808,9 @@
             const slug = form.querySelector('input[name="slug"]').value;
             const newStatus = form.querySelector('select[name="status"]').value;
 
-            // Add a guard clause here to prevent submitting the mock tournament
             if (slug === 'dev-test-championship') {
                 alert("This is a mock tournament. Status cannot be saved.");
-                renderOperation('update'); // Go back to the list
+                renderOperation('update');
                 return;
             }
 
@@ -753,9 +885,13 @@
             const container = document.getElementById('schedule-events-container');
             if (!container) return;
 
+            // Remove placeholder if it exists
+            const placeholder = container.querySelector('p');
+            if(placeholder) placeholder.remove();
+
             const index = container.children.length;
             const eventHtml = `
-                <div class="schedule-event" style="border:1px solid var(--border-color); padding:1rem; border-radius:8px; margin-bottom:1rem;">
+                <div class="schedule-event" draggable="true" data-index="${index}" style="border:1px solid var(--border-color); padding:1rem; border-radius:8px; margin-bottom:1rem;">
                     <div class="form-group">
                         <label class="form-label">Event Title</label>
                         <input type="text" name="events[${index}][title]" class="form-input" required>
@@ -774,55 +910,108 @@
         }
 
         async function handleScheduleUpdateSubmit(event) {
-            event.preventDefault();
-            const form = event.target;
-            const slug = form.querySelector('input[name="slug"]').value;
+        event.preventDefault();
+        const form = event.target;
+        const slug = form.querySelector('input[name="slug"]').value;
 
-            if (slug === 'dev-test-championship') {
-                alert("This is a mock tournament. Schedule cannot be updated.");
+        if (slug === 'dev-test-championship') {
+            alert("This is a mock tournament. Schedule cannot be updated.");
+            renderOperation('update');
+            return;
+        }
+
+        const btn = form.querySelector('button[type="submit"]');
+        btn.textContent = 'Saving...'; 
+        btn.disabled = true;
+
+        try {
+            const events = [];
+            const container = document.getElementById('schedule-events-container');
+            const eventBlocks = container.querySelectorAll('.schedule-event');
+            
+            eventBlocks.forEach(block => {
+                const datetimeValue = block.querySelector('input[name*="[datetime]"]').value;
+                const [date, time] = datetimeValue ? datetimeValue.split('T') : [null, null];
+
+                events.push({
+                    title: block.querySelector('input[name*="[title]"]').value,
+                    description: block.querySelector('input[name*="[description]"]').value,
+                    datetime: datetimeValue,
+                    date: date,
+                    time: time ? time + ":00" : null
+                });
+            });
+
+            // Use the correct endpoint that now exists
+            const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/schedule`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${getSessionData()?.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ schedule: events })
+            });
+
+            const result = await response.json();
+            if (response.ok && result.success) {
+                alert('Schedule updated successfully!');
+                await loadAdminTournaments();
                 renderOperation('update');
-                return;
+            } else {
+                throw new Error(result.detail || 'Failed to update schedule.');
             }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        } finally {
+            btn.textContent = 'Confirm Schedule';
+            btn.disabled = false;
+        }
+    }
 
-            const btn = form.querySelector('button[type="submit"]');
-            btn.textContent = 'Saving...'; btn.disabled = true;
+        function initDragAndDrop() {
+            const container = document.getElementById('schedule-events-container');
+            if(!container) return;
 
-            try {
-                const events = [];
-                
-                // Collect events
-                const container = document.getElementById('schedule-events-container');
-                const eventBlocks = container.querySelectorAll('.schedule-event');
-                eventBlocks.forEach(block => {
-                    events.push({
-                        title: block.querySelector('input[name*="[title]"]').value,
-                        description: block.querySelector('input[name*="[description]"]').value,
-                        datetime: block.querySelector('input[name*="[datetime]"]').value
-                    });
-                });
+            let draggingElement = null;
 
-                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/schedule`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Authorization': `Bearer ${getSessionData()?.token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ schedule: events })
-                });
-
-                const result = await response.json();
-                if (response.ok && result.success) {
-                    alert('Schedule updated successfully!');
-                    await loadAdminTournaments();
-                    renderOperation('update');
-                } else {
-                    throw new Error(result.detail || 'Failed to update schedule.');
+            container.addEventListener('dragstart', (e) => {
+                if(e.target.classList.contains('schedule-event')) {
+                    draggingElement = e.target;
+                    setTimeout(() => e.target.classList.add('dragging'), 0);
                 }
-            } catch (error) {
-                alert('Error: ' + error.message);
-            } finally {
-                btn.textContent = 'Confirm Schedule';
-                btn.disabled = false;
+            });
+
+            container.addEventListener('dragend', (e) => {
+                if(e.target.classList.contains('schedule-event')) {
+                    e.target.classList.remove('dragging');
+                    draggingElement = null;
+                }
+            });
+
+            container.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                if (!draggingElement) return;
+
+                const afterElement = getDragAfterElement(container, e.clientY);
+                if (afterElement == null) {
+                    container.appendChild(draggingElement);
+                } else {
+                    container.insertBefore(draggingElement, afterElement);
+                }
+            });
+            
+            function getDragAfterElement(container, y) {
+                const draggableElements = [...container.querySelectorAll('.schedule-event:not(.dragging)')];
+
+                return draggableElements.reduce((closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = y - box.top - box.height / 2;
+                    if (offset < 0 && offset > closest.offset) {
+                        return { offset: offset, element: child };
+                    } else {
+                        return closest;
+                    }
+                }, { offset: Number.NEGATIVE_INFINITY }).element;
             }
         }
 
@@ -857,5 +1046,4 @@
 </body>
 
 </html>
-
 
