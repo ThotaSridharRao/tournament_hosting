@@ -1183,17 +1183,16 @@
         grid.innerHTML = tournaments.slice(0, 6).map(tournament => {
             const rawPoster = tournament.posterImage || tournament.backgroundImage || null;
             let finalPoster = 'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop';
-            if (rawPoster) {
-            // --- THIS IS THE UPDATED LOGIC ---
+           
+        if (rawPoster) {
             if (rawPoster.startsWith('http')) {
-                // If it's a full URL from Cloudinary, use it directly
+                // It's already a full URL, so use it directly
                 finalPoster = rawPoster;
             } else {
-                // If it's a relative path, ensure it starts with a '/'
-                const cleanPosterPath = rawPoster.startsWith('/') ? rawPoster : `/${rawPoster}`;
-                finalPoster = `${API_BASE_URL}${cleanPosterPath}`;
+                // It's a relative path. Use the URL constructor for a safe join.
+                // This correctly handles all cases and prevents the missing slash.
+                finalPoster = new URL(rawPoster, API_BASE_URL).href;
             }
-            // --- END OF UPDATED LOGIC ---
         }
             return `
                 <a href="tournament-details.html?slug=${tournament.slug}" class="tournament-card">

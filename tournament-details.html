@@ -839,14 +839,18 @@
     function updateUI(tournament) {
         if (!tournament) return;
 
+       // REPLACE WITH THIS SECTION
         // --- NEW, SMARTER IMAGE HANDLING ---
         const heroSection = document.querySelector('.tournament-hero');
         if (tournament.posterImage) {
-            // Use the URL directly if it's a full URL (from Cloudinary)
-            // Otherwise, construct it from the base URL (for old/local images)
-            const imageUrl = tournament.posterImage.startsWith('http')
-                ? tournament.posterImage
-                : `${API_BASE_URL}${tournament.posterImage}`;
+            let imageUrl;
+            if (tournament.posterImage.startsWith('http')) {
+                // It's already a full URL (from Cloudinary), use it directly.
+                imageUrl = tournament.posterImage;
+            } else {
+                // It's a relative path. Use the URL constructor for a safe join.
+                imageUrl = new URL(tournament.posterImage, API_BASE_URL).href;
+            }
             heroSection.style.backgroundImage = `url('${imageUrl}')`;
         }
         // --- END OF NEW LOGIC ---
