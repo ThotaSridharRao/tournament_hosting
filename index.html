@@ -1321,7 +1321,12 @@
       } else {
         console.error('No internet connection detected.');
       }
-      // Initialize any other page-specific features like carousels or animations here
+      
+      // ✅ --- ADD THIS LINE ---
+      animateOnScroll(); // This will activate the animations for all sections
+      
+      // Initialize any other page-specific features like carousels here
+      updateCarousel(); // Initialize the carousel on page load
     });
   </script>
   <script src="navbar.js"></script>
