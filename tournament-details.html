@@ -657,17 +657,34 @@
         const container = document.getElementById('schedule-timeline');
         if (!container) return;
         let allEvents = [];
+
+        // Helper to safely create a Date object
+        const parseDate = (dateStr) => {
+            const date = new Date(dateStr);
+            return isNaN(date) ? null : date;
+        };
+
+        const addEvent = (date, title, description = '') => {
+            if (date) allEvents.push({ date, title, description });
+        };
         
-        allEvents.push({ date: new Date(tournament.registrationStart), title: 'Registration Opens' });
-        allEvents.push({ date: new Date(tournament.registrationEnd), title: 'Registration Closes' });
-        allEvents.push({ date: new Date(tournament.tournamentStart), title: 'Tournament Begins' });
-        allEvents.push({ date: new Date(tournament.tournamentEnd), title: 'Tournament Ends' });
+        addEvent(parseDate(tournament.registrationStart), 'Registration Opens');
+        addEvent(parseDate(tournament.registrationEnd), 'Registration Closes');
+        addEvent(parseDate(tournament.tournamentStart), 'Tournament Begins');
+        addEvent(parseDate(tournament.tournamentEnd), 'Tournament Ends');
 
         if (tournament.scheduleEvents) {
-            tournament.scheduleEvents.forEach(event => allEvents.push({ date: new Date(`${event.date}T${event.time}`), title: event.title, description: event.description }));
+            tournament.scheduleEvents.forEach(event => {
+                // Combine date and time correctly for the Date constructor
+                const eventDate = parseDate(`${event.date}T${event.time}Z`); // Append 'Z' for UTC
+                addEvent(eventDate, event.title, event.description);
+            });
         }
         if (tournament.format === 'kp' && tournament.kpSettings && tournament.kpSettings.matchSchedule) {
-            tournament.kpSettings.matchSchedule.forEach(match => allEvents.push({ date: new Date(match.date), title: match.match, description: `${match.teams} teams competing` }));
+            tournament.kpSettings.matchSchedule.forEach(match => {
+                const matchDate = parseDate(match.date);
+                addEvent(matchDate, match.match, `${match.teams} teams competing`);
+            });
         }
 
         allEvents.sort((a, b) => a.date - b.date);
@@ -678,14 +695,14 @@
         }
         
         container.innerHTML = allEvents.map(event => {
-            const day = event.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            const time = event.date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const day = event.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+            const time = event.date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'UTC' });
             return `
                 <div class="timeline-item">
                     <div class="timeline-date"><div class="timeline-day">${day}</div><div class="timeline-time">${time}</div></div>
                     <div class="timeline-content">
                         <h3 class="timeline-title">${event.title}</h3>
-                        ${event.description ? `<p class="timeline-desc">${event.description}</p>` : ''}
+                        <p class="timeline-desc">${event.description || ''}</p>
                     </div>
                 </div>
             `;
@@ -765,15 +782,21 @@
     }
     
     function updateStatusAndLeaderboard(tournament) {
-        const status = calculateTournamentStatus(tournament);
+        // Use the status directly from the server data.
+        const status = tournament.status;
         const primaryActionBtn = document.getElementById('primary-action');
         const leaderboardSection = document.getElementById('leaderboard-section');
-        
+
         leaderboardSection.style.display = 'none';
         primaryActionBtn.style.display = 'flex';
         primaryActionBtn.disabled = false;
 
         switch(status) {
+            case 'upcoming':
+                // NEW: Display a message for upcoming registration
+                primaryActionBtn.innerHTML = '<i class="fas fa-clock"></i> Registration opens soon';
+                primaryActionBtn.disabled = true;
+                break;
             case 'registration_open':
                 primaryActionBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
                 primaryActionBtn.onclick = () => {
@@ -785,17 +808,23 @@
                     }
                 };
                 break;
-            case 'live':
-            case 'completed':
+            case 'registration_closed':
+                primaryActionBtn.innerHTML = '<i class="fas fa-lock"></i> Registration Closed';
+                primaryActionBtn.disabled = true;
+                break;
+            case 'ongoing':
+            case 'ended':
                 leaderboardSection.style.display = 'block';
-                primaryActionBtn.style.display = 'none';
+                primaryActionBtn.style.display = 'none'; // Hide the button
                 renderLeaderboard(tournament.participants || []);
-                if(status === 'completed') {
+                if(status === 'ended') {
                     leaderboardSection.querySelector('.section-title').textContent = 'Final Results';
+                } else {
+                    leaderboardSection.querySelector('.section-title').textContent = 'Live Leaderboard';
                 }
                 break;
             default:
-                primaryActionBtn.innerHTML = '<i class="fas fa-clock"></i> Registration Closed';
+                primaryActionBtn.innerHTML = '<i class="fas fa-info-circle"></i> View Details';
                 primaryActionBtn.disabled = true;
                 break;
         }
