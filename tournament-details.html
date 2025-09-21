@@ -87,6 +87,25 @@
       transition: all 0.3s ease;
     }
 
+    /* --- ADD THIS NEW RULE FOR THE CLOSE BUTTON --- */
+    .mobile-nav-close {
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        background: none;
+        border: none;
+        color: var(--muted);
+        font-size: 1.75rem;
+        cursor: pointer;
+        line-height: 1;
+        transition: color 0.2s ease, transform 0.3s ease;
+    }
+
+    .mobile-nav-close:hover {
+        color: var(--copy);
+        transform: rotate(90deg);
+    }
+
     .header-cta:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 15px rgba(255, 69, 0, 0.3);
@@ -1023,10 +1042,14 @@
       const mobileNavContainer = document.getElementById('mobile-nav');
       const user = sessionData?.data?.user || sessionData?.user;
 
+      // --- NEW: Added a close button template ---
+      const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
+
       if (user) {
         // Logged-in user view
         const username = user.username || user.email.split('@')[0];
         mobileNavContainer.innerHTML = `
+          ${closeButtonHTML}
           <div class="profile-header">
             <div class="profile-photo"><i class="fas fa-user"></i></div>
             <div class="profile-info">
@@ -1047,6 +1070,7 @@
       } else {
         // Guest view
         mobileNavContainer.innerHTML = `
+          ${closeButtonHTML}
           <div class="guest-view">
             <i class="fas fa-gamepad"></i>
             <p>Join the arena to register for tournaments, track your stats, and win prizes!</p>
@@ -1057,17 +1081,44 @@
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
-      // --- 1. SETUP UI INTERACTIONS FIRST ---
-      // This code now runs immediately, so the hamburger always works.
-      setupMobileNav();
+      // --- SETUP UI INTERACTIONS FIRST ---
       const hamburger = document.querySelector('.hamburger');
       const mobileNav = document.getElementById('mobile-nav');
+
+      // Function to close the mobile nav
+      function closeMobileNav() {
+        mobileNav.classList.remove('is-open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+
+      // Toggle nav with hamburger button
       hamburger.addEventListener('click', () => {
-        mobileNav.classList.toggle('is-open');
-        const isExpanded = mobileNav.classList.contains('is-open');
-        hamburger.setAttribute('aria-expanded', isExpanded);
+        const isOpen = mobileNav.classList.toggle('is-open');
+        hamburger.setAttribute('aria-expanded', isOpen);
       });
 
+      // Close nav by clicking the close button or outside the panel
+      document.addEventListener('click', (event) => {
+        // Check if the nav is open before proceeding
+        if (!mobileNav.classList.contains('is-open')) return;
+
+        // Close if the 'X' button is clicked
+        const closeButton = event.target.closest('.mobile-nav-close');
+        if (closeButton) {
+          closeMobileNav();
+          return;
+        }
+
+        // Close if click is outside the nav and not on the hamburger
+        const isClickInsideNav = event.target.closest('#mobile-nav');
+        const isClickOnHamburger = event.target.closest('.hamburger');
+        if (!isClickInsideNav && !isClickOnHamburger) {
+          closeMobileNav();
+        }
+      });
+      
+      setupMobileNav();
+      
       const faqItems = document.querySelectorAll('.faq-item');
       faqItems.forEach(item => {
           const question = item.querySelector('.faq-question');
@@ -1080,20 +1131,18 @@
           });
       });
       
-      // --- 2. NOW, HANDLE TOURNAMENT-SPECIFIC DATA ---
+      // --- NOW, HANDLE TOURNAMENT-SPECIFIC DATA ---
       const urlParams = new URLSearchParams(window.location.search);
       const slug = urlParams.get('slug');
       
       if (!slug) {
         document.getElementById('tournament-title').textContent = "Tournament Not Found";
         document.getElementById('tournament-subtitle').textContent = "Please provide a valid tournament URL.";
-        return; // Stop if there's no slug, but after the hamburger is set up.
+        return;
       }
       
-      // Check user auth status (affects both desktop and mobile nav)
       checkUserAuthentication();
       
-      // Fetch and display the tournament data
       currentTournament = await getTournamentData(slug);
       if (currentTournament) {
         updateUI(currentTournament);
