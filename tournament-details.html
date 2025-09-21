@@ -171,6 +171,17 @@
       box-shadow: 0 10px 30px rgba(255, 69, 0, 0.3);
     }
 
+    /* --- ADD THESE NEW STYLES --- */
+    .brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
     /* Tournament Details Section */
     .tournament-details {
       padding: 4rem 0;
@@ -314,6 +325,108 @@
         transform: rotate(45deg);
     }
 
+    /* --- ADD STYLES FOR HAMBURGER & MOBILE NAV PANEL --- */
+    .hamburger {
+      display: none; /* Hidden by default */
+      background: none;
+      border: none;
+      color: var(--copy);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .mobile-nav {
+      position: fixed;
+      top: 0;
+      right: -100%; /* Start off-screen */
+      width: 300px;
+      height: 100%;
+      background: var(--panel);
+      z-index: 2000;
+      transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+      padding-top: 60px; /* Space for the header */
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mobile-nav.is-open {
+      right: 0; /* Slide in */
+    }
+
+    .mobile-nav .profile-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .mobile-nav .profile-photo {
+      width: 50px;
+      height: 50px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    
+    .mobile-nav .profile-username {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    
+    .mobile-nav .profile-actions {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .mobile-nav .profile-action {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--muted);
+      transition: all 0.2s ease;
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+    }
+    .mobile-nav .profile-action:hover {
+      background: var(--glass);
+      color: var(--copy);
+    }
+    
+    .mobile-nav .guest-view {
+      padding: 2rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    
+    .mobile-nav .guest-view i {
+      font-size: 3rem;
+      color: var(--accent);
+    }
+    
+    .mobile-nav .guest-view p {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
 
     /* Footer Styles */
     footer.site-footer {
@@ -398,12 +511,21 @@
     .profile-action:hover { background: rgba(255, 255, 255, 0.05); color: var(--accent); transform: translateX(4px); }
     .logout-action:hover { background: rgba(255, 0, 0, 0.1); color: #ff6b6b; }
     
+
     @media (max-width: 768px) {
       .details-grid { grid-template-columns: 1fr; }
       .hero-actions { flex-direction: column; }
       .btn-primary { text-align: center; }
       .timeline-item { flex-direction: column; gap: 1rem; }
       .timeline-date { text-align: left; }
+
+      /* --- ADD THESE STYLES FOR MOBILE NAV --- */
+      .nav-actions {
+        display: none; /* Hide desktop nav items */
+      }
+      .hamburger {
+        display: inline-flex; /* Show hamburger button */
+      }
     }
     /* --- ADD THIS NEW CODE BLOCK FOR LARGE SCREENS --- */
     @media (min-width: 1600px) {
@@ -426,41 +548,50 @@
 
 <body>
   <header class="site-header">
-    <a href="index.html" class="back-btn">
-      <i class="fas fa-arrow-left"></i>
-      Back to Home
+    <a href="index.html" class="brand">
+      EArena
     </a>
-    <div class="nav-actions">
-      <div id="guest-menu">
-        <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
-      </div>
-      <div id="user-menu" style="display: none;">
-        <div class="profile-dropdown">
-          <div class="profile-icon" id="profile-icon">
-            <i class="fas fa-user-circle"></i>
-          </div>
-          <div class="profile-modal" id="profile-modal">
-            <div class="profile-header">
-              <div class="profile-photo"><i class="fas fa-user"></i></div>
-              <div class="profile-info">
-                <div class="profile-username" id="modal-username">User</div>
-              </div>
+
+    <div class="header-right">
+      <div class="nav-actions">
+        <div id="guest-menu">
+          <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
+        </div>
+        <div id="user-menu" style="display: none;">
+          <div class="profile-dropdown">
+            <div class="profile-icon" id="profile-icon">
+              <i class="fas fa-user-circle"></i>
             </div>
-            <div class="profile-actions">
-              <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
-                <i class="fas fa-user"></i>
-                <span>My Account</span>
-              </a>
-              <button class="profile-action logout-action" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-              </button>
+            <div class="profile-modal" id="profile-modal">
+              <div class="profile-header">
+                <div class="profile-photo"><i class="fas fa-user"></i></div>
+                <div class="profile-info">
+                  <div class="profile-username" id="modal-username">User</div>
+                </div>
+              </div>
+              <div class="profile-actions">
+                <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
+                  <i class="fas fa-user"></i>
+                  <span>My Account</span>
+                </a>
+                <button class="profile-action logout-action" onclick="logout()">
+                  <i class="fas fa-sign-out-alt"></i>
+                  <span>Logout</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <i class="fas fa-bars"></i>
+      </button>
     </div>
   </header>
+
+  <div id="mobile-nav" class="mobile-nav">
+    </div>
 
   <main>
     <section class="tournament-hero">
@@ -886,21 +1017,57 @@
       window.location.reload();
     }
 
+     // --- ADD THIS ENTIRE NEW FUNCTION ---
+    function setupMobileNav() {
+      const sessionData = getSessionData();
+      const mobileNavContainer = document.getElementById('mobile-nav');
+      const user = sessionData?.data?.user || sessionData?.user;
+
+      if (user) {
+        // Logged-in user view
+        const username = user.username || user.email.split('@')[0];
+        mobileNavContainer.innerHTML = `
+          <div class="profile-header">
+            <div class="profile-photo"><i class="fas fa-user"></i></div>
+            <div class="profile-info">
+              <div class="profile-username">${username}</div>
+            </div>
+          </div>
+          <div class="profile-actions">
+            <a href="user-dashboard.html" class="profile-action">
+              <i class="fas fa-user-cog"></i>
+              <span>My Account</span>
+            </a>
+            <button class="profile-action" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </button>
+          </div>
+        `;
+      } else {
+        // Guest view
+        mobileNavContainer.innerHTML = `
+          <div class="guest-view">
+            <i class="fas fa-gamepad"></i>
+            <p>Join the arena to register for tournaments, track your stats, and win prizes!</p>
+            <button class="btn-primary" style="width: 100%; margin-top: 1rem;" onclick="redirectToAuth()">Join Us Now</button>
+          </div>
+        `;
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const slug = urlParams.get('slug');
-      if (!slug) {
-        document.getElementById('tournament-title').textContent = "Tournament Not Found";
-        document.getElementById('tournament-subtitle').textContent = "No tournament was specified.";
-        return;
-      }
-      checkUserAuthentication();
-      currentTournament = await getTournamentData(slug);
-      if (currentTournament) {
-        updateUI(currentTournament);
-      }
-      
-      // NEW: Initialize FAQ Accordion
+      // --- 1. SETUP UI INTERACTIONS FIRST ---
+      // This code now runs immediately, so the hamburger always works.
+      setupMobileNav();
+      const hamburger = document.querySelector('.hamburger');
+      const mobileNav = document.getElementById('mobile-nav');
+      hamburger.addEventListener('click', () => {
+        mobileNav.classList.toggle('is-open');
+        const isExpanded = mobileNav.classList.contains('is-open');
+        hamburger.setAttribute('aria-expanded', isExpanded);
+      });
+
       const faqItems = document.querySelectorAll('.faq-item');
       faqItems.forEach(item => {
           const question = item.querySelector('.faq-question');
@@ -912,6 +1079,25 @@
               item.classList.toggle('active');
           });
       });
+      
+      // --- 2. NOW, HANDLE TOURNAMENT-SPECIFIC DATA ---
+      const urlParams = new URLSearchParams(window.location.search);
+      const slug = urlParams.get('slug');
+      
+      if (!slug) {
+        document.getElementById('tournament-title').textContent = "Tournament Not Found";
+        document.getElementById('tournament-subtitle').textContent = "Please provide a valid tournament URL.";
+        return; // Stop if there's no slug, but after the hamburger is set up.
+      }
+      
+      // Check user auth status (affects both desktop and mobile nav)
+      checkUserAuthentication();
+      
+      // Fetch and display the tournament data
+      currentTournament = await getTournamentData(slug);
+      if (currentTournament) {
+        updateUI(currentTournament);
+      }
     });
   </script>
 </body>
