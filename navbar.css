@@ -91,3 +91,84 @@ header.site-header {
   .header-cta { padding: 0.7rem 1.25rem; }
   .profile-icon { font-size: 1.75rem; }
 }
+/* in navbar.css */
+
+/* --- ADD THIS ENTIRE BLOCK AT THE END OF THE FILE --- */
+
+/* Desktop Primary Navigation Links */
+.primary {
+  display: flex;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-right: 2rem; /* Adds space between links and user menu */
+}
+
+.nav-links a {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--muted);
+  transition: color 0.3s ease;
+  position: relative;
+  padding-bottom: 4px;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--accent);
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-out;
+}
+
+.nav-links a:hover {
+  color: var(--copy);
+}
+
+.nav-links a:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+/* Ensure desktop-only nav is hidden on mobile */
+@media (max-width: 768px) {
+  .primary {
+    display: none;
+  }
+}
+/* in navbar.css */
+
+/* --- ADD THIS BLOCK AT THE END --- */
+
+/* Mobile Navigation Links Styling */
+.mobile-nav-links {
+    padding: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.mobile-nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.mobile-nav-links a:hover {
+    background: rgba(255, 255, 255, 0.05); /* Uses --glass variable from other pages */
+    color: var(--copy);
+}

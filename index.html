@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity=""
     crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <link rel="stylesheet" href="navbar.css">
 
   <style>
     /* =========================
@@ -26,6 +27,7 @@
       --primary-color: #ff4500; /* Orange-Red for FACEIT theme */
       --bg-dark: #000000;
       --accent-green: #ff8c00;
+      --panel: #1a1a1a; /* <-- ADD THIS LINE */
       --accent-blue: #ff7f50;
       --text-primary: #ffffff;
       --text-secondary: rgba(255, 255, 255, 0.7);
@@ -61,84 +63,7 @@
         animation-iteration-count: 1 !important;
       }
     }
-    /* --- ADD THIS ENTIRE BLOCK FOR MOBILE NAV --- */
-    .mobile-nav {
-      position: fixed;
-      top: 0;
-      right: -100%;
-      width: 300px;
-      height: 100%;
-      background: #1a1a1a; /* Using a color from your theme */
-      z-index: 2000;
-      transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-      padding-top: 60px;
-      display: flex;
-      flex-direction: column;
-    }
-    .mobile-nav.is-open { right: 0; }
-    .mobile-nav-close { position: absolute; top: 1rem; right: 1.5rem; background: none; border: none; color: var(--text-secondary); font-size: 1.75rem; cursor: pointer; transition: all 0.2s ease; }
-    .mobile-nav-close:hover { color: var(--text-primary); }
-    .mobile-nav .guest-view { padding: 2rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-top: 2rem; }
-    .mobile-nav .guest-view i { font-size: 3rem; color: var(--primary-color); }
-    .mobile-nav .guest-view p { color: var(--text-secondary); line-height: 1.6; }
-    /* --- END OF BLOCK --- */
-
-    /* --- ADD THIS MISSING BLOCK TO INDEX.HTML --- */
-    .mobile-nav .profile-header {
-      padding: 1.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
     
-    .mobile-nav .profile-photo {
-      width: 50px;
-      height: 50px;
-      background: var(--primary-color);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      color: #fff;
-    }
-    
-    .mobile-nav .profile-username {
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-    
-    .mobile-nav .profile-actions {
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    
-    .mobile-nav .profile-action {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      transition: all 0.2s ease;
-      background: none;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-      text-align: left;
-    }
-
-    .mobile-nav .profile-action:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-primary);
-    }
-
     /* =========================
        Base resets & accessibility
        ========================= */
@@ -230,189 +155,7 @@
       margin: 0 auto;
     }
 
-    /* =========================
-       Header
-       ========================= */
-    header.site-header {
-        position: fixed;
-        top: 0;
-        width: 100%;
-        padding: 1rem 2rem;
-        background: transparent;
-        z-index: 1200;
-        transition: all 0.3s var(--ease-out-quart);
-    }
     
-    .header-container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 100%;
-        max-width: var(--container);
-        margin: 0 auto;
-    }
-
-    header.site-header.scrolled {
-      background: rgba(18,18,18,0.8);
-      backdrop-filter: blur(10px);
-    }
-    
-    .brand {
-      font-size: clamp(1.5rem, 2vw, 2rem);
-      font-weight: bold;
-      color: var(--text-primary);
-      text-decoration: none;
-    }
-
-    nav.primary {
-      display: flex;
-      align-items: center;
-    }
-
-    .header-right {
-        display: flex;
-        align-items: center;
-        gap: 2.5rem;
-    }
-
-    /* Nav links — desktop */
-    .nav-links {
-      display: flex;
-      gap: 2.5rem;
-      align-items: center;
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: var(--text-secondary);
-      transition: all 0.3s ease;
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-
-    .nav-links a:hover {
-      color: var(--text-primary);
-    }
-    
-    /* Right side actions */
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    /* CTA button in header */
-    .header-cta {
-        padding: 0.7rem 1.5rem;
-        border-radius: 6px;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: var(--primary-color);
-        color: var(--text-primary);
-        transition: all 0.3s ease;
-    }
-    .header-cta:hover {
-        background: #ff6347; /* Lighter orange-red */
-        transform: translateY(-2px);
-    }
-    
-    /* Profile Dropdown Styles */
-    .profile-dropdown {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .profile-icon {
-      width: 36px;
-      height: 36px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-      font-size: 1.8rem;
-    }
-
-    .profile-icon:hover {
-      color: var(--text-primary);
-    }
-
-    .profile-modal {
-      position: absolute;
-      top: 140%; 
-      right: 0;
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 8px;
-      min-width: 220px;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(10px);
-      transition: all 0.3s var(--ease-out-quart);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-    }
-
-    .profile-dropdown:hover .profile-modal {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .profile-header {
-      padding: 1rem;
-      border-bottom: 1px solid #333;
-      text-align: left;
-    }
-    
-    .profile-username {
-      font-weight: 600;
-      color: var(--copy);
-      font-size: 1rem;
-    }
-
-    .profile-actions {
-      padding: 0.5rem;
-    }
-
-    .profile-action {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem 1rem;
-      color: var(--text-secondary);
-      text-decoration: none;
-      border-radius: 6px;
-      transition: all 0.3s ease;
-      font-weight: 500;
-      font-size: 0.9rem;
-      width: 100%;
-      border: none;
-      background: none;
-      cursor: pointer;
-      font-family: inherit;
-      text-align: left;
-    }
-
-    .profile-action:hover {
-      background: var(--primary-color);
-      color: var(--text-primary);
-    }
-    
-    .profile-action i {
-      width: 16px;
-      text-align: center;
-    }
-
-    /* Hamburger (mobile) */
-    .hamburger {
-      display: none;
-    }
-
-
     /* =========================
        Hero section
        ========================= */
@@ -1023,18 +766,19 @@
             font-size: 1.1rem;
         }
     }
-    
-    @media (max-width:920px) {
-      .header-right {
-        display: none;
-      }
+    /* in index.html, inside <style> */
 
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+    @media (max-width:920px) {
+      
       .header-container {
         justify-content: space-between;
-      }
-      .hamburger {
-        display: inline-flex;
-      }
+      }  
       .features-grid {
         flex-direction: column;
         align-items: center;
@@ -1121,48 +865,31 @@
   <header class="site-header" role="banner">
     <div class="header-container">
         <a href="index.html" class="brand" aria-hidden="false">EArena</a>
-
+        
         <div class="header-right">
             <nav class="primary" role="navigation" aria-label="Primary">
-            <div class="nav-links" role="menubar" aria-hidden="false">
-                <a href="#tournaments" role="menuitem">Tournaments</a>
-                <a href="#why-us" role="menuitem">Why Us</a>
-                <a href="#faq" role="menuitem">FAQ</a>
-            </div>
+                <div class="nav-links" role="menubar">
+                    <a href="#tournaments" role="menuitem">Tournaments</a>
+                    <a href="#why-us" role="menuitem">Why Us</a>
+                    <a href="#faq" role="menuitem">FAQ</a>
+                </div>
             </nav>
-
             <div class="nav-actions">
-                <div id="auth-buttons">
-                    <a href="#" class="header-cta" aria-label="Join Us" onclick="redirectToAuth()">Join Us</a>
-                </div>
-                <div id="user-menu" style="display: none;">
-                    <div class="profile-dropdown">
-                        <i class="fas fa-user-circle profile-icon"></i>
-                        <div class="profile-modal">
-                            <div class="profile-header">
-                                <div class="profile-username" id="modal-username">User</div>
-                            </div>
-                            <div class="profile-actions">
-                                <a href="user-dashboard.html" class="profile-action">
-                                    <i class="fas fa-user"></i>
-                                    <span>My Account</span>
-                                </a>
-                                <button class="profile-action" onclick="logout()">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                    <span>Logout</span>
-                                </button>
-                            </div>
-                        </div>
+              <div id="guest-menu">
+                <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
+              </div>
+              <div id="user-menu" style="display: none;">
+                <div class="profile-dropdown">
                     </div>
-                </div>
+              </div>
             </div>
-        </div>
+        </div>   
 
         <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
-        <i class="fas fa-bars"></i>
-      </button>
+            <i class="fas fa-bars"></i>
+        </button>
     </div>
-  </header>
+</header>
 
   <div id="mobile-nav" class="mobile-nav" hidden>
     </div>
@@ -1384,12 +1111,7 @@
     </footer>
 
   <script>
-    // Helper function to redirect to auth with return URL
-    function redirectToAuth(tab = 'register') {
-      const currentUrl = window.location.href;
-      const returnUrl = encodeURIComponent(currentUrl);
-      window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
-    }
+    
 
     // Header scroll effect
     window.addEventListener('scroll', () => {
@@ -1401,10 +1123,10 @@
       }
     });
 
-    // API Configuration
-    const API_BASE_URL = 'https://t2-237c.onrender.com';
+   // API Configuration (Page-specific)
+    const API_BASE_URL = 'https://t2-273c.onrender.com';
 
-    // API Functions
+    // API Functions (Page-specific)
     async function fetchTournaments() {
       try {
         const response = await fetch(`${API_BASE_URL}/api/tournaments`);
@@ -1413,15 +1135,14 @@
         return result.data || [];
       } catch (error) {
         console.error('Error fetching tournaments:', error);
-        return []; // Return empty array on error
+        return [];
       }
     }
 
-    // Main Content Population Function
+    // Main Content Population Function (Page-specific)
     async function populateAllSections() {
       addGlobalLoadingIndicator();
       try {
-        console.log('Fetching all content data...');
         const tournaments = await fetchTournaments();
         if (tournaments.length > 0) {
           populateTournamentsGrid(tournaments);
@@ -1436,22 +1157,16 @@
     function populateTournamentsGrid(tournaments) {
         const grid = document.getElementById('tournaments-grid');
         if (!grid) return;
-
         if (tournaments.length === 0) {
             grid.innerHTML = '<p style="text-align: center; width: 100%; grid-column: 1 / -1;">No tournaments available at the moment. Check back soon!</p>';
             return;
         }
-
         grid.innerHTML = tournaments.slice(0, 6).map(tournament => {
             const rawPoster = tournament.posterImage || tournament.backgroundImage || null;
-            let finalPoster = 'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop'; // Default fallback
-            if (rawPoster && !rawPoster.startsWith('http')) {
-                const cleanPosterPath = rawPoster.replace(/^\//, '');
-                finalPoster = `${API_BASE_URL}/${cleanPosterPath}`;
-            } else if (rawPoster) {
-                finalPoster = rawPoster;
+            let finalPoster = 'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop';
+            if (rawPoster) {
+                finalPoster = rawPoster.startsWith('http') ? rawPoster : `${API_BASE_URL}${rawPoster}`;
             }
-
             return `
                 <a href="tournament-details.html?slug=${tournament.slug}" class="tournament-card">
                     <div class="tournament-card__poster">
@@ -1473,160 +1188,8 @@
             `;
         }).join('');
     }
-    
-    // Authentication and User Management
-    function checkUserAuthentication() {
-      const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
-      const authButtons = document.getElementById('auth-buttons');
-      const userMenu = document.getElementById('user-menu');
 
-      if (!session) {
-        authButtons.style.display = 'block';
-        userMenu.style.display = 'none';
-        return;
-      }
-
-      try {
-        const sessionData = JSON.parse(session);
-
-        // ✅ Works with your backend response format
-        const user = sessionData?.data?.user || sessionData?.user;
-        const token = sessionData?.data?.token || sessionData?.token;
-
-        if (user && token) {
-          const username = user.username || user.email.split('@')[0];
-          document.getElementById('modal-username').textContent = username;
-          authButtons.style.display = 'none';
-          userMenu.style.display = 'block';
-        } else {
-          clearUserSession();
-        }
-      } catch {
-        clearUserSession();
-      }
-    }
-
-
-    function clearUserSession() {
-      localStorage.removeItem('earena_session');
-      sessionStorage.removeItem('earena_session');
-      document.getElementById('auth-buttons').style.display = 'block';
-      document.getElementById('user-menu').style.display = 'none';
-    }
-
-    async function logout() {
-      try {
-        const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
-        if (session) {
-          const sessionData = JSON.parse(session);
-          const token = sessionData?.data?.token;
-          if (token) {
-              await fetch(`${API_BASE_URL}/api/auth/logout`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` }
-              });
-          }
-        }
-      } catch (error) {
-        console.error('Logout API error:', error);
-      } finally {
-        clearUserSession();
-        window.location.reload();
-      }
-    }
-
-    // --- ADD THIS ENTIRE BLOCK OF JAVASCRIPT ---
-
-    // This function builds the content of the mobile menu
-    function setupMobileNav() {
-      const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
-      const mobileNavContainer = document.getElementById('mobile-nav');
-      let user = null;
-      if (session) {
-          try {
-              const sessionData = JSON.parse(session);
-              user = sessionData?.data?.user || sessionData?.user;
-          } catch { user = null; }
-      }
-
-      const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
-
-      if (user) {
-        // Logged-in view
-        const username = user.username || user.email.split('@')[0];
-        mobileNavContainer.innerHTML = `
-          ${closeButtonHTML}
-          <div class="profile-header" style="padding: 1.5rem; border-bottom: 1px solid #333;">
-            <div class="profile-username">${username}</div>
-          </div>
-          <div class="profile-actions">
-            <a href="user-dashboard.html" class="profile-action">
-              <i class="fas fa-user-cog"></i> <span>My Account</span>
-            </a>
-            <a href="#tournaments" class="profile-action">
-              <i class="fas fa-trophy"></i> <span>Tournaments</span>
-            </a>
-            <button class="profile-action" onclick="logout()">
-              <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
-            </button>
-          </div>
-        `;
-      } else {
-        // Guest view
-        mobileNavContainer.innerHTML = `
-          ${closeButtonHTML}
-          <div class="guest-view">
-            <i class="fas fa-gamepad"></i>
-            <p>Join the arena to compete in tournaments and win prizes!</p>
-            <button class="header-cta" style="width: 100%; margin-top: 1rem;" onclick="redirectToAuth()">Join Us Now</button>
-          </div>
-        `;
-      }
-    }
-
-    // This function adds all the click behaviors
-    function initializeMobileNav() {
-        const hamburger = document.querySelector('.hamburger');
-        const mobileNav = document.getElementById('mobile-nav');
-
-        function closeMobileNav() {
-            mobileNav.classList.remove('is-open');
-            mobileNav.hidden = true;
-            hamburger.setAttribute('aria-expanded', 'false');
-        }
-
-        hamburger.addEventListener('click', () => {
-            const isOpen = mobileNav.classList.toggle('is-open');
-            mobileNav.hidden = !isOpen;
-            hamburger.setAttribute('aria-expanded', isOpen);
-        });
-
-        document.addEventListener('click', (event) => {
-            if (!mobileNav.classList.contains('is-open')) return;
-            const closeButton = event.target.closest('.mobile-nav-close');
-            if (closeButton) {
-                closeMobileNav();
-                return;
-            }
-            const isClickInsideNav = event.target.closest('#mobile-nav');
-            const isClickOnHamburger = event.target.closest('.hamburger');
-            if (!isClickInsideNav && !isClickOnHamburger) {
-                closeMobileNav();
-            }
-        });
-        
-        // Also close the nav when a link inside it is clicked
-        mobileNav.addEventListener('click', (e) => {
-            if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
-                closeMobileNav();
-            }
-        });
-    }
-
-    // --- END OF NEW BLOCK ---
-
-
-    // Smooth scroll for navigation links
+    // Smooth scroll for navigation links (Page-specific)
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
         e.preventDefault();
@@ -1722,22 +1285,18 @@
         elements.forEach(el => observer.observe(el));
     }
 
-
-    // Initialize the page
+// Replace your old 'DOMContentLoaded' listener with this one
     document.addEventListener('DOMContentLoaded', async () => {
       console.log('Initializing EArena homepage...');
-      checkUserAuthentication();
-      setupMobileNav(); // <-- ADD THIS
-      initializeMobileNav(); // <-- AND THIS
       if (navigator.onLine) {
         await populateAllSections();
       } else {
         console.error('No internet connection detected.');
       }
-      updateCarousel();
-      animateOnScroll();
+      // Initialize any other page-specific features like carousels or animations here
     });
   </script>
+  <script src="navbar.js"></script>
 </body>
 
 </html>

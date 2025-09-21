@@ -38,16 +38,30 @@ function checkUserAuthentication() {
   }
 }
 
+// in navbar.js
+
 function setupMobileNav() {
   const sessionData = getSessionData();
   const mobileNavContainer = document.getElementById('mobile-nav');
   const user = sessionData?.data?.user || sessionData?.user;
+
   const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
+  
+  // These are the navigation links, pointing to the sections on the homepage
+  const navLinksHTML = `
+    <div class="mobile-nav-links">
+      <a href="index.html#tournaments">Tournaments</a>
+      <a href="index.html#why-us">Why Us</a>
+      <a href="index.html#faq">FAQ</a>
+    </div>
+  `;
+  
+  let userSectionHTML = '';
 
   if (user) {
+    // Logged-in user view
     const username = user.username || user.email.split('@')[0];
-    mobileNavContainer.innerHTML = `
-      ${closeButtonHTML}
+    userSectionHTML = `
       <div class="profile-header">
         <div class="profile-photo"><i class="fas fa-user"></i></div>
         <div class="profile-info">
@@ -56,25 +70,30 @@ function setupMobileNav() {
       </div>
       <div class="profile-actions">
         <a href="user-dashboard.html" class="profile-action">
-          <i class="fas fa-user-cog"></i>
-          <span>My Account</span>
+          <i class="fas fa-user-cog"></i> <span>My Account</span>
         </a>
         <button class="profile-action" onclick="logout()">
-          <i class="fas fa-sign-out-alt"></i>
-          <span>Logout</span>
+          <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
         </button>
       </div>
     `;
   } else {
-    mobileNavContainer.innerHTML = `
-      ${closeButtonHTML}
+    // Guest view
+    userSectionHTML = `
       <div class="guest-view">
         <i class="fas fa-gamepad"></i>
-        <p>Join the arena to register for tournaments, track your stats, and win prizes!</p>
-        <button class="btn-primary" style="width: 100%; margin-top: 1rem;" onclick="redirectToAuth()">Join Us Now</button>
+        <p>Join the arena to compete, win prizes, and track your stats!</p>
+        <button class="header-cta" style="width: 100%; margin-top: 1rem;" onclick="redirectToAuth()">Join Us Now</button>
       </div>
     `;
   }
+
+  // Combine the parts into the final HTML for the panel
+  mobileNavContainer.innerHTML = `
+    ${closeButtonHTML}
+    ${userSectionHTML}
+    ${navLinksHTML}
+  `;
 }
 
 // --- INITIALIZATION ---
