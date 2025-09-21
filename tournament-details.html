@@ -182,41 +182,68 @@
     .info-label { color: var(--muted); }
     .info-value { font-weight: 600; }
     
-    /* Leaderboard Section */
-    .leaderboard-section { padding: 4rem 0; }
-    .leaderboard-table {
-      background: var(--glass);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: var(--radius);
-      overflow: hidden;
-      margin-top: 2rem;
-    }
-    .leaderboard-header {
-      background: rgba(255, 69, 0, 0.1);
-      padding: 1rem 1.5rem;
-      display: grid;
-      grid-template-columns: 60px 1fr 2fr;
-      gap: 1rem;
-      font-weight: 700;
-      color: var(--accent);
-      text-transform: uppercase;
-    }
-    .leaderboard-row {
-      padding: 1rem 1.5rem;
-      display: grid;
-      grid-template-columns: 60px 1fr 2fr;
-      gap: 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
-      align-items: center;
-    }
-    .leaderboard-row:last-child { border-bottom: none; }
-    .leaderboard-row:hover { background: rgba(255, 255, 255, 0.05); }
-    .rank.first { color: var(--accent); }
-    .team-info { display: flex; align-items: center; gap: 0.75rem; }
-    .team-avatar { width: 40px; height: 40px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #000; }
+    .finalists-table {
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+.finalists-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
+
+.finalists-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.finalist-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.finalist-item:hover {
+  background: rgba(255, 69, 0, 0.1);
+}
+
+.finalist-rank {
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 30px;
+}
+
+.finalist-team {
+  font-weight: 600;
+}
+
+.empty-finalists {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--muted);
+  grid-column: span 2;
+}
+
+@media (max-width: 768px) {
+  .finalists-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .empty-finalists {
+    grid-column: span 1;
+  }
+}
 
     /* Schedule Section */
     .schedule-section { padding: 4rem 0; }
@@ -616,20 +643,15 @@
       </div>
     </section>
 
-    <section class="leaderboard-section" id="leaderboard-section" style="display: none;">
+    <section class="leaderboard-section" id="finalists-section" style="display: none;">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Leaderboard</h2>
-          <p class="section-subtitle">Current standings based on registered teams.</p>
+          <h2 class="section-title">Finalists</h2>
+          <p class="section-subtitle">Top 16 teams competing in the final rounds.</p>
         </div>
-        <div class="leaderboard-table" id="leaderboard-table">
-          <div class="leaderboard-header">
-            <div>Rank</div>
-            <div>Team</div>
-            <div>Players</div>
-          </div>
-          <div id="leaderboard-rows">
-            <!-- Populated by JS -->
+        <div class="finalists-table" id="finalists-table">
+          <div id="finalists-content">
+            <!-- Content populated by JS -->
           </div>
         </div>
       </div>
@@ -813,28 +835,43 @@
         }).join('');
     }
 
-    function renderLeaderboard(participants) {
-        const leaderboardRows = document.getElementById('leaderboard-rows');
-        if (!participants || participants.length === 0) {
-            leaderboardRows.innerHTML = `<div style="text-align:center; padding: 2rem; color: var(--muted);">No teams have registered yet.</div>`;
-            return;
-        }
-        leaderboardRows.innerHTML = participants.map((team, index) => {
-            const rank = index + 1;
-            const rankClass = rank === 1 ? 'first' : '';
-            const playersList = team.players.map(p => p.name).join(', ');
-            return `
-                <div class="leaderboard-row">
-                    <div class="rank ${rankClass}">#${rank}</div>
-                    <div class="team-info">
-                        <div class="team-avatar">${team.teamName.charAt(0).toUpperCase()}</div>
-                        <div>${team.teamName}</div>
-                    </div>
-                    <div>${playersList}</div>
-                </div>
-            `;
-        }).join('');
-    }
+    function renderFinalists(finalists) {
+      const finalistsContent = document.getElementById('finalists-content');
+      
+      if (!finalists || finalists.length === 0) {
+          finalistsContent.innerHTML = `
+              <div class="empty-finalists">
+                  <i class="fas fa-trophy" style="font-size: 3rem; color: var(--accent); margin-bottom: 1rem;"></i>
+                  <p>The list of the top 16 will appear here.</p>
+              </div>
+          `;
+          return;
+      }
+
+      const leftColumn = finalists.slice(0, 8);
+      const rightColumn = finalists.slice(8, 16);
+
+      finalistsContent.innerHTML = `
+          <div class="finalists-grid">
+              <div class="finalists-column">
+                  ${leftColumn.map((team, index) => `
+                      <div class="finalist-item">
+                          <div class="finalist-rank">${index + 1}.</div>
+                          <div class="finalist-team">${team.teamName || team.name || `Team ${index + 1}`}</div>
+                      </div>
+                  `).join('')}
+              </div>
+              <div class="finalists-column">
+                  ${rightColumn.map((team, index) => `
+                      <div class="finalist-item">
+                          <div class="finalist-rank">${index + 9}.</div>
+                          <div class="finalist-team">${team.teamName || team.name || `Team ${index + 9}`}</div>
+                      </div>
+                  `).join('')}
+              </div>
+          </div>
+      `;
+  }
 
     function updateUI(tournament) {
         if (!tournament) return;
@@ -903,53 +940,46 @@
     }
     
     function updateStatusAndLeaderboard(tournament) {
-        // Use the status directly from the server data.
-        const status = tournament.status;
-        const primaryActionBtn = document.getElementById('primary-action');
-        const leaderboardSection = document.getElementById('leaderboard-section');
+      const status = tournament.status;
+      const primaryActionBtn = document.getElementById('primary-action');
+      const finalistsSection = document.getElementById('finalists-section'); // Changed variable name
 
-        leaderboardSection.style.display = 'none';
-        primaryActionBtn.style.display = 'flex';
-        primaryActionBtn.disabled = false;
+      finalistsSection.style.display = 'none';
+      primaryActionBtn.style.display = 'flex';
+      primaryActionBtn.disabled = false;
 
-        switch(status) {
-            case 'upcoming':
-                // NEW: Display a message for upcoming registration
-                primaryActionBtn.innerHTML = '<i class="fas fa-clock"></i> Registration opens soon';
-                primaryActionBtn.disabled = true;
-                break;
-            case 'registration_open':
-                primaryActionBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
-                primaryActionBtn.onclick = () => {
-                    const sessionData = getSessionData();
-                    if (sessionData && sessionData.data.user) {
-                        window.location.href = `team-registration.html?slug=${currentTournament.slug}`;
-                    } else {
-                        redirectToAuth('register');
-                    }
-                };
-                break;
-            case 'registration_closed':
-                primaryActionBtn.innerHTML = '<i class="fas fa-lock"></i> Registration Closed';
-                primaryActionBtn.disabled = true;
-                break;
-            case 'ongoing':
-            case 'ended':
-                leaderboardSection.style.display = 'block';
-                primaryActionBtn.style.display = 'none'; // Hide the button
-                renderLeaderboard(tournament.participants || []);
-                if(status === 'ended') {
-                    leaderboardSection.querySelector('.section-title').textContent = 'Final Results';
-                } else {
-                    leaderboardSection.querySelector('.section-title').textContent = 'Live Leaderboard';
-                }
-                break;
-            default:
-                primaryActionBtn.innerHTML = '<i class="fas fa-info-circle"></i> View Details';
-                primaryActionBtn.disabled = true;
-                break;
-        }
-    }
+      switch(status) {
+          case 'upcoming':
+              primaryActionBtn.innerHTML = '<i class="fas fa-clock"></i> Registration opens soon';
+              primaryActionBtn.disabled = true;
+              break;
+          case 'registration_open':
+              primaryActionBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
+              primaryActionBtn.onclick = () => {
+                  const sessionData = getSessionData();
+                  if (sessionData && sessionData.data.user) {
+                      window.location.href = `team-registration.html?slug=${currentTournament.slug}`;
+                  } else {
+                      redirectToAuth('register');
+                  }
+              };
+              break;
+          case 'registration_closed':
+              primaryActionBtn.innerHTML = '<i class="fas fa-lock"></i> Registration Closed';
+              primaryActionBtn.disabled = true;
+              break;
+          case 'ongoing':
+          case 'ended':
+              finalistsSection.style.display = 'block';
+              primaryActionBtn.style.display = 'none';
+              renderFinalists(tournament.finalists || []); // Changed to use finalists data
+              break;
+          default:
+              primaryActionBtn.innerHTML = '<i class="fas fa-info-circle"></i> View Details';
+              primaryActionBtn.disabled = true;
+              break;
+      }
+  }
 
     document.addEventListener('DOMContentLoaded', async () => {
       // --- PAGE-SPECIFIC LOGIC ---
@@ -980,6 +1010,7 @@
           });
       });
     });
+
   </script>
   <script src="navbar.js"></script>
 </body>
