@@ -909,14 +909,17 @@
     function updateUI(tournament) {
         if (!tournament) return;
 
-        // --- ADD THIS NEW CODE BLOCK ---
+        // --- NEW, SMARTER IMAGE HANDLING ---
         const heroSection = document.querySelector('.tournament-hero');
         if (tournament.posterImage) {
-            // Constructs the full image URL from the relative path provided by the backend
-            const fullImageUrl = `${API_BASE_URL}${tournament.posterImage}`;
-            heroSection.style.backgroundImage = `url('${fullImageUrl}')`;
+            // Use the URL directly if it's a full URL (from Cloudinary)
+            // Otherwise, construct it from the base URL (for old/local images)
+            const imageUrl = tournament.posterImage.startsWith('http')
+                ? tournament.posterImage
+                : `${API_BASE_URL}${tournament.posterImage}`;
+            heroSection.style.backgroundImage = `url('${imageUrl}')`;
         }
-        // --- END OF NEW CODE BLOCK ---
+        // --- END OF NEW LOGIC ---
 
         document.getElementById('page-title').textContent = `${tournament.title} | EArena`;
         document.getElementById('tournament-title').textContent = tournament.title;
