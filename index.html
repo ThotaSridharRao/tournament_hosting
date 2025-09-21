@@ -863,36 +863,55 @@
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header" role="banner">
-    <div class="header-container">
-        <a href="index.html" class="brand" aria-hidden="false">EArena</a>
-        
-        <div class="header-right">
-            <nav class="primary" role="navigation" aria-label="Primary">
-                <div class="nav-links" role="menubar">
-                    <a href="#tournaments" role="menuitem">Tournaments</a>
-                    <a href="#why-us" role="menuitem">Why Us</a>
-                    <a href="#faq" role="menuitem">FAQ</a>
-                </div>
-            </nav>
-            <div class="nav-actions">
-              <div id="guest-menu">
-                <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
+  <div class="header-container">
+      <a href="index.html" class="brand" aria-hidden="false">EArena</a>
+      <div class="header-right">
+          <nav class="primary" role="navigation" aria-label="Primary">
+              <div class="nav-links" role="menubar">
+                  <a href="#tournaments" role="menuitem">Tournaments</a>
+                  <a href="#why-us" role="menuitem">Why Us</a>
+                  <a href="#faq" role="menuitem">FAQ</a>
               </div>
-              <div id="user-menu" style="display: none;">
-                <div class="profile-dropdown">
+          </nav>
+          <div class="nav-actions">
+            <div id="guest-menu">
+              <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
+            </div>
+            <div id="user-menu" style="display: none;">
+              <div class="profile-dropdown">
+                <div class="profile-icon" id="profile-icon">
+                  <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="profile-modal" id="profile-modal">
+                  <div class="profile-header">
+                    <div class="profile-photo"><i class="fas fa-user"></i></div>
+                    <div class="profile-info">
+                      <div class="profile-username" id="modal-username">User</div>
                     </div>
+                  </div>
+                  <div class="profile-actions">
+                    <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
+                      <i class="fas fa-user"></i>
+                      <span>My Account</span>
+                    </a>
+                    <button class="profile-action logout-action" onclick="logout()">
+                      <i class="fas fa-sign-out-alt"></i>
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-        </div>   
-
-        <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
-            <i class="fas fa-bars"></i>
-        </button>
-    </div>
+          </div>
+          <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+              <i class="fas fa-bars"></i>
+          </button>
+      </div>   
+  </div>
 </header>
 
-  <div id="mobile-nav" class="mobile-nav" hidden>
-    </div>
+<div id="mobile-nav" class="mobile-nav" hidden>
+  </div>
 
   <main id="main">
     <!-- HERO -->
