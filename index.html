@@ -1184,8 +1184,17 @@
             const rawPoster = tournament.posterImage || tournament.backgroundImage || null;
             let finalPoster = 'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop';
             if (rawPoster) {
-                finalPoster = rawPoster.startsWith('http') ? rawPoster : `${API_BASE_URL}${rawPoster}`;
+            // --- THIS IS THE UPDATED LOGIC ---
+            if (rawPoster.startsWith('http')) {
+                // If it's a full URL from Cloudinary, use it directly
+                finalPoster = rawPoster;
+            } else {
+                // If it's a relative path, ensure it starts with a '/'
+                const cleanPosterPath = rawPoster.startsWith('/') ? rawPoster : `/${rawPoster}`;
+                finalPoster = `${API_BASE_URL}${cleanPosterPath}`;
             }
+            // --- END OF UPDATED LOGIC ---
+        }
             return `
                 <a href="tournament-details.html?slug=${tournament.slug}" class="tournament-card">
                     <div class="tournament-card__poster">
