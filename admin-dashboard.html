@@ -330,6 +330,13 @@
                 const result = await response.json();
                 if (response.ok && result.success && Array.isArray(result.data) && result.data.length > 0) {
                     const realTournaments = result.data.filter(t => t.slug !== 'dev-test-championship');
+                    console.log("Real tournaments from backend:", realTournaments);
+                    
+                    // Log schedule events for each real tournament
+                    realTournaments.forEach(t => {
+                        console.log(`Tournament "${t.title}" schedule events:`, t.scheduleEvents);
+                    });
+                    
                     adminTournaments = [mockTournament, ...realTournaments];
                 } else {
                     adminTournaments = [mockTournament];
@@ -382,10 +389,19 @@
         function updateSchedule(slug) {
             console.log("Update schedule clicked for:", slug);
             const tournament = adminTournaments.find(t => t.slug === slug);
+            console.log("Found tournament:", tournament);
+            
             if (!tournament) {
                 alert('Tournament not found!');
                 return;
             }
+            
+            // Enhanced logging for backend vs mock data
+            console.log("Tournament source:", tournament._id === "mock123" ? "MOCK DATA" : "BACKEND DATA");
+            console.log("Schedule events found:", tournament.scheduleEvents);
+            console.log("Has scheduleEvents?", !!tournament.scheduleEvents);
+            console.log("ScheduleEvents length:", tournament.scheduleEvents ? tournament.scheduleEvents.length : 0);
+            
             renderOperation('scheduleUpdate', tournament);
         }
 
@@ -643,14 +659,20 @@
         }
         
         function getUpdateScheduleHTML(t) {
+            console.log("Tournament data for schedule:", t);
+            console.log("Schedule events:", t.scheduleEvents);
+            
             const scheduleEvents = t.scheduleEvents || [];
             const eventsHtml = scheduleEvents.map((event, index) => {
-                // Handle different datetime formats
                 let eventDateTime = '';
+                
                 if (event.datetime) {
+                    // Handle ISO datetime format
                     eventDateTime = event.datetime.slice(0, 16);
                 } else if (event.date && event.time) {
-                    eventDateTime = `${event.date}T${event.time.slice(0, 5)}`;
+                    // Handle separate date and time fields (like your mock data)
+                    const timeStr = event.time.slice(0, 5); // "11:00:00" becomes "11:00"
+                    eventDateTime = `${event.date}T${timeStr}`; // "2025-10-05T11:00"
                 }
 
                 return `
