@@ -105,9 +105,8 @@
       min-height: 500px;
       background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
       display: flex;
-      align-items: center;
+      align-items: flex-end; /* CHANGED from 'center' */
       overflow: hidden;
-      /* --- ADD THESE LINES --- */
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -128,6 +127,8 @@
       position: relative;
       z-index: 2;
       max-width: 800px;
+      padding-bottom: 4rem; /* ADDED */
+      text-align: left;     /* ADDED */
     }
 
     .tournament-title {
@@ -400,6 +401,22 @@
       .btn-primary { text-align: center; }
       .timeline-item { flex-direction: column; gap: 1rem; }
       .timeline-date { text-align: left; }
+    }
+    /* --- ADD THIS NEW CODE BLOCK FOR LARGE SCREENS --- */
+    @media (min-width: 1600px) {
+      header.site-header {
+        height: 80px; /* Increased from 60px */
+        padding: 0 3rem;
+      }
+      .back-btn, .header-cta, .profile-username {
+        font-size: 1.1rem; /* Bumps up the text size */
+      }
+      .header-cta {
+        padding: 0.7rem 1.25rem; /* Makes the button bigger */
+      }
+      .profile-icon {
+        font-size: 1.75rem; /* Makes the profile icon larger */
+      }
     }
   </style>
 </head>
