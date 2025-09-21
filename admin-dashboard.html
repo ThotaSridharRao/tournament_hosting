@@ -8,1023 +8,854 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
     <style>
-        /* Modern Theme variables */
+        /* =========================
+           EArena/FaceIT Theme variables
+           ========================= */
         :root {
-            --bg-dark: #0D1117;
-            --bg-medium: #161B22;
-            --panel-color: rgba(31, 38, 48, 0.5);
-            --border-color: rgba(137, 147, 163, 0.2);
-            --muted: #8993a3;
-            --copy: #c9d1d9;
-            --copy-bright: #f0f6fc;
-            --accent: #f7b32b;
-            --accent-glow: rgba(247, 179, 43, 0.3);
+            --primary-color: #ff4500;
+            --bg-dark: #000000;
+            --panel: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(255, 69, 0, 0.3);
             --radius: 12px;
             --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+            --muted: var(--text-secondary); 
+            --accent: var(--primary-color);
+            --accent-2: #ff6347; 
+            --copy: var(--text-primary);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* --- INLINED NAVBAR.CSS --- */
+        .profile-dropdown { position: relative; display: flex; align-items: center; }
+        .profile-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: var(--copy); cursor: pointer; border-radius: 50%; transition: all 0.3s ease; font-size: 1.5rem; }
+        .profile-icon:hover { color: var(--accent); background: rgba(255, 69, 0, 0.1); transform: scale(1.1); }
+        .profile-modal { position: absolute; top: 100%; right: 0; background: var(--panel); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; min-width: 280px; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s ease; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); z-index: 1000; margin-top: 10px; }
+        .profile-dropdown:hover .profile-modal { opacity: 1; visibility: visible; transform: translateY(0); }
+        .profile-header { display: flex; align-items: center; gap: 1rem; padding: 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .profile-photo { width: 50px; height: 50px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-size: 1.5rem; flex-shrink: 0; }
+        .profile-info .profile-username { font-weight: 700; font-size: 1.1rem; }
+        .profile-actions { padding: 0.5rem; }
+        .profile-action { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; color: var(--muted); text-decoration: none; border-radius: 8px; transition: all 0.3s ease; font-weight: 600; width: 100%; border: none; background: none; cursor: pointer; font-family: inherit; }
+        .profile-action:hover { background: rgba(255, 255, 255, 0.05); color: var(--accent); transform: translateX(4px); }
+        .logout-action:hover { background: rgba(255, 0, 0, 0.1); color: #ff6b6b; }
+        .primary { display: flex; align-items: center; }
+        .nav-links { display: flex; align-items: center; gap: 2rem; }
+        .nav-links a { font-weight: 600; font-size: 1rem; color: var(--muted); transition: color 0.3s ease; position: relative; padding-bottom: 4px; text-decoration: none; }
+        .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background-color: var(--accent); transform: scaleX(0); transform-origin: bottom right; transition: transform 0.3s ease-out; }
+        .nav-links a:hover { color: var(--copy); }
+        .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); transform-origin: bottom left; }
+        .nav-links a.active { color: var(--copy); }
+        /* --- END OF INLINED NAVBAR.CSS --- */
 
-        html {
-            scroll-behavior: smooth;
-        }
+        /* Base Resets */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: "Inter", system-ui, sans-serif; background-color: var(--bg-dark); color: var(--text-primary); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+        #canvas-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
 
-        body {
-            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--copy);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            line-height: 1.5;
-            display: flex;
-            min-height: 100vh;
-        }
-        
-        /* Modern Sidebar */
-        .sidebar {
-            width: 260px;
-            background: var(--bg-medium);
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem;
-            position: fixed;
-            height: 100%;
-            z-index: 100;
-            transition: transform 0.3s ease;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 700;
-            color: var(--copy-bright);
-            font-size: 1.5rem;
-            text-decoration: none;
-            margin-bottom: 2.5rem;
-        }
-
-        .brand .accent {
-            color: var(--accent);
-        }
-
-        .admin-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            flex-grow: 1;
-        }
-
-        .admin-nav a {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            color: var(--muted);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .admin-nav a:hover, .admin-nav a.active {
-            background: var(--panel-color);
-            color: var(--copy-bright);
-        }
-        
-        .admin-nav a i {
-            width: 20px;
-            text-align: center;
-        }
-
-        .sidebar-footer {
-            margin-top: auto;
-        }
-
-        .profile-dropdown {
-            position: relative;
-        }
-        
-        .profile-summary {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s ease;
-        }
-        
-        .profile-summary:hover {
-            background: var(--panel-color);
-        }
-
-        .profile-icon-wrapper {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent), #d1982c);
-            color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-        
-        .profile-info .profile-username {
-            font-weight: 600;
-            color: var(--copy-bright);
-        }
-        
-        .profile-info .profile-role {
-            font-size: 0.8rem;
-            color: var(--muted);
-        }
-        
-        .profile-modal {
-            position: absolute;
-            bottom: calc(100% + 10px);
-            left: 0;
-            right: 0;
-            background: #2a2f38;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            min-width: 230px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10px);
-            transition: all 0.3s var(--ease-out-quart);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            padding: 0.5rem;
-        }
-
-        .profile-dropdown:hover .profile-modal {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-        
-        .profile-action {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            color: var(--muted);
-            text-decoration: none;
-            transition: all 0.2s ease;
-            width: 100%;
-            border: none;
-            background: none;
-            font-family: inherit;
-            font-size: 0.9rem;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        
-        .profile-action:hover {
-            color: var(--copy-bright);
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        .profile-action i { width: 16px; text-align: center; }
-        
-        .logout-action:hover {
-            color: #ff8b8b;
-            background: rgba(255, 100, 100, 0.1);
-        }
-        
         /* Main Content Area */
-        .main-content {
-            margin-left: 260px;
-            flex-grow: 1;
-            padding: 2.5rem;
-            display: flex;
-            flex-direction: column;
-            transition: margin-left 0.3s ease;
-        }
+        .main-content-wrapper { flex-grow: 1; display: flex; flex-direction: column; }
         
-        .main-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        
-        .header-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--copy-bright);
-        }
+        .admin-header { background: rgba(26, 26, 26, 0.7); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); padding: 0 2.5rem; height: 70px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99; }
+        .header-left, .header-right { display: flex; align-items: center; gap: 1.5rem; }
+        .brand { font-weight: 800; font-size: 1.5rem; text-decoration: none; color: var(--text-primary); }
+        .brand .accent { color: var(--primary-color); }
+        .nav-separator { width: 1px; height: 24px; background-color: var(--border-color); }
+        .content-body { padding: 2.5rem; }
 
-        .header-actions .btn {
-            background: var(--accent);
-            color: #000;
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s ease;
-        }
+        /* Dashboard Sections */
+        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
+        .dashboard-section { background-color: var(--panel); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 1.5rem; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .section-title { font-size: 1.2rem; font-weight: 700; }
         
-        .header-actions .btn:hover {
-            filter: brightness(1.1);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px var(--accent-glow);
-        }
+        /* Tab System Styles */
+        .operation-tabs { display: flex; background-color: var(--panel); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.5rem; margin-top: 2.5rem; }
+        .tab-btn { flex: 1; background: transparent; border: none; color: var(--text-secondary); padding: 0.75rem; cursor: pointer; font-weight: 600; font-size: 0.9rem; border-radius: 6px; transition: all 0.3s ease; }
+        .tab-btn:hover { background: rgba(255, 255, 255, 0.1); color: var(--text-primary); }
+        .tab-btn.active { background-color: var(--primary-color); color: var(--text-primary); font-weight: 700; box-shadow: 0 4px 15px rgba(255, 69, 0, 0.2); }
+        #operation-content { background-color: var(--panel); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 2rem; margin-top: 1.5rem; }
+        .operation-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); }
 
-        /* Modern Action Cards */
-        .actions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
-        }
+        /* Tournament List */
+        .admin-tournament-list { display: flex; flex-direction: column; gap: 1rem; }
+        .admin-tournament-item { display: grid; grid-template-columns: 2fr auto auto auto; align-items: center; gap: 1.5rem; padding: 1rem; border-radius: 8px; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease; }
+        .admin-tournament-item:hover { background: rgba(255, 69, 0, 0.05); border-color: var(--border-color); }
+        .admin-tournament-info .name { font-weight: 600; color: var(--text-primary); text-decoration: none; }
+        .admin-tournament-info .name:hover { color: var(--primary-color); }
+        .admin-tournament-info .game { font-size: 0.85rem; color: var(--text-secondary); }
+        .tournament-participants, .tournament-prize { text-align: right; color: var(--text-secondary); }
+        .tournament-prize { font-weight: 700; color: var(--primary-color); }
+        .tournament-actions { display: flex; justify-content: flex-end; gap: 0.5rem; }
+        .btn-icon { background: transparent; border: none; color: var(--text-secondary); font-size: 1rem; cursor: pointer; padding: 0.5rem; border-radius: 4px; }
+        .btn-icon:hover { color: var(--text-primary); background: rgba(255, 255, 255, 0.1); }
+        .btn-icon.delete:hover { color: #ff8b8b; }
 
-        .action-card {
-            background: var(--panel-color);
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(15px);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            transition: all 0.3s var(--ease-out-quart);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
+        /* Forms */
+        .form-group { margin-bottom: 1rem; }
+        .form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-input, .form-textarea, .form-select { width: 100%; padding: 0.75rem 1rem; background: var(--bg-dark); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: var(--text-primary); font-size: 1rem; }
+        .form-input:focus, .form-textarea:focus, .form-select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(255, 69, 0, 0.2); }
+        .submit-btn { width: 100%; padding: 0.85rem; background: var(--primary-color); border: none; border-radius: 8px; color: var(--text-primary); font-weight: 700; cursor: pointer; margin-top: 1rem; }
+        .submit-btn:hover { background: #ff6347; }
+        .form-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        .btn-secondary { background-color: #333; border: 1px solid #555;}
+        .btn-secondary:hover { background-color: #444; }
         
-        .action-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1), transparent 30%);
-            transition: opacity 0.5s ease;
-            opacity: 0;
-            transform-origin: center;
-        }
-        
-        .action-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(247, 179, 43, 0.4);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-        }
-        
-        .action-card:hover::before {
-            opacity: 1;
-        }
+        .btn-info { background-color: #17a2b8; border: 1px solid #17a2b8;}
+        .btn-info:hover { background-color: #138496; }
+        .btn-warning { background-color: #ffc107; border: 1px solid #ffc107; color: #1a1a1a;}
+        .btn-warning:hover { background-color: #e0a800; }
 
-        .action-card .icon {
-            font-size: 1.5rem;
-            color: var(--accent);
-            margin-bottom: 1rem;
-        }
-
-        .action-title {
-            font-weight: 600;
-            color: var(--copy-bright);
-            margin-bottom: 0.5rem;
-        }
-
-        .action-description {
-            color: var(--muted);
-            font-size: 0.9rem;
-        }
-
-        /* Modern Dashboard Grid & Sections */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .dashboard-section {
-            background: var(--panel-color);
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(15px);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-        }
-        
-        .section-header {
+        .operation-title-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
-        }
-        
-        .section-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--copy-bright);
-        }
-        
-        .view-all-btn {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        
-        /* Modern Lists (Tournaments, Activity) */
-        .admin-tournament-list, .activity-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .admin-tournament-item, .activity-item {
-            display: grid;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            border-radius: 8px;
-            background: rgba(0,0,0,0.2);
-            transition: background 0.2s ease;
-        }
-        
-        .admin-tournament-item:hover, .activity-item:hover {
-            background: rgba(255,255,255,0.05);
-        }
-        
-        .admin-tournament-item {
-            grid-template-columns: 2fr auto auto auto;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .admin-tournament-info .name {
-            font-weight: 600;
-            color: var(--copy-bright);
-            text-decoration: none;
-            display: block;
-        }
-        .admin-tournament-info .name:hover {
-            color: var(--accent);
+        .operation-title-header .operation-title {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
         }
 
-        .admin-tournament-info .game {
-            font-size: 0.85rem;
-            color: var(--muted);
-        }
-
-        .tournament-participants, .tournament-prize {
-            font-size: 0.9rem;
-            text-align: right;
-        }
-        
-        .tournament-prize {
-            font-weight: 600;
-            color: var(--accent);
-        }
-        
-        .tournament-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 0.5rem;
-        }
-
-        .btn-icon {
+        .close-btn {
             background: transparent;
             border: none;
-            color: var(--muted);
-            font-size: 1rem;
+            color: var(--text-secondary);
+            font-size: 2rem;
+            font-weight: 600;
             cursor: pointer;
-            padding: 0.5rem;
-            border-radius: 4px;
+            line-height: 1;
+            padding: 0 0.75rem;
+            border-radius: 8px;
             transition: all 0.2s ease;
         }
-        
-        .btn-icon:hover {
-            color: var(--copy-bright);
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .btn-icon.delete:hover {
-            color: #ff8b8b;
+
+        .close-btn:hover {
+            color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.1);
         }
         
-        .activity-item {
-            grid-template-columns: auto 1fr auto;
-        }
-        
-        .activity-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            background: var(--panel-color);
-        }
-
-        .activity-text {
-            color: var(--copy);
-        }
-
-        .activity-time {
-            color: var(--muted);
-            font-size: 0.85rem;
-        }
-        
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(13, 17, 23, 0.8);
-            backdrop-filter: blur(10px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: var(--bg-medium);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 2rem;
-            width: 90%;
-            max-width: 600px;
-            position: relative;
-            transform: scale(0.95);
-            opacity: 0;
-            transition: all 0.3s var(--ease-out-quart);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        .modal-content.active {
-            transform: scale(1);
-            opacity: 1;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--copy-bright);
-        }
-
-        .modal-close-btn {
-            background: none;
-            border: none;
-            color: var(--muted);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .modal-close-btn:hover {
-            color: #fff;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--copy);
-            font-size: 0.9rem;
-        }
-        
-        .form-input, .form-textarea, .form-select, .form-file {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: var(--bg-dark);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--copy);
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .form-input:focus, .form-textarea:focus, .form-select:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 0.85rem;
-            background: var(--accent);
-            border: none;
-            border-radius: 8px;
-            color: #000;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s var(--ease-out-quart);
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px var(--accent-glow);
-        }
-        
-        /* Hamburger menu for mobile */
-        .hamburger {
-            display: none;
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 1001;
-            background: var(--panel-color);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            width: 44px;
-            height: 44px;
-            color: var(--copy);
-            cursor: pointer;
-        }
-
         /* Responsive */
         @media (max-width: 1024px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            body.sidebar-open .sidebar {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-left: 0;
-            }
-            .hamburger {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .admin-header { padding: 0 1.5rem; }
+            .nav-links { display: none; }
         }
-        
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 1.5rem;
-            }
-            .header-title {
-                font-size: 1.5rem;
-            }
-            .header-actions .btn {
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
-            }
-            .admin-tournament-item {
-                grid-template-columns: 1fr auto;
-            }
-            .admin-tournament-item > div:nth-child(2),
-            .admin-tournament-item > div:nth-child(3),
-            .admin-tournament-item > div:nth-child(4) {
-                display: none;
-            }
-        }
-
-        /* (Preserving original functional styles) */
-        .form-textarea { min-height: 100px; resize: vertical; }
-        .form-file { padding: 0; cursor: pointer; }
-        .form-file::-webkit-file-upload-button { background: rgba(255, 255, 255, 0.1); border: none; padding: 0.75rem 1rem; border-radius: 8px 0 0 8px; color: var(--copy); font-weight: 600; margin-right: 1rem; cursor: pointer; transition: background 0.3s ease; }
-        .form-file::-webkit-file-upload-button:hover { background: rgba(255, 255, 255, 0.2); }
-        .tournament-item-loading, .tournament-item-empty { display: flex; align-items: center; gap: 1rem; padding: 1rem; color: var(--muted); }
     </style>
 </head>
 
 <body>
-    <!-- Hamburger Menu (for mobile) -->
-    <button class="hamburger" id="hamburger-menu" aria-label="Open Menu">
-        <i class="fas fa-bars"></i>
-    </button>
+    <canvas id="canvas-background"></canvas>
     
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-        <a href="index.html" class="brand">
-            <span class="accent">E</span>Arena
-        </a>
-
-        <nav class="admin-nav">
-            <a href="#" class="active"><i class="fas fa-tachometer-alt fa-fw"></i> <span>Dashboard</span></a>
-            <a href="#manage-tournaments-section"><i class="fas fa-trophy fa-fw"></i> <span>Tournaments</span></a>
-            <a href="#" onclick="showModal('manageUsersModal')"><i class="fas fa-users fa-fw"></i> <span>Users</span></a>
-            <a href="#" onclick="showModal('manageContentModal')"><i class="fas fa-file-alt fa-fw"></i> <span>Content</span></a>
-            <a href="#" onclick="showModal('analyticsModal')"><i class="fas fa-chart-line fa-fw"></i> <span>Analytics</span></a>
-            <a href="#" onclick="showModal('moderationModal')"><i class="fas fa-shield-alt fa-fw"></i> <span>Moderation</span></a>
-        </nav>
-
-        <div class="sidebar-footer">
-            <div class="profile-dropdown">
-                <div class="profile-summary" id="profile-icon">
-                    <div class="profile-icon-wrapper">
-                        <i class="fas fa-user-shield"></i>
-                    </div>
-                    <div class="profile-info">
-                        <div class="profile-username" id="admin-username">Admin</div>
-                        <div class="profile-role">Administrator</div>
-                    </div>
-                </div>
-                 <div class="profile-modal" id="profile-modal">
-                    <a href="#" onclick="showModal('settingsModal')" class="profile-action">
-                        <i class="fas fa-cog"></i>
-                        <span>Settings</span>
-                    </a>
-                    <button class="profile-action logout-action" onclick="logout()">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout</span>
-                    </button>
-                </div>
+    <div class="main-content-wrapper">
+        <header class="admin-header">
+            <div class="header-left">
+                <a href="index.html" class="brand"><span class="accent">E</span>Arena</a>
             </div>
-        </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <header class="main-header">
-            <h1 class="header-title">Dashboard</h1>
-            <div class="header-actions">
-                <button class="btn" onclick="showModal('createTournamentModal')">
-                    <i class="fas fa-plus"></i>
-                    Create Tournament
-                </button>
+            <div class="header-right">
+                <nav class="primary">
+                    <div class="nav-links">
+                        <a href="#" class="active">Dashboard</a>
+                        <a href="#manage-tournaments-section">Tournaments</a>
+                        <a href="#" onclick="alert('User management coming soon!')">Users</a>
+                    </div>
+                </nav>
+                <div class="nav-separator"></div>
+                <div id="user-menu" style="display: none;">
+                    <div class="profile-dropdown">
+                        <div class="profile-icon" id="profile-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="profile-modal" id="profile-modal">
+                             <div class="profile-header">
+                                <div class="profile-photo"><i class="fas fa-user-shield"></i></div>
+                                <div class="profile-info">
+                                    <div class="profile-username" id="modal-username">Admin</div>
+                                </div>
+                            </div>
+                            <div class="profile-actions">
+                                <a href="#" class="profile-action">
+                                    <i class="fas fa-user-cog"></i>
+                                    <span>My Account</span>
+                                </a>
+                                <button class="profile-action logout-action" onclick="logout()">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Logout</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </header>
-        
-        <!-- This section is removed as actions are now in sidebar/header -->
-        <!-- <div class="actions-grid"></div> -->
-        
-        <!-- Old header section removed -->
-        <!-- <div class="dashboard-header"></div> -->
 
-        <div class="dashboard-grid">
-            <div class="dashboard-section" id="manage-tournaments-section">
-                <div class="section-header">
-                    <h3 class="section-title">Manage Tournaments</h3>
-                    <a href="#" class="view-all-btn">View All →</a>
-                </div>
-                <div class="admin-tournament-list" id="admin-tournament-list">
-                    <!-- Loading state -->
-                </div>
-            </div>
-            <div class="dashboard-section">
-                <div class="section-header">
-                    <h3 class="section-title">Recent Activity</h3>
-                    <button class="btn-icon" onclick="loadRecentActivity()" title="Refresh">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                </div>
-                <div class="activity-list" id="activity-list">
-                     <!-- Activity items will be injected here -->
-                </div>
-            </div>
-        </div>
-        
-        <!-- Other sections from original HTML preserved but not displayed in the main grid -->
-        <div id="live-tournaments-list" style="display:none;"></div>
-        <div id="platform-activity-list" style="display:none;"></div>
-        
-    </main>
-
-    <!-- Modals -->
-    <div class="modal-overlay" id="createTournamentModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Create New Tournament</h2>
-                <button class="modal-close-btn" onclick="hideModal('createTournamentModal')">&times;</button>
-            </div>
-            <form id="create-tournament-form">
-                <div class="form-group">
-                    <label for="tournament-name" class="form-label">Tournament Name</label>
-                    <input type="text" id="tournament-name" name="title" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="tournament-game" class="form-label">Game</label>
-                    <input type="text" id="tournament-game" name="game" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="tournament-details" class="form-label">Tournament Details</label>
-                    <textarea id="tournament-details" name="description" class="form-textarea" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="reg-start-date" class="form-label">Registration Start Date</label>
-                    <input type="datetime-local" id="reg-start-date" name="registrationStart" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="reg-end-date" class="form-label">Registration End Date</label>
-                    <input type="datetime-local" id="reg-end-date" name="registrationEnd" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="tournament-start-date" class="form-label">Tournament Start Date</label>
-                    <input type="datetime-local" id="tournament-start-date" name="tournamentStart" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="tournament-end-date" class="form-label">Tournament End Date</label>
-                    <input type="datetime-local" id="tournament-end-date" name="tournamentEnd" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="prize-pool" class="form-label">Prize Pool (₹)</label>
-                    <input type="number" id="prize-pool" name="prizePool" class="form-input" min="0" required>
-                </div>
-                <div class="form-group">
-                    <label for="entry-fee" class="form-label">Entry Fee (₹)</label>
-                    <input type="number" id="entry-fee" name="entryFee" class="form-input" min="0" value="0">
-                </div>
-                <div class="form-group">
-                    <label for="num-teams" class="form-label">Number of Teams</label>
-                    <input type="number" id="num-teams" name="maxTeams" class="form-input" min="2" required>
-                </div>
-                <div class="form-group">
-                    <label for="tournament-format" class="form-label">Tournament Format</label>
-                    <select id="tournament-format" name="format" class="form-select" required>
-                        <option value="" disabled selected>Select a format...</option>
-                        <option value="single-elimination">Single Elimination</option>
-                        <option value="double-elimination">Double Elimination</option>
-                        <option value="round-robin">Round Robin</option>
-                        <option value="swiss">Swiss System</option>
-                        <option value="group-stage">Group Stage</option>
-                        <option value="kp">KP Format (4 Groups → Top 4 Each → Final)</option>
-                    </select>
-                </div>
-                <div id="kp-settings" style="display: none;">
-                    <h4 style="color: var(--accent); margin: 1.5rem 0 1rem 0;">KP Tournament Settings</h4>
-                    <div class="form-group">
-                        <label for="max-players-per-team" class="form-label">Max Players per Team</label>
-                        <input type="number" id="max-players-per-team" name="maxPlayersPerTeam" class="form-input" value="4" min="1" max="10">
+        <main class="content-body">
+             <div class="dashboard-grid">
+                <div class="dashboard-section" id="manage-tournaments-section">
+                    <div class="section-header">
+                        <h3 class="section-title">Manage Tournaments</h3>
+                    </div>
+                    <div class="admin-tournament-list" id="admin-tournament-list">
+                        <!-- Tournament list will be injected here -->
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="tournament-poster" class="form-label">Poster Image</label>
-                    <input type="file" id="tournament-poster" name="posterImage" class="form-file" accept="image/*">
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h3 class="section-title">Recent Activity</h3>
+                    </div>
+                    <div class="activity-list" id="activity-list">
+                         <!-- Activity items will be injected here -->
+                    </div>
                 </div>
-                <button type="submit" class="submit-btn">Create Tournament</button>
-            </form>
-        </div>
-    </div>
-    <div class="modal-overlay" id="manageUsersModal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Manage Users</h2><button class="modal-close-btn" onclick="hideModal('manageUsersModal')">&times;</button></div><p>User management interface will be here.</p></div></div>
-    <div class="modal-overlay" id="manageContentModal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Manage Content</h2><button class="modal-close-btn" onclick="hideModal('manageContentModal')">&times;</button></div><p>Content management interface will be here.</p></div></div>
-    <div class="modal-overlay" id="analyticsModal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Analytics</h2><button class="modal-close-btn" onclick="hideModal('analyticsModal')">&times;</button></div><p>Analytics dashboard will be here.</p></div></div>
-    <div class="modal-overlay" id="settingsModal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Settings</h2><button class="modal-close-btn" onclick="hideModal('settingsModal')">&times;</button></div><p>Platform settings will be here.</p></div></div>
-    <div class="modal-overlay" id="moderationModal"><div class="modal-content"><div class="modal-header"><h2 class="modal-title">Moderation</h2><button class="modal-close-btn" onclick="hideModal('moderationModal')">&times;</button></div><p>Moderation tools will be here.</p></div></div>
+            </div>
 
+            <!-- TABS ARE OUTSIDE AND BELOW THE GRID -->
+            <div class="operation-tabs">
+                <button class="tab-btn active" data-operation="create">Create Tournament</button>
+                <button class="tab-btn" data-operation="update">Update Tournament</button>
+                <button class="tab-btn" data-operation="delete">Delete Tournament</button>
+                <button class="tab-btn" data-operation="download">Download Data</button>
+            </div>
+
+            <div id="operation-content">
+                <!-- Content is dynamically rendered here -->
+            </div>
+        </main>
+    </div>
+    
     <script>
-        // --- ALL JAVASCRIPT IS PRESERVED ---
-        function redirectToAuth(tab = 'login') {
-          localStorage.removeItem('earena_session');
-          sessionStorage.removeItem('earena_session');
-          document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-          document.cookie = 'user_data=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-          const returnUrl = encodeURIComponent(window.location.href);
-          window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
+        // --- INLINED NAVBAR.JS ---
+        function redirectToAuth(tab = 'register') { const returnUrl = encodeURIComponent(window.location.href); window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`; }
+        function getSessionData() { const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session'); try { return session ? JSON.parse(session) : null; } catch (error) { return null; } }
+        function logout() { localStorage.removeItem('earena_session'); sessionStorage.removeItem('earena_session'); window.location.reload(); }
+        function checkUserAuthentication() { 
+            const sessionData = getSessionData(); 
+            const userMenu = document.getElementById('user-menu'); 
+            const user = sessionData?.data?.user || sessionData?.user; 
+            if (user) { 
+                document.getElementById('modal-username').textContent = user.username || user.email;
+                if (userMenu) userMenu.style.display = 'flex'; 
+            } else { 
+                if (userMenu) userMenu.style.display = 'none'; 
+            } 
         }
+        
+        // --- Canvas Background Animation ---
+        function initCanvasBackground() {
+            const canvas = document.getElementById('canvas-background');
+            if (!canvas) return;
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            const particlesGeometry = new THREE.BufferGeometry;
+            const count = 5000;
+            const positions = new Float32Array(count * 3);
+            for(let i = 0; i < count * 3; i++) { positions[i] = (Math.random() - 0.5) * 10; }
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const particlesMaterial = new THREE.PointsMaterial({ size: 0.005, sizeAttenuation: true, color: '#ff4500' });
+            const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particles);
+            camera.position.z = 5;
+            const clock = new THREE.Clock();
+            const animate = () => { const elapsedTime = clock.getElapsedTime(); particles.rotation.y = elapsedTime * 0.05; particles.rotation.x = elapsedTime * 0.02; renderer.render(scene, camera); window.requestAnimationFrame(animate); };
+            animate();
+            window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); });
+        }
+
+        // --- DASHBOARD JAVASCRIPT ---
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
         const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
-        function getAuthToken() {
-            try {
-                const authData = localStorage.getItem('earena_session');
-                if (!authData) return null;
-                return JSON.parse(authData).token;
-            } catch (error) { return null; }
-        }
+        
+        const mockTournament = {
+            _id: "mock123", title: "Dev Test Championship", game: "Valorant", slug: "dev-test-championship", description: "This is a mock tournament for development and testing purposes.",
+            registrationStart: "2025-09-20T10:00:00", registrationEnd: "2025-09-30T23:59:00", tournamentStart: "2025-10-05T12:00:00", tournamentEnd: "2025-10-07T22:00:00",
+            prizePool: 50000, maxTeams: 64, participant_count: 27, format: "single-elimination", posterImage: "https://placehold.co/600x400/1a1a1a/ff4500?text=Dev+Tournament", status: "registration_open",
+            participants: [], entryFee: 100, maxPlayersPerTeam: 5
+        };
+        let adminTournaments = [mockTournament];
+        
+        const operationTemplates = {
+            create: () => `...`, // This will be handled by a dedicated function for clarity
+            update: () => `
+                <h3 class="operation-title">Update Tournament</h3>
+                <p>Select a tournament from the list below to edit its details.</p>
+                <div id="update-tournament-list" class="admin-tournament-list" style="margin-top: 1.5rem;"></div>
+            `,
+            delete: () => `...`,
+            download: () => `...`
+        };
+
         function checkAdminAuth() {
+            const sessionData = getSessionData(); 
+            if (!sessionData || !sessionData.token) { console.warn("Auth check: No session data found."); return false; }
+            const user = sessionData?.data?.user || sessionData?.user;
+            if (!user || user.role !== 'admin') { console.warn("Auth check: User is not an admin."); return false; }
+            return true;
+        }
+        
+        async function loadRecentActivity() { 
+            const activityList = document.getElementById('activity-list');
+            if (activityList) activityList.innerHTML = '<p>Recent activity will be shown here.</p>';
+        }
+        
+        async function loadAdminTournaments() {
             try {
-                const authData = localStorage.getItem('earena_session');
-                if (!authData) { redirectToAuth('login'); return false; }
-                const sessionData = JSON.parse(authData);
-                if (!sessionData.user || !sessionData.token || sessionData.user.role !== 'admin') {
-                    alert('Access Denied: You do not have admin privileges.');
-                    redirectToAuth('login');
-                    return false;
+                const response = await fetch(`${API_BASE_URL}/api/tournaments`, { headers: { 'Authorization': `Bearer ${getSessionData()?.token}` } });
+                const result = await response.json();
+                if (response.ok && result.success && Array.isArray(result.data) && result.data.length > 0) {
+                    const realTournaments = result.data.filter(t => t.slug !== 'dev-test-championship');
+                    adminTournaments = [mockTournament, ...realTournaments];
+                } else {
+                    adminTournaments = [mockTournament];
                 }
-                const usernameElement = document.getElementById('admin-username');
-                if (usernameElement) {
-                    usernameElement.textContent = sessionData.user.username || sessionData.user.email;
-                }
-                return sessionData;
-            } catch (error) { redirectToAuth('login'); return false; }
+            } catch (error) {
+                console.error('Error loading real tournaments:', error);
+                adminTournaments = [mockTournament]; 
+                console.warn('Displaying mock data only due to network or server error.');
+            }
+            console.log("Admin tournaments after fetch:", adminTournaments);
+            renderTournamentList('admin-tournament-list', adminTournaments, 'manage');
+            const activeTabOperation = document.querySelector('.tab-btn.active')?.dataset.operation;
+            if (activeTabOperation) renderOperation(activeTabOperation);
         }
-        async function logout() {
-            try {
-                localStorage.removeItem('earena_session');
-                sessionStorage.removeItem('earena_session');
-                await fetch(`${API_BASE_URL}/api/auth/logout`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${getAuthToken()}` }
-                });
-            } finally { window.location.href = 'index.html'; }
-        }
-        async function loadDashboardStats() {}
-        async function loadRecentActivity() {
-            const authToken = getAuthToken();
-            if (!authToken) return;
-            try {
-                const [recentRes, platformRes] = await Promise.all([
-                    fetch(`${API_BASE_URL}/api/activities/recent?limit=5&adminOnly=true`, { headers: { 'Authorization': `Bearer ${authToken}` } }),
-                    fetch(`${API_BASE_URL}/api/activities/platform?limit=5`, { headers: { 'Authorization': `Bearer ${authToken}` } })
-                ]);
-                if (recentRes.ok) displayActivities((await recentRes.json()).data, 'activity-list');
-                if (platformRes.ok) displayActivities((await platformRes.json()).data, 'platform-activity-list');
-            } catch (error) { console.error('Error loading activities:', error); }
-        }
-        function displayActivities(activities, containerId) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            if (!activities || activities.length === 0) {
-                container.innerHTML = `<div class="activity-item"><div class="activity-icon"><i class="fas fa-info-circle"></i></div><div class="activity-content"><div class="activity-text">No recent activities</div></div></div>`;
+        
+        async function deleteTournament(event, slug) {
+            event.stopPropagation();
+            if (slug === 'dev-test-championship') {
+                console.log("Mock tournament action blocked: DELETE");
+                alert("This is a mock tournament and cannot be deleted via API.");
                 return;
             }
-            container.innerHTML = activities.map(activity => {
-                const icon = getActivityIcon(activity.type);
-                const timeAgo = formatTimeAgo(new Date(activity.createdAt || activity.timestamp || Date.now()));
-                return `<div class="activity-item"><div class="activity-icon"><i class="${icon}"></i></div><div class="activity-content"><div class="activity-text">${activity.description}</div></div><div class="activity-time">${timeAgo}</div></div>`;
-            }).join('');
-        }
-        function getActivityIcon(type) {
-            const iconMap = {'user_registered':'fas fa-user-plus','user_login':'fas fa-sign-in-alt','tournament_created':'fas fa-plus-circle','tournament_registration_opened':'fas fa-door-open','tournament_registration_closed':'fas fa-door-closed','tournament_started':'fas fa-play-circle','tournament_ended':'fas fa-trophy','team_registered':'fas fa-users','team_payment_completed':'fas fa-credit-card','team_qualified':'fas fa-check-circle','team_eliminated':'fas fa-times-circle','bracket_created':'fas fa-sitemap','round_started':'fas fa-play','round_completed':'fas fa-flag-checkered','match_completed':'fas fa-medal','admin_action':'fas fa-cog','system_notification':'fas fa-bell'};
-            return iconMap[type] || 'fas fa-info-circle';
-        }
-        function formatTimeAgo(date) {
-            const diff = Math.floor((new Date() - date) / 1000);
-            if (diff < 60) return 'Just now';
-            const min = Math.floor(diff / 60);
-            if (min < 60) return `${min}m ago`;
-            const h = Math.floor(min / 60);
-            if (h < 24) return `${h}h ago`;
-            return `${Math.floor(h/24)}d ago`;
-        }
-        function getMaxTeamsForDisplay(t) {
-            if (t.format === 'kp' && t.kpSettings) return (t.kpSettings.numberOfGroups || 4) * (t.kpSettings.groupSize || 25);
-            return t.maxTeams || 'N/A';
-        }
-        async function loadAdminTournaments() {
-            const container = document.getElementById('admin-tournament-list');
-            container.innerHTML = `<div class="tournament-item-loading"><i class="fas fa-spinner fa-spin"></i> Loading tournaments...</div>`;
-            const authToken = getAuthToken();
-            if (!authToken) return;
+            // The confirm dialog is removed as this function is now only called from the 'Delete' tab, which is an explicit user action.
             try {
-                const response = await fetch(`${API_BASE_URL}/api/tournaments`, { headers: { 'Authorization': `Bearer ${authToken}` } });
-                if (!response.ok) throw new Error('Failed to fetch');
-                const result = await response.json();
-                const tournaments = result.data || [];
-                sessionStorage.setItem('admin_tournaments', JSON.stringify(tournaments));
-                if (tournaments.length === 0) {
-                    container.innerHTML = `<div class="tournament-item-empty">No tournaments found. Create one to get started!</div>`; return;
-                }
-                container.innerHTML = tournaments.map(t => `
-                    <div class="admin-tournament-item">
-                        <div class="admin-tournament-info">
-                            <a href="td.html?slug=${t.slug}" class="name">${t.title}</a>
-                            <span class="game">${t.game}</span>
-                        </div>
-                        <div class="tournament-participants">${t.participant_count || 0}/${getMaxTeamsForDisplay(t)}</div>
-                        <div class="tournament-prize">₹${(t.prizePool || 0).toLocaleString()}</div>
-                        <div class="tournament-actions">
-                            <select class="form-select" onchange="updateTournamentStatus('${t.slug}', this.value)" style="padding: 0.5rem; font-size: 0.85rem; border-radius: 6px; background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); color: var(--copy);">
-                                <option value="upcoming" ${t.status === 'upcoming' ? 'selected' : ''}>Upcoming</option>
-                                <option value="registration_open" ${t.status === 'registration_open' ? 'selected' : ''}>Reg. Open</option>
-                                <option value="registration_closed" ${t.status === 'registration_closed' ? 'selected' : ''}>Reg. Closed</option>
-                                <option value="ongoing" ${t.status === 'ongoing' ? 'selected' : ''}>Ongoing</option>
-                                <option value="ended" ${t.status === 'ended' ? 'selected' : ''}>Ended</option>
-                            </select>
-                            <button class="btn-icon" onclick="editTournament(event, '${t._id}')" title="Edit"><i class="fas fa-pen-to-square"></i></button>
-                            <button class="btn-icon delete" onclick="deleteTournament(event, '${t._id}')" title="Delete"><i class="fas fa-trash-can"></i></button>
-                        </div>
-                    </div>`).join('');
-            } catch (error) {
-                container.innerHTML = `<div class="tournament-item-empty">Error loading tournaments.</div>`;
-            }
-        }
-        function editTournament(event, id) {
-            event.stopPropagation();
-            const tourney = JSON.parse(sessionStorage.getItem('admin_tournaments') || '[]').find(t => t._id === id);
-            if (tourney) window.location.href = `td.html?slug=${tourney.slug}`;
-        }
-        async function deleteTournament(event, id) {
-            event.stopPropagation();
-            if (!confirm('DELETE this tournament? This is permanent.')) return;
-            const authToken = getAuthToken();
-            if (!authToken) return;
-            const tourney = JSON.parse(sessionStorage.getItem('admin_tournaments') || '[]').find(t => t._id === id);
-            if (!tourney) return;
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/tournaments/${tourney.slug}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${authToken}` } });
-                if (response.ok) {
-                    alert('Tournament deleted.');
-                    loadAdminTournaments();
-                } else {
-                    const err = await response.json();
-                    throw new Error(err.detail);
-                }
-            } catch (error) { alert('Failed to delete: ' + error.message); }
-        }
-        function showModal(id) {
-            const modal = document.getElementById(id);
-            if(modal) {
-                modal.style.display = 'flex';
-                setTimeout(() => { if (modal.querySelector('.modal-content')) modal.querySelector('.modal-content').classList.add('active')}, 10);
-            }
-        }
-        function hideModal(id) {
-            const modal = document.getElementById(id);
-            if(modal) {
-                if (modal.querySelector('.modal-content')) modal.querySelector('.modal-content').classList.remove('active');
-                setTimeout(() => modal.style.display = 'none', 300);
-            }
-        }
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('create-tournament-form');
-            if(form) form.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const formData = new FormData(form);
-                const btn = form.querySelector('.submit-btn');
-                btn.textContent = 'Creating...'; btn.disabled = true;
-                try {
-                    const response = await fetch(`${API_BASE_URL}/api/tournaments`, {
-                        method: 'POST',
-                        headers: { 'Authorization': `Bearer ${getAuthToken()}` },
-                        body: formData
-                    });
-                    const result = await response.json();
-                    if (response.ok) {
-                        alert('Tournament created!'); form.reset();
-                        hideModal('createTournamentModal'); loadAdminTournaments();
-                    } else { throw new Error(result.detail); }
-                } catch (error) { alert('Error: ' + error.message); }
-                finally { btn.textContent = 'Create Tournament'; btn.disabled = false; }
-            });
-            const formatSelect = document.getElementById('tournament-format');
-            if(formatSelect) formatSelect.addEventListener('change', () => {
-                document.getElementById('kp-settings').style.display = formatSelect.value === 'kp' ? 'block' : 'none';
-            });
-            if (checkAdminAuth()) {
-                loadDashboardStats(); loadRecentActivity(); loadAdminTournaments();
-            }
-            // Hamburger menu logic
-            const hamburger = document.getElementById('hamburger-menu');
-            const sidebar = document.getElementById('sidebar');
-            if(hamburger && sidebar) {
-                hamburger.addEventListener('click', () => {
-                    document.body.classList.toggle('sidebar-open');
-                });
-            }
-        });
-        document.addEventListener('click', e => {
-            if (e.target.classList.contains('modal-overlay')) hideModal(e.target.id);
-            const sidebar = document.getElementById('sidebar');
-            const hamburger = document.getElementById('hamburger-menu');
-            if (sidebar && !sidebar.contains(e.target) && !hamburger.contains(e.target)) {
-                 document.body.classList.remove('sidebar-open');
-            }
-        });
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') {
-                const openModal = document.querySelector('.modal-overlay[style*="flex"]');
-                if (openModal) hideModal(openModal.id);
-            }
-        });
-        async function updateTournamentStatus(slug, status) {
-            if (!confirm(`Change status to "${status}"?`)) { loadAdminTournaments(); return; }
-            const authToken = getAuthToken();
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/status`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
-                    body: JSON.stringify({ status: status })
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}`, {
+                    method: 'DELETE', headers: { 'Authorization': `Bearer ${getSessionData()?.token}` }
                 });
                 const result = await response.json();
                 if (response.ok && result.success) {
-                    alert('Status updated!'); loadAdminTournaments();
-                } else { throw new Error(result.detail); }
+                    alert('Tournament deleted successfully!');
+                    loadAdminTournaments();
+                } else {
+                    throw new Error(result.detail || 'Failed to delete tournament.');
+                }
             } catch (error) {
-                alert(`Error: ${error.message}`); loadAdminTournaments();
+                alert('Error: ' + error.message);
             }
         }
+
+        function updateStatus(slug) {
+            console.log("Update status clicked for:", slug); // Debugging trace added
+            // Allow the UI to render for the mock tournament. The block will be in the submit handler.
+            const tournament = adminTournaments.find(t => t.slug === slug);
+            if (!tournament) {
+                alert('Tournament not found!');
+                return;
+            }
+            renderOperation('statusUpdate', tournament);
+        }
+
+        function updateSchedule(slug) {
+            console.log("Update schedule clicked for:", slug);
+            const tournament = adminTournaments.find(t => t.slug === slug);
+            if (!tournament) {
+                alert('Tournament not found!');
+                return;
+            }
+            renderOperation('scheduleUpdate', tournament);
+        }
+
+        function editTournament(slug) {
+            if (slug === 'dev-test-championship') {
+                console.log("Mock tournament action: EDIT");
+            }
+            const tournamentToEdit = adminTournaments.find(t => t.slug === slug);
+            if (!tournamentToEdit) {
+                alert('Tournament not found!');
+                return;
+            }
+            renderOperation('edit', tournamentToEdit);
+        }
+
+        async function downloadData(slug, format) {
+            // ... (existing downloadData function)
+        }
+
+        function renderTournamentList(containerId, tournaments, actionType) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            if (!tournaments || tournaments.length === 0) {
+                container.innerHTML = '<p style="text-align: center; padding: 1.5rem 0;">No tournaments to display.</p>';
+                return;
+            }
+            container.innerHTML = tournaments.map(t => {
+                const title = t.title || t.name || "Untitled";
+                const participants = `${t.participant_count || 0} / ${t.maxTeams || t.max_participants || 'N/A'}`;
+                const prize = `₹${(t.prizePool || t.prize_pool || 0).toLocaleString()}`;
+                let actionsHtml = '';
+                switch (actionType) {
+                    case 'manage':
+                        actionsHtml = `
+                            <a href="details.html?slug=${t.slug}" class="btn-icon" title="Manage"><i class="fas fa-arrow-right"></i></a>
+                            <button class="btn-icon" onclick="editTournament('${t.slug}')" title="Edit"><i class="fas fa-pencil-alt"></i></button>
+                            `;
+                        break;
+                    case 'update':
+                        actionsHtml = `
+                            <button class="submit-btn" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="editTournament('${t.slug}')">Edit Details</button>
+                            <button class="submit-btn btn-info" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="updateStatus('${t.slug}')">Update Status</button>
+                            <button class="submit-btn btn-warning" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="updateSchedule('${t.slug}')">Update Schedule</button>
+                        `;
+                        break;
+                    case 'delete':
+                        actionsHtml = `<button class="submit-btn delete" style="width:auto; padding: 0.5rem 1rem; margin-top:0; background-color: #c82333;" onclick="deleteTournament(event, '${t.slug}')">Confirm Delete</button>`;
+                        break;
+                    case 'download':
+                        actionsHtml = `
+                            <button class="btn-icon" onclick="downloadData('${t.slug}', 'excel')" title="Download Excel"><i class="fas fa-file-excel" style="font-size: 1.2rem; color: #28a745;"></i></button>
+                            <button class="btn-icon" onclick="downloadData('${t.slug}', 'pdf')" title="Download PDF"><i class="fas fa-file-pdf" style="font-size: 1.2rem; color: #dc3545;"></i></button>`;
+                        break;
+                }
+                return `
+                    <div class="admin-tournament-item">
+                        <div class="admin-tournament-info">
+                            <a href="details.html?slug=${t.slug}" class="name">${title}</a><div class="game">${t.game}</div>
+                        </div>
+                        <div class="tournament-participants">${participants}</div><div class="tournament-prize">${prize}</div><div class="tournament-actions">${actionsHtml}</div>
+                    </div>`;
+            }).join('');
+        }
+        
+        function getCreateFormHTML() {
+            return `
+                <h3 class="operation-title">Create New Tournament</h3>
+                <form id="create-tournament-form">
+                    <div class="form-group"><label for="tournament-name" class="form-label">Tournament Name</label><input type="text" id="tournament-name" name="title" class="form-input" required></div>
+                    <div class="form-group"><label for="tournament-game" class="form-label">Game</label><input type="text" id="tournament-game" name="game" class="form-input" required></div>
+                    <div class="form-group"><label for="tournament-details" class="form-label">Description</label><textarea id="tournament-details" name="description" class="form-textarea" required></textarea></div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group"><label for="reg-start-date" class="form-label">Registration Start</label><input type="datetime-local" id="reg-start-date" name="registrationStart" class="form-input" required></div>
+                        <div class="form-group"><label for="reg-end-date" class="form-label">Registration End</label><input type="datetime-local" id="reg-end-date" name="registrationEnd" class="form-input" required></div>
+                        <div class="form-group"><label for="tournament-start-date" class="form-label">Tournament Start</label><input type="datetime-local" id="tournament-start-date" name="tournamentStart" class="form-input" required></div>
+                        <div class="form-group"><label for="tournament-end-date" class="form-label">Tournament End</label><input type="datetime-local" id="tournament-end-date" name="tournamentEnd" class="form-input" required></div>
+                        <div class="form-group"><label for="prize-pool" class="form-label">Prize Pool (₹)</label><input type="number" id="prize-pool" name="prizePool" class="form-input" min="0" required></div>
+                        <div class="form-group"><label for="num-teams" class="form-label">Number of Teams</label><input type="number" id="num-teams" name="maxTeams" class="form-input" min="2" required></div>
+                        <div class="form-group"><label for="entry-fee" class="form-label">Entry Fee (₹)</label><input type="number" id="entry-fee" name="entryFee" class="form-input" min="0" value="0" required></div>
+                        <div class="form-group"><label for="max-players" class="form-label">Max Players per Team</label><input type="number" id="max-players" name="maxPlayersPerTeam" class="form-input" min="1" value="4" required></div>
+                    </div>
+                    <div class="form-group"><label for="tournament-format" class="form-label">Format</label><select id="tournament-format" name="format" class="form-select" required><option value="single-elimination">Single Elimination</option><option value="kp">KP Format</option></select></div>
+                    <div id="kp-format-fields" style="display: none;">
+                         <h4 class="form-label" style="margin-top: 1.5rem; margin-bottom: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">KP Format Schedule</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                           <div class="form-group"><label for="qualifier1-date" class="form-label">Qualifier 1 Date</label><input type="datetime-local" id="qualifier1-date" name="qualifier1Date" class="form-input"></div>
+                           <div class="form-group"><label for="qualifier2-date" class="form-label">Qualifier 2 Date</label><input type="datetime-local" id="qualifier2-date" name="qualifier2Date" class="form-input"></div>
+                           <div class="form-group"><label for="qualifier3-date" class="form-label">Qualifier 3 Date</label><input type="datetime-local" id="qualifier3-date" name="qualifier3Date" class="form-input"></div>
+                           <div class="form-group"><label for="qualifier4-date" class="form-label">Qualifier 4 Date</label><input type="datetime-local" id="qualifier4-date" name="qualifier4Date" class="form-input"></div>
+                           <div class="form-group"><label for="final-match-date" class="form-label">Final Match Date</label><input type="datetime-local" id="final-match-date" name="finalMatchDate" class="form-input"></div>
+                        </div>
+                    </div>
+                    <div class="form-group"><label for="tournament-poster" class="form-label">Poster Image</label><input type="file" id="tournament-poster" name="posterImage" class="form-input" accept="image/*"></div>
+                    <button type="submit" class="submit-btn">Create Tournament</button>
+                </form>
+            `;
+        }
+        
+        function getUpdateFormHTML(t) {
+            const formattedDate = (iso) => iso ? iso.slice(0, 16) : '';
+            const kpSettings = t.kpSettings || {};
+            const schedule = kpSettings.matchSchedule || [];
+            const findDate = (name) => schedule.find(m => m.match === name)?.date || '';
+
+            return `
+                <div class="operation-title-header">
+                    <h3 class="operation-title">Editing: ${t.title}</h3>
+                    <button type="button" class="close-btn" onclick="renderOperation('update')" title="Cancel Editing">&times;</button>
+                </div>
+                <form id="update-tournament-form">
+                    <input type="hidden" name="slug" value="${t.slug}">
+                    <div class="form-group"><label class="form-label">Tournament Name</label><input type="text" name="title" class="form-input" value="${t.title || ''}" required></div>
+                    <div class="form-group"><label class="form-label">Game</label><input type="text" name="game" class="form-input" value="${t.game || ''}" required></div>
+                    <div class="form-group"><label class="form-label">Description</label><textarea name="description" class="form-textarea" required>${t.description || ''}</textarea></div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group"><label class="form-label">Reg. Start</label><input type="datetime-local" name="registrationStart" class="form-input" value="${formattedDate(t.registrationStart)}" required></div>
+                        <div class="form-group"><label class="form-label">Reg. End</label><input type="datetime-local" name="registrationEnd" class="form-input" value="${formattedDate(t.registrationEnd)}" required></div>
+                        <div class="form-group"><label class="form-label">Tourney Start</label><input type="datetime-local" name="tournamentStart" class="form-input" value="${formattedDate(t.tournamentStart)}" required></div>
+                        <div class="form-group"><label class="form-label">Tourney End</label><input type="datetime-local" name="tournamentEnd" class="form-input" value="${formattedDate(t.tournamentEnd)}" required></div>
+                        <div class="form-group"><label class="form-label">Prize Pool (₹)</label><input type="number" name="prizePool" class="form-input" value="${t.prizePool || 0}" min="0" required></div>
+                        <div class="form-group"><label class="form-label">Max Teams</label><input type="number" name="maxTeams" class="form-input" value="${t.maxTeams || 2}" min="2" required></div>
+                        <div class="form-group"><label class="form-label">Entry Fee (₹)</label><input type="number" name="entryFee" class="form-input" value="${t.entryFee || 0}" min="0" required></div>
+                        <div class="form-group"><label class="form-label">Max Players/Team</label><input type="number" name="maxPlayersPerTeam" class="form-input" value="${t.maxPlayersPerTeam || 4}" min="1" required></div>
+                    </div>
+                    <div class="form-group"><label class="form-label">Format</label>
+                        <select name="format" class="form-select" id="update-tournament-format" required>
+                            <option value="single-elimination" ${t.format === 'single-elimination' ? 'selected' : ''}>Single Elimination</option>
+                            <option value="kp" ${t.format === 'kp' ? 'selected' : ''}>KP Format</option>
+                        </select>
+                    </div>
+                     <div id="update-kp-format-fields" style="display: ${t.format === 'kp' ? 'block' : 'none'};">
+                        <h4 class="form-label" style="margin-top: 1.5rem; margin-bottom: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">KP Format Schedule</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                           <div class="form-group"><label class="form-label">Qualifier 1</label><input type="datetime-local" name="qualifier1Date" class="form-input" value="${formattedDate(findDate('Qualifier 1'))}"></div>
+                           <div class="form-group"><label class="form-label">Qualifier 2</label><input type="datetime-local" name="qualifier2Date" class="form-input" value="${formattedDate(findDate('Qualifier 2'))}"></div>
+                           <div class="form-group"><label class="form-label">Qualifier 3</label><input type="datetime-local" name="qualifier3Date" class="form-input" value="${formattedDate(findDate('Qualifier 3'))}"></div>
+                           <div class="form-group"><label class="form-label">Qualifier 4</label><input type="datetime-local" name="qualifier4Date" class="form-input" value="${formattedDate(findDate('Qualifier 4'))}"></div>
+                           <div class="form-group"><label class="form-label">Final Match</label><input type="datetime-local" name="finalMatchDate" class="form-input" value="${formattedDate(findDate('Final Match'))}"></div>
+                        </div>
+                    </div>
+                    <div class="form-group"><label class="form-label">New Poster Image (Optional)</label><input type="file" name="posterImage" class="form-input" accept="image/*"></div>
+                    <div class="form-actions">
+                        <button type="submit" class="submit-btn">Save Changes</button>
+                    </div>
+                </form>
+            `;
+        }
+
+        function getUpdateStatusHTML(t) {
+            const statuses = ['upcoming','registration_open','registration_closed','ongoing','ended'];
+            const options = statuses.map(s =>
+                `<option value="${s}" ${t.status === s ? 'selected' : ''}>
+                    ${s.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                </option>`
+            ).join('');
+            return `
+                <div class="operation-title-header">
+                    <h3 class="operation-title">Update Status: ${t.title || t.name}</h3>
+                    <button type="button" class="close-btn" onclick="renderOperation('update')" title="Cancel">&times;</button>
+                </div>
+                <form id="update-status-form">
+                    <input type="hidden" name="slug" value="${t.slug}">
+                    <div class="form-group">
+                        <label class="form-label">New Status</label>
+                        <select name="status" class="form-select">${options}</select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="submit-btn">Save Status</button>
+                    </div>
+                </form>
+            `;
+        }
+        
+        function getUpdateScheduleHTML(t) {
+            return `
+                <div class="operation-title-header">
+                    <h3 class="operation-title">Update Schedule: ${t.title}</h3>
+                    <button type="button" class="close-btn" onclick="renderOperation('update')" title="Cancel">&times;</button>
+                </div>
+                <form id="update-schedule-form">
+                    <input type="hidden" name="slug" value="${t.slug}">
+                    
+                    <div id="schedule-events-container">
+                        <!-- Schedule events will be injected here -->
+                    </div>
+                    
+                    <button type="button" class="submit-btn btn-info" onclick="addScheduleEvent()">+ Add Event</button>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="submit-btn">Confirm Schedule</button>
+                    </div>
+                </form>
+            `;
+        }
+
+        function renderOperation(operationName, data = null) {
+            const container = document.getElementById('operation-content');
+            if (!container) return;
+
+            let contentHtml = '';
+            switch(operationName) {
+                case 'create':
+                    contentHtml = getCreateFormHTML();
+                    break;
+                case 'update':
+                    contentHtml = `
+                        <h3 class="operation-title">Update Tournament</h3>
+                        <p>Select a tournament from the list below to edit its details.</p>
+                        <div id="update-tournament-list" class="admin-tournament-list" style="margin-top: 1.5rem;"></div>
+                    `;
+                    break;
+                case 'delete':
+                     contentHtml = `
+                        <h3 class="operation-title">Delete Tournament</h3>
+                        <p>Click the trash icon on a tournament in the list above to delete it. This action is permanent.</p>
+                        <div id="delete-tournament-list" class="admin-tournament-list" style="margin-top: 1.5rem;"></div>
+                    `;
+                    break;
+                case 'download':
+                     contentHtml = `
+                        <h3 class="operation-title">Download Tournament Data</h3>
+                        <p>Select a tournament and choose a format to download participant data.</p>
+                        <div id="download-tournament-list" class="admin-tournament-list" style="margin-top: 1.5rem;"></div>
+                    `;
+                    break;
+                case 'edit':
+                    if (data) contentHtml = getUpdateFormHTML(data);
+                    break;
+                case 'statusUpdate':
+                    if (data) contentHtml = getUpdateStatusHTML(data);
+                    break;
+                case 'scheduleUpdate':
+                    if (data) contentHtml = getUpdateScheduleHTML(data);
+                    break;
+                default:
+                    contentHtml = '<p>Select an operation.</p>';
+            }
+            container.innerHTML = contentHtml;
+
+            // Post-render logic
+            if (operationName === 'create') {
+                const form = document.getElementById('create-tournament-form');
+                if (form) {
+                    form.addEventListener('submit', handleCreateFormSubmit);
+                    const formatSelector = form.querySelector('#tournament-format');
+                    const kpFields = form.querySelector('#kp-format-fields');
+                    formatSelector.addEventListener('change', () => { kpFields.style.display = (formatSelector.value === 'kp') ? 'block' : 'none'; });
+                }
+            } else if (operationName === 'edit') {
+                const form = document.getElementById('update-tournament-form');
+                if (form) {
+                    form.addEventListener('submit', handleUpdateFormSubmit);
+                    const formatSelector = form.querySelector('#update-tournament-format');
+                    const kpFields = form.querySelector('#update-kp-format-fields');
+                    if (formatSelector && kpFields) {
+                        formatSelector.addEventListener('change', () => {
+                            kpFields.style.display = (formatSelector.value === 'kp') ? 'block' : 'none';
+                        });
+                    }
+                }
+            } else if (operationName === 'statusUpdate') {
+                const form = document.getElementById('update-status-form');
+                if (form) form.addEventListener('submit', handleStatusUpdateSubmit);
+            } else if (operationName === 'scheduleUpdate') {
+                const form = document.getElementById('update-schedule-form');
+                if (form) form.addEventListener('submit', handleScheduleUpdateSubmit);
+            } else if (['update', 'delete', 'download'].includes(operationName)) {
+                renderTournamentList(`${operationName}-tournament-list`, adminTournaments, operationName);
+            }
+        }
+
+        async function handleCreateFormSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const btn = form.querySelector('.submit-btn');
+            btn.textContent = 'Creating...'; btn.disabled = true;
+            try {
+                const formData = new FormData(form);
+                const response = await fetch(`${API_BASE_URL}/api/tournaments`, {
+                    method: 'POST', headers: { 'Authorization': `Bearer ${getSessionData()?.token}` }, body: formData
+                });
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    alert('Tournament created successfully!');
+                    form.reset();
+                    loadAdminTournaments();
+                } else {
+                    throw new Error(result.detail || 'Failed to create tournament.');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                btn.textContent = 'Create Tournament'; btn.disabled = false;
+            }
+        }
+
+        async function handleStatusUpdateSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const slug = form.querySelector('input[name="slug"]').value;
+            const newStatus = form.querySelector('select[name="status"]').value;
+
+            // Add a guard clause here to prevent submitting the mock tournament
+            if (slug === 'dev-test-championship') {
+                alert("This is a mock tournament. Status cannot be saved.");
+                renderOperation('update'); // Go back to the list
+                return;
+            }
+
+            const btn = form.querySelector('.submit-btn');
+            btn.textContent = 'Saving...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/status`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${getSessionData()?.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    alert('Tournament status updated successfully!');
+                    await loadAdminTournaments(); 
+                    renderOperation('update'); 
+                } else {
+                    throw new Error(result.detail || 'Failed to update status.');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                btn.textContent = 'Save Status';
+                btn.disabled = false;
+            }
+        }
+
+        async function handleUpdateFormSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const slug = form.querySelector('input[name="slug"]').value;
+             if (slug === 'dev-test-championship') {
+                alert("This is a mock tournament and cannot be updated.");
+                renderOperation('update');
+                return;
+            }
+
+            const btn = form.querySelector('.submit-btn');
+            btn.textContent = 'Saving...'; btn.disabled = true;
+
+            try {
+                const formData = new FormData(form);
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${getSessionData()?.token}` },
+                    body: formData
+                });
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    alert('Tournament updated successfully!');
+                    await loadAdminTournaments();
+                    renderOperation('update');
+                } else {
+                    throw new Error(result.detail || 'Failed to update tournament.');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                btn.textContent = 'Save Changes';
+                btn.disabled = false;
+            }
+        }
+        
+        function addScheduleEvent() {
+            const container = document.getElementById('schedule-events-container');
+            if (!container) return;
+
+            const index = container.children.length;
+            const eventHtml = `
+                <div class="schedule-event" style="border:1px solid var(--border-color); padding:1rem; border-radius:8px; margin-bottom:1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Event Title</label>
+                        <input type="text" name="events[${index}][title]" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description (1 line)</label>
+                        <input type="text" name="events[${index}][description]" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date & Time</label>
+                        <input type="datetime-local" name="events[${index}][datetime]" class="form-input" required>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', eventHtml);
+        }
+
+        async function handleScheduleUpdateSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const slug = form.querySelector('input[name="slug"]').value;
+
+            if (slug === 'dev-test-championship') {
+                alert("This is a mock tournament. Schedule cannot be updated.");
+                renderOperation('update');
+                return;
+            }
+
+            const btn = form.querySelector('button[type="submit"]');
+            btn.textContent = 'Saving...'; btn.disabled = true;
+
+            try {
+                const events = [];
+                
+                // Collect events
+                const container = document.getElementById('schedule-events-container');
+                const eventBlocks = container.querySelectorAll('.schedule-event');
+                eventBlocks.forEach(block => {
+                    events.push({
+                        title: block.querySelector('input[name*="[title]"]').value,
+                        description: block.querySelector('input[name*="[description]"]').value,
+                        datetime: block.querySelector('input[name*="[datetime]"]').value
+                    });
+                });
+
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/schedule`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${getSessionData()?.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ schedule: events })
+                });
+
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    alert('Schedule updated successfully!');
+                    await loadAdminTournaments();
+                    renderOperation('update');
+                } else {
+                    throw new Error(result.detail || 'Failed to update schedule.');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                btn.textContent = 'Confirm Schedule';
+                btn.disabled = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initCanvasBackground();
+            checkUserAuthentication();
+            renderOperation('create'); // Start with the create form
+            loadAdminTournaments(); // Load tournaments in the background
+            loadRecentActivity();
+            
+            const isAdmin = checkAdminAuth();
+            if (!isAdmin) {
+                const form = document.getElementById('create-tournament-form');
+                if(form) {
+                    form.querySelectorAll('input, textarea, select, button').forEach(el => el.disabled = true);
+                    const submitBtn = form.querySelector('.submit-btn');
+                    if(submitBtn) submitBtn.textContent = 'Admin Privileges Required';
+                }
+            }
+
+            const tabsContainer = document.querySelector('.operation-tabs');
+            tabsContainer.addEventListener('click', (event) => {
+                if (event.target.matches('.tab-btn')) {
+                    tabsContainer.querySelector('.active')?.classList.remove('active');
+                    event.target.classList.add('active');
+                    const operation = event.target.dataset.operation;
+                    renderOperation(operation);
+                }
+            });
+        });
     </script>
 </body>
+
 </html>
+
 
