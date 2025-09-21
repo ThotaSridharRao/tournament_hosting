@@ -162,6 +162,13 @@
       transform: translateY(-2px);
       box-shadow: 0 10px 30px rgba(255, 69, 0, 0.3);
     }
+    
+    .btn-primary:disabled {
+        background: var(--muted);
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+    }
 
     /* Tournament Details Section */
     .tournament-details {
@@ -447,10 +454,7 @@
             Loading tournament details...
           </p>
           <div class="hero-actions" id="hero-actions">
-            <button class="btn-primary" id="primary-action">
-              <i class="fas fa-user-plus"></i>
-              Register Now
-            </button>
+             <button class="btn-primary" id="register-btn">Register</button>
           </div>
         </div>
       </div>
@@ -460,6 +464,8 @@
       <div class="container">
         <div class="details-grid">
           <div class="details-main">
+            <img id="tournament-poster" alt="Tournament Poster" style="width: 100%; border-radius: var(--radius); margin-bottom: 2rem; display: none;" />
+            <div id="tournament-status" style="font-weight: bold; color: var(--accent); margin-bottom: 1rem; text-transform: uppercase;"></div>
             <h2 style="color: var(--accent); margin-bottom: 1.5rem;">Tournament Overview</h2>
             <div id="tournament-overview">
               <p style="color: var(--muted);">Loading details...</p>
@@ -637,22 +643,6 @@
       }
     }
 
-    async function getTournamentData(tournamentSlug) {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}`);
-        if (!response.ok) throw new Error(`API Error: ${response.status}`);
-        const result = await response.json();
-        if (result.success) return result.data;
-        throw new Error(result.error || 'Failed to fetch tournament');
-      } catch (error) {
-        console.error('Error fetching tournament data:', error);
-        document.getElementById('tournament-title').textContent = "Tournament Not Found";
-        document.getElementById('tournament-subtitle').textContent = "The requested tournament could not be loaded.";
-        document.getElementById('primary-action').style.display = 'none';
-        return null;
-      }
-    }
-
     function updateSchedule(tournament) {
         const container = document.getElementById('schedule-timeline');
         if (!container) return;
@@ -715,16 +705,39 @@
         }).join('');
     }
 
-    function updateUI(tournament) {
-        if (!tournament) return;
+    async function loadTournamentDetails(slug) {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/tournaments/slug/${slug}`);
+         if (!res.ok) {
+            const errorData = await res.json().catch(() => ({ message: `API Error: ${res.status}` }));
+            throw new Error(errorData.error || errorData.message);
+        }
+        const result = await res.json();
+        if (!result.success) throw new Error(result.error || 'Failed to fetch tournament');
+        
+        const tournament = result.data;
+        currentTournament = tournament;
+        
+        // --- Display poster image ---
+        const posterImg = document.querySelector("#tournament-poster");
+        if (tournament.posterImage) {
+            posterImg.src =
+            tournament.posterImage.startsWith("http")
+              ? tournament.posterImage
+              : `${API_BASE_URL}/${tournament.posterImage}`;
+            posterImg.style.display = 'block';
+        }
+
+        // --- Show tournament status from backend ---
+        document.querySelector("#tournament-status").textContent = `Status: ${tournament.status.replace('_', ' ')}`;
+
+        // --- Populate UI Elements ---
         document.getElementById('page-title').textContent = `${tournament.title} | EArena`;
         document.getElementById('tournament-title').textContent = tournament.title;
         document.getElementById('tournament-subtitle').textContent = tournament.description || 'Join this exciting tournament!';
         
-        const overviewContainer = document.getElementById('tournament-overview');
-        overviewContainer.innerHTML = `<p>${tournament.description || "No description available."}</p>`;
+        document.getElementById('tournament-overview').innerHTML = `<p>${tournament.description || "No description available."}</p>`;
         
-        const formatContainer = document.getElementById('tournament-format-details');
         let formatHTML = '';
         if (tournament.format === 'kp' && tournament.kpSettings) {
             const settings = tournament.kpSettings;
@@ -734,12 +747,11 @@
                     <li style="display: flex; align-items: start; gap: 0.75rem;"><i class="fas fa-sitemap" style="color: var(--accent); margin-top: 5px;"></i><div><strong>Structure:</strong> ${settings.numberOfGroups || 'multiple'} qualifier groups.</div></li>
                     <li style="display: flex; align-items: start; gap: 0.75rem;"><i class="fas fa-users" style="color: var(--accent); margin-top: 5px;"></i><div><strong>Groups:</strong> ${settings.groupSize || 'several'} teams per group.</div></li>
                     <li style="display: flex; align-items: start; gap: 0.75rem;"><i class="fas fa-trophy" style="color: var(--accent); margin-top: 5px;"></i><div><strong>Advancement:</strong> Top <strong>${settings.qualifiersPerGroup || 'few'} teams</strong> advance.</div></li>
-                </ul>
-            `;
+                </ul>`;
         } else {
             formatHTML = `<p>This tournament features a <strong>${tournament.format ? tournament.format.replace('_', ' ') : 'Standard'}</strong> format.</p>`;
         }
-        formatContainer.innerHTML = formatHTML;
+        document.getElementById('tournament-format-details').innerHTML = formatHTML;
 
         document.getElementById('game-name').textContent = tournament.game || 'TBD';
         document.getElementById('tournament-format').textContent = tournament.format || 'TBD';
@@ -760,45 +772,56 @@
             });
         }
         
-        updateStatusAndLeaderboard(tournament);
         updateSchedule(tournament);
-    }
-    
-    function updateStatusAndLeaderboard(tournament) {
-        const status = calculateTournamentStatus(tournament);
-        const primaryActionBtn = document.getElementById('primary-action');
-        const leaderboardSection = document.getElementById('leaderboard-section');
-        
-        leaderboardSection.style.display = 'none';
-        primaryActionBtn.style.display = 'flex';
-        primaryActionBtn.disabled = false;
 
-        switch(status) {
-            case 'registration_open':
-                primaryActionBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
-                primaryActionBtn.onclick = () => {
-                    const sessionData = getSessionData();
-                    if (sessionData && sessionData.data.user) {
-                        window.location.href = `team-registration.html?slug=${currentTournament.slug}`;
-                    } else {
-                        redirectToAuth('register');
-                    }
-                };
-                break;
-            case 'live':
-            case 'completed':
-                leaderboardSection.style.display = 'block';
-                primaryActionBtn.style.display = 'none';
-                renderLeaderboard(tournament.participants || []);
-                if(status === 'completed') {
-                    leaderboardSection.querySelector('.section-title').textContent = 'Final Results';
-                }
-                break;
-            default:
-                primaryActionBtn.innerHTML = '<i class="fas fa-clock"></i> Registration Closed';
-                primaryActionBtn.disabled = true;
-                break;
+        // --- Check registration status and update action button ---
+        const registerBtn = document.querySelector("#register-btn");
+        const session = getSessionData();
+        const user = session?.data?.user || session?.user;
+        const userId = user?.id;
+
+        let isRegistered = false;
+        if (userId && Array.isArray(tournament.participants)) {
+          isRegistered = tournament.participants.some(p => p.user_id === userId);
         }
+
+        if (isRegistered) {
+          registerBtn.disabled = true;
+          registerBtn.textContent = "✅ Already Registered";
+          registerBtn.onclick = null;
+        } else if (tournament.status === "registration_open") {
+          registerBtn.disabled = false;
+          registerBtn.textContent = "Register Now";
+           registerBtn.onclick = () => {
+              if (user) {
+                  window.location.href = `team-registration.html?slug=${currentTournament.slug}`;
+              } else {
+                  redirectToAuth('register');
+              }
+          };
+        } else {
+          registerBtn.disabled = true;
+          registerBtn.textContent = "Registration Closed";
+          registerBtn.onclick = null;
+        }
+        
+        // Show leaderboard if tournament is live or completed
+        const leaderboardSection = document.getElementById('leaderboard-section');
+        if (tournament.status === 'live' || tournament.status === 'completed') {
+            leaderboardSection.style.display = 'block';
+            registerBtn.style.display = 'none'; // Hide register button
+            renderLeaderboard(tournament.participants || []);
+            if (tournament.status === 'completed') {
+                leaderboardSection.querySelector('.section-title').textContent = 'Final Results';
+            }
+        }
+
+      } catch (err) {
+        console.error("Error loading tournament:", err);
+        document.getElementById('tournament-title').textContent = "Tournament Not Found";
+        document.getElementById('tournament-subtitle').textContent = err.message || "The requested tournament could not be loaded.";
+        document.getElementById('register-btn').style.display = 'none';
+      }
     }
     
     function checkUserAuthentication() {
@@ -832,12 +855,9 @@
         return;
       }
       checkUserAuthentication();
-      currentTournament = await getTournamentData(slug);
-      if (currentTournament) {
-        updateUI(currentTournament);
-      }
+      await loadTournamentDetails(slug);
       
-      // NEW: Initialize FAQ Accordion
+      // Initialize FAQ Accordion
       const faqItems = document.querySelectorAll('.faq-item');
       faqItems.forEach(item => {
           const question = item.querySelector('.faq-question');
