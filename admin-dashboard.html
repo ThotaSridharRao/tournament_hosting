@@ -330,11 +330,10 @@
                 const result = await response.json();
                 if (response.ok && result.success && Array.isArray(result.data) && result.data.length > 0) {
                     const realTournaments = result.data.filter(t => t.slug !== 'dev-test-championship');
-                    console.log("Real tournaments from backend:", realTournaments);
+
                     
                     // Log schedule events for each real tournament
                     realTournaments.forEach(t => {
-                        console.log(`Tournament "${t.title}" schedule events:`, t.scheduleEvents);
                     });
                     
                     adminTournaments = [mockTournament, ...realTournaments];
@@ -346,7 +345,6 @@
                 adminTournaments = [mockTournament]; 
                 console.warn('Displaying mock data only due to network or server error.');
             }
-            console.log("Admin tournaments after fetch:", adminTournaments);
             renderTournamentList('admin-tournament-list', adminTournaments, 'manage');
             const activeTabOperation = document.querySelector('.tab-btn.active')?.dataset.operation;
             if (activeTabOperation) renderOperation(activeTabOperation);
@@ -355,7 +353,6 @@
         async function deleteTournament(event, slug) {
             event.stopPropagation();
             if (slug === 'dev-test-championship') {
-                console.log("Mock tournament action blocked: DELETE");
                 alert("This is a mock tournament and cannot be deleted via API.");
                 return;
             }
@@ -377,7 +374,6 @@
         }
 
         function updateStatus(slug) {
-            console.log("Update status clicked for:", slug); // Debugging trace added
             const tournament = adminTournaments.find(t => t.slug === slug);
             if (!tournament) {
                 alert('Tournament not found!');
@@ -387,27 +383,19 @@
         }
 
         function updateSchedule(slug) {
-            console.log("Update schedule clicked for:", slug);
             const tournament = adminTournaments.find(t => t.slug === slug);
-            console.log("Found tournament:", tournament);
             
             if (!tournament) {
                 alert('Tournament not found!');
                 return;
             }
             
-            // Enhanced logging for backend vs mock data
-            console.log("Tournament source:", tournament._id === "mock123" ? "MOCK DATA" : "BACKEND DATA");
-            console.log("Schedule events found:", tournament.scheduleEvents);
-            console.log("Has scheduleEvents?", !!tournament.scheduleEvents);
-            console.log("ScheduleEvents length:", tournament.scheduleEvents ? tournament.scheduleEvents.length : 0);
             
             renderOperation('scheduleUpdate', tournament);
         }
 
         function editTournament(slug) {
             if (slug === 'dev-test-championship') {
-                console.log("Mock tournament action: EDIT");
             }
             const tournamentToEdit = adminTournaments.find(t => t.slug === slug);
             if (!tournamentToEdit) {
@@ -659,9 +647,7 @@
         }
         
         function getUpdateScheduleHTML(t) {
-            console.log("Tournament data for schedule:", t);
-            console.log("Schedule events:", t.scheduleEvents);
-            
+         
             const scheduleEvents = t.scheduleEvents || [];
             const eventsHtml = scheduleEvents.map((event, index) => {
                 let eventDateTime = '';

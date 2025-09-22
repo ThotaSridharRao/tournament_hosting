@@ -971,7 +971,7 @@
           case 'ongoing':
           case 'ended':
               finalistsSection.style.display = 'block';
-              primaryActionBtn.style.display = 'none';
+              primaryActionBtn.innerHTML = '<i class="fas fa-lock"></i> Tournament Ended';
               renderFinalists(tournament.finalists || []); // Changed to use finalists data
               break;
           default:
@@ -979,7 +979,8 @@
               primaryActionBtn.disabled = true;
               break;
       }
-  }
+    }
+
 
     document.addEventListener('DOMContentLoaded', async () => {
       // --- PAGE-SPECIFIC LOGIC ---
