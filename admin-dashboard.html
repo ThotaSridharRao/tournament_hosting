@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- jsPDF for PDF export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
@@ -59,7 +58,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body { font-family: "Inter", system-ui, sans-serif; background-color: var(--bg-dark); color: var(--text-primary); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
-        #canvas-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
 
         /* Main Content Area */
         .main-content-wrapper { flex-grow: 1; display: flex; flex-direction: column; }
@@ -152,17 +150,245 @@
         .schedule-event { cursor: grab; user-select: none; }
         .schedule-event.dragging { opacity: 0.5; background: rgba(255, 69, 0, 0.1); }
         
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .dashboard-grid { grid-template-columns: 1fr; }
-            .admin-header { padding: 0 1.5rem; }
-            .nav-links { display: none; }
-        }
+        /* Enhanced Responsive Design */
+@media (min-width: 1200px) {
+    .content-body {
+        padding: 2.5rem 3rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 2.5fr 1fr;
+        gap: 2rem;
+    }
+    
+    .admin-tournament-item {
+        grid-template-columns: 3fr auto auto auto;
+        gap: 2rem;
+        padding: 1.25rem;
+    }
+}
+
+@media (min-width: 1440px) {
+    .content-body {
+        padding: 3rem 4rem;
+        max-width: 1600px;
+    }
+    
+    .operation-tabs {
+        max-width: 1200px;
+        margin: 2.5rem auto 0;
+    }
+    
+    #operation-content {
+        max-width: 1200px;
+        margin: 1.5rem auto 0;
+        padding: 2.5rem;
+    }
+}
+
+@media (min-width: 1920px) {
+    .content-body {
+        padding: 3rem 6rem;
+        max-width: 1800px;
+    }
+    
+    .dashboard-grid {
+        gap: 2.5rem;
+    }
+    
+    .admin-header {
+        padding: 0 6rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .admin-header { padding: 0 1.5rem; }
+    .nav-links { display: none; }
+}
+
+@media (max-width: 768px) {
+    .content-body { padding: 1.5rem; }
+    .admin-tournament-item { 
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        text-align: center;
+    }
+    .tournament-actions {
+        justify-content: center;
+    }
+}
+/* Enhanced Form Layouts for Large Screens */
+@media (min-width: 1200px) {
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+    
+    .form-input, .form-textarea, .form-select {
+        padding: 0.875rem 1.25rem;
+        font-size: 1rem;
+    }
+    
+    #create-tournament-form,
+    #update-tournament-form {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .form-actions {
+        max-width: 400px;
+        margin: 2rem auto 0;
+    }
+}
+
+@media (min-width: 1440px) {
+    .form-input, .form-textarea, .form-select {
+        padding: 1rem 1.5rem;
+    }
+}
+/* Enhanced Dashboard Layout */
+@media (min-width: 1200px) {
+    .dashboard-section {
+        padding: 2rem;
+    }
+    
+    .section-header {
+        margin-bottom: 2rem;
+    }
+    
+    .section-title {
+        font-size: 1.35rem;
+    }
+}
+
+@media (min-width: 1440px) {
+    .dashboard-section {
+        padding: 2.5rem;
+    }
+}
+/* Enhanced Tab System */
+@media (min-width: 1200px) {
+    .operation-tabs {
+        padding: 0.75rem;
+    }
+    
+    .tab-btn {
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+@media (min-width: 1440px) {
+    .tab-btn {
+        padding: 1.25rem 2rem;
+    }
+}
+/* Tournament List Enhancements */
+@media (min-width: 1200px) {
+    .admin-tournament-info .name {
+        font-size: 1.1rem;
+    }
+    
+    .admin-tournament-info .game {
+        font-size: 0.9rem;
+        margin-top: 0.25rem;
+    }
+    
+    .tournament-participants,
+    .tournament-prize {
+        font-size: 1rem;
+    }
+    
+    .tournament-prize {
+        font-size: 1.1rem;
+    }
+}
+/* Additional Mobile Improvements */
+@media (max-width: 480px) {
+    .operation-tabs {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1rem;
+    }
+    
+    .tab-btn {
+        padding: 1rem;
+        text-align: center;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions .submit-btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .dashboard-section {
+        padding: 1rem;
+    }
+}
+
+/* Improve form grid layouts on medium screens */
+@media (max-width: 900px) {
+    .form-input[style*="grid-template-columns"] {
+        display: block !important;
+    }
+    
+    div[style*="grid-template-columns: 1fr 1fr"] {
+        display: block !important;
+    }
+    
+    div[style*="grid-template-columns: 1fr 1fr"] .form-group {
+        margin-bottom: 1rem;
+    }
+}
+/* Responsive Form Grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+@media (max-width: 900px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Additional Mobile Improvements */
+@media (max-width: 480px) {
+    .operation-tabs {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 1rem;
+    }
+    
+    .tab-btn {
+        padding: 1rem;
+        text-align: center;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions .submit-btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .dashboard-section {
+        padding: 1rem;
+    }
+}
     </style>
 </head>
 
 <body>
-    <canvas id="canvas-background"></canvas>
     
     <div class="main-content-wrapper">
         <header class="admin-header">
@@ -226,12 +452,12 @@
                 </div>
             </div>
 
-            <!-- TABS ARE OUTSIDE AND BELOW THE GRID -->
             <div class="operation-tabs">
                 <button class="tab-btn active" data-operation="create">Create Tournament</button>
                 <button class="tab-btn" data-operation="update">Update Tournament</button>
                 <button class="tab-btn" data-operation="delete">Delete Tournament</button>
                 <button class="tab-btn" data-operation="download">Download Data</button>
+                <button class="tab-btn" data-operation="finalists">Update Finalists</button>
             </div>
 
             <div id="operation-content">
@@ -257,30 +483,6 @@
             } 
         }
         
-        // --- Canvas Background Animation ---
-        function initCanvasBackground() {
-            const canvas = document.getElementById('canvas-background');
-            if (!canvas) return;
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            const particlesGeometry = new THREE.BufferGeometry;
-            const count = 5000;
-            const positions = new Float32Array(count * 3);
-            for(let i = 0; i < count * 3; i++) { positions[i] = (Math.random() - 0.5) * 10; }
-            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            const particlesMaterial = new THREE.PointsMaterial({ size: 0.005, sizeAttenuation: true, color: '#ff4500' });
-            const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-            scene.add(particles);
-            camera.position.z = 5;
-            const clock = new THREE.Clock();
-            const animate = () => { const elapsedTime = clock.getElapsedTime(); particles.rotation.y = elapsedTime * 0.05; particles.rotation.x = elapsedTime * 0.02; renderer.render(scene, camera); window.requestAnimationFrame(animate); };
-            animate();
-            window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); });
-        }
-
         // --- DASHBOARD JAVASCRIPT ---
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
         const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
@@ -406,49 +608,60 @@
         }
 
         function renderTournamentList(containerId, tournaments, actionType) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    if (!tournaments || tournaments.length === 0) {
-        container.innerHTML = '<p style="text-align: center; padding: 1.5rem 0;">No tournaments to display.</p>';
-        return;
-    }
-    container.innerHTML = tournaments.map(t => {
-        const title = t.title || t.name || "Untitled";
-        const participants = `${t.participant_count || (t.participants?.length || 0)} / ${t.maxTeams || t.max_participants || 'N/A'}`;
-        const prize = `₹${(t.prizePool || t.prize_pool || 0).toLocaleString()}`;
-        let actionsHtml = '';
-        switch (actionType) {
-            case 'manage':
-                actionsHtml = `
-                    <a href="details.html?slug=${t.slug}" class="btn-icon" title="Manage"><i class="fas fa-arrow-right"></i></a>
-                    <button class="btn-icon" onclick="editTournament('${t.slug}')" title="Edit"><i class="fas fa-pencil-alt"></i></button>
-                    `;
-                break;
-            case 'update':
-                actionsHtml = `
-                    <button class="submit-btn" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="editTournament('${t.slug}')">Edit Details</button>
-                    <button class="submit-btn btn-info" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="updateStatus('${t.slug}')">Update Status</button>
-                    <button class="submit-btn btn-warning" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="updateSchedule('${t.slug}')">Update Schedule</button>
-                `;
-                break;
-            case 'delete':
-                actionsHtml = `<button class="submit-btn delete" style="width:auto; padding: 0.5rem 1rem; margin-top:0; background-color: #c82333;" onclick="deleteTournament(event, '${t.slug}')">Confirm Delete</button>`;
-                break;
-            case 'download':
-                actionsHtml = `
-                    <button class="btn-icon" onclick="downloadData('${t.slug}', 'excel')" title="Download Excel"><i class="fas fa-file-excel" style="font-size: 1.2rem; color: #28a745;"></i></button>
-                    <button class="btn-icon" onclick="downloadData('${t.slug}', 'pdf')" title="Download PDF"><i class="fas fa-file-pdf" style="font-size: 1.2rem; color: #dc3545;"></i></button>`;
-                break;
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            if (!tournaments || tournaments.length === 0) {
+                container.innerHTML = '<p style="text-align: center; padding: 1.5rem 0;">No tournaments to display.</p>';
+                return;
+            }
+            container.innerHTML = tournaments.map(t => {
+                const title = t.title || t.name || "Untitled";
+                const participants = `${t.participant_count || (t.participants?.length || 0)} / ${t.maxTeams || t.max_participants || 'N/A'}`;
+                const prize = `₹${(t.prizePool || t.prize_pool || 0).toLocaleString()}`;
+                let actionsHtml = '';
+                switch (actionType) {
+                    case 'manage':
+                        actionsHtml = `
+                            <a href="details.html?slug=${t.slug}" class="btn-icon" title="Manage"><i class="fas fa-arrow-right"></i></a>
+                            <button class="btn-icon" onclick="editTournament('${t.slug}')" title="Edit"><i class="fas fa-pencil-alt"></i></button>
+                            `;
+                        break;
+                    case 'update':
+                        actionsHtml = `
+                            <button class="submit-btn" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="editTournament('${t.slug}')">Edit Details</button>
+                            <button class="submit-btn btn-info" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="updateStatus('${t.slug}')">Update Status</button>
+                            <button class="submit-btn btn-warning" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="updateSchedule('${t.slug}')">Update Schedule</button>
+                        `;
+                        break;
+                    case 'delete':
+                        actionsHtml = `<button class="submit-btn delete" style="width:auto; padding: 0.5rem 1rem; margin-top:0; background-color: #c82333;" onclick="deleteTournament(event, '${t.slug}')">Confirm Delete</button>`;
+                        break;
+                    case 'download':
+                        actionsHtml = `
+                            <button class="btn-icon" onclick="downloadData('${t.slug}', 'excel')" title="Download Excel"><i class="fas fa-file-excel" style="font-size: 1.2rem; color: #28a745;"></i></button>
+                            <button class="btn-icon" onclick="downloadData('${t.slug}', 'pdf')" title="Download PDF"><i class="fas fa-file-pdf" style="font-size: 1.2rem; color: #dc3545;"></i></button>`;
+                        break;
+                    case 'finalists':
+                        actionsHtml = `<button class="submit-btn btn-warning" style="padding: 0.5rem 1rem; margin-top:0; width:auto;" onclick="manageFinalists('${t.slug}')">Manage Finalists</button>`;
+                        break;
+                }
+                return `
+                    <div class="admin-tournament-item">
+                        <div class="admin-tournament-info">
+                            <a href="details.html?slug=${t.slug}" class="name">${title}</a><div class="game">${t.game}</div>
+                        </div>
+                        <div class="tournament-participants">${participants}</div><div class="tournament-prize">${prize}</div><div class="tournament-actions">${actionsHtml}</div>
+                    </div>`;
+            }).join('');
         }
-        return `
-            <div class="admin-tournament-item">
-                <div class="admin-tournament-info">
-                    <a href="details.html?slug=${t.slug}" class="name">${title}</a><div class="game">${t.game}</div>
-                </div>
-                <div class="tournament-participants">${participants}</div><div class="tournament-prize">${prize}</div><div class="tournament-actions">${actionsHtml}</div>
-            </div>`;
-    }).join('');
-}
+        function manageFinalists(slug) {
+            const tournament = adminTournaments.find(t => t.slug === slug);
+            if (!tournament) {
+                alert('Tournament not found!');
+                return;
+            }
+            renderOperation('finalistsEditor', tournament);
+        }
 
         function downloadData(slug, format) {
             const tournament = adminTournaments.find(t => t.slug === slug);
@@ -544,7 +757,7 @@
                     <div class="form-group"><label for="tournament-name" class="form-label">Tournament Name</label><input type="text" id="tournament-name" name="title" class="form-input" required></div>
                     <div class="form-group"><label for="tournament-game" class="form-label">Game</label><input type="text" id="tournament-game" name="game" class="form-input" required></div>
                     <div class="form-group"><label for="tournament-details" class="form-label">Description</label><textarea id="tournament-details" name="description" class="form-textarea" required></textarea></div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-grid">
                         <div class="form-group"><label for="reg-start-date" class="form-label">Registration Start</label><input type="datetime-local" id="reg-start-date" name="registrationStart" class="form-input" required></div>
                         <div class="form-group"><label for="reg-end-date" class="form-label">Registration End</label><input type="datetime-local" id="reg-end-date" name="registrationEnd" class="form-input" required></div>
                         <div class="form-group"><label for="tournament-start-date" class="form-label">Tournament Start</label><input type="datetime-local" id="tournament-start-date" name="tournamentStart" class="form-input" required></div>
@@ -556,13 +769,13 @@
                     </div>
                     <div class="form-group"><label for="tournament-format" class="form-label">Format</label><select id="tournament-format" name="format" class="form-select" required><option value="single-elimination">Single Elimination</option><option value="kp">KP Format</option></select></div>
                     <div id="kp-format-fields" style="display: none;">
-                         <h4 class="form-label" style="margin-top: 1.5rem; margin-bottom: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">KP Format Schedule</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                           <div class="form-group"><label for="qualifier1-date" class="form-label">Qualifier 1 Date</label><input type="datetime-local" id="qualifier1-date" name="qualifier1Date" class="form-input"></div>
-                           <div class="form-group"><label for="qualifier2-date" class="form-label">Qualifier 2 Date</label><input type="datetime-local" id="qualifier2-date" name="qualifier2Date" class="form-input"></div>
-                           <div class="form-group"><label for="qualifier3-date" class="form-label">Qualifier 3 Date</label><input type="datetime-local" id="qualifier3-date" name="qualifier3Date" class="form-input"></div>
-                           <div class="form-group"><label for="qualifier4-date" class="form-label">Qualifier 4 Date</label><input type="datetime-local" id="qualifier4-date" name="qualifier4Date" class="form-input"></div>
-                           <div class="form-group"><label for="final-match-date" class="form-label">Final Match Date</label><input type="datetime-local" id="final-match-date" name="finalMatchDate" class="form-input"></div>
+                        <h4 class="form-label" style="margin-top: 1.5rem; margin-bottom: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">KP Format Schedule</h4>
+                        <div class="form-grid">
+                        <div class="form-group"><label for="qualifier1-date" class="form-label">Qualifier 1 Date</label><input type="datetime-local" id="qualifier1-date" name="qualifier1Date" class="form-input"></div>
+                        <div class="form-group"><label for="qualifier2-date" class="form-label">Qualifier 2 Date</label><input type="datetime-local" id="qualifier2-date" name="qualifier2Date" class="form-input"></div>
+                        <div class="form-group"><label for="qualifier3-date" class="form-label">Qualifier 3 Date</label><input type="datetime-local" id="qualifier3-date" name="qualifier3Date" class="form-input"></div>
+                        <div class="form-group"><label for="qualifier4-date" class="form-label">Qualifier 4 Date</label><input type="datetime-local" id="qualifier4-date" name="qualifier4Date" class="form-input"></div>
+                        <div class="form-group"><label for="final-match-date" class="form-label">Final Match Date</label><input type="datetime-local" id="final-match-date" name="finalMatchDate" class="form-input"></div>
                         </div>
                     </div>
                     <div class="form-group"><label for="tournament-poster" class="form-label">Poster Image</label><input type="file" id="tournament-poster" name="posterImage" class="form-input" accept="image/*"></div>
@@ -570,7 +783,7 @@
                 </form>
             `;
         }
-        
+
         function getUpdateFormHTML(t) {
             const formattedDate = (iso) => iso ? iso.slice(0, 16) : '';
             const kpSettings = t.kpSettings || {};
@@ -587,7 +800,7 @@
                     <div class="form-group"><label class="form-label">Tournament Name</label><input type="text" name="title" class="form-input" value="${t.title || ''}" required></div>
                     <div class="form-group"><label class="form-label">Game</label><input type="text" name="game" class="form-input" value="${t.game || ''}" required></div>
                     <div class="form-group"><label class="form-label">Description</label><textarea name="description" class="form-textarea" required>${t.description || ''}</textarea></div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-grid">
                         <div class="form-group"><label class="form-label">Reg. Start</label><input type="datetime-local" name="registrationStart" class="form-input" value="${formattedDate(t.registrationStart)}" required></div>
                         <div class="form-group"><label class="form-label">Reg. End</label><input type="datetime-local" name="registrationEnd" class="form-input" value="${formattedDate(t.registrationEnd)}" required></div>
                         <div class="form-group"><label class="form-label">Tourney Start</label><input type="datetime-local" name="tournamentStart" class="form-input" value="${formattedDate(t.tournamentStart)}" required></div>
@@ -603,14 +816,14 @@
                             <option value="kp" ${t.format === 'kp' ? 'selected' : ''}>KP Format</option>
                         </select>
                     </div>
-                     <div id="update-kp-format-fields" style="display: ${t.format === 'kp' ? 'block' : 'none'};">
+                    <div id="update-kp-format-fields" style="display: ${t.format === 'kp' ? 'block' : 'none'};">
                         <h4 class="form-label" style="margin-top: 1.5rem; margin-bottom: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">KP Format Schedule</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                           <div class="form-group"><label class="form-label">Qualifier 1</label><input type="datetime-local" name="qualifier1Date" class="form-input" value="${formattedDate(findDate('Qualifier 1'))}"></div>
-                           <div class="form-group"><label class="form-label">Qualifier 2</label><input type="datetime-local" name="qualifier2Date" class="form-input" value="${formattedDate(findDate('Qualifier 2'))}"></div>
-                           <div class="form-group"><label class="form-label">Qualifier 3</label><input type="datetime-local" name="qualifier3Date" class="form-input" value="${formattedDate(findDate('Qualifier 3'))}"></div>
-                           <div class="form-group"><label class="form-label">Qualifier 4</label><input type="datetime-local" name="qualifier4Date" class="form-input" value="${formattedDate(findDate('Qualifier 4'))}"></div>
-                           <div class="form-group"><label class="form-label">Final Match</label><input type="datetime-local" name="finalMatchDate" class="form-input" value="${formattedDate(findDate('Final Match'))}"></div>
+                        <div class="form-grid">
+                        <div class="form-group"><label class="form-label">Qualifier 1</label><input type="datetime-local" name="qualifier1Date" class="form-input" value="${formattedDate(findDate('Qualifier 1'))}"></div>
+                        <div class="form-group"><label class="form-label">Qualifier 2</label><input type="datetime-local" name="qualifier2Date" class="form-input" value="${formattedDate(findDate('Qualifier 2'))}"></div>
+                        <div class="form-group"><label class="form-label">Qualifier 3</label><input type="datetime-local" name="qualifier3Date" class="form-input" value="${formattedDate(findDate('Qualifier 3'))}"></div>
+                        <div class="form-group"><label class="form-label">Qualifier 4</label><input type="datetime-local" name="qualifier4Date" class="form-input" value="${formattedDate(findDate('Qualifier 4'))}"></div>
+                        <div class="form-group"><label class="form-label">Final Match</label><input type="datetime-local" name="finalMatchDate" class="form-input" value="${formattedDate(findDate('Final Match'))}"></div>
                         </div>
                     </div>
                     <div class="form-group"><label class="form-label">New Poster Image (Optional)</label><input type="file" name="posterImage" class="form-input" accept="image/*"></div>
@@ -619,7 +832,8 @@
                     </div>
                 </form>
             `;
-        }
+        }       
+                
 
         function getUpdateStatusHTML(t) {
             const statuses = ['upcoming','registration_open','registration_closed','ongoing','ended'];
@@ -733,6 +947,13 @@
                         <div id="download-tournament-list" class="admin-tournament-list" style="margin-top: 1.5rem;"></div>
                     `;
                     break;
+                case 'finalists':
+                    contentHtml = `
+                        <h3 class="operation-title">Update Finalists Leaderboard</h3>
+                        <p>Select a tournament to manage its finalists leaderboard (Top 16 teams).</p>
+                        <div id="finalists-tournament-list" class="admin-tournament-list" style="margin-top: 1.5rem;"></div>
+                    `;
+                    break;
                 case 'edit':
                     if (data) contentHtml = getUpdateFormHTML(data);
                     break;
@@ -741,6 +962,9 @@
                     break;
                 case 'scheduleUpdate':
                     if (data) contentHtml = getUpdateScheduleHTML(data);
+                    break;
+                case 'finalistsEditor':
+                    if (data) contentHtml = getFinalistsEditorHTML(data);
                     break;
                 default:
                     contentHtml = '<p>Select an operation.</p>';
@@ -779,6 +1003,11 @@
                 }
             } else if (['update', 'delete', 'download'].includes(operationName)) {
                 renderTournamentList(`${operationName}-tournament-list`, adminTournaments, operationName);
+            } else if (operationName === 'finalistsEditor') {
+                const form = document.getElementById('update-finalists-form');
+                if (form) form.addEventListener('submit', handleFinalistsUpdateSubmit);
+            } else if (['update', 'delete', 'download', 'finalists'].includes(operationName)) {
+                renderTournamentList(`${operationName}-tournament-list`, adminTournaments, operationName);
             }
         }
 
@@ -807,14 +1036,13 @@
             }
         }
 
-        async function handleStatusUpdateSubmit(event) {
+        async function handleUpdateFormSubmit(event) {
             event.preventDefault();
             const form = event.target;
             const slug = form.querySelector('input[name="slug"]').value;
-            const newStatus = form.querySelector('select[name="status"]').value;
-
+            
             if (slug === 'dev-test-championship') {
-                alert("This is a mock tournament. Status cannot be saved.");
+                alert("This is a mock tournament and cannot be updated via API.");
                 renderOperation('update');
                 return;
             }
@@ -824,119 +1052,31 @@
             btn.disabled = true;
 
             try {
-                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/status`, {
+                const formData = new FormData(form);
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}`, {
                     method: 'PATCH',
                     headers: {
-                        'Authorization': `Bearer ${getSessionData()?.token}`,
-                        'Content-Type': 'application/json'
+                        'Authorization': `Bearer ${getSessionData()?.token}`
                     },
-                    body: JSON.stringify({ status: newStatus })
-                });
-
-                const result = await response.json();
-
-                if (response.ok && result.success) {
-                    alert('Tournament status updated successfully!');
-                    await loadAdminTournaments(); 
-                    renderOperation('update'); 
-                } else {
-                    throw new Error(result.detail || 'Failed to update status.');
-                }
-            } catch (error) {
-                alert('Error: ' + error.message);
-            } finally {
-                btn.textContent = 'Save Status';
-                btn.disabled = false;
-            }
-        }
-
-        async function handleScheduleUpdateSubmit(event) {
-            event.preventDefault();
-            const form = event.target;
-            const slug = form.querySelector('input[name="slug"]').value;
-
-            // Remove this mock tournament block entirely:
-            // if (slug === 'dev-test-championship') {
-            //     alert("This is a mock tournament. Schedule cannot be updated.");
-            //     renderOperation('update');
-            //     return;
-            // }
-
-            const btn = form.querySelector('button[type="submit"]');
-            btn.textContent = 'Saving...'; 
-            btn.disabled = true;
-
-            try {
-                const events = [];
-                const container = document.getElementById('schedule-events-container');
-                const eventBlocks = container.querySelectorAll('.schedule-event');
-                
-                eventBlocks.forEach(block => {
-                    const datetimeValue = block.querySelector('input[name*="[datetime]"]').value;
-                    const [date, time] = datetimeValue ? datetimeValue.split('T') : [null, null];
-
-                    events.push({
-                        title: block.querySelector('input[name*="[title]"]').value,
-                        description: block.querySelector('input[name*="[description]"]').value,
-                        datetime: datetimeValue,
-                        date: date,
-                        time: time ? time + ":00" : null
-                    });
-                });
-
-                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/schedule`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Authorization': `Bearer ${getSessionData()?.token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ schedule: events })
+                    body: formData
                 });
 
                 const result = await response.json();
                 if (response.ok && result.success) {
-                    alert('Schedule updated successfully!');
-                    await loadAdminTournaments(); // Reload tournaments
+                    alert('Tournament updated successfully!');
+                    await loadAdminTournaments();
                     renderOperation('update');
                 } else {
-                    throw new Error(result.detail || result.error || 'Failed to update schedule.');
+                    throw new Error(result.detail || 'Failed to update tournament.');
                 }
             } catch (error) {
-                console.error('Schedule update error:', error);
                 alert('Error: ' + error.message);
             } finally {
-                btn.textContent = 'Confirm Schedule';
+                btn.textContent = 'Save Changes';
                 btn.disabled = false;
             }
         }
-        
-        function addScheduleEvent() {
-            const container = document.getElementById('schedule-events-container');
-            if (!container) return;
 
-            // Remove placeholder if it exists
-            const placeholder = container.querySelector('p');
-            if(placeholder) placeholder.remove();
-
-            const index = container.children.length;
-            const eventHtml = `
-                <div class="schedule-event" draggable="true" data-index="${index}" style="border:1px solid var(--border-color); padding:1rem; border-radius:8px; margin-bottom:1rem;">
-                    <div class="form-group">
-                        <label class="form-label">Event Title</label>
-                        <input type="text" name="events[${index}][title]" class="form-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Description (1 line)</label>
-                        <input type="text" name="events[${index}][description]" class="form-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Date & Time</label>
-                        <input type="datetime-local" name="events[${index}][datetime]" class="form-input" required>
-                    </div>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', eventHtml);
-        }
 
         async function handleScheduleUpdateSubmit(event) {
         event.preventDefault();
@@ -996,6 +1136,225 @@
             btn.disabled = false;
         }
     }
+        
+        function addScheduleEvent() {
+            const container = document.getElementById('schedule-events-container');
+            if (!container) return;
+
+            // Remove placeholder if it exists
+            const placeholder = container.querySelector('p');
+            if(placeholder) placeholder.remove();
+
+            const index = container.children.length;
+            const eventHtml = `
+                <div class="schedule-event" draggable="true" data-index="${index}" style="border:1px solid var(--border-color); padding:1rem; border-radius:8px; margin-bottom:1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Event Title</label>
+                        <input type="text" name="events[${index}][title]" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description (1 line)</label>
+                        <input type="text" name="events[${index}][description]" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date & Time</label>
+                        <input type="datetime-local" name="events[${index}][datetime]" class="form-input" required>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', eventHtml);
+        }
+
+        function getFinalistsEditorHTML(t) {
+            // Get existing finalists or create empty array for 16 teams
+            const finalists = t.finalists || Array.from({length: 16}, (_, i) => ({
+                position: i + 1,
+                teamName: '',
+                totalPoints: 0
+            }));
+            
+            // Ensure we have exactly 16 slots
+            while (finalists.length < 16) {
+                finalists.push({
+                    position: finalists.length + 1,
+                    teamName: '',
+                    totalPoints: 0
+                });
+            }
+            finalists.splice(16); // Keep only first 16
+            
+            const finalistsHtml = finalists.map((finalist, index) => `
+                <div class="finalist-entry" style="display: grid; grid-template-columns: 60px 1fr 120px auto; align-items: center; gap: 1rem; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 0.5rem; background: rgba(0,0,0,0.2);">
+                    <div style="font-weight: 700; text-align: center; color: var(--primary-color);">#${index + 1}</div>
+                    <div class="form-group" style="margin: 0;">
+                        <input type="text" name="finalists[${index}][teamName]" class="form-input" value="${finalist.teamName || ''}" placeholder="Enter team name" style="margin: 0; padding: 0.5rem;">
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <input type="number" name="finalists[${index}][totalPoints]" class="form-input" value="${finalist.totalPoints || 0}" placeholder="Points" min="0" style="margin: 0; padding: 0.5rem;">
+                    </div>
+                    <button type="button" class="btn-icon" onclick="clearFinalistEntry(${index})" title="Clear Entry" style="color: var(--text-secondary);">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            return `
+                <div class="operation-title-header">
+                    <h3 class="operation-title">Finalists Leaderboard: ${t.title}</h3>
+                    <button type="button" class="close-btn" onclick="renderOperation('finalists')" title="Cancel">&times;</button>
+                </div>
+                <form id="update-finalists-form">
+                    <input type="hidden" name="slug" value="${t.slug}">
+                    
+                    <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(255, 69, 0, 0.1); border-radius: 8px; border: 1px solid var(--border-color);">
+                        <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary);">
+                            <i class="fas fa-info-circle" style="margin-right: 0.5rem; color: var(--primary-color);"></i>
+                            Enter the top 16 teams in order of their final ranking. Leave entries blank if fewer than 16 teams made it to finals.
+                        </p>
+                    </div>
+                    
+                    <div class="finalists-container">
+                        ${finalistsHtml}
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="submit-btn btn-secondary" onclick="autoFillFromParticipants('${t.slug}')">Auto-fill from Participants</button>
+                        <button type="submit" class="submit-btn">Save Finalists</button>
+                    </div>
+                </form>
+            `;
+        }
+
+        function clearFinalistEntry(index) {
+            const container = document.querySelector('.finalists-container');
+            const entry = container.children[index];
+            if (entry) {
+                entry.querySelector('input[name*="[teamName]"]').value = '';
+                entry.querySelector('input[name*="[totalPoints]"]').value = '0';
+            }
+        }
+
+        function autoFillFromParticipants(slug) {
+            const tournament = adminTournaments.find(t => t.slug === slug);
+            if (!tournament || !tournament.participants) {
+                alert('No participants found for this tournament.');
+                return;
+            }
+            
+            const participants = tournament.participants.slice(0, 16); // Get first 16 teams
+            const container = document.querySelector('.finalists-container');
+            
+            participants.forEach((participant, index) => {
+                const entry = container.children[index];
+                if (entry) {
+                    entry.querySelector('input[name*="[teamName]"]').value = participant.teamName || '';
+                }
+            });
+            
+            alert(`Auto-filled ${participants.length} teams from participants list.`);
+        }
+
+        async function handleFinalistsUpdateSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const slug = form.querySelector('input[name="slug"]').value;
+
+            if (slug === 'dev-test-championship') {
+                alert("This is a mock tournament. Finalists cannot be updated.");
+                renderOperation('finalists');
+                return;
+            }
+
+            const btn = form.querySelector('button[type="submit"]');
+            btn.textContent = 'Saving...';
+            btn.disabled = true;
+
+            try {
+                const finalists = [];
+                const container = document.querySelector('.finalists-container');
+                const entries = container.querySelectorAll('.finalist-entry');
+                
+                entries.forEach((entry, index) => {
+                    const teamName = entry.querySelector('input[name*="[teamName]"]').value.trim();
+                    const totalPoints = parseInt(entry.querySelector('input[name*="[totalPoints]"]').value) || 0;
+                    
+                    if (teamName) { // Only add non-empty team names
+                        finalists.push({
+                            position: index + 1,
+                            teamName: teamName,
+                            totalPoints: totalPoints
+                        });
+                    }
+                });
+
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/finalists`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${getSessionData()?.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ finalists: finalists })
+                });
+
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    alert(`Finalists updated successfully! ${finalists.length} teams saved.`);
+                    await loadAdminTournaments();
+                    renderOperation('finalists');
+                } else {
+                    throw new Error(result.detail || 'Failed to update finalists.');
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                btn.textContent = 'Save Finalists';
+                btn.disabled = false;
+            }
+        }
+
+        async function handleStatusUpdateSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
+    const slug = form.querySelector('input[name="slug"]').value;
+    const newStatus = form.querySelector('select[name="status"]').value;
+
+    if (slug === 'dev-test-championship') {
+        alert("This is a mock tournament. Status cannot be saved.");
+        renderOperation('update');
+        return;
+    }
+
+    const btn = form.querySelector('.submit-btn');
+    btn.textContent = 'Saving...';
+    btn.disabled = true;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/status`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${getSessionData()?.token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: newStatus })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+            alert('Tournament status updated successfully!');
+            await loadAdminTournaments();
+            renderOperation('update');
+        } else {
+            throw new Error(result.detail || 'Failed to update status.');
+        }
+    } catch (error) {
+        alert('Error: ' + error.message);
+    } finally {
+        btn.textContent = 'Save Status';
+        btn.disabled = false;
+    }
+}
+
 
         function initDragAndDrop() {
             const container = document.getElementById('schedule-events-container');
@@ -1045,7 +1404,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            initCanvasBackground();
             checkUserAuthentication();
             renderOperation('create'); // Start with the create form
             loadAdminTournaments(); // Load tournaments in the background

@@ -517,22 +517,188 @@
         display: inline-flex; /* Show hamburger button */
       }
     }
-    /* --- ADD THIS NEW CODE BLOCK FOR LARGE SCREENS --- */
-    @media (min-width: 1600px) {
-      header.site-header {
-        height: 80px; /* Increased from 60px */
-        padding: 0 3rem;
-      }
-      .back-btn, .header-cta, .profile-username {
-        font-size: 1.1rem; /* Bumps up the text size */
-      }
-      .header-cta {
-        padding: 0.7rem 1.25rem; /* Makes the button bigger */
-      }
-      .profile-icon {
-        font-size: 1.75rem; /* Makes the profile icon larger */
-      }
-    }
+    /* Large Desktop Screens (1600px and up) */
+@media (min-width: 1600px) {
+  :root {
+    --container: 1400px; /* Increase max container width */
+  }
+  
+  /* Tournament Hero Adjustments */
+  .tournament-hero {
+    height: 80vh; /* Increase hero height */
+    min-height: 600px;
+  }
+  
+  .tournament-hero .container {
+    padding: 0 0 6rem 6rem; /* More breathing room */
+  }
+  
+  .tournament-title {
+    font-size: clamp(3.5rem, 6vw, 5rem); /* Larger title */
+  }
+  
+  .tournament-subtitle {
+    font-size: 1.4rem; /* Larger subtitle */
+    max-width: 900px;
+  }
+  
+  /* Details Grid - Make it 3 columns */
+  .details-grid {
+    grid-template-columns: 3fr 1fr 1fr; /* Main content + 2 sidebars */
+    gap: 4rem;
+  }
+  
+  .details-main, .info-card {
+    padding: 3.5rem; /* More padding */
+  }
+  
+  /* Typography scaling */
+  .section-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+  }
+  
+  .section-subtitle {
+    font-size: 1.3rem;
+    max-width: 800px;
+  }
+}
+
+/* Ultra-wide screens (1920px and up) */
+@media (min-width: 1920px) {
+  :root {
+    --container: 1600px; /* Even larger container */
+  }
+  
+  /* Section spacing */
+  .tournament-details,
+  .schedule-section,
+  .faq-section {
+    padding: 6rem 0; /* More vertical spacing */
+  }
+  
+  /* Finalists section improvements */
+  .finalists-grid {
+    grid-template-columns: 1fr 1fr 1fr 1fr; /* 4 columns for ultra-wide */
+    gap: 2rem;
+  }
+  
+  .finalists-column {
+    gap: 1.5rem;
+  }
+  
+  .finalist-item {
+    padding: 1.5rem;
+  }
+  
+  /* FAQ Section - 2 column layout */
+  .faq-grid {
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  
+  /* Timeline improvements */
+  .timeline-item {
+    padding: 2rem 0;
+  }
+  
+  .timeline-date {
+    min-width: 150px;
+  }
+  
+  .timeline-day {
+    font-size: 1.3rem;
+  }
+  
+  .timeline-title {
+    font-size: 1.3rem;
+  }
+}
+
+/* 4K and beyond (2560px+) */
+@media (min-width: 2560px) {
+  :root {
+    --container: 2000px;
+  }
+  
+  .tournament-hero {
+    height: 85vh;
+    min-height: 800px;
+  }
+  
+  .details-grid {
+    grid-template-columns: 4fr 1fr 1fr; /* Give even more space to main content */
+    gap: 5rem;
+  }
+  
+  .details-main, .info-card {
+    padding: 4rem;
+  }
+  
+  /* Font scaling for very large screens */
+  .tournament-title {
+    font-size: clamp(4rem, 7vw, 6rem);
+  }
+  
+  .tournament-subtitle {
+    font-size: 1.6rem;
+  }
+  
+  .section-title {
+    font-size: clamp(3rem, 6vw, 5rem);
+  }
+}
+/* Improved finalists layout for larger screens */
+@media (min-width: 1600px) {
+  .empty-finalists {
+    padding: 6rem 4rem;
+    grid-column: span 4; /* Span all columns on ultra-wide */
+  }
+  
+  .empty-finalists i {
+    font-size: 4rem;
+  }
+}
+
+/* Better prize distribution display */
+@media (min-width: 1600px) {
+  .info-list li {
+    padding: 1rem 0;
+  }
+  
+  .info-label, .info-value {
+    font-size: 1.1rem;
+  }
+}
+
+/* Enhanced button and interactive elements */
+@media (min-width: 1600px) {
+  .btn-primary {
+    padding: 1.2rem 2.5rem;
+    font-size: 1.1rem;
+  }
+  
+  .faq-question {
+    padding: 2rem;
+    font-size: 1.2rem;
+  }
+  
+  .faq-answer p {
+    padding: 0 2rem 2rem 2rem;
+    font-size: 1.1rem;
+  }
+}
+@media (min-width: 1920px) {
+  header.site-header {
+    height: 90px; /* Even taller header */
+    padding: 0 4rem; /* More horizontal padding */
+  }
+  
+  .brand {
+    font-size: 2rem; /* Larger brand text */
+  }
+}
   </style>
 </head>
 
