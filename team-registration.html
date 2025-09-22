@@ -10,14 +10,15 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
 crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="navbar.css">
 <style>
 :root {
 --bg: #0f0f10;
 --panel: #1f1f20;
 --muted: #9aa0a6;
 --copy: #e6e6e6;
---accent: #FFD700;
---accent-2: #e0ac10;
+--accent: #ff5e00;
+--accent-2: #ca4405;
 --radius: 12px;
 --border-color: rgba(255, 255, 255, 0.1);
 --success: #10b981;
@@ -56,25 +57,6 @@ justify-content: space-between;
 padding: 0 24px;
 }
 
-.header-left {
-display: flex;
-align-items: center;
-gap: 24px;
-}
-
-.back-link {
-color: var(--muted);
-text-decoration: none;
-font-weight: 500;
-display: flex;
-align-items: center;
-gap: 8px;
-transition: color 0.2s ease;
-}
-
-.back-link:hover {
-color: var(--accent);
-}
 
 .brand {
 display: flex;
@@ -544,136 +526,7 @@ grid-template-columns: 1fr;
 }
 }
 
-/* Profile Dropdown Styles */
-.profile-dropdown {
-position: relative;
-display: flex;
-align-items: center;
-}
 
-.profile-icon {
-width: 40px;
-height: 40px;
-display: flex;
-align-items: center;
-justify-content: center;
-color: var(--copy);
-cursor: pointer;
-border-radius: 50%;
-transition: all 0.3s ease;
-font-size: 1.5rem;
-}
-
-.profile-icon:hover {
-color: var(--accent);
-background: rgba(255, 215, 0, 0.1);
-transform: scale(1.1);
-}
-
-.profile-modal {
-position: absolute;
-top: 100%;
-right: 0;
-background: var(--panel);
-border: 1px solid rgba(255, 255, 255, 0.1);
-border-radius: 12px;
-min-width: 280px;
-opacity: 0;
-visibility: hidden;
-transform: translateY(-10px);
-transition: all 0.3s ease;
-box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-z-index: 1000;
-margin-top: 10px;
-}
-
-.profile-dropdown:hover .profile-modal {
-opacity: 1;
-visibility: visible;
-transform: translateY(0);
-}
-
-.profile-header {
-display: flex;
-align-items: center;
-gap: 1rem;
-padding: 1.5rem;
-border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.profile-photo {
-width: 50px;
-height: 50px;
-background: linear-gradient(135deg, var(--accent), #e0ac10);
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-color: #000;
-font-size: 1.5rem;
-flex-shrink: 0;
-}
-
-.profile-info {
-flex: 1;
-}
-
-.profile-username {
-font-weight: 700;
-color: var(--copy);
-font-size: 1.1rem;
-margin-bottom: 0.25rem;
-}
-
-.profile-role {
-background: linear-gradient(135deg, var(--accent), #e0ac10);
-color: #000;
-padding: 0.25rem 0.5rem;
-border-radius: 12px;
-font-size: 0.7rem;
-font-weight: 700;
-text-transform: uppercase;
-letter-spacing: 0.5px;
-display: inline-block;
-}
-
-.profile-actions {
-padding: 0.5rem;
-}
-
-.profile-action {
-display: flex;
-align-items: center;
-gap: 0.75rem;
-padding: 0.75rem 1rem;
-color: var(--copy);
-text-decoration: none;
-border-radius: 8px;
-transition: all 0.3s ease;
-font-weight: 600;
-font-size: 0.95rem;
-width: 100%;
-border: none;
-background: none;
-cursor: pointer;
-font-family: inherit;
-}
-
-.profile-action:hover {
-background: rgba(255, 255, 255, 0.05);
-color: var(--accent);
-transform: translateX(4px);
-}
-
-.logout-action:hover {
-background: rgba(255, 0, 0, 0.1);
-color: #ff6b6b;
-}
-
-.profile-action i {
-width: 16px;
-text-align: center;
-}
 
 #user-menu {
 display: flex;
@@ -734,61 +587,50 @@ border: 1px solid var(--border-color);
 </style>
 </head>
 <body>
-<header class="site-header">
-<div class="header-left">
-<a href="tournament-details.html" class="back-link" id="back-to-tournament">
-<i class="fas fa-arrow-left"></i>
-<span>Back to Tournament</span>
-</a>
-</div>
+    <header class="site-header">
+    <a href="index.html" class="brand">
+        <span><span class="accent">E</span>Arena</span>
+    </a>
 
-<a href="index.html" class="brand">
-<span><span class="accent">E</span>Arena</span>
-</a>
+    <div class="header-right">
+        <div class="nav-actions">
+            <div id="guest-menu">
+                <button class="header-cta" onclick="redirectToAuth('register')">Join Us</button>
+            </div>
 
-<div class="nav-actions">
-<!-- Not logged in -->
-<div id="guest-menu">
-<a href="auth.html?tab=login&returnUrl=team-registration.html" class="login-link">Log in</a>
-</div>
-
-<!-- Logged in -->
-<div id="user-menu" style="display: none;">
-<div class="profile-dropdown">
-<div class="profile-icon" id="profile-icon">
-<i class="fas fa-user-circle"></i>
-</div>
-<div class="profile-modal" id="profile-modal">
-<div class="profile-header">
-<div class="profile-photo">
-<i class="fas fa-user"></i>
-</div>
-<div class="profile-info">
-<div class="profile-username" id="modal-username">User</div>
-<div class="profile-role" id="modal-role-badge" style="display: none;">Admin</div>
-</div>
-</div>
-<div class="profile-actions">
-<a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
-<i class="fas fa-user"></i>
-<span>My Account</span>
-</a>
-<button class="profile-action logout-action" onclick="logout()">
-<i class="fas fa-sign-out-alt"></i>
-<span>Logout</span>
-</button>
-</div>
-</div>
-</div>
-</div>
-</div>
+            <div id="user-menu" style="display: none;">
+                <div class="profile-dropdown">
+                    <div class="profile-icon" id="profile-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="profile-modal" id="profile-modal">
+                        <div class="profile-header">
+                            <div class="profile-photo"><i class="fas fa-user"></i></div>
+                            <div class="profile-info">
+                                <div class="profile-username" id="modal-username">User</div>
+                            </div>
+                        </div>
+                        <div class="profile-actions">
+                            <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
+                                <i class="fas fa-user-cog"></i><span>My Account</span>
+                            </a>
+                            <button class="profile-action logout-action" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
 </header>
+    <div id="mobile-nav" class="mobile-nav">
+    </div>
 
 <main class="main-content">
-<!-- Testing Mode Banner -->
-<div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 12px 24px; border-radius: 8px; margin-bottom: 24px; text-align: center; font-weight: 600; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
-    <i class="fas fa-flask"></i> TESTING MODE ACTIVE - No payment required for registration
-</div>
 
 <div class="registration-container">
 <div class="registration-form">
@@ -839,7 +681,7 @@ border: 1px solid var(--border-color);
 </div>
 
 <button type="submit" class="btn btn-primary" style="width: 100%;" id="register-btn">
-<i class="fas fa-user-plus"></i> Register Team (Testing Mode)
+<i class="fas fa-user-plus"></i> Register Team
 </button>
 </form>
 </div>
@@ -885,11 +727,7 @@ Tournament Poster
 
 <script>
 // Helper function to redirect to auth with return URL
-function redirectToAuth(tab = 'register') {
-  const currentUrl = window.location.href;
-  const returnUrl = encodeURIComponent(currentUrl);
-  window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
-}
+
 
 // Auto-detect API URL based on environment
 const API_BASE_URL = (() => {
@@ -978,7 +816,7 @@ const data = await response.json();
 currentTournament = data.data;
 
 updateTournamentDisplay();
-updateBackLink();
+
 
 } catch (error) {
 console.error('Error loading tournament:', error);
@@ -1050,11 +888,6 @@ posterElement.innerHTML = `<img src="${imageUrl}" alt="Tournament Poster" onerro
 checkRegistrationStatus();
 }
 
-function updateBackLink() {
-if (!currentTournament) return;
-const backLink = document.getElementById('back-to-tournament');
-backLink.href = `tournament-details.html?slug=${currentTournament.slug}`;
-}
 
 function checkRegistrationStatus() {
 if (!currentTournament) return;
@@ -1094,7 +927,7 @@ if (restrictedStatuses.includes(currentTournament.status)) {
     // Registration is open
     console.log('Registration is open!');
     document.getElementById('register-btn').disabled = false;
-    document.getElementById('register-btn').innerHTML = '<i class="fas fa-user-plus"></i> Register Team (Testing Mode)';
+    document.getElementById('register-btn').innerHTML = '<i class="fas fa-user-plus"></i> Register Team';
     
     // Clear any error messages
     const errorContainer = document.getElementById('error-container');
@@ -1309,30 +1142,23 @@ showError(errorMessage);
 // Load registration summary based on tournament
 function loadRegistrationSummary(tournament) {
     const container = document.querySelector('.registration-summary');
-    if (!container) {
-        console.error('Registration summary container not found');
-        return;
-    }
+    if (!container) return;
     const entryFee = tournament.entryFee || 0;
     
     container.innerHTML = `
-        <h4><i class="fas fa-receipt"></i> Registration Summary (Testing Mode)</h4>
+        <h4><i class="fas fa-receipt"></i> Registration Summary</h4>
         <div class="summary-item">
             <span>Tournament Entry Fee</span>
-            <span style="text-decoration: line-through; color: var(--muted);">₹${entryFee.toLocaleString()}</span>
+            <span>₹${entryFee.toLocaleString()}</span>
         </div>
         <div class="summary-total">
             <div class="summary-item">
                 <span>Total Due Now</span>
-                <span style="color: var(--success); font-weight: bold;">₹0 (FREE)</span>
+                <span style="color: var(--copy); font-weight: bold;">₹${entryFee.toLocaleString()}</span>
             </div>
         </div>
-        <p style="font-size: 0.85rem; color: var(--success); margin-top: 1rem; font-weight: 600;">
-            <i class="fas fa-flask"></i> Testing Mode: No payment required for registration.
-        </p>
     `;
 }
-
 // Load tournament rules based on format
 function loadTournamentRules(tournament) {
     const container = document.getElementById('terms-section');
@@ -1375,20 +1201,19 @@ function loadTournamentRules(tournament) {
     `;
 }
 
-// Load payment structure based on tournament format
+// REPLACE the old function with this one
 function loadPaymentStructure(tournament) {
     const container = document.getElementById('payment-structure');
+    const entryFee = tournament.entryFee || 0;
     
+    let structureHTML = `<h4><i class="fas fa-coins"></i> Payment Structure</h4>
+        <div class="round-payment">
+            <span class="round-name">Entry Fee</span>
+            <span class="round-fee">₹${entryFee.toLocaleString()}</span>
+        </div>`;
+
     if (tournament.format === 'kp') {
-        // KP Format payment structure
-        const entryFee = tournament.entryFee || 200;
-        container.innerHTML = `
-            <h4><i class="fas fa-coins"></i> KP Tournament Payment (Testing Mode)</h4>
-            <div class="round-payment" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);">
-                <span class="round-name">Entry Fee</span>
-                <span class="round-fee" style="text-decoration: line-through; color: var(--muted);">₹${entryFee.toLocaleString()}</span>
-                <span style="color: var(--success); font-weight: bold; margin-left: 10px;">FREE</span>
-            </div>
+        structureHTML += `
             <div class="kp-structure">
                 <h5 style="color: var(--accent); margin: 1rem 0 0.5rem 0;">Tournament Structure:</h5>
                 <div class="kp-flow">
@@ -1410,36 +1235,9 @@ function loadPaymentStructure(tournament) {
                         <small>${(tournament.kpSettings?.numberOfGroups || 4) * (tournament.kpSettings?.qualifiersPerGroup || 4)} teams compete</small>
                     </div>
                 </div>
-            </div>
-            <p style="font-size: 0.85rem; color: var(--success); margin-top: 1rem; font-weight: 600;">
-                <i class="fas fa-flask"></i> Testing Mode: No payment required for registration.
-            </p>
-        `;
-    } else {
-        // Traditional tournament payment structure
-        const entryFee = tournament.entryFee || 100;
-        container.innerHTML = `
-            <h4><i class="fas fa-coins"></i> Payment Structure (Testing Mode)</h4>
-            <div class="round-payment" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3);">
-                <span class="round-name">Entry Fee</span>
-                <span class="round-fee" style="text-decoration: line-through; color: var(--muted);">₹${entryFee.toLocaleString()}</span>
-                <span style="color: var(--success); font-weight: bold; margin-left: 10px;">FREE</span>
-            </div>
-            <p style="font-size: 0.85rem; color: var(--success); margin-top: 1rem; font-weight: 600;">
-                <i class="fas fa-flask"></i> Testing Mode: No payment required for registration.
-            </p>
-        `;
+            </div>`;
     }
-}
-
-// --- UTILITY FUNCTIONS ---
-function getSessionData() {
-const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
-try {
-return JSON.parse(session);
-} catch (error) {
-return null;
-}
+    container.innerHTML = structureHTML;
 }
 
 function showError(message) {
@@ -1532,62 +1330,14 @@ mainContent.innerHTML = `
                 <i class="fas fa-home"></i> Back to Home
             </a>
         </div>
-        
-        <!-- Testing Mode Notice -->
-        <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 1rem 1.5rem; border-radius: var(--radius); margin-top: 3rem; font-weight: 600;">
-            <i class="fas fa-flask"></i> Testing Mode: No payment was required for this registration
-        </div>
     </div>
 `;
 }
 
 // --- EVENT LISTENERS ---
 // Profile dropdown functionality
-function initializeProfileDropdown() {
-const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
-
-if (session) {
-try {
-const sessionData = JSON.parse(session);
-const user = sessionData.user;
-
-// Show user menu, hide guest menu
-document.getElementById('user-menu').style.display = 'flex';
-document.getElementById('guest-menu').style.display = 'none';
-
-// Update profile info
-document.getElementById('modal-username').textContent = user.username || user.email || 'User';
-
-// Show admin badge if user is admin
-const roleBadge = document.getElementById('modal-role-badge');
-const dashboardLink = document.getElementById('modal-dashboard-link');
-
-if (user.role === 'admin') {
-roleBadge.style.display = 'inline-block';
-roleBadge.textContent = 'Admin';
-dashboardLink.href = 'admin-dashboard.html';
-dashboardLink.innerHTML = '<i class="fas fa-shield-alt"></i><span>Admin Dashboard</span>';
-} else {
-roleBadge.style.display = 'none';
-dashboardLink.href = 'user-dashboard.html';
-dashboardLink.innerHTML = '<i class="fas fa-user"></i><span>My Account</span>';
-}
-} catch (error) {
-console.error('Error parsing session data:', error);
-// Show guest menu if session is invalid
-document.getElementById('user-menu').style.display = 'none';
-document.getElementById('guest-menu').style.display = 'flex';
-}
-} else {
-// Show guest menu if no session
-document.getElementById('user-menu').style.display = 'none';
-document.getElementById('guest-menu').style.display = 'flex';
-}
-}
 
 document.addEventListener('DOMContentLoaded', async () => {
-// Initialize profile dropdown
-initializeProfileDropdown();
 
 // Test API connection first
 await testApiConnection();
@@ -1674,11 +1424,8 @@ formContainer.innerHTML = `
 `;
 }
 
-function logout() {
-localStorage.removeItem('earena_session');
-sessionStorage.removeItem('earena_session');
-redirectToAuth();
-}
+
 </script>
+<script src="navbar.js"></script>
 </body>
 </html>
