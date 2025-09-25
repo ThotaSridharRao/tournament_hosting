@@ -1126,14 +1126,13 @@
         primaryActionBtn.style.display = 'flex';
         primaryActionBtn.disabled = false;
 
-        // --- THIS IS THE NEW LOGIC TO CHECK REGISTRATION STATUS ---
         checkUserRegistrationStatus(tournament.slug).then(isRegistered => {
             if (isRegistered) {
                 primaryActionBtn.innerHTML = '<i class="fas fa-check-circle"></i> Registered';
-                primaryActionBtn.className = 'btn-primary btn-success'; // Add new class
-                primaryActionBtn.onclick = null; // Disable click
+                primaryActionBtn.className = 'btn-primary btn-success';
+                primaryActionBtn.onclick = null;
                 primaryActionBtn.disabled = true;
-                return; // Stop further processing if registered
+                return;
             }
 
             // If not registered, continue with the original logic...
@@ -1146,7 +1145,12 @@
                     primaryActionBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
                     primaryActionBtn.onclick = () => {
                         const sessionData = getSessionData();
-                        if (sessionData && (sessionData.data.user || sessionData.user)) {
+
+                        // --- THIS IS THE CORRECTED PART ---
+                        // It now safely checks for the user in both possible session structures
+                        const user = sessionData?.data?.user || sessionData?.user;
+
+                        if (user) {
                             window.location.href = `team-registration.html?slug=${currentTournament.slug}`;
                         } else {
                             redirectToAuth('register');
