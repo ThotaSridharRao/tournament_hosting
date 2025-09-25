@@ -456,20 +456,54 @@
             }
         }
 
+        // REPLACE the old loadUserTournaments function with this one
+
         async function loadUserTournaments(token) {
+            const tournamentsContainer = document.getElementById('user-tournaments');
             try {
-                // This would be a real API call to get user's tournaments
-                // For now, we'll show empty state
-                const tournamentsContainer = document.getElementById('user-tournaments');
-                tournamentsContainer.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-trophy"></i>
-                        <h3>No tournaments yet</h3>
-                        <p>Join your first tournament to get started!</p>
-                    </div>
-                `;
+                const response = await fetch(`${API_BASE_URL}/api/users/me/tournaments`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch tournaments');
+                }
+
+                const result = await response.json();
+                if (result.success && result.data.length > 0) {
+                    tournamentsContainer.innerHTML = result.data.map(tournament => {
+                        const statusClass = tournament.status.replace('_', '-'); // e.g., registration_open -> registration-open
+                        return `
+                            <div class="tournament-item">
+                                <div class="tournament-info">
+                                    <a href="tournament-details.html?slug=${tournament.slug}" class="tournament-name">${tournament.title}</a>
+                                    <div class="tournament-status ${statusClass}">${tournament.status.replace('_', ' ')}</div>
+                                </div>
+                                <div class="tournament-team-info">
+                                    <span style="color: var(--muted); font-size: 0.9rem;">Your Team:</span>
+                                    <span style="font-weight: 600;">${tournament.user_team_name || 'N/A'}</span>
+                                </div>
+                                <a href="tournament-details.html?slug=${tournament.slug}" class="btn-primary" style="padding: 0.5rem 1rem;">View</a>
+                            </div>
+                        `;
+                    }).join('');
+
+                    // Update stats card
+                    document.getElementById('tournaments-joined').textContent = result.data.length;
+
+                } else {
+                    // Keep the empty state if no tournaments are found
+                    tournamentsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-trophy"></i>
+                            <h3>No tournaments yet</h3>
+                            <p>Join your first tournament to get started!</p>
+                        </div>
+                    `;
+                }
             } catch (error) {
                 console.error('Error loading tournaments:', error);
+                tournamentsContainer.innerHTML = `<div class="empty-state"><p style="color: #ef4444;">Could not load your tournaments.</p></div>`;
             }
         }
 

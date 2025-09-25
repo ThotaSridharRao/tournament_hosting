@@ -1013,132 +1013,128 @@ function removePlayer(button) {
 console.log('removePlayer() called - not allowed in new system');
 }
 
-// --- FORM SUBMISSION ---
-async function submitRegistration(formData) {
-const sessionData = getSessionData();
-if (!sessionData || !sessionData.token) {
-showError('Please login to register for tournaments.');
-return;
-}
-
-try {
-// Prepare registration data
-const registrationData = {
-teamName: formData.get('teamName'),
-players: []
-};
-
-// Collect player data - get exact number based on tournament
-const maxPlayers = currentTournament.format === 'kp' && currentTournament.kpSettings 
-    ? currentTournament.kpSettings.maxPlayersPerTeam 
-    : 4;
-
-console.log(`📦 Collecting data for ${maxPlayers} players`);
-
-for (let i = 1; i <= maxPlayers; i++) {
-const name = formData.get(`players[${i}][name]`);
-const email = formData.get(`players[${i}][email]`);
-const phoneNumber = formData.get(`players[${i}][phoneNumber]`);
-const inGameId = formData.get(`players[${i}][inGameId]`);
-
-// All players are required (no optional players)
-if (!name || !email || !inGameId) {
-    showError(`Please fill in all required fields for Player ${i}`);
-    return;
-}
-
-registrationData.players.push({
-name: name.trim(),
-email: email.trim().toLowerCase(),
-inGameId: inGameId.trim(),
-role: i === 1 ? 'Captain' : 'Player'
-});
-}
-
-// Validate exact number of players
-const requiredPlayers = currentTournament.format === 'kp' && currentTournament.kpSettings 
-    ? currentTournament.kpSettings.maxPlayersPerTeam 
-    : 4;
-
-if (registrationData.players.length !== requiredPlayers) {
-showError(`This tournament requires exactly ${requiredPlayers} players. You have ${registrationData.players.length} players.`);
-return;
-}
-
-// Validate no duplicate emails
-const emails = registrationData.players.map(p => p.email.toLowerCase());
-const duplicateEmails = emails.filter((email, index) => emails.indexOf(email) !== index);
-if (duplicateEmails.length > 0) {
-showError(`Duplicate emails found: ${[...new Set(duplicateEmails)].join(', ')}. Each player must have a unique email.`);
-return;
-}
-
-// Debug logging
-console.log('Submitting registration data:', registrationData);
-console.log('Tournament slug:', currentTournament.slug);
-console.log('API URL being used:', API_BASE_URL);
-
-// Submit registration
-const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament.slug}/register`, {
-method: 'POST',
-headers: {
-'Authorization': `Bearer ${sessionData.token}`,
-'Content-Type': 'application/json'
-},
-body: JSON.stringify(registrationData)
-});
-
-if (!response.ok) {
-console.error('Registration failed with status:', response.status);
-const errorData = await response.json().catch(() => ({ message: 'Unknown error occurred' }));
-console.error('Error response:', errorData);
-
-// Show detailed error information
-let errorMessage = errorData.detail || errorData.message || errorData.error || `Registration failed with status ${response.status}`;
-if (response.status === 500) {
-    errorMessage += '\n\nPossible causes:\n• Tournament does not exist\n• User not authenticated\n• Server database issues\n• Backend configuration problems';
-}
-console.error('Detailed error:', errorMessage);
-
-throw new Error(errorData.detail || errorData.message || errorData.error || `Registration failed with status ${response.status}`);
-}
-
-const result = await response.json();
-
-if (result.success) {
-    console.log('Team registered successfully:', result.data);
-    showRegistrationSuccess(result.data);
-} else {
-    throw new Error(result.error || 'Registration failed');
-}
-
-} catch (error) {
-console.error('Registration error:', error);
-let errorMessage = error.message;
-
-// Handle duplicate key errors specifically
-if (error.message.includes('E11000 duplicate key error')) {
-    if (error.message.includes('name_1_tournament_1')) {
-        errorMessage = 'A team with this name already exists in this tournament. Please choose a different team name.';
-    } else if (error.message.includes('email_1_tournament_1')) {
-        errorMessage = 'One of your players is already registered in this tournament with another team. Please check the email addresses.';
-    } else {
-        errorMessage = 'Registration failed due to duplicate data. Please check your team name and player emails.';
+// REPLACE your old submitRegistration function with this one
+async function submitRegistrationAndInitiatePayment(formData) {
+    const sessionData = getSessionData();
+    if (!sessionData || !sessionData.token) {
+        showError('Please login to register for tournaments.');
+        return;
     }
-} else if (error.message.includes('Team name already exists')) {
-    errorMessage = 'This team name is already taken. Please choose a different team name.';
-} else if (error.message.includes('already registered in a team')) {
-    errorMessage = 'You are already registered in a team for this tournament.';
-} else if (error.message.includes('already registered in this tournament')) {
-    errorMessage = 'One of your players is already registered in this tournament with another team.';
-} else if (error.message.includes('Tournament is full')) {
-    errorMessage = 'This tournament is full. Registration is no longer available.';
+
+    const btn = document.getElementById('register-btn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    btn.disabled = true;
+
+    try {
+        // --- 1. Collect Team Data (Your existing logic is great) ---
+        const teamData = {
+            teamName: formData.get('teamName'),
+            phone: formData.get('players[1][phoneNumber]'), // Captain's phone
+            players: []
+        };
+
+        const maxPlayers = currentTournament.format === 'kp' && currentTournament.kpSettings
+            ? currentTournament.kpSettings.maxPlayersPerTeam
+            : 4;
+
+        for (let i = 1; i <= maxPlayers; i++) {
+            const name = formData.get(`players[${i}][name]`);
+            const email = formData.get(`players[${i}][email]`);
+            const inGameId = formData.get(`players[${i}][inGameId]`);
+
+            if (!name || !email || !inGameId) {
+                throw new Error(`Please fill in all required fields for Player ${i}`);
+            }
+            teamData.players.push({ name, email, inGameId, role: i === 1 ? 'Captain' : 'Player' });
+        }
+
+        // --- 2. Check if Payment is Required ---
+        const entryFee = currentTournament.entryFee || 0;
+        if (entryFee <= 0) {
+            // If free entry, just register the team directly (This part is new)
+            await registerFreeTeam(teamData, sessionData.token);
+            return; // Stop here for free tournaments
+        }
+
+        // --- 3. Initiate Payment via Your Backend ---
+        const paymentPayload = {
+            tournamentSlug: currentTournament.slug,
+            teamData: teamData,
+            amount: entryFee
+        };
+
+        const response = await fetch(`${API_BASE_URL}/api/payments/initiate`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${sessionData.token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(paymentPayload)
+        });
+
+        const result = await response.json();
+        if (!response.ok || !result.success) {
+            throw new Error(result.detail || result.message || 'Failed to initiate payment.');
+        }
+
+        // --- 4. Redirect to PayU ---
+        redirectToPayU(result.payuData, result.payuUrl);
+
+    } catch (error) {
+        console.error('Registration/Payment error:', error);
+        showError(error.message);
+        btn.innerHTML = '<i class="fas fa-user-plus"></i> Register Team';
+        btn.disabled = false;
+    }
+}
+// ADD these two new functions to your script tag
+
+/**
+ * Dynamically creates and submits a form to redirect the user to the PayU payment page.
+ */
+function redirectToPayU(payuData, payuUrl) {
+    // Create a new form element
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = payuUrl; // The PayU URL from your backend
+
+    // Add all the required PayU fields as hidden inputs
+    for (const key in payuData) {
+        if (payuData.hasOwnProperty(key)) {
+            const hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = key;
+            hiddenField.value = payuData[key];
+            form.appendChild(hiddenField);
+        }
+    }
+
+    // Append the form to the body and submit it
+    document.body.appendChild(form);
+    form.submit();
 }
 
-showError(errorMessage);
-}
-}
+/**
+ * Handles registration for free tournaments by calling the original registration endpoint.
+ */
+async function registerFreeTeam(teamData, token) {
+    const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament.slug}/register`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(teamData)
+    });
 
+    const result = await response.json();
+    if (!response.ok || !result.success) {
+        throw new Error(result.detail || result.message || 'Free registration failed.');
+    }
+
+    console.log('Team registered successfully for free:', result.data);
+    showRegistrationSuccess(result.data);
+}
 // Load registration summary based on tournament
 function loadRegistrationSummary(tournament) {
     const container = document.querySelector('.registration-summary');
@@ -1352,10 +1348,12 @@ checkRegistrationStatus();
 // generatePlayerRows() is called from updateTournamentDisplay()
 
 // Form submission
+// CHANGE this line in your submit event listener
 document.getElementById('registration-form').addEventListener('submit', (e) => {
-e.preventDefault();
-const formData = new FormData(e.target);
-submitRegistration(formData);
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    // This is the only line that changes
+    submitRegistrationAndInitiatePayment(formData);
 });
 
 // Add player button

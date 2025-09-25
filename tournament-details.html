@@ -671,7 +671,17 @@
     font-size: 1.1rem;
   }
 }
+/* Add this new CSS class inside the <style> tag */
 
+.btn-success {
+  background: #10b981; /* A nice green color */
+  color: #fff;
+  cursor: default; /* Make it not look clickable */
+}
+.btn-success:hover {
+  transform: none; /* Disable the hover effect */
+  box-shadow: none;
+}
 /* Enhanced button and interactive elements */
 @media (min-width: 1600px) {
   .btn-primary {
@@ -1105,48 +1115,91 @@
         updateSchedule(tournament);
     }
     
+    // REPLACE the existing updateStatusAndLeaderboard function with this one
+
     function updateStatusAndLeaderboard(tournament) {
-      const status = tournament.status;
-      const primaryActionBtn = document.getElementById('primary-action');
-      const finalistsSection = document.getElementById('finalists-section'); // Changed variable name
+        const status = tournament.status;
+        const primaryActionBtn = document.getElementById('primary-action');
+        const finalistsSection = document.getElementById('finalists-section');
 
-      finalistsSection.style.display = 'none';
-      primaryActionBtn.style.display = 'flex';
-      primaryActionBtn.disabled = false;
+        finalistsSection.style.display = 'none';
+        primaryActionBtn.style.display = 'flex';
+        primaryActionBtn.disabled = false;
 
-      switch(status) {
-          case 'upcoming':
-              primaryActionBtn.innerHTML = '<i class="fas fa-clock"></i> Registration opens soon';
-              primaryActionBtn.disabled = true;
-              break;
-          case 'registration_open':
-              primaryActionBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
-              primaryActionBtn.onclick = () => {
-                  const sessionData = getSessionData();
-                  if (sessionData && sessionData.data.user) {
-                      window.location.href = `team-registration.html?slug=${currentTournament.slug}`;
-                  } else {
-                      redirectToAuth('register');
-                  }
-              };
-              break;
-          case 'registration_closed':
-              primaryActionBtn.innerHTML = '<i class="fas fa-lock"></i> Registration Closed';
-              primaryActionBtn.disabled = true;
-              break;
-          case 'ongoing':
-          case 'ended':
-              finalistsSection.style.display = 'block';
-              primaryActionBtn.innerHTML = '<i class="fas fa-lock"></i> Tournament Ended';
-              renderFinalists(tournament.finalists || []); // Changed to use finalists data
-              break;
-          default:
-              primaryActionBtn.innerHTML = '<i class="fas fa-info-circle"></i> View Details';
-              primaryActionBtn.disabled = true;
-              break;
-      }
+        // --- THIS IS THE NEW LOGIC TO CHECK REGISTRATION STATUS ---
+        checkUserRegistrationStatus(tournament.slug).then(isRegistered => {
+            if (isRegistered) {
+                primaryActionBtn.innerHTML = '<i class="fas fa-check-circle"></i> Registered';
+                primaryActionBtn.className = 'btn-primary btn-success'; // Add new class
+                primaryActionBtn.onclick = null; // Disable click
+                primaryActionBtn.disabled = true;
+                return; // Stop further processing if registered
+            }
+
+            // If not registered, continue with the original logic...
+            switch(status) {
+                case 'upcoming':
+                    primaryActionBtn.innerHTML = '<i class="fas fa-clock"></i> Registration opens soon';
+                    primaryActionBtn.disabled = true;
+                    break;
+                case 'registration_open':
+                    primaryActionBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
+                    primaryActionBtn.onclick = () => {
+                        const sessionData = getSessionData();
+                        if (sessionData && (sessionData.data.user || sessionData.user)) {
+                            window.location.href = `team-registration.html?slug=${currentTournament.slug}`;
+                        } else {
+                            redirectToAuth('register');
+                        }
+                    };
+                    break;
+                case 'registration_closed':
+                    primaryActionBtn.innerHTML = '<i class="fas fa-lock"></i> Registration Closed';
+                    primaryActionBtn.disabled = true;
+                    break;
+                case 'ongoing':
+                case 'ended':
+                    finalistsSection.style.display = 'block';
+                    primaryActionBtn.style.display = 'none'; // Hide button when tournament is over
+                    renderFinalists(tournament.finalists || []);
+                    break;
+                default:
+                    primaryActionBtn.innerHTML = '<i class="fas fa-info-circle"></i> View Details';
+                    primaryActionBtn.disabled = true;
+                    break;
+            }
+        });
     }
+    
 
+    // ADD this new function to your <script> tag
+
+    async function checkUserRegistrationStatus(slug) {
+        // First, check for the URL parameter for instant feedback
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('registration') === 'success') {
+            return true;
+        }
+
+        // Then, check via API for returning visitors
+        const sessionData = getSessionData();
+        if (!sessionData || !sessionData.token) {
+            return false; // Not logged in, so not registered
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/registration-status`, {
+                headers: { 'Authorization': `Bearer ${sessionData.token}` }
+            });
+            if (!response.ok) return false;
+
+            const result = await response.json();
+            return result.success && result.data.isRegistered;
+        } catch (error) {
+            console.error('Error checking registration status:', error);
+            return false;
+        }
+    }
 
     document.addEventListener('DOMContentLoaded', async () => {
       // --- PAGE-SPECIFIC LOGIC ---
