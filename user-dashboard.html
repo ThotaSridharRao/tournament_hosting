@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
     <link rel="stylesheet" href="navbar.css">
@@ -282,6 +282,8 @@
 
     <header class="site-header"></header>
 
+    <div id="mobile-nav" class="mobile-nav"></div>
+
     <main class="main-content" style="opacity: 0; transition: opacity 0.5s ease;">
         <div class="dashboard-header">
             <h1 class="dashboard-title">Welcome back, <span id="welcome-username" class="accent">User</span>!</h1>
@@ -316,16 +318,107 @@
                 <h2 class="section-title">Recommended For You</h2>
             </div>
             <div class="recommendations-grid" id="recommendations-grid">
-                 <!-- Recommendations will be populated by JS -->
                  <div class="empty-state">
                     <p>Loading recommendations...</p>
                 </div>
             </div>
         </div>
     </main>
-
-    <script src="navbar.js"></script>
+    
     <script>
+        // --- START: CONSOLIDATED SCRIPT (LOGIC FROM NAVBAR.JS + PAGE SCRIPT) ---
+
+        // --- PART 1: LOGIC FROM NAVBAR.JS ---
+
+        // Helper function to redirect to the authentication page
+        function redirectToAuth(tab = 'register') {
+            const returnUrl = encodeURIComponent(window.location.href);
+            window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
+        }
+
+        // Helper function to get user session data from localStorage
+        function getSessionData() {
+            const session = localStorage.getItem('nexus_session');
+            try {
+                return session ? JSON.parse(session) : null;
+            } catch (error) {
+                console.error("Error parsing session data:", error);
+                return null;
+            }
+        }
+
+        // Logout function to clear session and reload
+        function logout() {
+            localStorage.removeItem('nexus_session');
+            window.location.reload();
+        }
+
+        // Updates the desktop navbar based on login status
+        function checkUserAuthentication() {
+            const sessionData = getSessionData();
+            const guestMenu = document.getElementById('guest-menu');
+            const userMenu = document.getElementById('user-menu');
+            const user = sessionData?.user;
+
+            if (user) {
+                // User is logged in
+                const username = user.username || user.email.split('@')[0];
+                const modalUsername = document.getElementById('modal-username');
+                if (modalUsername) modalUsername.textContent = username;
+
+                if (guestMenu) guestMenu.style.display = 'none';
+                if (userMenu) userMenu.style.display = 'flex';
+            } else {
+                // User is a guest
+                if (guestMenu) guestMenu.style.display = 'flex';
+                if (userMenu) userMenu.style.display = 'none';
+            }
+        }
+
+        // Builds and populates the mobile navigation panel
+        function setupMobileNav() {
+            const sessionData = getSessionData();
+            const mobileNavContainer = document.getElementById('mobile-nav');
+            if (!mobileNavContainer) return; // Safety check
+
+            const user = sessionData?.user;
+            const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
+            const navLinksHTML = `
+                <div class="mobile-nav-links">
+                  <a href="index.html#tournaments">Tournaments</a>
+                  <a href="index.html#why-us">Why Us</a>
+                  <a href="index.html#faq">FAQ</a>
+                </div>`;
+            
+            let userSectionHTML = '';
+
+            if (user) {
+                // Logged-in user view for mobile
+                const username = user.username || user.email.split('@')[0];
+                userSectionHTML = `
+                  <div class="profile-header">
+                    <div class="profile-photo"><i class="fas fa-user"></i></div>
+                    <div class="profile-info"><div class="profile-username">${username}</div></div>
+                  </div>
+                  <div class="profile-actions">
+                    <a href="user-dashboard.html" class="profile-action"><i class="fas fa-user-cog"></i> <span>My Account</span></a>
+                    <button class="profile-action" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></button>
+                  </div>`;
+            } else {
+                // Guest view for mobile
+                userSectionHTML = `
+                  <div class="guest-view">
+                    <i class="fas fa-gamepad"></i>
+                    <p>Join the arena to compete, win prizes, and track your stats!</p>
+                    <button class="header-cta" style="width: 100%; margin-top: 1rem;" onclick="redirectToAuth()">Join Us Now</button>
+                  </div>`;
+            }
+
+            mobileNavContainer.innerHTML = `${closeButtonHTML}${userSectionHTML}${navLinksHTML}`;
+        }
+
+        // --- PART 2: LOGIC FROM USER-DASHBOARD.HTML ---
+
         const API_BASE_URL = 'https://t2-237c.onrender.com';
 
         function setLoading(isLoading) {
@@ -339,14 +432,8 @@
                 mainContent.style.opacity = 1;
             }
         }
-        
-        function getSessionData() {
-            const session = localStorage.getItem('nexus_session');
-            try { return session ? JSON.parse(session) : null; } 
-            catch (error) { return null; }
-        }
 
-        function checkAuth() {
+        function checkAuthAndRedirect() {
             const sessionData = getSessionData();
             if (!sessionData || !sessionData.user) {
                 window.location.href = 'auth.html';
@@ -356,7 +443,7 @@
         }
 
         async function loadUserData() {
-            const sessionData = checkAuth();
+            const sessionData = checkAuthAndRedirect();
             if (!sessionData) return;
 
             const user = sessionData.user;
@@ -382,7 +469,6 @@
                 const response = await fetch(`${API_BASE_URL}/api/users/me/tournaments`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-
                 if (!response.ok) throw new Error('Failed to fetch tournaments');
 
                 const result = await response.json();
@@ -396,8 +482,7 @@
                                     <div class="tournament-status ${statusClass}">${t.status.replace('_', ' ')}</div>
                                 </div>
                                 <div><a href="tournament-details.html?slug=${t.slug}" style="font-size: 0.9rem;">View</a></div>
-                            </div>
-                        `;
+                            </div>`;
                     }).join('');
                     document.getElementById('tournaments-joined').textContent = result.data.length;
                 } else {
@@ -417,12 +502,11 @@
         async function loadRecommendations() {
             const recommendationsContainer = document.getElementById('recommendations-grid');
             try {
-                 const response = await fetch(`${API_BASE_URL}/api/tournaments`);
+                const response = await fetch(`${API_BASE_URL}/api/tournaments`);
                 if (!response.ok) throw new Error('Network response was not ok');
                 const result = await response.json();
                 const allTournaments = result.data || [];
 
-                // Simple recommendation: show first 3 tournaments that are open for registration
                 const recommendations = allTournaments.filter(t => t.status === 'registration_open').slice(0, 3);
                 
                 if (recommendations.length > 0) {
@@ -435,8 +519,7 @@
                                     <h3>${t.title}</h3>
                                     <p>💰 ₹${(t.prizePool || 0).toLocaleString('en-IN')} Prize Pool</p>
                                 </div>
-                            </a>
-                        `;
+                            </a>`;
                     }).join('');
                 } else {
                     recommendationsContainer.innerHTML = `<div class="empty-state"><p>No open tournaments to recommend right now.</p></div>`;
@@ -447,32 +530,13 @@
             }
         }
 
+        // --- PART 3: INITIALIZATION LOGIC ---
 
-        function initializeNavbar() {
-        const hamburger = document.querySelector('.hamburger');
-        const mobileNav = document.getElementById('mobile-nav');
-
-        if (hamburger && mobileNav) {
-            // ... (rest of the hamburger and mobile nav click logic remains the same)
-        }
-        
-        // Set up the content of the navbars
-        checkUserAuthentication();
-        setupMobileNav();
-        }
-
-        // Ensure the navbar initializes on pages that include this script
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeNavbar);
-        } else {
-            initializeNavbar();
-        }
-        
         document.addEventListener('DOMContentLoaded', () => {
             setLoading(true);
             const header = document.querySelector('.site-header');
             
-            // Simplified Navbar Loading
+            // Step 1: Inject Navbar HTML
             header.innerHTML = `
                 <a href="index.html" class="brand">GamingNexus</a>
                 <div class="header-right">
@@ -504,14 +568,36 @@
                     <button class="hamburger" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
                 </div>`;
 
-            // Initialize navbar and dashboard data
-            initializeNavbar(); 
+            // Step 2: Now that HTML exists, add event listeners and populate navbar
+            const hamburger = document.querySelector('.hamburger');
+            const mobileNav = document.getElementById('mobile-nav');
+
+            if (hamburger && mobileNav) {
+                const closeMobileNav = () => {
+                    mobileNav.classList.remove('is-open');
+                    hamburger.setAttribute('aria-expanded', 'false');
+                };
+
+                hamburger.addEventListener('click', () => {
+                    const isOpen = mobileNav.classList.toggle('is-open');
+                    hamburger.setAttribute('aria-expanded', isOpen);
+                });
+
+                // Add event listener to the mobile nav container for closing
+                mobileNav.addEventListener('click', (event) => {
+                    if (event.target.closest('.mobile-nav-close')) {
+                        closeMobileNav();
+                    }
+                });
+            }
+
+            // Step 3: Populate the navbar with user/guest data
+            checkUserAuthentication();
+            setupMobileNav();
+            
+            // Step 4: Load the main dashboard content
             loadUserData();
         });
-
-        // --- INITIALIZATION FUNCTION ---
     </script>
 </body>
-
 </html>
-
