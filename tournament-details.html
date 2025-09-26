@@ -4,29 +4,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="page-title">Tournament Details | EArena</title>
+  <title id="page-title">Tournament Details | GamingNexus</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity=""
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
   <link rel="stylesheet" href="navbar.css">
 
   <style>
-    /* Theme variables */
+    /* Theme variables (Cyberpunk) */
     :root {
-      --bg: #0f0f10;
-      --panel: #1f1f20;
-      --muted: #9aa0a6;
-      --copy: #e6e6e6;
-      --accent: #ff4500; 
-      --accent-2: #e65c00; 
-      --glass: rgba(255, 255, 255, 0.05);
-      --radius: 16px;
+      --primary-color: #0AFAD9;      /* Electric Cyan */
+      --bg-dark: #0D0A1A;            /* Dark Matter Black */
+      --accent-secondary: #5D3FD3;   /* Deep Indigo */
+      --panel: #161329;              /* Dark Indigo Panel */
+      --text-primary: #F0F0F0;       /* Starlight White */
+      --text-secondary: rgba(240, 240, 240, 0.7);
+      --border-color: rgba(10, 250, 217, 0.2);
+      --ease: 0.3s ease;
+      --radius: 12px;
+      --radius-sm: 8px;
       --container: 1200px;
-      --ease: 180ms cubic-bezier(.2, .9, .2, 1);
     }
-
+    
     * {
       margin: 0;
       padding: 0;
@@ -40,9 +42,9 @@
     body {
       margin: 0;
       font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: linear-gradient(180deg, var(--bg), #070707 140%);
-      color: var(--copy);
-      line-height: 1.45;
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
     }
 
     a {
@@ -55,97 +57,116 @@
       margin: 0 auto;
     }
 
-    /* Main content */
     main {
-      margin-top: 60px;
-      min-height: calc(100vh - 60px);
+      padding-top: 80px; /* Adjust for fixed header */
+      min-height: 100vh;
+    }
+
+    /* Loader */
+    #loader-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-dark);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+    }
+    #loader-wrapper.hidden {
+        opacity: 0;
+        pointer-events: none;
     }
 
     /* Tournament Hero */
     .tournament-hero {
       position: relative;
-      height: 70vh;
-      min-height: 500px;
-      background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
-      display: flex;
-      align-items: flex-end; /* CHANGED from 'center' */
-      overflow: hidden;
+      height: 60vh;
+      min-height: 450px;
       background-size: cover;
       background-position: center;
-      background-repeat: no-repeat;
+      display: flex;
+      align-items: flex-end;
+      padding: 4rem 0;
+      color: var(--text-primary);
     }
 
     .tournament-hero::before {
       content: '';
       position: absolute;
       inset: 0;
-      /* --- MODIFIED LINE --- */
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 10%, rgba(0, 0, 0, 0.1) 60%);
+      background: linear-gradient(to top, var(--bg-dark) 15%, rgba(13, 10, 26, 0.4) 100%);
       z-index: 1;
-    }
-    /* --- ADD THIS NEW RULE --- */
-    .tournament-hero .container {
-        margin: 0; /* Overrides the horizontal centering */
-        padding: 0 0 4rem 4rem; /* Adds space from the bottom & left edges */
     }
 
     .hero-content {
       position: relative;
       z-index: 2;
       max-width: 800px;
-      padding-bottom: 4rem; /* ADDED */
-      text-align: left;     /* ADDED */
     }
 
     .tournament-title {
-      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
       font-weight: 800;
       margin-bottom: 1rem;
       line-height: 1.1;
     }
 
     .tournament-subtitle {
-      font-size: 1.2rem;
-      color: var(--muted);
+      font-size: 1.1rem;
+      color: var(--text-secondary);
       margin-bottom: 2rem;
-      line-height: 1.5;
     }
 
     .hero-actions {
       display: flex;
       gap: 1rem;
-      flex-wrap: wrap;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #fff;
-      padding: 1rem 2rem;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 1rem;
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      border: none;
-      cursor: pointer;
+        padding: 0.9rem 2rem;
+        border-radius: var(--radius-sm);
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--primary-color);
+        color: var(--bg-dark);
+        border: none;
     }
 
     .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(255, 69, 0, 0.3);
+        background: #50FDE5;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(10, 250, 217, 0.2);
+    }
+    
+    .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .btn-success {
+      background: #10b981;
+      color: #fff;
+      cursor: default;
+    }
+    .btn-success:hover {
+        transform: none;
+        box-shadow: none;
+        background: #10b981;
     }
 
-    /* --- ADD THESE NEW STYLES --- */
-    .brand {
-      font-weight: 700;
-      font-size: 1.5rem;
-    }
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    /* Tournament Details Section */
+    /* Details Section */
     .tournament-details {
       padding: 4rem 0;
     }
@@ -154,130 +175,135 @@
       display: grid;
       grid-template-columns: 2fr 1fr;
       gap: 3rem;
-      margin-top: 2rem;
     }
 
     .details-main, .info-card {
-      background: var(--glass);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: var(--panel);
+      border: 1px solid var(--border-color);
       border-radius: var(--radius);
-      padding: 2.5rem;
+      padding: 2rem;
     }
 
     .details-sidebar {
       display: flex;
       flex-direction: column;
-      gap: 2.5rem;
+      gap: 2rem;
     }
 
     .info-card h3 {
-      color: var(--accent);
+      color: var(--primary-color);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
     
     .info-list { list-style: none; }
-    .info-list li { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+    .info-list li { display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border-color); }
     .info-list li:last-child { border-bottom: none; }
-    .info-label { color: var(--muted); }
+    .info-label { color: var(--text-secondary); }
     .info-value { font-weight: 600; }
     
+    .details-main h2, .details-main h3 {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        font-size: 2rem; /* Increased size */
+    }
+
+    #tournament-overview p, 
+    #tournament-format-details p, 
+    #tournament-format-details ul li {
+        font-size: 1.05rem; /* Increased size */
+        line-height: 1.7;
+    }
+    
+    /* Section Headers */
+    .section-header { text-align: center; margin-bottom: 3rem; }
+    .section-title { font-size: clamp(2.2rem, 5vw, 3rem); font-weight: 800; margin-bottom: 1rem; }
+    .section-subtitle { font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+    
+    /* Leaderboard / Finalists */
+    .leaderboard-section {
+        padding: 4rem 0;
+    }
     .finalists-table {
-  background: var(--glass);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius);
-  padding: 2rem;
-  margin-top: 2rem;
-}
-
-.finalists-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-}
-
-.finalists-column {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.finalist-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.finalist-item:hover {
-  background: rgba(255, 69, 0, 0.1);
-}
-
-.finalist-rank {
-  font-weight: 700;
-  color: var(--accent);
-  min-width: 30px;
-}
-
-.finalist-team {
-  font-weight: 600;
-}
-
-.empty-finalists {
-  text-align: center;
-  padding: 3rem 2rem;
-  color: var(--muted);
-  grid-column: span 2;
-}
-
-@media (max-width: 768px) {
-  .finalists-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  .empty-finalists {
-    grid-column: span 1;
-  }
-}
+        background: var(--panel);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        padding: 2rem;
+    }
+    .finalists-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+    .finalist-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: var(--radius-sm);
+        transition: all 0.3s ease;
+    }
+    .finalist-item:hover {
+        background: rgba(10, 250, 217, 0.1);
+        transform: translateX(5px);
+    }
+    .finalist-rank {
+        font-weight: 700;
+        color: var(--primary-color);
+        min-width: 30px;
+    }
+    .empty-finalists {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-secondary);
+        grid-column: span 2;
+    }
 
     /* Schedule Section */
     .schedule-section { padding: 4rem 0; }
-    .schedule-timeline { margin-top: 2rem; }
-    .timeline-item { display: flex; gap: 2rem; padding: 1.5rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-    .timeline-item:last-child { border-bottom: none; }
-    .timeline-date { min-width: 120px; text-align: center; }
-    .timeline-day { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
-    .timeline-time { font-size: 0.85rem; color: var(--muted); }
-    .timeline-content { flex: 1; }
-    .timeline-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
-    .timeline-desc { color: var(--muted); }
-    
-    /* Section Headers */
-    .section-header { text-align: center; margin-bottom: 2rem; }
-    .section-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; margin-bottom: 1rem; }
-    .section-subtitle { font-size: 1.1rem; color: var(--muted); max-width: 600px; margin: 0 auto; }
+    .schedule-timeline { 
+        margin-top: 2rem;
+        border-left: 2px solid var(--border-color);
+        padding-left: 2rem;
+    }
+    .timeline-item { position: relative; padding: 1.5rem 0 1.5rem 2rem; }
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -33px; /* Adjust based on padding and border */
+        top: 2rem;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--panel);
+        border: 2px solid var(--primary-color);
+    }
+    .timeline-date { margin-bottom: 0.5rem; }
+    .timeline-day { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+    .timeline-time { font-size: 0.9rem; color: var(--primary-color); margin-left: 0.5rem;}
+    .timeline-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .timeline-desc { color: var(--text-secondary); }
 
-    /* NEW: FAQ Section */
-    .faq-section {
-        padding: 4rem 0;
-    }
-    .faq-grid {
-        max-width: 800px;
-        margin: 0 auto;
-        text-align: left;
-    }
+    /* FAQ Section */
+    .faq-section { padding: 4rem 0; }
+    .faq-grid { max-width: 800px; margin: 3rem auto 0; text-align: left; }
     .faq-item {
-        background: var(--glass);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: var(--radius);
+        background: var(--panel);
+        border-radius: 8px;
         margin-bottom: 1rem;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+    }
+    .faq-item:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-3px);
     }
     .faq-question {
         width: 100%;
@@ -288,14 +314,17 @@
         justify-content: space-between;
         align-items: center;
         cursor: pointer;
-        color: var(--copy);
+        color: var(--text-primary);
         font-size: 1.1rem;
         font-weight: 600;
         text-align: left;
     }
+    .faq-question:hover span {
+        color: var(--primary-color);
+    }
     .faq-question i {
         transition: transform 0.3s ease;
-        color: var(--accent);
+        color: var(--primary-color);
     }
     .faq-answer {
         max-height: 0;
@@ -303,422 +332,121 @@
         transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
     }
     .faq-answer p {
-        color: var(--muted);
+        color: var(--text-secondary);
         padding: 0 1.5rem 1.5rem 1.5rem;
         margin: 0;
-        line-height: 1.7;
     }
-    .faq-item.active .faq-answer {
-        max-height: 200px; /* Adjust as needed */
-    }
-    .faq-item.active .faq-question i {
-        transform: rotate(45deg);
-    }
+    .faq-item.active .faq-answer { max-height: 200px; }
+    .faq-item.active .faq-question i { transform: rotate(45deg); }
 
-    /* --- ADD STYLES FOR HAMBURGER & MOBILE NAV PANEL --- */
-    .hamburger {
-      display: none; /* Hidden by default */
-      background: none;
-      border: none;
-      color: var(--copy);
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-
-    .mobile-nav {
-      position: fixed;
-      top: 0;
-      right: -100%; /* Start off-screen */
-      width: 300px;
-      height: 100%;
-      background: var(--panel);
-      z-index: 2000;
-      transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-      box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-      padding-top: 60px; /* Space for the header */
-      display: flex;
-      flex-direction: column;
-    }
-
-    .mobile-nav.is-open {
-      right: 0; /* Slide in */
-    }
-
-    .mobile-nav .profile-header {
-      padding: 1.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    
-    .mobile-nav .profile-photo {
-      width: 50px;
-      height: 50px;
-      background: var(--accent);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      color: #fff;
-    }
-    
-    .mobile-nav .profile-username {
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-    
-    .mobile-nav .profile-actions {
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    
-    .mobile-nav .profile-action {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--muted);
-      transition: all 0.2s ease;
-      background: none;
-      border: none;
-      cursor: pointer;
-      width: 100%;
-      text-align: left;
-    }
-    .mobile-nav .profile-action:hover {
-      background: var(--glass);
-      color: var(--copy);
-    }
-    
-    .mobile-nav .guest-view {
-      padding: 2rem;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-    
-    .mobile-nav .guest-view i {
-      font-size: 3rem;
-      color: var(--accent);
-    }
-    
-    .mobile-nav .guest-view p {
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-
-    /* Footer Styles */
+    /* Footer */
     footer.site-footer {
-      padding: 4rem 2rem 2rem;
-      background: rgba(10, 10, 10, 0.5);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: var(--panel);
+      padding: 5rem 2rem 2rem;
+      text-align: center;
+      border-top: 1px solid var(--border-color);
     }
     .footer-grid {
-      max-width: 1200px;
+      max-width: var(--container);
       margin: 0 auto 3rem auto;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: 2fr 1fr 1fr 1fr;
       gap: 2.5rem;
       text-align: left;
     }
     .footer-column h4 {
-      color: var(--copy);
+      color: var(--text-primary);
       margin-bottom: 1.5rem;
       font-size: 1.1rem;
-      font-weight: 600;
+      font-weight: 700;
     }
-    .footer-column ul {
-      list-style: none;
-      padding: 0;
-    }
-    .footer-column ul a, .footer-column p {
-      color: var(--muted);
+    .footer-column ul a {
+      color: var(--text-secondary);
       text-decoration: none;
-      transition: color 0.3s ease;
+      transition: all 0.3s ease;
       display: block;
       margin-bottom: 0.75rem;
-      font-size: 0.95rem;
     }
-    .footer-column ul a:hover {
-        color: var(--accent);
-    }
-    .footer-brand .brand {
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-        font-weight: 700;
-        color: var(--copy);
-    }
-    .footer-brand p {
-      margin-bottom: 1.5rem;
-      line-height: 1.7;
-    }
-    .social-links {
-      display: flex;
-      gap: 1.5rem;
-      margin-top: 1rem;
-    }
-    .social-links a {
-      color: var(--muted);
-      font-size: 1.2rem;
-      transition: all 0.3s ease;
-    }
-    .social-links a:hover {
-      color: var(--accent);
-      transform: translateY(-2px);
-    }
-    .footer-bottom {
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding-top: 2rem;
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
+    .footer-column ul a:hover { color: var(--primary-color); }
+    .footer-brand .brand { font-size: 1.5rem; margin-bottom: 1rem; }
+    .footer-brand p { margin-bottom: 1.5rem; line-height: 1.7; color: var(--text-secondary); }
+    .social-links { display: flex; gap: 1.5rem; margin-top: 1rem; }
+    .social-links a { color: var(--text-secondary); font-size: 1.2rem; transition: all 0.3s ease; }
+    .social-links a:hover { color: var(--primary-color); transform: translateY(-2px); }
+    .footer-bottom { border-top: 1px solid var(--border-color); padding-top: 2rem; opacity: 0.7; font-size: 0.9rem; }
     
-    /* Profile Dropdown Styles */
-    .profile-dropdown { position: relative; display: flex; align-items: center; }
-    .profile-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; color: var(--copy); cursor: pointer; border-radius: 50%; transition: all 0.3s ease; font-size: 1.5rem; }
-    .profile-icon:hover { color: var(--accent); background: rgba(255, 69, 0, 0.1); transform: scale(1.1); }
-    .profile-modal { position: absolute; top: 100%; right: 0; background: var(--panel); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; min-width: 280px; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s ease; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); z-index: 1000; margin-top: 10px; }
-    .profile-dropdown:hover .profile-modal { opacity: 1; visibility: visible; transform: translateY(0); }
-    .profile-header { display: flex; align-items: center; gap: 1rem; padding: 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-    .profile-photo { width: 50px; height: 50px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-size: 1.5rem; flex-shrink: 0; }
-    .profile-username { font-weight: 700; font-size: 1.1rem; }
-    .profile-actions { padding: 0.5rem; }
-    .profile-action { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; text-decoration: none; border-radius: 8px; transition: all 0.3s ease; font-weight: 600; width: 100%; border: none; background: none; cursor: pointer; font-family: inherit; }
-    .profile-action:hover { background: rgba(255, 255, 255, 0.05); color: var(--accent); transform: translateX(4px); }
-    .logout-action:hover { background: rgba(255, 0, 0, 0.1); color: #ff6b6b; }
-    
-
+    /* --- RESPONSIVENESS --- */
+    @media (max-width: 920px) {
+        .details-grid { grid-template-columns: 1fr; }
+        .footer-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+    }
     @media (max-width: 768px) {
-      .details-grid { grid-template-columns: 1fr; }
-      .hero-actions { flex-direction: column; }
-      .btn-primary { text-align: center; }
-      .timeline-item { flex-direction: column; gap: 1rem; }
-      .timeline-date { text-align: left; }
-
-      /* --- ADD THESE STYLES FOR MOBILE NAV --- */
+        .hero-actions { flex-direction: column; }
+        .btn-primary { width: 100%; text-align: center; justify-content: center; }
+        .finalists-grid { grid-template-columns: 1fr; }
+    }
+    
+    @media (min-width: 769px) { /* Apply only on desktop */
       .nav-actions {
-        display: none; /* Hide desktop nav items */
-      }
-      .hamburger {
-        display: inline-flex; /* Show hamburger button */
+          padding-left: 1.5rem;
+          margin-left: 1.5rem;
+          border-left: 1px solid var(--border-color);
       }
     }
-    /* Large Desktop Screens (1600px and up) */
-@media (min-width: 1600px) {
-  :root {
-    --container: 1400px; /* Increase max container width */
-  }
-  
-  /* Tournament Hero Adjustments */
-  .tournament-hero {
-    height: 80vh; /* Increase hero height */
-    min-height: 600px;
-  }
-  
-  .tournament-hero .container {
-    padding: 0 0 6rem 6rem; /* More breathing room */
-  }
-  
-  .tournament-title {
-    font-size: clamp(3.5rem, 6vw, 5rem); /* Larger title */
-  }
-  
-  .tournament-subtitle {
-    font-size: 1.4rem; /* Larger subtitle */
-    max-width: 900px;
-  }
-  
-  /* Details Grid - Make it 3 columns */
-  .details-grid {
-    grid-template-columns: 3fr 1fr 1fr; /* Main content + 2 sidebars */
-    gap: 4rem;
-  }
-  
-  .details-main, .info-card {
-    padding: 3.5rem; /* More padding */
-  }
-  
-  /* Typography scaling */
-  .section-title {
-    font-size: clamp(2.5rem, 5vw, 4rem);
-  }
-  
-  .section-subtitle {
-    font-size: 1.3rem;
-    max-width: 800px;
-  }
-}
 
-/* Ultra-wide screens (1920px and up) */
-@media (min-width: 1920px) {
-  :root {
-    --container: 1600px; /* Even larger container */
-  }
-  
-  /* Section spacing */
-  .tournament-details,
-  .schedule-section,
-  .faq-section {
-    padding: 6rem 0; /* More vertical spacing */
-  }
-  
-  /* Finalists section improvements */
-  .finalists-grid {
-    grid-template-columns: 1fr 1fr 1fr 1fr; /* 4 columns for ultra-wide */
-    gap: 2rem;
-  }
-  
-  .finalists-column {
-    gap: 1.5rem;
-  }
-  
-  .finalist-item {
-    padding: 1.5rem;
-  }
-  
-  /* FAQ Section - 2 column layout */
-  .faq-grid {
-    max-width: 1200px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-  }
-  
-  /* Timeline improvements */
-  .timeline-item {
-    padding: 2rem 0;
-  }
-  
-  .timeline-date {
-    min-width: 150px;
-  }
-  
-  .timeline-day {
-    font-size: 1.3rem;
-  }
-  
-  .timeline-title {
-    font-size: 1.3rem;
-  }
-}
+    @media (min-width: 1600px) {
+      :root { --container: 1400px; }
+      .tournament-hero { height: 70vh; min-height: 600px; }
+      .tournament-title { font-size: clamp(3.5rem, 6vw, 4.5rem); }
+      .tournament-subtitle { font-size: 1.3rem; }
+      .details-grid { gap: 4rem; }
+      .details-main, .info-card { padding: 3rem; }
+      .section-title { font-size: clamp(2.5rem, 5vw, 3.5rem); }
+    }
 
-/* 4K and beyond (2560px+) */
-@media (min-width: 2560px) {
-  :root {
-    --container: 2000px;
-  }
-  
-  .tournament-hero {
-    height: 85vh;
-    min-height: 800px;
-  }
-  
-  .details-grid {
-    grid-template-columns: 4fr 1fr 1fr; /* Give even more space to main content */
-    gap: 5rem;
-  }
-  
-  .details-main, .info-card {
-    padding: 4rem;
-  }
-  
-  /* Font scaling for very large screens */
-  .tournament-title {
-    font-size: clamp(4rem, 7vw, 6rem);
-  }
-  
-  .tournament-subtitle {
-    font-size: 1.6rem;
-  }
-  
-  .section-title {
-    font-size: clamp(3rem, 6vw, 5rem);
-  }
-}
-/* Improved finalists layout for larger screens */
-@media (min-width: 1600px) {
-  .empty-finalists {
-    padding: 6rem 4rem;
-    grid-column: span 4; /* Span all columns on ultra-wide */
-  }
-  
-  .empty-finalists i {
-    font-size: 4rem;
-  }
-}
+    @media (min-width: 1920px) {
+      :root { --container: 1600px; }
+      .tournament-details, .leaderboard-section, .schedule-section, .faq-section { padding: 5rem 0; }
+      .finalists-grid { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+      .faq-grid { max-width: 1200px; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
 
-/* Better prize distribution display */
-@media (min-width: 1600px) {
-  .info-list li {
-    padding: 1rem 0;
-  }
-  
-  .info-label, .info-value {
-    font-size: 1.1rem;
-  }
-}
-/* Add this new CSS class inside the <style> tag */
+      .details-main h2, .details-main h3 {
+        font-size: 1.6rem;
+      }
+      #tournament-overview p,
+      #tournament-format-details p,
+      #tournament-format-details ul li {
+          font-size: 1.15rem;
+      }
+    }
 
-.btn-success {
-  background: #10b981; /* A nice green color */
-  color: #fff;
-  cursor: default; /* Make it not look clickable */
-}
-.btn-success:hover {
-  transform: none; /* Disable the hover effect */
-  box-shadow: none;
-}
-/* Enhanced button and interactive elements */
-@media (min-width: 1600px) {
-  .btn-primary {
-    padding: 1.2rem 2.5rem;
-    font-size: 1.1rem;
-  }
-  
-  .faq-question {
-    padding: 2rem;
-    font-size: 1.2rem;
-  }
-  
-  .faq-answer p {
-    padding: 0 2rem 2rem 2rem;
-    font-size: 1.1rem;
-  }
-}
-@media (min-width: 1920px) {
-  header.site-header {
-    height: 90px; /* Even taller header */
-    padding: 0 4rem; /* More horizontal padding */
-  }
-  
-  .brand {
-    font-size: 2rem; /* Larger brand text */
-  }
-}
+    @media (min-width: 2560px) {
+      :root { --container: 1800px; }
+      .tournament-hero { height: 75vh; min-height: 800px; }
+      .tournament-title { font-size: clamp(4rem, 7vw, 5.5rem); }
+      .finalists-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
   </style>
 </head>
 
 <body>
+  <div id="loader-wrapper">
+    <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+  </div>
+  
   <header class="site-header">
     <a href="index.html" class="brand">
-      EArena
+      GamingNexus
     </a>
-
     <div class="header-right">
+      <nav class="primary" role="navigation" aria-label="Primary">
+          <div class="nav-links" role="menubar">
+              <a href="index.html#tournaments" role="menuitem">Tournaments</a>
+              <a href="index.html#why-us" role="menuitem">Why Us</a>
+              <a href="index.html#faq" role="menuitem">FAQ</a>
+          </div>
+      </nav>
       <div class="nav-actions">
         <div id="guest-menu">
           <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
@@ -749,15 +477,13 @@
           </div>
         </div>
       </div>
-
       <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
-        <i class="fas fa-bars"></i>
+          <i class="fas fa-bars"></i>
       </button>
     </div>
   </header>
-
-  <div id="mobile-nav" class="mobile-nav">
-    </div>
+  
+  <div id="mobile-nav" class="mobile-nav"></div>
 
   <main>
     <section class="tournament-hero">
@@ -765,12 +491,11 @@
         <div class="hero-content">
           <h1 class="tournament-title" id="tournament-title">Loading Tournament...</h1>
           <p class="tournament-subtitle" id="tournament-subtitle">
-            Loading tournament details...
+            Please wait while we fetch the details of this epic showdown.
           </p>
           <div class="hero-actions" id="hero-actions">
-            <button class="btn-primary" id="primary-action">
-              <i class="fas fa-user-plus"></i>
-              Register Now
+            <button class="btn-primary" id="primary-action" disabled>
+              Loading...
             </button>
           </div>
         </div>
@@ -781,19 +506,19 @@
       <div class="container">
         <div class="details-grid">
           <div class="details-main">
-            <h2 style="color: var(--accent); margin-bottom: 1.5rem;">Tournament Overview</h2>
+            <h2>Tournament Overview</h2>
             <div id="tournament-overview">
-              <p style="color: var(--muted);">Loading details...</p>
+              <p style="color: var(--text-secondary);">Loading details...</p>
             </div>
-            <h3 style="color: var(--accent); margin: 2rem 0 1rem 0;">Tournament Format</h3>
+            <h3 style="margin-top: 2rem;">Tournament Format</h3>
             <div id="tournament-format-details">
-              <p style="color: var(--muted);">Loading format...</p>
+              <p style="color: var(--text-secondary);">Loading format...</p>
             </div>
           </div>
 
           <div class="details-sidebar">
             <div class="info-card">
-              <h3><i class="fas fa-info-circle"></i> Tournament Info</h3>
+              <h3><i class="fas fa-info-circle"></i> Info</h3>
               <ul class="info-list">
                 <li><span class="info-label">Game</span><span class="info-value" id="game-name">--</span></li>
                 <li><span class="info-label">Format</span><span class="info-value" id="tournament-format">--</span></li>
@@ -802,17 +527,19 @@
               </ul>
             </div>
             <div class="info-card">
-              <h3><i class="fas fa-calendar"></i> Schedule</h3>
+              <h3><i class="fas fa-calendar-alt"></i> Schedule</h3>
               <ul class="info-list">
                 <li><span class="info-label">Reg. Opens</span><span class="info-value" id="reg-start-date">--</span></li>
                 <li><span class="info-label">Reg. Closes</span><span class="info-value" id="reg-end-date">--</span></li>
-                <li><span class="info-label">Tournament Start</span><span class="info-value" id="tournament-start-date">--</span></li>
-                <li><span class="info-label">Tournament End</span><span class="info-value" id="tournament-end-date">--</span></li>
+                <li><span class="info-label">Starts</span><span class="info-value" id="tournament-start-date">--</span></li>
+                <li><span class="info-label">Ends</span><span class="info-value" id="tournament-end-date">--</span></li>
               </ul>
             </div>
             <div class="info-card">
               <h3><i class="fas fa-trophy"></i> Prizes</h3>
-              <ul class="info-list" id="prize-list"></ul>
+              <ul class="info-list" id="prize-list">
+                <li><span class="info-label">Total Pool</span><span class="info-value">Loading...</span></li>
+              </ul>
             </div>
           </div>
         </div>
@@ -822,8 +549,8 @@
     <section class="leaderboard-section" id="finalists-section" style="display: none;">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Finalists</h2>
-          <p class="section-subtitle">Top 16 teams competing in the final rounds.</p>
+          <h2 class="section-title">Final Standings</h2>
+          <p class="section-subtitle">The top teams who battled it out for glory.</p>
         </div>
         <div class="finalists-table" id="finalists-table">
           <div id="finalists-content">
@@ -836,14 +563,15 @@
     <section class="schedule-section">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Tournament Schedule</h2>
-          <p class="section-subtitle">Complete timeline of matches and events.</p>
+          <h2 class="section-title">Event Schedule</h2>
+          <p class="section-subtitle">Follow the complete timeline of events.</p>
         </div>
-        <div class="schedule-timeline" id="schedule-timeline"></div>
+        <div class="schedule-timeline" id="schedule-timeline">
+            <p style="text-align:center; color: var(--text-secondary);">Loading schedule...</p>
+        </div>
       </div>
     </section>
 
-    <!-- NEW: FAQ Section -->
     <section class="faq-section">
         <div class="container">
             <div class="section-header">
@@ -856,7 +584,7 @@
                         <i class="fas fa-plus"></i>
                     </button>
                     <div class="faq-answer">
-                        <p>All you need is an account and the game you want to compete in! Check the specific tournament rules for any additional requirements, but generally, it's that simple to start your competitive journey.</p>
+                        <p>All you need is a GamingNexus account and the game you want to compete in! Check the specific tournament rules for any additional requirements, but generally, it's that simple to start your competitive journey.</p>
                     </div>
                 </div>
                 <div class="faq-item">
@@ -895,7 +623,7 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-column footer-brand">
-          <a href="index.html" class="brand">EArena</a>
+          <a href="index.html" class="brand">GamingNexus</a>
           <p>The ultimate destination for competitive gaming.</p>
            <div class="social-links">
               <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
@@ -907,10 +635,9 @@
         <div class="footer-column">
           <h4>Tournaments</h4>
           <ul>
-            <li><a href="#">Browse All</a></li>
-            <li><a href="#">Live Matches</a></li>
-            <li><a href="#">Upcoming</a></li>
-            <li><a href="#">Past Results</a></li>
+            <li><a href="index.html#tournaments">Browse All</a></li>
+            <li><a href="index.html#tournaments">Live Matches</a></li>
+            <li><a href="index.html#tournaments">Upcoming</a></li>
           </ul>
         </div>
         <div class="footer-column">
@@ -930,7 +657,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 EArena. All rights reserved.</p>
+        <p>&copy; 2025 GamingNexus. All rights reserved.</p>
       </div>
     </div>
   </footer>
@@ -938,6 +665,15 @@
   <script>
     const API_BASE_URL = 'https://t2-237c.onrender.com';
     let currentTournament = null;
+
+    function setLoading(isLoading) {
+        const loader = document.getElementById('loader-wrapper');
+        if (isLoading) {
+            loader.classList.remove('hidden');
+        } else {
+            loader.classList.add('hidden');
+        }
+    }
 
     async function getTournamentData(tournamentSlug) {
       try {
@@ -960,7 +696,6 @@
         if (!container) return;
         let allEvents = [];
 
-        // Helper to safely create a Date object
         const parseDate = (dateStr) => {
             const date = new Date(dateStr);
             return isNaN(date) ? null : date;
@@ -977,8 +712,7 @@
 
         if (tournament.scheduleEvents) {
             tournament.scheduleEvents.forEach(event => {
-                // Combine date and time correctly for the Date constructor
-                const eventDate = parseDate(`${event.date}T${event.time}Z`); // Append 'Z' for UTC
+                const eventDate = parseDate(`${event.date}T${event.time}Z`);
                 addEvent(eventDate, event.title, event.description);
             });
         }
@@ -992,7 +726,7 @@
         allEvents.sort((a, b) => a.date - b.date);
 
         if (allEvents.length <= 4 && !tournament.scheduleEvents && !(tournament.kpSettings && tournament.kpSettings.matchSchedule)) {
-             container.innerHTML = `<div class="empty-schedule" style="text-align:center; padding: 2rem;"><p>No detailed match schedule has been posted yet.</p></div>`;
+             container.innerHTML = `<div style="text-align:center; padding: 2rem; color: var(--text-secondary);"><p>No detailed match schedule has been posted yet.</p></div>`;
              return;
         }
         
@@ -1001,7 +735,10 @@
             const time = event.date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'UTC' });
             return `
                 <div class="timeline-item">
-                    <div class="timeline-date"><div class="timeline-day">${day}</div><div class="timeline-time">${time}</div></div>
+                    <div class="timeline-date">
+                        <span class="timeline-day">${day}</span>
+                        <span class="timeline-time">${time}</span>
+                    </div>
                     <div class="timeline-content">
                         <h3 class="timeline-title">${event.title}</h3>
                         <p class="timeline-desc">${event.description || ''}</p>
@@ -1017,15 +754,15 @@
       if (!finalists || finalists.length === 0) {
           finalistsContent.innerHTML = `
               <div class="empty-finalists">
-                  <i class="fas fa-trophy" style="font-size: 3rem; color: var(--accent); margin-bottom: 1rem;"></i>
-                  <p>The list of the top 16 will appear here.</p>
+                  <i class="fas fa-trophy" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+                  <p>Final standings will appear here once the tournament concludes.</p>
               </div>
           `;
           return;
       }
 
-      const leftColumn = finalists.slice(0, 8);
-      const rightColumn = finalists.slice(8, 16);
+      const leftColumn = finalists.slice(0, Math.ceil(finalists.length / 2));
+      const rightColumn = finalists.slice(Math.ceil(finalists.length / 2));
 
       finalistsContent.innerHTML = `
           <div class="finalists-grid">
@@ -1040,51 +777,38 @@
               <div class="finalists-column">
                   ${rightColumn.map((team, index) => `
                       <div class="finalist-item">
-                          <div class="finalist-rank">${index + 9}.</div>
-                          <div class="finalist-team">${team.teamName || team.name || `Team ${index + 9}`}</div>
+                          <div class="finalist-rank">${index + 1 + leftColumn.length}.</div>
+                          <div class="finalist-team">${team.teamName || team.name || `Team ${index + 1 + leftColumn.length}`}</div>
                       </div>
                   `).join('')}
               </div>
           </div>
       `;
-  }
+    }
 
     function updateUI(tournament) {
         if (!tournament) return;
 
-       // REPLACE WITH THIS SECTION
-        // --- NEW, SMARTER IMAGE HANDLING ---
         const heroSection = document.querySelector('.tournament-hero');
         if (tournament.posterImage) {
-            let imageUrl;
-            if (tournament.posterImage.startsWith('http')) {
-                // It's already a full URL (from Cloudinary), use it directly.
-                imageUrl = tournament.posterImage;
-            } else {
-                // It's a relative path. Use the URL constructor for a safe join.
-                imageUrl = new URL(tournament.posterImage, API_BASE_URL).href;
-            }
+            let imageUrl = tournament.posterImage.startsWith('http') ? tournament.posterImage : new URL(tournament.posterImage, API_BASE_URL).href;
             heroSection.style.backgroundImage = `url('${imageUrl}')`;
         }
-        // --- END OF NEW LOGIC ---
 
-        document.getElementById('page-title').textContent = `${tournament.title} | EArena`;
+        document.getElementById('page-title').textContent = `${tournament.title} | GamingNexus`;
         document.getElementById('tournament-title').textContent = tournament.title;
         document.getElementById('tournament-subtitle').textContent = tournament.description || 'Join this exciting tournament!';
         
-        const overviewContainer = document.getElementById('tournament-overview');
-        overviewContainer.innerHTML = `<p>${tournament.description || "No description available."}</p>`;
+        document.getElementById('tournament-overview').innerHTML = `<p>${tournament.description || "No description available."}</p>`;
         
         const formatContainer = document.getElementById('tournament-format-details');
         let formatHTML = '';
         if (tournament.format === 'kp' && tournament.kpSettings) {
-            const settings = tournament.kpSettings;
+            const s = tournament.kpSettings;
             formatHTML = `
-                <p style="margin-bottom: 1rem; line-height: 1.7;">This tournament follows the <strong>Kill Points (KP)</strong> format.</p>
-                <ul style="list-style-type: none; padding-left: 0; display: flex; flex-direction: column; gap: 1rem;">
-                    <li style="display: flex; align-items: start; gap: 0.75rem;"><i class="fas fa-sitemap" style="color: var(--accent); margin-top: 5px;"></i><div><strong>Structure:</strong> ${settings.numberOfGroups || 'multiple'} qualifier groups.</div></li>
-                    <li style="display: flex; align-items: start; gap: 0.75rem;"><i class="fas fa-users" style="color: var(--accent); margin-top: 5px;"></i><div><strong>Groups:</strong> ${settings.groupSize || 'several'} teams per group.</div></li>
-                    <li style="display: flex; align-items: start; gap: 0.75rem;"><i class="fas fa-trophy" style="color: var(--accent); margin-top: 5px;"></i><div><strong>Advancement:</strong> Top <strong>${settings.qualifiersPerGroup || 'few'} teams</strong> advance.</div></li>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem;">
+                    <li><strong>Structure:</strong> ${s.numberOfGroups || 'Multiple'} qualifier groups of ${s.groupSize || 'several'} teams each.</li>
+                    <li><strong>Advancement:</strong> Top ${s.qualifiersPerGroup || 'few'} teams from each group advance based on Kill Points.</li>
                 </ul>
             `;
         } else {
@@ -1093,11 +817,11 @@
         formatContainer.innerHTML = formatHTML;
 
         document.getElementById('game-name').textContent = tournament.game || 'TBD';
-        document.getElementById('tournament-format').textContent = tournament.format || 'TBD';
-        document.getElementById('entry-fee').textContent = tournament.entryFee ? `₹${tournament.entryFee}` : 'Free';
+        document.getElementById('tournament-format').textContent = tournament.format ? tournament.format.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'TBD';
+        document.getElementById('entry-fee').textContent = tournament.entryFee ? `₹${tournament.entryFee.toLocaleString('en-IN')}` : 'Free';
         document.getElementById('max-teams').textContent = tournament.maxTeams || 'Unlimited';
 
-        const formatDate = (dateString) => new Date(dateString).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+        const formatDate = (dateString) => new Date(dateString).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
         document.getElementById('reg-start-date').textContent = formatDate(tournament.registrationStart);
         document.getElementById('reg-end-date').textContent = formatDate(tournament.registrationEnd);
         document.getElementById('tournament-start-date').textContent = formatDate(tournament.tournamentStart);
@@ -1105,51 +829,45 @@
 
         const prizeList = document.getElementById('prize-list');
         prizeList.innerHTML = '';
-        if (tournament.prizeDistribution) {
+        if (tournament.prizeDistribution && Object.keys(tournament.prizeDistribution).length > 0) {
             Object.entries(tournament.prizeDistribution).forEach(([place, amount]) => {
                 prizeList.innerHTML += `<li><span class="info-label">${place.charAt(0).toUpperCase() + place.slice(1)} Place</span><span class="info-value">₹${amount.toLocaleString('en-IN')}</span></li>`;
             });
+        } else {
+             prizeList.innerHTML = `<li><span class="info-label">Total Pool</span><span class="info-value">₹${(tournament.prizePool || 0).toLocaleString('en-IN')}</span></li>`;
         }
         
         updateStatusAndLeaderboard(tournament);
         updateSchedule(tournament);
     }
     
-    // REPLACE the existing updateStatusAndLeaderboard function with this one
-
     function updateStatusAndLeaderboard(tournament) {
         const status = tournament.status;
         const primaryActionBtn = document.getElementById('primary-action');
         const finalistsSection = document.getElementById('finalists-section');
 
         finalistsSection.style.display = 'none';
-        primaryActionBtn.style.display = 'flex';
+        primaryActionBtn.style.display = 'inline-flex';
         primaryActionBtn.disabled = false;
 
         checkUserRegistrationStatus(tournament.slug).then(isRegistered => {
             if (isRegistered) {
                 primaryActionBtn.innerHTML = '<i class="fas fa-check-circle"></i> Registered';
                 primaryActionBtn.className = 'btn-primary btn-success';
-                primaryActionBtn.onclick = null;
                 primaryActionBtn.disabled = true;
                 return;
             }
 
-            // If not registered, continue with the original logic...
             switch(status) {
                 case 'upcoming':
-                    primaryActionBtn.innerHTML = '<i class="fas fa-clock"></i> Registration opens soon';
+                    primaryActionBtn.innerHTML = '<i class="fas fa-clock"></i> Registration Opens Soon';
                     primaryActionBtn.disabled = true;
                     break;
                 case 'registration_open':
                     primaryActionBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
                     primaryActionBtn.onclick = () => {
                         const sessionData = getSessionData();
-
-                        // --- THIS IS THE CORRECTED PART ---
-                        // It now safely checks for the user in both possible session structures
                         const user = sessionData?.data?.user || sessionData?.user;
-
                         if (user) {
                             window.location.href = `team-registration.html?slug=${currentTournament.slug}`;
                         } else {
@@ -1164,39 +882,28 @@
                 case 'ongoing':
                 case 'ended':
                     finalistsSection.style.display = 'block';
-                    primaryActionBtn.style.display = 'none'; // Hide button when tournament is over
+                    primaryActionBtn.style.display = 'none';
                     renderFinalists(tournament.finalists || []);
                     break;
                 default:
-                    primaryActionBtn.innerHTML = '<i class="fas fa-info-circle"></i> View Details';
-                    primaryActionBtn.disabled = true;
+                    primaryActionBtn.style.display = 'none';
                     break;
             }
         });
     }
-    
-
-    // ADD this new function to your <script> tag
 
     async function checkUserRegistrationStatus(slug) {
-        // First, check for the URL parameter for instant feedback
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('registration') === 'success') {
-            return true;
-        }
+        if (urlParams.get('registration') === 'success') return true;
 
-        // Then, check via API for returning visitors
         const sessionData = getSessionData();
-        if (!sessionData || !sessionData.token) {
-            return false; // Not logged in, so not registered
-        }
+        if (!sessionData || !sessionData.token) return false;
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/registration-status`, {
                 headers: { 'Authorization': `Bearer ${sessionData.token}` }
             });
             if (!response.ok) return false;
-
             const result = await response.json();
             return result.success && result.data.isRegistered;
         } catch (error) {
@@ -1206,13 +913,14 @@
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
-      // --- PAGE-SPECIFIC LOGIC ---
+      setLoading(true);
       const urlParams = new URLSearchParams(window.location.search);
       const slug = urlParams.get('slug');
       
       if (!slug) {
         document.getElementById('tournament-title').textContent = "Tournament Not Found";
         document.getElementById('tournament-subtitle').textContent = "Please provide a valid tournament URL.";
+        setLoading(false);
         return;
       }
       
@@ -1220,8 +928,8 @@
       if (currentTournament) {
         updateUI(currentTournament);
       }
+      setLoading(false);
       
-      // FAQ Accordion Logic
       const faqItems = document.querySelectorAll('.faq-item');
       faqItems.forEach(item => {
           const question = item.querySelector('.faq-question');
