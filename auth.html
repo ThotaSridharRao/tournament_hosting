@@ -433,86 +433,7 @@
         pointer-events: all;
     }
 
-    /* Footer Styles */
-    footer.site-footer {
-      padding: 4rem 2rem 2rem;
-      background: var(--panel);
-      border-top: 1px solid var(--border-color);
-      margin-top: auto;
-    }
-    .footer-grid .container {
-        width: min(94%, var(--container));
-        margin: 0 auto;
-    }
-    .footer-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 2.5rem;
-      margin-bottom: 3rem;
-      max-width: var(--container);
-      margin-left: auto;
-      margin-right: auto;
-      text-align: left;
-    }
-    .footer-column h4 {
-      color: var(--text-primary);
-      font-weight: 700;
-      margin-bottom: 1.25rem;
-      font-size: 1.1rem;
-    }
-    .footer-column ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .footer-column ul li {
-      margin-bottom: 0.75rem;
-    }
-    .footer-column ul a {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s var(--ease);
-    }
-    .footer-column ul a:hover {
-      color: var(--primary-color);
-    }
-    .footer-bottom {
-      text-align: center;
-      margin-top: 2rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--border-color);
-      color: var(--text-secondary);
-      max-width: var(--container);
-      margin-left: auto;
-      margin-right: auto;
-      font-weight: 500;
-      font-size: 0.9rem;
-    }
-    .footer-brand h4 {
-        margin-bottom: 1rem;
-    }
-    .footer-brand .brand-link {
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: var(--text-primary);
-        text-decoration: none;
-    }
-    .footer-brand p {
-      color: var(--text-secondary);
-      margin-top: 0.75rem;
-      font-weight: 500;
-      line-height: 1.5;
-    }
-
     /* Responsive */
-    @media (max-width: 768px) {
-      .footer-grid {
-        grid-template-columns: 1fr;
-        text-align: center;
-      }
-    }
-
     @media (max-width: 480px) {
       .auth-container {
         border: none;
@@ -619,43 +540,6 @@
       </div>
     </div>
   </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-column footer-brand">
-          <h4><a href="index.html" class="brand-link">GamingNexus</a></h4>
-          <p>The ultimate destination for competitive gaming and esports tournaments.</p>
-        </div>
-        <div class="footer-column">
-          <h4>Tournaments</h4>
-          <ul>
-            <li><a href="index.html#tournaments">Browse All</a></li>
-            <li><a href="index.html#tournaments">Live Matches</a></li>
-            <li><a href="index.html#tournaments">Upcoming</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <h4>Community</h4>
-          <ul>
-            <li><a href="#">Discord</a></li>
-            <li><a href="#">Forums</a></li>
-            <li><a href="#">Support</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2025 GamingNexus. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
 
   <script>
     let currentTab = 'login';
