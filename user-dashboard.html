@@ -448,6 +448,26 @@
         }
 
 
+        function initializeNavbar() {
+        const hamburger = document.querySelector('.hamburger');
+        const mobileNav = document.getElementById('mobile-nav');
+
+        if (hamburger && mobileNav) {
+            // ... (rest of the hamburger and mobile nav click logic remains the same)
+        }
+        
+        // Set up the content of the navbars
+        checkUserAuthentication();
+        setupMobileNav();
+        }
+
+        // Ensure the navbar initializes on pages that include this script
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeNavbar);
+        } else {
+            initializeNavbar();
+        }
+        
         document.addEventListener('DOMContentLoaded', () => {
             setLoading(true);
             const header = document.querySelector('.site-header');
@@ -488,6 +508,8 @@
             initializeNavbar(); 
             loadUserData();
         });
+
+        // --- INITIALIZATION FUNCTION ---
     </script>
 </body>
 
