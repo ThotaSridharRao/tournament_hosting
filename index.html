@@ -762,7 +762,7 @@
     }
     
     /* =========================
-       Animations
+       Animations & Loader
        ========================= */
     .fade-in-element {
         opacity: 0;
@@ -774,9 +774,32 @@
         transform: translateY(0);
     }
     
-    /* Smooth transition for when content appears */
+    #loader-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-dark);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;
+    }
+    #loader-wrapper.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
     .site-header, main, .site-footer {
+        opacity: 0;
         transition: opacity 0.6s ease;
+    }
+    body.loaded .site-header,
+    body.loaded main,
+    body.loaded .site-footer {
+        opacity: 1;
     }
     
 
@@ -784,6 +807,10 @@
 </head>
 
 <body>
+
+  <div id="loader-wrapper">
+    <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+  </div>
 
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -864,21 +891,21 @@
                     <div class="label">Players Online</div>
                     <div class="value">
                         <i class="fas fa-user"></i>
-                        <span id="players-online">225,521</span>
+                        <span id="players-online">50,000 +</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="label">Live Matches</div>
                     <div class="value">
                         <i class="fas fa-crosshairs"></i>
-                        <span id="live-matches">8,248</span>
+                        <span id="live-matches">100 +</span>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="label">Rewards to Date</div>
                     <div class="value">
                         <i class="fas fa-trophy"></i>
-                        <span id="rewards-to-date">$10 Million+</span>
+                        <span id="rewards-to-date">₹1,00,000 +</span>
                     </div>
                 </div>
             </div>
@@ -1094,17 +1121,26 @@
       }
     }
 
-    // Main Content Population Function (Page-specific)
     async function populateAllSections() {
       try {
+        // Fetch and render tournaments
         const tournaments = await fetchTournaments();
-        if (tournaments.length > 0) {
-          populateTournamentsGrid(tournaments);
-        }
+        populateTournamentsGrid(tournaments);
+
+        // ✅ Only hide loader AFTER tournaments are injected
+        document.getElementById('loader-wrapper').classList.add('hidden');
+        document.body.classList.add('loaded');
+
       } catch (error) {
         console.error('Error populating content sections:', error);
+
+        // If API fails, still hide loader so user sees fallback
+        document.getElementById('loader-wrapper').classList.add('hidden');
+        document.body.classList.add('loaded');
       }
     }
+
+
 
     function populateTournamentsGrid(tournaments) {
         const grid = document.getElementById('tournaments-grid');
@@ -1169,6 +1205,7 @@
     }
 
     function updateCarousel() {
+        if (!track) return; // Guard clause
         const visibleCards = getVisibleCards();
         cardWidth = track.clientWidth / visibleCards;
         track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
@@ -1226,17 +1263,20 @@
         elements.forEach(el => observer.observe(el));
     }
 
-// Replace your old 'DOMContentLoaded' listener with this one
-    document.addEventListener('DOMContentLoaded', async () => {
+    window.addEventListener('load', () => {
       if (navigator.onLine) {
-        await populateAllSections();
+        populateAllSections(); // loader hides inside here
       } else {
         console.error('No internet connection detected.');
+        document.getElementById('loader-wrapper').classList.add('hidden');
+        document.body.classList.add('loaded');
       }
 
       animateOnScroll();
       updateCarousel();
     });
+
+
 
   </script>
   <script src="navbar.js"></script>
