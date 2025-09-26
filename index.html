@@ -314,7 +314,7 @@
        Features Section
        ========================= */
     .features-section {
-        padding: 5rem 2rem;
+        padding: 8rem 2rem;
     }
     
     .features-grid {
@@ -336,10 +336,20 @@
     }
     
     .feature-item img {
-      width: 120px;
-      height: 120px;
-      object-fit: fill;
-      border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 1rem;
+        border: 2px solid var(--border-color);
+        transition: all 0.3s ease;
+        filter: drop-shadow(0 0 15px rgba(10, 250, 217, 0.25));
+    }
+
+    .feature-item:hover img {
+        transform: scale(1.1);
+        border-color: var(--primary-color);
+        filter: drop-shadow(0 0 25px rgba(10, 250, 217, 0.5));
     }
     
     .feature-item h3 {
@@ -460,20 +470,20 @@
     
     
     /* =========================
-       News Section
+       News & Tournaments Section
        ========================= */
-    .news-section {
+    .news-section, #tournaments {
         padding: 5rem 2rem;
         text-align: center;
     }
 
-    .news-title {
+    .news-title, #tournaments-heading {
         font-size: clamp(2.2rem, 5vw, 3.5rem);
         margin-bottom: 4rem;
         font-weight: 800;
     }
     
-    .news-grid {
+    .news-grid, .tournaments-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 2rem;
@@ -482,28 +492,36 @@
         text-align: left;
     }
     
-    .news-card {
+    .news-card, .tournament-card {
         background: var(--panel);
         border-radius: 12px;
         overflow: hidden;
         transition: all 0.3s ease;
         border: 1px solid var(--border-color);
+        text-decoration: none;
+        color: var(--text-primary);
+        display: flex;
+        flex-direction: column;
     }
     
-    .news-card:hover {
+    .news-card:hover, .tournament-card:hover {
         transform: translateY(-10px);
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         border-color: var(--primary-color);
     }
     
-    .news-card img {
+    .news-card img, .tournament-card img {
         width: 100%;
         height: 200px;
         object-fit: cover;
     }
     
-    .news-content {
+    .news-content, .tournament-content {
         padding: 1.5rem;
+        flex-grow: 1; /* Make content grow to fill space */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Push footer to bottom */
     }
     
     .news-meta {
@@ -517,14 +535,14 @@
         font-weight: 600;
     }
     
-    .news-card h3 {
+    .news-card h3, .tournament-card h3 {
         font-size: 1.2rem;
         font-weight: 600;
         margin-bottom: 1rem;
         line-height: 1.4;
     }
     
-    .news-card p {
+    .news-card p, .tournament-card p {
         color: var(--text-secondary);
         font-size: 0.9rem;
     }
@@ -593,85 +611,6 @@
     }
     .faq-item.active .faq-question i {
         transform: rotate(45deg);
-    }
-
-    /* =========================
-       Tournaments Section
-       ========================= */
-    #tournaments {
-        padding-top: 5rem;
-    }
-    
-    #tournaments-heading {
-      font-size: clamp(2.2rem, 5vw, 3.5rem);
-      margin-bottom: 3rem;
-      text-align: center;
-      font-weight: 800;
-    }
-    
-    .tournaments-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 2rem;
-      justify-content: center;
-      align-items: stretch; 
-    }
-
-    .tournament-card {
-        background: var(--panel);
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        overflow: hidden;
-        text-decoration: none;
-        color: var(--copy);
-        display: flex; 
-        flex-direction: column;
-        border: 1px solid var(--border-color);
-    }
-
-    .tournament-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        border-color: var(--primary-color);
-    }
-
-    .tournament-card__poster img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-    
-    .card-content {
-        padding: 1.5rem;
-        flex-grow: 1;
-        display: flex; 
-        flex-direction: column; 
-        justify-content: space-between; 
-    }
-    
-    .tournament-card__title {
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-    
-    .prize-pool {
-        font-size: 1.2rem;
-        color: var(--text-secondary);
-        margin-bottom: 1rem;
-    }
-    
-    .card-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-top: 1rem;
-        border-top: 1px solid var(--border-color);
-    }
-    
-    .tournament-info {
-        font-size: 1rem;
-        color: var(--text-secondary);
     }
 
     /* =========================
@@ -1009,25 +948,31 @@
             <a href="#" class="news-card">
                 <img src="https://placehold.co/600x400/161329/F0F0F0?text=News+1" alt="News 1">
                 <div class="news-content">
-                    <p class="news-meta"><span class="league-name">ESEA LEAGUE</span> - 11 SEPT 2024</p>
-                    <h3>ZywOo's Origin Story: Unearthing the Stats from His Early Days</h3>
-                    <p>From the moment he set foot in organised Counter-Strike, ZywOo was a force to be reckoned with.</p>
+                    <div>
+                        <p class="news-meta"><span class="league-name">ESEA LEAGUE</span> - 11 SEPT 2024</p>
+                        <h3>ZywOo's Origin Story: Unearthing the Stats from His Early Days</h3>
+                        <p>From the moment he set foot in organised Counter-Strike, ZywOo was a force to be reckoned with.</p>
+                    </div>
                 </div>
             </a>
             <a href="#" class="news-card">
                 <img src="https://placehold.co/600x400/161329/F0F0F0?text=News+2" alt="News 2">
                 <div class="news-content">
-                    <p class="news-meta"><span class="league-name">ESEA LEAGUE</span> - 9 SEPT 2024</p>
-                    <h3>Faire Open divisions, Cast at ESL Pro League, Clear Your Weekend!</h3>
-                    <p>Check out our latest updates for Season 55!</p>
+                     <div>
+                        <p class="news-meta"><span class="league-name">ESEA LEAGUE</span> - 9 SEPT 2024</p>
+                        <h3>Faire Open divisions, Cast at ESL Pro League, Clear Your Weekend!</h3>
+                        <p>Check out our latest updates for Season 55!</p>
+                    </div>
                 </div>
             </a>
             <a href="#" class="news-card">
                 <img src="https://placehold.co/600x400/161329/F0F0F0?text=News+3" alt="News 3">
                 <div class="news-content">
-                    <p class="news-meta"><span class="league-name">ESEA LEAGUE</span> - 20 AUG 2024</p>
-                    <h3>Does FACEIT matchmaking prepare you for official matches?</h3>
-                    <p>We analyzed the average ELO at every level of the Counter-Strike ecosystem!</p>
+                    <div>
+                        <p class="news-meta"><span class="league-name">ESEA LEAGUE</span> - 20 AUG 2024</p>
+                        <h3>Does FACEIT matchmaking prepare you for official matches?</h3>
+                        <p>We analyzed the average ELO at every level of the Counter-Strike ecosystem!</p>
+                    </div>
                 </div>
             </a>
         </div>
@@ -1174,29 +1119,21 @@
            
         if (rawPoster) {
             if (rawPoster.startsWith('http')) {
-                // It's already a full URL, so use it directly
                 finalPoster = rawPoster;
             } else {
-                // It's a relative path. Use the URL constructor for a safe join.
-                // This correctly handles all cases and prevents the missing slash.
                 finalPoster = new URL(rawPoster, API_BASE_URL).href;
             }
         }
             return `
                 <a href="tournament-details.html?slug=${tournament.slug}" class="tournament-card">
-                    <div class="tournament-card__poster">
-                        <img src="${finalPoster}" alt="${tournament.title} Poster" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop';">
-                    </div>
-                    <div class="card-content">
+                    <img src="${finalPoster}" alt="${tournament.title} Poster" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop';">
+                    <div class="tournament-content">
                         <div>
-                            <h3 class="tournament-card__title">${tournament.title}</h3>
-                            <p class="prize-pool">💰 ₹${(tournament.prizePool || 0).toLocaleString('en-IN')} Prize Pool</p>
+                            <h3>${tournament.title}</h3>
+                            <p>💰 ₹${(tournament.prizePool || 0).toLocaleString('en-IN')} Prize Pool</p>
                         </div>
-                        <div class="card-footer">
-                           <div class="tournament-info">
-                                <span>📅 ${new Date(tournament.tournamentStart).toLocaleDateString()}</span>
-                                <span>👥 ${tournament.maxTeams} Teams</span>
-                            </div>
+                        <div>
+                           <p>📅 ${new Date(tournament.tournamentStart).toLocaleDateString()} | 👥 ${tournament.maxTeams} Teams</p>
                         </div>
                     </div>
                 </a>
@@ -1306,3 +1243,4 @@
 </body>
 
 </html>
+
