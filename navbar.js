@@ -7,7 +7,7 @@ function redirectToAuth(tab = 'register') {
 }
 
 function getSessionData() {
-  const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+  const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
   try {
     return session ? JSON.parse(session) : null;
   } catch (error) {
@@ -16,8 +16,8 @@ function getSessionData() {
 }
 
 function logout() {
-  localStorage.removeItem('earena_session');
-  sessionStorage.removeItem('earena_session');
+  localStorage.removeItem('nexus_session');
+  sessionStorage.removeItem('nexus_session');
   window.location.reload(); // Reload the current page to update the nav
 }
 

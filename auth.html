@@ -741,8 +741,12 @@
         const result = await response.json();
         
         if (response.ok && result.data && result.data.token) {
-          localStorage.setItem('nexus_token', result.data.token);
-          localStorage.setItem('nexus_user', JSON.stringify(result.data.user));
+          // NEW CODE
+          const session = {
+            token: result.data.token,
+            user: result.data.user
+          };
+          localStorage.setItem('nexus_session', JSON.stringify(session));
           showSuccess('Login successful! Redirecting...');
           setTimeout(() => { window.location.href = result.redirect_path || 'index.html'; }, 1500);
         } else {
