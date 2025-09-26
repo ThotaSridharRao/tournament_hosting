@@ -338,7 +338,8 @@
     .feature-item img {
       width: 120px;
       height: 120px;
-      object-fit: contain;
+      object-fit: fill;
+      border-radius: 50%;
     }
     
     .feature-item h3 {
@@ -550,6 +551,11 @@
         border-radius: 8px;
         margin-bottom: 1rem;
         border: 1px solid var(--border-color);
+        transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .faq-item:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-3px);
     }
     .faq-question {
         width: 100%;
@@ -563,6 +569,10 @@
         color: var(--text-primary);
         font-size: 1.1rem;
         font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    .faq-question:hover {
+        color: var(--primary-color);
     }
     .faq-question i {
         transition: transform 0.3s ease;
@@ -940,17 +950,17 @@
     <section class="section features-section fade-in-element">
         <div class="features-grid">
             <div class="feature-item" role="listitem">
-              <img src="https://placehold.co/120x120/0AFAD9/0D0A1A?text=Play" alt="Play Icon">
+              <img src="/assets/gameIcon.png" alt="Play Icon">
               <h3>Play</h3>
               <p>Compete at your level in the best games. Join ranked matches, climb the leaderboards, and test your skills against top players.</p>
             </div>
             <div class="feature-item" role="listitem">
-              <img src="https://placehold.co/120x120/5D3FD3/F0F0F0?text=Watch" alt="Watch Icon">
+              <img src="/assets/videoIcon.png" alt="Watch Icon">
               <h3>Watch</h3>
               <p>Experience the action live. Follow top matches, learn from the best, and stay connected to the competitive scene.</p>
             </div>
             <div class="feature-item" role="listitem">
-              <img src="https://placehold.co/120x120/0AFAD9/0D0A1A?text=Win" alt="Win Icon">
+              <img src="/assets/trophyIcon.png" alt="Win Icon">
               <h3>Win</h3>
               <p>Earn rewards for your grind. Complete missions, climb the ranks, and get prizes for your performance.</p>
             </div>
@@ -966,12 +976,12 @@
         <div class="games-carousel-wrapper">
             <div class="games-carousel">
                 <div class="games-track">
-                    <div class="game-card"><img src="https://placehold.co/400x550/161329/F0F0F0?text=Dota+2" alt="Dota 2"></div>
-                    <div class="game-card"><img src="https://placehold.co/400x550/161329/F0F0F0?text=LoL" alt="League of Legends"></div>
-                    <div class="game-card"><img src="https://placehold.co/400x550/161329/F0F0F0?text=Brawl+Stars" alt="Brawl Stars"></div>
-                    <div class="game-card"><img src="https://placehold.co/400x550/161329/F0F0F0?text=BGMI" alt="PUBG Mobile"></div>
-                    <div class="game-card"><img src="https://placehold.co/400x550/161329/F0F0F0?text=CoD" alt="Call of Duty"></div>
-                    <div class="game-card"><img src="https://placehold.co/400x550/161329/F0F0F0?text=Valorant" alt="Valorant"></div>
+                    <div class="game-card"><img src="/assets/dota2.webp" alt="Dota 2"></div>
+                    <div class="game-card"><img src="/assets/leagueoflegends.webp" alt="League of Legends"></div>
+                    <div class="game-card"><img src="/assets/brawlstar.webp" alt="Brawl Stars"></div>
+                    <div class="game-card"><img src="/assets/bgmi.webp" alt="PUBG Mobile"></div>
+                    <div class="game-card"><img src="/assets/callofduty.webp" alt="Call of Duty"></div>
+                    <div class="game-card"><img src="/assets/valorant.webp" alt="Valorant"></div>
                 </div>
             </div>
             <button class="carousel-nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
@@ -1296,4 +1306,3 @@
 </body>
 
 </html>
-
