@@ -812,56 +812,12 @@
         transform: translateY(0);
     }
     
-    /* REPLACE your existing .loader-overlay CSS with this */
-    .loader-overlay {
-        position: fixed; /* Makes it stay in place even when scrolling */
-        top: 0;
-        left: 0;
-        width: 100vw; /* 100% of the viewport width */
-        height: 100vh; /* 100% of the viewport height */
-        background: rgba(15, 15, 16, 0.9); /* Dark background with opacity */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999; /* Ensures it's on top of all other content */
-        transition: opacity 0.3s ease;
-    }
-
-    .loader {
-        display: flex;
-        gap: 10px;
-    }
-    .loader span {
-        width: 15px;
-        height: 15px;
-        background-color: var(--primary-color);
-        border-radius: 50%;
-        animation: bounce 0.6s infinite alternate;
-    }
-    .loader span:nth-child(2) {
-        animation-delay: 0.2s;
-    }
-    .loader span:nth-child(3) {
-        animation-delay: 0.4s;
-    }
-    @keyframes bounce {
-        to {
-            transform: translateY(-10px);
-        }
-    }
 
   </style>
 </head>
 
 <body>
-  <div id="loader-overlay" style="display: none;">
-      <div class="loader">
-          <span></span>
-          <span></span>
-          <span></span>
-      </div>
-  </div>
-  
+
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header" role="banner">
@@ -1288,17 +1244,6 @@
         });
     });
     
-    // Loading Indicator
-    function addGlobalLoadingIndicator() {
-      const loader = document.getElementById('loader-overlay');
-      if (loader) loader.style.display = 'flex';
-    }
-
-    function removeGlobalLoadingIndicator() {
-      const loader = document.getElementById('loader-overlay');
-      if (loader) loader.style.display = 'none';
-    }
-    
     // Scroll Animations
     function animateOnScroll() {
         const elements = document.querySelectorAll('.fade-in-element');
@@ -1316,20 +1261,16 @@
 
 // Replace your old 'DOMContentLoaded' listener with this one
     document.addEventListener('DOMContentLoaded', async () => {
-      addGlobalLoadingIndicator();
-      
       if (navigator.onLine) {
         await populateAllSections();
       } else {
         console.error('No internet connection detected.');
       }
-      
-      // ✅ --- ADD THIS LINE ---
-      animateOnScroll(); // This will activate the animations for all sections
-      
-      // Initialize any other page-specific features like carousels here
-      updateCarousel(); // Initialize the carousel on page load
+
+      animateOnScroll();
+      updateCarousel();
     });
+
   </script>
   <script src="navbar.js"></script>
 </body>
