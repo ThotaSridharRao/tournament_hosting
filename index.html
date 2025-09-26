@@ -5,9 +5,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description"
-    content="EArena — host and compete. Clean, accessible esports landing page with responsive layout and video hero." />
-  <meta name="theme-color" content="#0b0b0b" />
-  <title>EArena — Compete | Host | Win</title>
+    content="GamingNexus — host and compete. Clean, accessible esports landing page with responsive layout and video hero." />
+  <meta name="theme-color" content="#0D0A1A" />
+  <title>GamingNexus — Compete | Host | Win</title>
 
   <!-- Fonts & icons (preload & preconnect for performance) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,28 +17,28 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity=""
     crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
   <link rel="stylesheet" href="navbar.css">
 
   <style>
     /* =========================
-       Theme variables (Futuristic)
+       Theme variables (Cyberpunk)
        ========================= */
     :root {
-      --primary-color: #ff4500; /* Orange-Red for FACEIT theme */
-      --bg-dark: #000000;
-      --accent-green: #ff8c00;
-      --panel: #1a1a1a; /* <-- ADD THIS LINE */
-      --accent-blue: #ff7f50;
-      --text-primary: #ffffff;
-      --text-secondary: rgba(255, 255, 255, 0.7);
-      --border-color: rgba(255, 69, 0, 0.3);
+      --primary-color: #0AFAD9;      /* Electric Cyan */
+      --bg-dark: #0D0A1A;            /* Dark Matter Black */
+      --accent-secondary: #5D3FD3;   /* Deep Indigo */
+      --panel: #161329;              /* Dark Indigo Panel */
+      --text-primary: #F0F0F0;       /* Starlight White */
+      --text-secondary: rgba(240, 240, 240, 0.7);
+      --border-color: rgba(10, 250, 217, 0.2);
       --ease: 0.3s ease;
 
       /* Legacy variables for compatibility */
       --copy: var(--text-primary);
       --muted: var(--text-secondary);
-      --accent: var(--accent-green);
-      --accent-2: var(--accent-blue);
+      --accent: var(--accent-secondary); /* Using Indigo as main accent */
+      --accent-2: var(--primary-color); /* Using Cyan as secondary accent */
       --radius: 12px;
       --container: 1400px;
     }
@@ -170,16 +170,31 @@
       overflow: hidden;
     }
     
+    .hero-video-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        overflow: hidden;
+    }
+
+    .hero-video-bg video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
     .hero::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255, 69, 0, 0.5) 0%, rgba(18, 18, 18, 0) 60%);
-        transform: translate(-50%, -50%);
-        animation: breath 6s ease-in-out infinite;
+        width: 100%;
+        height: 100%;
+        background: rgba(13, 10, 26, 0.6); /* Reduced overlay opacity from 0.7 to 0.6 */
+        z-index: 2;
     }
     
     .hero::after {
@@ -194,18 +209,9 @@
         pointer-events: none;
     }
 
-    @keyframes breath {
-        0%, 100% {
-            transform: translate(-50%, -50%) scale(0.9);
-            opacity: 0.7;
-        }
-        50% {
-            transform: translate(-50%, -50%) scale(1.1);
-            opacity: 1;
-        }
-    }
-
     .hero-content-wrapper {
+        position: relative;
+        z-index: 3;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -256,13 +262,13 @@
         text-decoration: none;
         display: inline-block;
         background: var(--primary-color);
-        color: var(--text-primary);
+        color: var(--bg-dark); /* Changed text color for contrast */
     }
 
     .btn-primary:hover {
-        background: #ff6347;
+        background: #50FDE5; /* Lighter Cyan */
         transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(255, 69, 0, 0.2);
+        box-shadow: 0 10px 20px rgba(10, 250, 217, 0.2);
     }
 
     .hero-stats {
@@ -273,17 +279,18 @@
     }
 
     .stat-card {
-        background: #000000;
+        background: rgba(13, 10, 26, 0.5); /* Semi-transparent background */
+        backdrop-filter: blur(5px);
         border-radius: 50px;
         padding: 0.75rem 1.5rem;
         text-align: center;
-        border: 1px solid rgba(255, 255, 255, 0.7);
+        border: 1px solid var(--border-color);
         transition: all 0.3s ease;
     }
     
     .stat-card:hover {
         transform: scale(1.05);
-        box-shadow: 0 0 15px rgba(255, 69, 0, 0.5);
+        box-shadow: 0 0 15px rgba(10, 250, 217, 0.4);
         border-color: var(--primary-color);
     }
 
@@ -329,8 +336,8 @@
     }
     
     .feature-item img {
-      width: 120px;  /* Increased by 75% */
-      height: 120px; /* Increased by 75% */
+      width: 120px;
+      height: 120px;
       object-fit: contain;
     }
     
@@ -410,9 +417,9 @@
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #fff;
+        background: rgba(240, 240, 240, 0.1);
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
         width: 40px;
         height: 40px;
         border-radius: 50%;
@@ -423,6 +430,7 @@
     
     .carousel-nav-btn:hover {
         background: var(--primary-color);
+        color: var(--bg-dark);
     }
     
     .prev-btn {
@@ -436,7 +444,7 @@
     .carousel-progress-bar {
         width: 200px;
         height: 4px;
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(240, 240, 240, 0.1);
         margin: 2rem auto 0;
         border-radius: 2px;
     }
@@ -474,15 +482,17 @@
     }
     
     .news-card {
-        background: #1a1a1a;
+        background: var(--panel);
         border-radius: 12px;
         overflow: hidden;
         transition: all 0.3s ease;
+        border: 1px solid var(--border-color);
     }
     
     .news-card:hover {
         transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        border-color: var(--primary-color);
     }
     
     .news-card img {
@@ -536,10 +546,10 @@
         text-align: left;
     }
     .faq-item {
-        background: #1a1a1a;
+        background: var(--panel);
         border-radius: 8px;
         margin-bottom: 1rem;
-        border: 1px solid #333;
+        border: 1px solid var(--border-color);
     }
     .faq-question {
         width: 100%;
@@ -556,6 +566,7 @@
     }
     .faq-question i {
         transition: transform 0.3s ease;
+        color: var(--primary-color);
     }
     .faq-answer {
         max-height: 0;
@@ -597,19 +608,21 @@
     }
 
     .tournament-card {
-        background: #1a1a1a;
+        background: var(--panel);
         border-radius: 12px;
         transition: all 0.3s ease;
         overflow: hidden;
         text-decoration: none;
         color: var(--copy);
         display: flex; 
-        flex-direction: column; 
+        flex-direction: column;
+        border: 1px solid var(--border-color);
     }
 
     .tournament-card:hover {
         transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        border-color: var(--primary-color);
     }
 
     .tournament-card__poster img {
@@ -643,7 +656,7 @@
         justify-content: space-between;
         align-items: center;
         padding-top: 1rem;
-        border-top: 1px solid #333;
+        border-top: 1px solid var(--border-color);
     }
     
     .tournament-info {
@@ -655,10 +668,10 @@
        Footer
        ========================= */
     footer.site-footer {
-      background: #1a1a1a;
+      background: var(--panel);
       padding: 5rem 2rem 2rem;
       text-align: center;
-      border-top: 1px solid #333;
+      border-top: 1px solid var(--border-color);
     }
 
     .footer-grid {
@@ -718,7 +731,7 @@
     }
 
     .footer-bottom {
-      border-top: 1px solid #333;
+      border-top: 1px solid var(--border-color);
       padding-top: 2rem;
       opacity: 0.7;
       font-size: 1rem;
@@ -812,17 +825,46 @@
         transform: translateY(0);
     }
     
+    /* Full Page Loader */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-dark);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    /* Class to initially hide content */
+    .content-hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* Smooth transition for when content appears */
+    .site-header, main, .site-footer {
+        transition: opacity 0.6s ease;
+    }
+    
 
   </style>
 </head>
 
 <body>
+  <!-- <div id="page-loader" class="page-loader">
+    <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+  </div> -->
 
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header" role="banner">
   <div class="header-container">
-      <a href="index.html" class="brand" aria-hidden="false">EArena</a>
+      <a href="index.html" class="brand" aria-hidden="false">GamingNexus</a>
       <div class="header-right">
           <nav class="primary" role="navigation" aria-label="Primary">
               <div class="nav-links" role="menubar">
@@ -874,6 +916,12 @@
   <main id="main">
     <!-- HERO -->
     <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-video-bg">
+            <video autoplay loop muted playsinline poster="https://placehold.co/1920x1080/0D0A1A/0AFAD9?text=GamingNexus">
+                <source src="/35506-405897842_small.webm" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
         <div class="hero-content-wrapper">
             <div class="hero__content" role="region" aria-label="Hero">
                 <h1 id="hero-title" class="tournament-name">Challenge your game!</h1>
@@ -916,17 +964,17 @@
     <section class="section features-section fade-in-element">
         <div class="features-grid">
             <div class="feature-item" role="listitem">
-              <img src="assets/gameIcon.png" alt="Play Icon">
+              <img src="https://placehold.co/120x120/0AFAD9/0D0A1A?text=Play" alt="Play Icon">
               <h3>Play</h3>
               <p>Compete at your level in the best games. Join ranked matches, climb the leaderboards, and test your skills against top players.</p>
             </div>
             <div class="feature-item" role="listitem">
-              <img src="assets/videoIcon.png" alt="Watch Icon">
+              <img src="https://placehold.co/120x120/5D3FD3/F0F0F0?text=Watch" alt="Watch Icon">
               <h3>Watch</h3>
               <p>Experience the action live. Follow top matches, learn from the best, and stay connected to the competitive scene.</p>
             </div>
             <div class="feature-item" role="listitem">
-              <img src="assets/trophyIcon.png" alt="Win Icon">
+              <img src="https://placehold.co/120x120/0AFAD9/0D0A1A?text=Win" alt="Win Icon">
               <h3>Win</h3>
               <p>Earn rewards for your grind. Complete missions, climb the ranks, and get prizes for your performance.</p>
             </div>
@@ -942,12 +990,12 @@
         <div class="games-carousel-wrapper">
             <div class="games-carousel">
                 <div class="games-track">
-                    <div class="game-card"><img src="/assets/dota2.webp" alt="Dota 2"></div>
-                    <div class="game-card"><img src="/assets/leagueoflegends.webp" alt="League of Legends"></div>
-                    <div class="game-card"><img src="/assets/brawlstar.webp" alt="Brawl Stars"></div>
-                    <div class="game-card"><img src="/assets/bgmi.webp" alt="PUBG Mobile"></div>
-                    <div class="game-card"><img src="/assets/callofduty.webp" alt="Call of Duty"></div>
-                    <div class="game-card"><img src="/assets/valorant.webp" alt="Valorant"></div>
+                    <div class="game-card"><img src="https://placehold.co/400x550/161329/F0F0F0?text=Dota+2" alt="Dota 2"></div>
+                    <div class="game-card"><img src="https://placehold.co/400x550/161329/F0F0F0?text=LoL" alt="League of Legends"></div>
+                    <div class="game-card"><img src="https://placehold.co/400x550/161329/F0F0F0?text=Brawl+Stars" alt="Brawl Stars"></div>
+                    <div class="game-card"><img src="https://placehold.co/400x550/161329/F0F0F0?text=BGMI" alt="PUBG Mobile"></div>
+                    <div class="game-card"><img src="https://placehold.co/400x550/161329/F0F0F0?text=CoD" alt="Call of Duty"></div>
+                    <div class="game-card"><img src="https://placehold.co/400x550/161329/F0F0F0?text=Valorant" alt="Valorant"></div>
                 </div>
             </div>
             <button class="carousel-nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
@@ -973,7 +1021,7 @@
         <h2 class="news-title">News</h2>
         <div class="news-grid">
             <a href="#" class="news-card">
-                <img src="https://placehold.co/600x400/1a1a1a/ffffff?text=News+1" alt="News 1">
+                <img src="https://placehold.co/600x400/161329/F0F0F0?text=News+1" alt="News 1">
                 <div class="news-content">
                     <p class="news-meta"><span class="league-name">ESEA LEAGUE</span> - 11 SEPT 2024</p>
                     <h3>ZywOo's Origin Story: Unearthing the Stats from His Early Days</h3>
@@ -981,7 +1029,7 @@
                 </div>
             </a>
             <a href="#" class="news-card">
-                <img src="https://placehold.co/600x400/1a1a1a/ffffff?text=News+2" alt="News 2">
+                <img src="https://placehold.co/600x400/161329/F0F0F0?text=News+2" alt="News 2">
                 <div class="news-content">
                     <p class="news-meta"><span class="league-name">ESEA LEAGUE</span> - 9 SEPT 2024</p>
                     <h3>Faire Open divisions, Cast at ESL Pro League, Clear Your Weekend!</h3>
@@ -989,7 +1037,7 @@
                 </div>
             </a>
             <a href="#" class="news-card">
-                <img src="https://placehold.co/600x400/1a1a1a/ffffff?text=News+3" alt="News 3">
+                <img src="https://placehold.co/600x400/161329/F0F0F0?text=News+3" alt="News 3">
                 <div class="news-content">
                     <p class="news-meta"><span class="league-name">ESEA LEAGUE</span> - 20 AUG 2024</p>
                     <h3>Does FACEIT matchmaking prepare you for official matches?</h3>
@@ -1048,7 +1096,7 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-column footer-brand">
-          <a href="index.html" class="brand">EArena</a>
+          <a href="index.html" class="brand">GamingNexus</a>
           <p>The ultimate destination for competitive gaming.</p>
            <div class="social-links">
               <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
@@ -1083,12 +1131,16 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 EArena. All rights reserved.</p>
+        <p>&copy; 2025 GamingNexus. All rights reserved.</p>
       </div>
     </footer>
 
   <script>
     
+    const loader = document.getElementById('page-loader');
+    const header = document.querySelector('.site-header');
+    const mainContent = document.getElementById('main');
+    const footer = document.querySelector('.site-footer');
 
     // Header scroll effect
     window.addEventListener('scroll', () => {
@@ -1118,7 +1170,6 @@
 
     // Main Content Population Function (Page-specific)
     async function populateAllSections() {
-      addGlobalLoadingIndicator();
       try {
         const tournaments = await fetchTournaments();
         if (tournaments.length > 0) {
@@ -1127,7 +1178,16 @@
       } catch (error) {
         console.error('Error populating content sections:', error);
       } finally {
-        removeGlobalLoadingIndicator();
+        // The loader is commented out, so this is no longer needed.
+        /* if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 500); // Match CSS transition time
+        }
+        if(header) header.classList.remove('content-hidden');
+        if(mainContent) mainContent.classList.remove('content-hidden');
+        if(footer) footer.classList.remove('content-hidden'); */
       }
     }
 
@@ -1276,4 +1336,5 @@
 </body>
 
 </html>
+
 
