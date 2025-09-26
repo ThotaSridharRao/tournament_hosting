@@ -4,31 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard | EArena</title>
+    <title>User Dashboard | GamingNexus</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
+    <link rel="stylesheet" href="navbar.css">
 
     <style>
-        /* Theme variables */
+        /* Theme variables (Cyberpunk) */
         :root {
-            --bg: #0f0f10;
-            --panel: #1f1f20;
-            --muted: #9aa0a6;
-            --copy: #e6e6e6;
-            --accent: #FFD700;
-            --accent-2: #e0ac10;
-            --glass: rgba(20, 20, 20, 0.55);
-            --radius: 12px;
-            --container: 1200px;
-            --ease: 180ms cubic-bezier(.2, .9, .2, 1);
-            --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-            --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
-            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-            --spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+          --primary-color: #0AFAD9;      /* Electric Cyan */
+          --bg-dark: #0D0A1A;            /* Dark Matter Black */
+          --accent-secondary: #5D3FD3;   /* Deep Indigo */
+          --panel: #161329;              /* Dark Indigo Panel */
+          --text-primary: #F0F0F0;       /* Starlight White */
+          --text-secondary: rgba(240, 240, 240, 0.7);
+          --border-color: rgba(10, 250, 217, 0.2);
+          --ease: 0.3s ease;
+          --radius: 12px;
+          --container: 1200px;
         }
 
         * {
@@ -44,120 +42,98 @@
         body {
             margin: 0;
             font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-            background: linear-gradient(180deg, var(--bg), #070707 140%);
-            color: var(--copy);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            line-height: 1.5;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
             min-height: 100vh;
         }
-
-        /* Header */
-        .site-header {
+        
+        /* Loader */
+        #loader-wrapper {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            z-index: 1000;
-            background: rgba(26, 26, 26, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            height: 64px;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-dark);
             display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        #loader-wrapper.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 700;
-            color: var(--copy);
-            font-size: 22px;
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-
-        .brand:hover {
-            color: var(--accent);
-        }
-
-        .brand .accent {
-            color: var(--accent);
-        }
-
-        .user-menu {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--copy);
-            font-weight: 500;
-        }
-
-        .logout-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: var(--copy);
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .logout-btn:hover {
-            background: rgba(255, 0, 0, 0.1);
-            border-color: rgba(255, 0, 0, 0.3);
-            color: #ff6b6b;
-        }
-
-        /* Main Content */
         .main-content {
-            margin-top: 64px;
-            padding: 32px 24px;
-            max-width: 1200px;
+            margin-top: 80px; /* Adjust for fixed header height */
+            padding: 2rem;
+            max-width: var(--container);
             margin-left: auto;
             margin-right: auto;
         }
 
         .dashboard-header {
-            margin-bottom: 32px;
-        }
-
-        .dashboard-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--copy);
-        }
-
-        .dashboard-subtitle {
-            color: var(--muted);
-            font-size: 14px;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
             margin-bottom: 3rem;
         }
 
+        .dashboard-title {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        .dashboard-title .accent { color: var(--primary-color); }
+
+        .dashboard-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(10, 250, 217, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+        
         .dashboard-section {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--panel);
+            border: 1px solid var(--border-color);
             border-radius: var(--radius);
             padding: 2rem;
+            margin-bottom: 2rem;
         }
 
         .section-header {
@@ -165,31 +141,34 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
         }
 
         .section-title {
             font-size: 1.5rem;
             font-weight: 700;
-            color: var(--copy);
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            color: #000;
-            padding: 0.75rem 1.5rem;
+            background: var(--primary-color);
+            color: var(--bg-dark);
+            padding: 0.6rem 1.2rem;
             border-radius: 6px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             border: none;
             text-decoration: none;
-            display: inline-block;
-            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .btn-primary:hover {
+            filter: brightness(1.1);
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 8px 25px rgba(10, 250, 217, 0.2);
         }
 
         .tournament-list {
@@ -203,25 +182,22 @@
             align-items: center;
             justify-content: space-between;
             padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 8px;
             transition: all 0.3s ease;
         }
 
         .tournament-item:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(10, 250, 217, 0.1);
         }
 
-        .tournament-info {
-            flex: 1;
-        }
-
-        .tournament-name {
+        .tournament-info a {
             font-weight: 600;
-            color: var(--copy);
+            color: var(--text-primary);
             margin-bottom: 0.25rem;
+            text-decoration: none;
         }
-
+        .tournament-info a:hover { text-decoration: underline; color: var(--primary-color); }
         .tournament-status {
             font-size: 0.8rem;
             font-weight: 600;
@@ -230,121 +206,86 @@
             text-transform: uppercase;
         }
 
-        .tournament-status.registered {
-            background: rgba(34, 197, 94, 0.2);
-            color: #22c55e;
-        }
-
-        .tournament-status.pending {
-            background: rgba(251, 191, 36, 0.2);
-            color: #fbbf24;
-        }
-
-        .tournament-status.rejected {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-        }
+        .tournament-status.ended { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .tournament-status.ongoing { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .tournament-status.registration-open { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
 
         .empty-state {
             text-align: center;
             padding: 3rem 1rem;
-            color: var(--muted);
+            color: var(--text-secondary);
         }
 
         .empty-state i {
             font-size: 3rem;
             margin-bottom: 1rem;
-            opacity: 0.5;
+            opacity: 0.3;
+            color: var(--primary-color);
         }
 
-        .stats-grid {
+        .recommendations-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
-            margin-bottom: 2rem;
         }
 
-        .stat-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            text-align: center;
+        .tournament-card {
+            background: var(--panel);
+            border-radius: 12px;
+            overflow: hidden;
             transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
         }
-
-        .stat-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 215, 0, 0.3);
-            transform: translateY(-2px);
+    
+        .tournament-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary-color);
         }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--accent);
-            display: block;
+        
+        .tournament-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+        
+        .tournament-content {
+            padding: 1rem;
+        }
+        
+        .tournament-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
             margin-bottom: 0.5rem;
         }
-
-        .stat-label {
-            color: var(--muted);
-            font-weight: 600;
+        
+        .tournament-card p {
+            color: var(--text-secondary);
             font-size: 0.9rem;
         }
 
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
         @media (max-width: 768px) {
-            .site-header {
-                padding: 0 1rem;
-            }
-
-            .main-content {
-                padding: 1rem;
-            }
-
-            .dashboard-title {
-                font-size: 1.5rem;
-            }
-
-            .dashboard-section {
-                padding: 1.5rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 1rem;
-            }
+            .main-content { padding: 1.5rem; }
+            .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 
 <body>
-    <header class="site-header">
-        <a href="index.html" class="brand">
-            <span class="accent">E</span>Arena
-        </a>
+    <div id="loader-wrapper">
+      <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+    </div>
 
-        <div class="user-menu">
-            <div class="user-info">
-                <span id="username">User</span>
-            </div>
-            <button class="logout-btn" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
-        </div>
-    </header>
+    <header class="site-header"></header>
 
-    <main class="main-content">
+    <main class="main-content" style="opacity: 0; transition: opacity 0.5s ease;">
         <div class="dashboard-header">
-            <h1 class="dashboard-title">Welcome back, <span id="welcome-username">User</span>!</h1>
-            <p class="dashboard-subtitle">Manage your tournaments and track your gaming progress</p>
+            <h1 class="dashboard-title">Welcome back, <span id="welcome-username" class="accent">User</span>!</h1>
+            <p class="dashboard-subtitle">Manage your tournaments and track your gaming progress.</p>
         </div>
 
         <div class="stats-grid">
@@ -352,77 +293,57 @@
                 <span class="stat-value" id="tournaments-joined">0</span>
                 <span class="stat-label">Tournaments Joined</span>
             </div>
-            <div class="stat-card">
-                <span class="stat-value" id="teams-created">0</span>
-                <span class="stat-label">Teams Created</span>
+        </div>
+
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">My Tournaments</h2>
+                <a href="index.html#tournaments" class="btn-primary">
+                    <i class="fas fa-plus"></i> Join Tournament
+                </a>
             </div>
-            <div class="stat-card">
-                <span class="stat-value" id="matches-played">0</span>
-                <span class="stat-label">Matches Played</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-value" id="total-winnings">₹0</span>
-                <span class="stat-label">Total Winnings</span>
+            <div class="tournament-list" id="user-tournaments">
+                <div class="empty-state">
+                    <i class="fas fa-trophy"></i>
+                    <h3>No tournaments yet</h3>
+                    <p>Join your first tournament to get started!</p>
+                </div>
             </div>
         </div>
 
-        <div class="dashboard-grid">
-            <div class="dashboard-section">
-                <div class="section-header">
-                    <h2 class="section-title">My Tournaments</h2>
-                    <a href="tournaments.html" class="btn-primary">
-                        <i class="fas fa-plus"></i> Join Tournament
-                    </a>
-                </div>
-                <div class="tournament-list" id="user-tournaments">
-                    <div class="empty-state">
-                        <i class="fas fa-trophy"></i>
-                        <h3>No tournaments yet</h3>
-                        <p>Join your first tournament to get started!</p>
-                    </div>
-                </div>
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">Recommended For You</h2>
             </div>
-
-            <div class="dashboard-section">
-                <div class="section-header">
-                    <h2 class="section-title">My Teams</h2>
-                    <button class="btn-primary" onclick="showCreateTeamModal()">
-                        <i class="fas fa-users"></i> Create Team
-                    </button>
-                </div>
-                <div class="tournament-list" id="user-teams">
-                    <div class="empty-state">
-                        <i class="fas fa-users"></i>
-                        <h3>No teams yet</h3>
-                        <p>Create or join a team to participate in tournaments!</p>
-                    </div>
+            <div class="recommendations-grid" id="recommendations-grid">
+                 <!-- Recommendations will be populated by JS -->
+                 <div class="empty-state">
+                    <p>Loading recommendations...</p>
                 </div>
             </div>
         </div>
     </main>
 
+    <script src="navbar.js"></script>
     <script>
-        // Auto-detect API URL based on environment
-        const isLocal = window.location.hostname === 'localhost' || 
-                       window.location.hostname === '127.0.0.1' || 
-                       window.location.protocol === 'file:';
-        
-        const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
+        const API_BASE_URL = 'https://t2-237c.onrender.com';
 
-        // --- AUTHENTICATION & USER INFO ---
-        function getSessionData() {
-            const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
-            try {
-                return JSON.parse(session);
-            } catch (error) {
-                return null;
+        function setLoading(isLoading) {
+            const loader = document.getElementById('loader-wrapper');
+            const mainContent = document.querySelector('.main-content');
+            if (isLoading) {
+                loader.classList.remove('hidden');
+                mainContent.style.opacity = 0;
+            } else {
+                loader.classList.add('hidden');
+                mainContent.style.opacity = 1;
             }
         }
-
-        function logout() {
-            localStorage.removeItem('earena_session');
-            sessionStorage.removeItem('earena_session');
-            window.location.href = 'auth.html';
+        
+        function getSessionData() {
+            const session = localStorage.getItem('nexus_session');
+            try { return session ? JSON.parse(session) : null; } 
+            catch (error) { return null; }
         }
 
         function checkAuth() {
@@ -434,29 +355,26 @@
             return sessionData;
         }
 
-        // --- LOAD USER DATA ---
         async function loadUserData() {
             const sessionData = checkAuth();
             if (!sessionData) return;
 
             const user = sessionData.user;
+            const username = user.username || user.email.split('@')[0];
 
-            // Update UI with user info
-            document.getElementById('username').textContent = user.username;
-            document.getElementById('welcome-username').textContent = user.username;
+            document.getElementById('welcome-username').textContent = username;
 
             try {
-                // Load user tournaments and teams
                 await Promise.all([
                     loadUserTournaments(sessionData.token),
-                    loadUserTeams(sessionData.token)
+                    loadRecommendations()
                 ]);
             } catch (error) {
                 console.error('Error loading user data:', error);
+            } finally {
+                setLoading(false);
             }
         }
-
-        // REPLACE the old loadUserTournaments function with this one
 
         async function loadUserTournaments(token) {
             const tournamentsContainer = document.getElementById('user-tournaments');
@@ -465,74 +383,113 @@
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch tournaments');
-                }
+                if (!response.ok) throw new Error('Failed to fetch tournaments');
 
                 const result = await response.json();
                 if (result.success && result.data.length > 0) {
-                    tournamentsContainer.innerHTML = result.data.map(tournament => {
-                        const statusClass = tournament.status.replace('_', '-'); // e.g., registration_open -> registration-open
+                    tournamentsContainer.innerHTML = result.data.map(t => {
+                        const statusClass = t.status.replace('_', '-');
                         return `
                             <div class="tournament-item">
                                 <div class="tournament-info">
-                                    <a href="tournament-details.html?slug=${tournament.slug}" class="tournament-name">${tournament.title}</a>
-                                    <div class="tournament-status ${statusClass}">${tournament.status.replace('_', ' ')}</div>
+                                    <a href="tournament-details.html?slug=${t.slug}">${t.title}</a>
+                                    <div class="tournament-status ${statusClass}">${t.status.replace('_', ' ')}</div>
                                 </div>
-                                <div class="tournament-team-info">
-                                    <span style="color: var(--muted); font-size: 0.9rem;">Your Team:</span>
-                                    <span style="font-weight: 600;">${tournament.user_team_name || 'N/A'}</span>
-                                </div>
-                                <a href="tournament-details.html?slug=${tournament.slug}" class="btn-primary" style="padding: 0.5rem 1rem;">View</a>
+                                <div><a href="tournament-details.html?slug=${t.slug}" style="font-size: 0.9rem;">View</a></div>
                             </div>
                         `;
                     }).join('');
-
-                    // Update stats card
                     document.getElementById('tournaments-joined').textContent = result.data.length;
-
                 } else {
-                    // Keep the empty state if no tournaments are found
-                    tournamentsContainer.innerHTML = `
+                     tournamentsContainer.innerHTML = `
                         <div class="empty-state">
                             <i class="fas fa-trophy"></i>
                             <h3>No tournaments yet</h3>
                             <p>Join your first tournament to get started!</p>
-                        </div>
-                    `;
+                        </div>`;
                 }
             } catch (error) {
                 console.error('Error loading tournaments:', error);
-                tournamentsContainer.innerHTML = `<div class="empty-state"><p style="color: #ef4444;">Could not load your tournaments.</p></div>`;
+                tournamentsContainer.innerHTML = `<div class="empty-state"><p style="color: #ef4444;">Could not load tournaments.</p></div>`;
             }
         }
-
-        async function loadUserTeams(token) {
+        
+        async function loadRecommendations() {
+            const recommendationsContainer = document.getElementById('recommendations-grid');
             try {
-                // This would be a real API call to get user's teams
-                // For now, we'll show empty state
-                const teamsContainer = document.getElementById('user-teams');
-                teamsContainer.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-users"></i>
-                        <h3>No teams yet</h3>
-                        <p>Create or join a team to participate in tournaments!</p>
-                    </div>
-                `;
+                 const response = await fetch(`${API_BASE_URL}/api/tournaments`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const result = await response.json();
+                const allTournaments = result.data || [];
+
+                // Simple recommendation: show first 3 tournaments that are open for registration
+                const recommendations = allTournaments.filter(t => t.status === 'registration_open').slice(0, 3);
+                
+                if (recommendations.length > 0) {
+                    recommendationsContainer.innerHTML = recommendations.map(t => {
+                        const poster = t.posterImage || 'https://placehold.co/600x400/161329/F0F0F0?text=Nexus';
+                        return `
+                            <a href="tournament-details.html?slug=${t.slug}" class="tournament-card">
+                                <img src="${poster}" alt="${t.title}">
+                                <div class="tournament-content">
+                                    <h3>${t.title}</h3>
+                                    <p>💰 ₹${(t.prizePool || 0).toLocaleString('en-IN')} Prize Pool</p>
+                                </div>
+                            </a>
+                        `;
+                    }).join('');
+                } else {
+                    recommendationsContainer.innerHTML = `<div class="empty-state"><p>No open tournaments to recommend right now.</p></div>`;
+                }
             } catch (error) {
-                console.error('Error loading teams:', error);
+                console.error('Error loading recommendations:', error);
+                recommendationsContainer.innerHTML = `<div class="empty-state"><p style="color: #ef4444;">Could not load recommendations.</p></div>`;
             }
         }
 
-        function showCreateTeamModal() {
-            alert('Team creation feature coming soon! You can create teams when registering for tournaments.');
-        }
 
-        // Initialize dashboard when page loads
         document.addEventListener('DOMContentLoaded', () => {
+            setLoading(true);
+            const header = document.querySelector('.site-header');
+            
+            // Simplified Navbar Loading
+            header.innerHTML = `
+                <a href="index.html" class="brand">GamingNexus</a>
+                <div class="header-right">
+                    <nav class="primary">
+                        <div class="nav-links">
+                            <a href="index.html#tournaments">Tournaments</a>
+                            <a href="index.html#why-us">Why Us</a>
+                            <a href="index.html#faq">FAQ</a>
+                        </div>
+                    </nav>
+                    <div class="nav-actions">
+                        <div id="guest-menu" style="display: none;"><button class="header-cta" onclick="redirectToAuth()">Join Us</button></div>
+                        <div id="user-menu" style="display: none;">
+                            <div class="profile-dropdown">
+                                <div class="profile-icon" id="profile-icon"><i class="fas fa-user-circle"></i></div>
+                                <div class="profile-modal" id="profile-modal">
+                                    <div class="profile-header">
+                                        <div class="profile-photo"><i class="fas fa-user"></i></div>
+                                        <div class="profile-info"><div class="profile-username" id="modal-username">User</div></div>
+                                    </div>
+                                    <div class="profile-actions">
+                                        <a href="user-dashboard.html" class="profile-action"><i class="fas fa-user"></i><span>My Account</span></a>
+                                        <button class="profile-action logout-action" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="hamburger" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+                </div>`;
+
+            // Initialize navbar and dashboard data
+            initializeNavbar(); 
             loadUserData();
         });
     </script>
 </body>
 
 </html>
+
