@@ -689,46 +689,41 @@
         }
     }
 
+    /**
+     * Public endpoint: Fetches tournament details without authentication.
+     */
     async function getTournamentData(tournamentSlug) {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}`);
-        if (!response.ok) throw new Error(`API Error: ${response.status}`);
-        const result = await response.json();
-        if (result.success) return result.data;
-        throw new Error(result.error || 'Failed to fetch tournament');
-      } catch (error) {
-        console.error('Error fetching tournament data:', error);
-        document.getElementById('tournament-title').textContent = "Tournament Not Found";
-        document.getElementById('tournament-subtitle').textContent = "The requested tournament could not be loaded.";
-        document.getElementById('primary-action').style.display = 'none';
-        return null;
+      const response = await fetch(`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}`);
+      if (!response.ok) {
+          if (response.status === 404) {
+              throw new Error('Tournament Not Found on API');
+          }
+          throw new Error(`API Error: ${response.status}`);
       }
+      const result = await response.json();
+      if (result.success) return result.data;
+      throw new Error(result.error || 'Failed to fetch tournament');
     }
 
-    // --- NEW DYNAMIC TIMELINE LOGIC START ---
+    // --- DYNAMIC TIMELINE LOGIC (unchanged) ---
     const CURRENT_TIME = new Date(); 
     let isCurrentFound = false;
 
-    // 1. Logic to automatically determine event status based on time
     function calculateStatus(eventDatetime) {
         const eventTime = new Date(eventDatetime);
         
-        // Check if the event is fully in the past
         if (CURRENT_TIME > eventTime) {
             return 'completed';
         }
         
-        // Check if this is the first upcoming event (the 'current' focus point)
         if (!isCurrentFound) {
             isCurrentFound = true;
             return 'current';
         }
         
-        // Otherwise, it's a future event
         return 'upcoming';
     }
 
-    // 2. Function to calculate and set the progression line height
     function setProgressionHeight() {
         const currentEvent = document.querySelector('[data-status="current"]');
         const progressionLine = document.getElementById('progression-line');
@@ -737,32 +732,27 @@
         if (currentEvent && progressionLine && timelineContainer) {
             const containerTop = timelineContainer.getBoundingClientRect().top;
             const currentTop = currentEvent.getBoundingClientRect().top;
-            // 12px = half the dot height (24px)
             const heightToCurrent = currentTop - containerTop + 12; 
 
             progressionLine.style.height = `${heightToCurrent}px`;
         } else if (progressionLine && timelineContainer) {
-            // Scenario where all events are completed (or none exist)
             const lastEvent = document.querySelector('#event-list > div:last-child');
             if (lastEvent) {
                 const containerTop = timelineContainer.getBoundingClientRect().top;
                 const lastBottom = lastEvent.getBoundingClientRect().bottom;
                 const totalHeight = lastBottom - containerTop;
-                // Add a small buffer (e.g., 20px) to fully cover the last dot's position
                 progressionLine.style.height = `${totalHeight + 20}px`; 
             }
         }
     }
 
-    // 3. Function to render the dynamic HTML content
     function renderDynamicTimeline(timelineData) {
         const container = document.getElementById('event-list');
         if (!container) return;
 
-        container.innerHTML = ''; // Clear existing content
-        isCurrentFound = false; // Reset status flag for fresh rendering
+        container.innerHTML = ''; 
+        isCurrentFound = false; 
 
-        // Handle case where no schedule events were found beyond basic dates
         if (timelineData.length === 0) {
             container.innerHTML = `<div style="text-align:center; padding: 2rem; color: var(--text-secondary);"><p>No detailed match schedule has been posted yet.</p></div>`;
             return;
@@ -781,22 +771,18 @@
                 statusText = 'Phase Complete';
                 cardClass = 'bg-bg-completed border border-primary-neon/50 shadow-lg';
                 dotClass = 'bg-primary-neon';
-                // Checkmark SVG
                 dotContent = '<svg class="w-3 h-3 text-bg-dark" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
                 titleColor = 'text-primary-neon';
                 descriptionColor = 'text-primary-neon';
             } else if (status === 'current') {
                 statusText = 'CURRENT PHASE';
-                // Use a slightly different accent color for the current active card for emphasis
                 cardClass = 'bg-bg-card border border-current-accent shadow-xl shadow-current-accent/20';
                 dotClass = 'bg-primary-neon';
-                // Pulsing dot
                 dotContent = '<div class="w-2.5 h-2.5 rounded-full bg-bg-dark animate-pulse"></div>'; 
                 titleColor = 'text-current-accent';
                 descriptionColor = 'text-current-accent';
             }
 
-            // Combine the day/month and time parts
             const dateParts = event.displayTime.split(',');
 
             const itemHtml = `
@@ -823,18 +809,16 @@
             container.insertAdjacentHTML('beforeend', itemHtml);
         });
 
-        // After rendering, update the progression bar height and listen for resize
         setProgressionHeight();
         window.removeEventListener('resize', setProgressionHeight);
         window.addEventListener('resize', setProgressionHeight);
     }
-    // --- NEW DYNAMIC TIMELINE LOGIC END ---
+    // --- DYNAMIC TIMELINE LOGIC END ---
 
 
-    // MODIFIED: updateSchedule function to build data for the new timeline renderer
     function updateSchedule(tournament) {
         const container = document.getElementById('event-list');
-        if (!container) return; // Use event-list container now
+        if (!container) return; 
 
         let allEvents = [];
 
@@ -843,16 +827,14 @@
             return isNaN(date) ? null : date;
         };
         
-        // Helper to format Date for display and ISO string for comparison
         const formatEventData = (dateObj, title, description = '') => {
             if (!dateObj) return null;
-            // Display date (using UTC zone for consistent display as per your original code)
-            const day = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+            const day = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             const time = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'UTC' });
 
             return {
-                date: dateObj, // Date object for sorting
-                isoDatetime: dateObj.toISOString(), // ISO string for status check
+                date: dateObj, 
+                isoDatetime: dateObj.toISOString(), 
                 title: title,
                 description: description,
                 displayTime: `${day}, ${time} UTC`
@@ -865,36 +847,30 @@
             if (eventData) allEvents.push(eventData);
         };
         
-        // 1. Add required registration/start/end dates
         addEvent(tournament.registrationStart, 'Registration Opens');
         addEvent(tournament.registrationEnd, 'Registration Closes');
         addEvent(tournament.tournamentStart, 'Tournament Begins');
         addEvent(tournament.tournamentEnd, 'Tournament Ends');
 
-        // 2. Add custom schedule events
         if (tournament.scheduleEvents) {
             tournament.scheduleEvents.forEach(event => {
-                const dateTimeStr = `${event.date}T${event.time}Z`; // Assuming time is UTC
+                const dateTimeStr = `${event.date}T${event.time}Z`; 
                 addEvent(dateTimeStr, event.title, event.description);
             });
         }
         
-        // 3. Add match schedule events
         if (tournament.format === 'kp' && tournament.kpSettings && tournament.kpSettings.matchSchedule) {
             tournament.kpSettings.matchSchedule.forEach(match => {
                 addEvent(match.date, match.match, `${match.teams} teams competing`);
             });
         }
 
-        // Sort events chronologically based on the Date object
         allEvents.sort((a, b) => a.date - b.date);
 
-        // Filter out duplicates (e.g., if Reg End and Start Date are the same)
         const uniqueEvents = allEvents.filter((event, index, self) => 
             index === 0 || self[index - 1].date.getTime() !== event.date.getTime()
         );
 
-        // Now pass the processed and sorted data to the dynamic renderer
         renderDynamicTimeline(uniqueEvents);
     }
 
@@ -988,7 +964,7 @@
         }
         
         updateStatusAndLeaderboard(tournament);
-        updateSchedule(tournament); // This now calls the dynamic renderer
+        updateSchedule(tournament); 
     }
     
     function updateStatusAndLeaderboard(tournament) {
@@ -1000,6 +976,8 @@
         primaryActionBtn.style.display = 'inline-flex';
         primaryActionBtn.disabled = false;
 
+        // AUTHENTICATION GUARD: This check determines if the user is registered. 
+        // It requires a token, but if no token exists (user is public), it safely returns false.
         checkUserRegistrationStatus(tournament.slug).then(isRegistered => {
             if (isRegistered) {
                 primaryActionBtn.innerHTML = '<i class="fas fa-check-circle"></i> Registered';
@@ -1015,12 +993,15 @@
                     break;
                 case 'registration_open':
                     primaryActionBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Now';
+                    // Registration action requires authentication, so the click handler checks for a session.
                     primaryActionBtn.onclick = () => {
                         const sessionData = getSessionData();
                         const user = sessionData?.data?.user || sessionData?.user;
                         if (user) {
+                            // User is logged in, proceed to registration form
                             window.location.href = `team-registration.html?slug=${currentTournament.slug}`;
                         } else {
+                            // User is not logged in, redirect to auth page
                             redirectToAuth('register');
                         }
                     };
@@ -1042,22 +1023,36 @@
         });
     }
 
+    /**
+     * Authenticated endpoint check: Safely checks if the currently logged-in user is registered.
+     * PUBLIC ACCESS PROTECTION: Skips the API call if no session data is present.
+     */
     async function checkUserRegistrationStatus(slug) {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('registration') === 'success') return true;
 
         const sessionData = getSessionData();
-        if (!sessionData || !sessionData.token) return false;
+        
+        // If no token exists (user is browsing publicly), we cannot check status.
+        // We safely assume they are *not* registered and skip the authenticated API call.
+        if (!sessionData || !sessionData.token) {
+             console.log('User not authenticated. Skipping registration status API check.');
+             return false;
+        }
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/registration-status`, {
                 headers: { 'Authorization': `Bearer ${sessionData.token}` }
             });
-            if (!response.ok) return false;
+            if (!response.ok) {
+                 // The backend failed the authentication check (401/403) or slug check (404)
+                 console.error(`API check failed with status: ${response.status}. Assuming user is not registered.`);
+                 return false;
+            }
             const result = await response.json();
             return result.success && result.data.isRegistered;
         } catch (error) {
-            console.error('Error checking registration status:', error);
+            console.error('Error checking registration status (Network/CORS failure):', error);
             return false;
         }
     }
@@ -1065,7 +1060,12 @@
     // Existing functions from navbar.js dependency (mocked for file context)
     function redirectToAuth(mode = 'login') { console.log('Redirecting to auth for:', mode); }
     function logout() { console.log('Logging out'); }
-    function getSessionData() { return { token: 'mock_token', user: { username: 'test_user' } }; }
+    
+    // MOCK: Simulates reading session data (e.g., auth token) from cookies/session storage.
+    // Returns null to simulate the default unauthenticated user for public viewing.
+    function getSessionData() { 
+        return null; 
+    }
 
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -1080,9 +1080,7 @@
         return;
       }
       
-      // Mock Data Fetch for immediate visibility without API call
-      // In a real scenario, the API call should provide the dates for updateUI
-      // Since I cannot call the API, I will provide mock data structure that aligns with the existing code's expectations for a seamless integration test.
+      // Define mock data structure for robust failure fallback
       const mockTournamentData = {
           slug: 'test-cup-2025',
           title: 'The Cyber-Clash Invitational',
@@ -1094,11 +1092,10 @@
           maxTeams: 64,
           prizeDistribution: { 'first': 100000, 'second': 50000 },
           status: 'registration_open',
-          // Mocking dates around the current time (Sept 27, 2025, 6:13 PM IST)
-          registrationStart: '2025-09-01T00:00:00Z', // Completed
-          registrationEnd: '2025-09-28T23:59:00Z', // Current Phase (just before deadline)
-          tournamentStart: '2025-10-05T14:00:00Z', // Upcoming
-          tournamentEnd: '2025-10-08T20:00:00Z', // Upcoming
+          registrationStart: '2025-09-01T00:00:00Z', 
+          registrationEnd: '2025-09-28T23:59:00Z', 
+          tournamentStart: '2025-10-05T14:00:00Z', 
+          tournamentEnd: '2025-10-08T20:00:00Z', 
           scheduleEvents: [
               { date: '2025-10-01', time: '18:00:00', title: 'Bracket Reveal', description: 'The official tournament bracket is published.' },
               { date: '2025-10-05', time: '13:00:00', title: 'Mandatory Player Check-in', description: 'All team captains must check in 1 hour before start.' }
@@ -1106,8 +1103,18 @@
           finalists: []
       };
 
-      currentTournament = mockTournamentData; // Use mock data for visible demonstration
-      // In a live system, this line would be: currentTournament = await getTournamentData(slug);
+      let tournamentData = null;
+      try {
+        // --- FIX RESTORED: Attempt the live API call first (Public Read) ---
+        tournamentData = await getTournamentData(slug);
+      } catch (e) {
+         console.warn(`Live API fetch for slug "${slug}" failed. Falling back to mock data.`, e);
+         // Fallback to mock data if API fails or tournament is not found
+         tournamentData = mockTournamentData;
+         document.getElementById('tournament-title').textContent += " (MOCKED)";
+      }
+      
+      currentTournament = tournamentData;
       
       if (currentTournament) {
         updateUI(currentTournament);
@@ -1126,7 +1133,6 @@
           });
       });
       
-      // Ensure the progression line updates on initial load and resize
       window.addEventListener('resize', setProgressionHeight);
     });
 
