@@ -536,10 +536,10 @@
             setLoading(true);
             const header = document.querySelector('.site-header');
             
-            // Step 1: Inject Navbar HTML
             header.innerHTML = `
                 <a href="index.html" class="brand">GamingNexus</a>
                 <div class="header-right">
+                    
                     <nav class="primary">
                         <div class="nav-links">
                             <a href="index.html#tournaments">Tournaments</a>
@@ -547,6 +547,7 @@
                             <a href="index.html#faq">FAQ</a>
                         </div>
                     </nav>
+                    
                     <div class="nav-actions">
                         <div id="guest-menu" style="display: none;"><button class="header-cta" onclick="redirectToAuth()">Join Us</button></div>
                         <div id="user-menu" style="display: none;">
