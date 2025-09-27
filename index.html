@@ -801,7 +801,54 @@
     body.loaded .site-footer {
         opacity: 1;
     }
+    /* Find this existing rule and add 'position: relative;' */
+    .news-card, .tournament-card {
+        background: var(--panel);
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid var(--border-color);
+        text-decoration: none;
+        color: var(--text-primary);
+        display: flex;
+        flex-direction: column;
+        position: relative; /* <-- ADD THIS LINE */
+    }
+
+    /* Add this entire new block of CSS for the status badges */
+    .tournament-status-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        padding: 0.3rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        z-index: 2;
+        backdrop-filter: blur(4px);
+    }
     
+    .status-registration-open {
+        background: rgba(34, 197, 94, 0.5); /* Green */
+        color: #f0f0f0;
+    }
+    
+    .status-ongoing {
+        background: rgba(59, 130, 246, 0.5); /* Blue */
+        color: #f0f0f0;
+    }
+    
+    .status-ended {
+        background: rgba(239, 68, 68, 0.5); /* Red */
+        color: #f0f0f0;
+    }
+    
+    .status-upcoming,
+    .status-registration-closed {
+        background: rgba(107, 114, 128, 0.5); /* Gray */
+        color: #f0f0f0;
+    }
 
   </style>
 </head>
@@ -1153,15 +1200,24 @@
             const rawPoster = tournament.posterImage || tournament.backgroundImage || null;
             let finalPoster = 'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop';
            
-        if (rawPoster) {
-            if (rawPoster.startsWith('http')) {
-                finalPoster = rawPoster;
-            } else {
-                finalPoster = new URL(rawPoster, API_BASE_URL).href;
+            if (rawPoster) {
+                if (rawPoster.startsWith('http')) {
+                    finalPoster = rawPoster;
+                } else {
+                    finalPoster = new URL(rawPoster, API_BASE_URL).href;
+                }
             }
-        }
+            
+            // --- NEW LOGIC TO HANDLE STATUS ---
+            const status = tournament.status || 'upcoming'; // Default to 'upcoming' if status is missing
+            const statusText = status.replace(/_/g, ' ');
+            const statusClass = `status-${status}`;
+            // --- END OF NEW LOGIC ---
+
             return `
                 <a href="tournament-details.html?slug=${tournament.slug}" class="tournament-card">
+                    <div class="tournament-status-badge ${statusClass}">${statusText}</div>
+                    
                     <img src="${finalPoster}" alt="${tournament.title} Poster" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop';">
                     <div class="tournament-content">
                         <div>
