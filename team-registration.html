@@ -10,9 +10,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
     <link rel="stylesheet" href="navbar.css">
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
     <style>
+        /* =========================
+           Theme variables (Cyberpunk)
+           ========================= */
         :root {
             --primary-color: #0AFAD9;      /* Electric Cyan */
             --bg-dark: #0D0A1A;            /* Dark Matter Black */
@@ -22,8 +25,16 @@
             --text-secondary: rgba(240, 240, 240, 0.7);
             --border-color: rgba(10, 250, 217, 0.2);
             --ease: 0.3s ease;
+
+            /* Mappings for team-registration's existing variables */
+            --bg: var(--bg-dark);
+            --muted: var(--text-secondary);
+            --copy: var(--text-primary);
+            --accent: var(--primary-color);
+            --accent-2: #50FDE5; /* Lighter cyan for hover */
             --radius: 12px;
             --success: #10b981;
+            --warning: #f59e0b;
             --danger: #ef4444;
         }
 
@@ -37,120 +48,216 @@
             margin: 0;
             font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
             background: var(--bg-dark);
-            color: var(--text-primary);
+            color: var(--copy);
             line-height: 1.6;
             min-height: 100vh;
-            position: relative;
         }
         
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background:
-                radial-gradient(circle at 15% 85%, rgba(10, 250, 217, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 85% 25%, rgba(93, 63, 211, 0.1) 0%, transparent 40%);
-            z-index: -1;
-            animation: pulse 15s infinite ease-in-out;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; }
-        }
-
-        .site-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: rgba(13, 10, 26, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: var(--text-primary);
-            font-size: 1.2rem;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .brand:hover {
-            color: var(--primary-color);
-        }
+        /* The header styles are now fully controlled by navbar.css */
 
         .main-content {
-            margin-top: 64px;
+            margin-top: 64px; /* Default margin, can be adjusted if navbar height changes */
             padding: 48px 24px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        /* --- New Centered Layout --- */
+        /* --- Layout and Side Panel Design --- */
         .registration-container {
-            max-width: 800px;
-            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 2.5rem;
+            align-items: start;
         }
 
-        .registration-form-container { /* Renamed for clarity */
+        .registration-form,
+        .tournament-info {
             background: var(--panel);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 2.5rem;
+            padding: 2rem;
             transition: box-shadow 0.3s ease;
         }
-        
-        .registration-form-container:hover {
-            box-shadow: 0 0 25px rgba(10, 250, 217, 0.1);
+
+        .registration-form:hover {
+            box-shadow: 0 0 15px rgba(10, 250, 217, 0.1);
+        }
+
+        .tournament-info {
+            position: sticky;
+            top: 88px;
+            padding: 1.5rem;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 0 30px rgba(10, 250, 217, 0.15);
         }
 
         .form-header {
-            text-align: center;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
         }
 
         .form-title {
-            font-size: 2.25rem;
+            font-size: 2rem;
             font-weight: 800;
             margin-bottom: 0.5rem;
         }
 
         .form-subtitle {
-            color: var(--text-secondary);
+            color: var(--muted);
+            font-size: 1rem;
+        }
+
+        .tournament-poster {
+            width: 100%;
+            height: 200px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tournament-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .poster-placeholder {
+            color: var(--muted);
+            text-align: center;
+        }
+
+        /* Tournament Details Styling */
+        .tournament-details h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.85rem 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--copy);
+        }
+        
+        /* --- Payment and Structure Section --- */
+        .payment-structure {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .payment-structure h4 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .round-payment {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: rgba(10, 250, 217, 0.1);
+            border-radius: 6px;
+            border: 1px solid var(--accent);
+        }
+        
+        .round-name {
+            font-weight: 600;
+            color: var(--copy);
+        }
+
+        .round-fee {
+            color: var(--accent);
+            font-weight: 700;
             font-size: 1.1rem;
         }
 
+        /* --- New Sleek KP Structure Styles --- */
+        .tournament-structure-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .tournament-structure-section h4 {
+             color: var(--accent);
+             margin-bottom: 1rem;
+        }
+
+        .kp-compact-flow {
+            display: grid;
+            gap: 0.5rem;
+        }
+        
+        .kp-detail-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            background: rgba(10, 250, 217, 0.05);
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .kp-detail-line i {
+            color: var(--accent);
+            margin-right: 0.75rem;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .kp-detail-line span:first-of-type {
+            color: var(--muted);
+            font-weight: 500;
+            flex-grow: 1;
+            text-align: left;
+        }
+        
+        .kp-detail-line .detail-value {
+            color: var(--copy);
+            font-weight: 700;
+            text-align: right;
+        }
+
         .form-section {
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
         }
 
         .section-title {
             font-size: 1.4rem;
             font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: var(--text-primary);
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1rem;
+            color: var(--copy);
         }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
+            gap: 1rem;
+            margin-bottom: 1rem;
         }
 
         .form-group {
@@ -165,76 +272,73 @@
 
         .form-group label {
             font-weight: 600;
-            color: var(--text-secondary);
+            color: var(--copy);
             font-size: 0.9rem;
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
-            background: rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 0.85rem 1rem;
-            color: var(--text-primary);
-            font-size: 1rem;
+            border-radius: 6px;
+            padding: 0.75rem;
+            color: var(--copy);
             font-family: inherit;
-            transition: all 0.3s ease;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
         }
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(10, 250, 217, 0.2);
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .players-section {
-            background: rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: var(--radius);
             padding: 1.5rem;
-            border: 1px solid var(--border-color);
         }
 
         .player-form {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: 1fr 1fr 1fr auto;
             gap: 1rem;
-            padding-bottom: 1.5rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .player-header {
-            grid-column: 1 / -1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            align-items: end;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 6px;
+            border: 1px solid transparent;
+            transition: border-color 0.3s ease;
         }
 
         .player-form:last-child {
             margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
+        }
+
+        .player-form:hover {
+            border-color: rgba(10, 250, 217, 0.1);
         }
 
         .captain-badge {
-            background: var(--primary-color);
+            background: var(--accent);
             color: var(--bg-dark);
-            padding: 0.25rem 0.75rem;
+            padding: 0.25rem 0.5rem;
             border-radius: 12px;
             font-size: 0.75rem;
             font-weight: 700;
         }
 
+        /* --- Button Styles --- */
         .btn {
-            padding: 0.9rem 1.5rem;
-            border-radius: 8px;
+            padding: 1rem 2rem;
+            border-radius: 6px;
             font-weight: 700;
-            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: all 0.3s ease;
             border: none;
             text-decoration: none;
             display: inline-flex;
@@ -248,18 +352,29 @@
             transform: translateY(-3px);
         }
 
+        /* UPDATED: Aligned with navbar.css .header-cta */
         .btn-primary {
-            background: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-2));
             color: var(--bg-dark);
         }
 
         .btn-primary:hover {
-            filter: brightness(1.1);
+            transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(10, 250, 217, 0.2);
         }
-        
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--copy);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
         .btn:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
@@ -268,40 +383,76 @@
         .add-player-btn {
             width: 100%;
             margin-top: 1rem;
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
         }
-        .add-player-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
+
+        .registration-summary {
+            background: rgba(93, 63, 211, 0.1);
+            border: 1px solid rgba(93, 63, 211, 0.3);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .registration-summary h4 {
+            color: var(--accent-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-total {
+            border-top: 1px solid rgba(93, 63, 211, 0.3);
+            padding-top: 1rem;
+            margin-top: 1rem;
+            font-weight: 700;
+            font-size: 1.1rem;
         }
 
         .terms-section {
-            background: rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: var(--radius);
             padding: 1.5rem;
-            margin: 2.5rem 0;
+            margin-bottom: 2rem;
             border: 1px solid var(--border-color);
+        }
+
+        .terms-section h4 {
+            color: var(--copy);
+            margin-bottom: 1rem;
+        }
+
+        .terms-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .terms-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .terms-list li:last-child {
+            border-bottom: none;
         }
 
         .checkbox-group {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
             margin-top: 1rem;
         }
 
         .checkbox-group input[type="checkbox"] {
             width: 18px;
             height: 18px;
-            accent-color: var(--primary-color);
+            accent-color: var(--accent);
         }
-        
-        .checkbox-group label {
-            color: var(--text-secondary);
-            cursor: pointer;
-        }
-        
+
+        /* --- Message Box Styles --- */
         .message-box {
             border-radius: var(--radius);
             padding: 1.25rem;
@@ -323,7 +474,14 @@
             background: rgba(239, 68, 68, 0.15);
             border: 1px solid var(--danger);
         }
-        
+
+        .success-message {
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid var(--success);
+        }
+
+        /* --- Loader Styles --- */
         #loader-wrapper {
             position: fixed;
             top: 0;
@@ -345,41 +503,81 @@
             pointer-events: all;
         }
 
+        /* --- Success/Already Registered Styles --- */
         .already-registered {
             text-align: center;
             padding: 3rem 2rem;
+            background: var(--panel);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 25px rgba(10, 250, 217, 0.15);
         }
-        
+
         .success-icon {
             font-size: 4rem;
-            color: var(--success);
+            color: #10b981;
             margin-bottom: 1rem;
         }
 
         .already-registered h2 {
-            color: var(--text-primary);
+            color: var(--copy);
             margin-bottom: 1rem;
         }
 
         .already-registered p {
-            color: var(--text-secondary);
+            color: var(--muted);
             margin-bottom: 1rem;
         }
 
         .registration-actions {
             display: flex;
-            flex-wrap: wrap;
             gap: 1rem;
             justify-content: center;
             margin-top: 2rem;
         }
 
+        strong {
+            color: var(--accent);
+        }
+
+        .success-message-card {
+            background: var(--panel);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 25px rgba(10, 250, 217, 0.1);
+        }
+
+        .whats-next-card {
+            background: rgba(93, 63, 211, 0.1);
+            border: 1px solid rgba(93, 63, 211, 0.3);
+        }
+
+        .whats-next-card h4 {
+            color: var(--accent-secondary) !important;
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 992px) {
+            .registration-container {
+                grid-template-columns: 1fr;
+            }
+
+            .tournament-info {
+                position: static;
+                margin-top: 2.5rem;
+            }
+        }
+        
         @media (max-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr;
             }
+
             .form-group.full-width {
                 grid-column: span 1;
+            }
+
+            .player-form {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -390,18 +588,63 @@
     </div>
 
     <header class="site-header">
-        <a href="index.html" class="brand">
-            GamingNexus
-        </a>
-        <div id="user-menu" class="header-right">
-            <!-- Navbar content from navbar.js will be injected here -->
+        <a href="index.html" class="brand">GamingNexus</a>
+        
+        <!-- ADDED: Primary navigation for desktop -->
+        <nav class="primary">
+            <div class="nav-links">
+                <a href="index.html#tournaments">Tournaments</a>
+                <a href="index.html#why-us">Why Us</a>
+                <a href="index.html#faq">FAQ</a>
+            </div>
+        </nav>
+
+        <div class="header-right">
+            <div class="nav-actions">
+                <div id="guest-menu">
+                    <!-- This button uses the .header-cta class from navbar.css -->
+                    <button class="header-cta" onclick="redirectToAuth('register')">Join Us</button>
+                </div>
+
+                <div id="user-menu" style="display: none;">
+                    <!-- This structure matches navbar.css for the dropdown -->
+                    <div class="profile-dropdown">
+                        <div class="profile-icon" id="profile-icon">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="profile-modal" id="profile-modal">
+                            <div class="profile-header">
+                                <div class="profile-photo"><i class="fas fa-user"></i></div>
+                                <div class="profile-info">
+                                    <div class="profile-username" id="modal-username">User</div>
+                                </div>
+                            </div>
+                            <div class="profile-actions">
+                                <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
+                                    <i class="fas fa-user-cog"></i><span>My Account</span>
+                                </a>
+                                <button class="profile-action logout-action" onclick="logout()">
+                                    <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Hamburger button for mobile, controlled by navbar.js -->
+            <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </header>
+    
+    <!-- This div is populated by navbar.js for mobile navigation -->
     <div id="mobile-nav" class="mobile-nav"></div>
 
     <main class="main-content">
+
         <div class="registration-container">
-            <div class="registration-form-container">
+            <div class="registration-form">
                 <div class="form-header">
                     <h1 class="form-title">Team Registration</h1>
                     <p class="form-subtitle" id="tournament-name">Register your team for this tournament</p>
@@ -422,7 +665,7 @@
                                 <input type="text" id="team-tag" name="teamTag" placeholder="e.g., TL, TSM">
                             </div>
                         </div>
-                         <div class="form-group full-width">
+                        <div class="form-group full-width">
                             <label for="team-description">Team Description</label>
                             <textarea id="team-description" name="teamDescription" rows="3"
                                 placeholder="Tell us about your team..."></textarea>
@@ -435,12 +678,16 @@
                             <div id="players-container">
                                 <!-- Players will be added dynamically -->
                             </div>
-                             <button type="button" class="btn add-player-btn" id="add-player-btn" style="display: none;">
+                            <button type="button" class="btn btn-secondary add-player-btn" id="add-player-btn">
                                 <i class="fas fa-plus"></i> Add Player
                             </button>
                         </div>
                     </div>
-                    
+
+                    <div class="registration-summary">
+                        <!-- Registration summary will be loaded dynamically -->
+                    </div>
+
                     <div class="terms-section" id="terms-section">
                         <!-- Tournament rules will be loaded dynamically -->
                     </div>
@@ -450,30 +697,105 @@
                     </button>
                 </form>
             </div>
+
+            <div class="tournament-info">
+                <div class="tournament-poster" id="tournament-poster">
+                    <div class="poster-placeholder">
+                        <i class="fas fa-image"></i><br>
+                        Tournament Poster
+                    </div>
+                </div>
+
+                <div class="tournament-details">
+                    <h3 id="tournament-title">Loading Tournament...</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Game</span>
+                        <span class="detail-value" id="game-name">--</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Format</span>
+                        <span class="detail-value" id="tournament-format">--</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Max Teams</span>
+                        <span class="detail-value" id="max-teams">--</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Prize Pool</span>
+                        <span class="detail-value" id="prize-pool">--</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Registration Ends</span>
+                        <span class="detail-value" id="reg-end-date">--</span>
+                    </div>
+                </div>
+
+                <div class="tournament-structure-section" id="tournament-structure-section">
+                    <!-- Tournament structure will be loaded dynamically -->
+                </div>
+
+                <div class="payment-structure" id="payment-structure">
+                    <!-- Payment structure will be loaded dynamically -->
+                </div>
+            </div>
         </div>
     </main>
 
     <script>
-        const API_BASE_URL = 'https://t2-237c.onrender.com';
-        let currentTournament = null;
-        let playerCount = 0;
-        
+        // --- Loader Function ---
         function setLoading(isLoading) {
-            const registerBtn = document.getElementById('register-btn');
             const loader = document.getElementById('loader-wrapper');
-            
+            if (!loader) return;
             if (isLoading) {
-                if(registerBtn) {
-                    registerBtn.disabled = true;
-                    registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-                }
                 loader.classList.add('visible');
             } else {
-                if(registerBtn) {
-                    registerBtn.disabled = false;
-                    registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Team';
-                }
                 loader.classList.remove('visible');
+            }
+        }
+
+        const API_BASE_URL = (() => {
+            const isLocal = window.location.hostname === 'localhost' ||
+                window.location.hostname === '127.0.0.1' ||
+                window.location.protocol === 'file:';
+            const apiUrl = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
+            console.log('🔧 Environment Detection:', {
+                hostname: window.location.hostname,
+                protocol: window.location.protocol,
+                isLocal: isLocal,
+                apiUrl: apiUrl
+            });
+            return apiUrl;
+        })();
+        let currentTournament = null;
+        let playerCount = 0;
+
+        async function testApiConnection() {
+            try {
+                console.log('🔍 Testing API connection to:', API_BASE_URL);
+                const response = await fetch(`${API_BASE_URL}/api/tournaments`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                if (response.ok) {
+                    console.log('✅ API connection successful');
+                    return true;
+                } else {
+                    console.warn('⚠️ API responded with status:', response.status);
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ API connection failed:', error.message);
+                const errorContainer = document.getElementById('error-container');
+                if (errorContainer) {
+                    errorContainer.innerHTML = `
+                        <div class="message-box error-message">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Backend connection failed. Please make sure the backend server is running on port 8000.
+                            <br><small>Error: ${error.message}</small></span>
+                        </div>
+                    `;
+                }
+                return false;
             }
         }
 
@@ -483,26 +805,27 @@
             const filename = imagePath.split('/').pop();
             return `${API_BASE_URL}/api/static/images/${filename}`;
         }
-        
+
+        // --- TOURNAMENT LOADING ---
         async function loadTournamentData() {
+            setLoading(true);
             const urlParams = new URLSearchParams(window.location.search);
-            const tournamentSlug = urlParams.get('slug');
+            const tournamentSlug = urlParams.get('slug') || urlParams.get('id');
+
             if (!tournamentSlug) {
-                console.error('No tournament specified. A tournament slug is required in the URL.');
-                document.getElementById('registration-form').style.display = 'none';
+                showError('No tournament specified. Please provide a valid tournament slug.');
+                setLoading(false);
                 return;
             }
 
-            setLoading(true);
             try {
                 const response = await fetch(`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}`);
-                if (!response.ok) throw new Error(response.status === 404 ? 'Tournament not found' : 'Failed to fetch tournament data');
-                
+                if (!response.ok) {
+                    throw new Error(response.status === 404 ? 'Tournament not found' : 'Failed to fetch tournament data');
+                }
                 const data = await response.json();
                 currentTournament = data.data;
                 updateTournamentDisplay();
-                await checkUserRegistrationStatus();
-
             } catch (error) {
                 console.error('Error loading tournament:', error);
                 showError(`Error loading tournament: ${error.message}`);
@@ -513,66 +836,97 @@
 
         function updateTournamentDisplay() {
             if (!currentTournament) return;
-
             document.getElementById('tournament-name').textContent = `Register for ${currentTournament.title}`;
+            document.getElementById('tournament-title').textContent = currentTournament.title;
+            document.getElementById('game-name').textContent = currentTournament.game || 'TBD';
+            let formatText = currentTournament.format || currentTournament.tournamentFormat || 'TBD';
+            document.getElementById('tournament-format').textContent = formatText;
+            document.getElementById('max-teams').textContent = currentTournament.maxTeams || 'Unlimited';
+
+            if (currentTournament.format === 'kp' && currentTournament.kpSettings) {
+                const maxPlayersNote = document.createElement('div');
+                maxPlayersNote.className = 'detail-item';
+                maxPlayersNote.innerHTML = `
+                    <span class="detail-label">Max Players per Team</span>
+                    <span class="detail-value">${currentTournament.kpSettings.maxPlayersPerTeam}</span>
+                `;
+                document.querySelector('.tournament-details').appendChild(maxPlayersNote);
+            }
+            document.getElementById('prize-pool').textContent = currentTournament.prizePool ? `₹${currentTournament.prizePool.toLocaleString()}` : 'TBD';
             generatePlayerRows();
+            const regEndDate = currentTournament.registrationEnd ?
+                new Date(currentTournament.registrationEnd).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'TBD';
+            document.getElementById('reg-end-date').textContent = regEndDate;
+            loadPaymentStructure(currentTournament);
             loadTournamentRules(currentTournament);
-            checkRegistrationPeriod();
+            loadTournamentStructure(currentTournament);
+            loadRegistrationSummary(currentTournament);
+            const posterPath = currentTournament.posterImage || currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl;
+            if (posterPath) {
+                const imageUrl = getImageUrl(posterPath);
+                document.getElementById('tournament-poster').innerHTML = `<img src="${imageUrl}" alt="Tournament Poster" onerror="this.parentElement.innerHTML='<div class=\\'poster-placeholder\\'><i class=\\'fas fa-image\\'></i><br>Tournament Poster</div>'">`;
+            }
+            checkRegistrationAvailability();
         }
 
-        function checkRegistrationPeriod() {
+        function checkRegistrationAvailability() {
             if (!currentTournament) return;
             const now = new Date();
-            const regEnd = new Date(currentTournament.registrationEnd);
             const regStart = new Date(currentTournament.registrationStart);
-            
-            if (now > regEnd || currentTournament.status !== 'registration-open' && currentTournament.status !== 'upcoming') {
-                showError('Registration for this tournament is closed.');
-                document.getElementById('register-btn').disabled = true;
-                document.getElementById('register-btn').textContent = 'Registration Closed';
+            const regEnd = new Date(currentTournament.registrationEnd);
+            const restrictedStatuses = ['cancelled', 'completed'];
+
+            const registerBtn = document.getElementById('register-btn');
+
+            if (restrictedStatuses.includes(currentTournament.status)) {
+                showError('Registration is not currently open for this tournament.');
+                registerBtn.disabled = true;
+                registerBtn.textContent = 'Registration Closed';
+            } else if (now > regEnd) {
+                showError('Registration for this tournament has ended.');
+                registerBtn.disabled = true;
+                registerBtn.textContent = 'Registration Closed';
             } else if (now < regStart) {
-                 showError(`Registration opens on ${regStart.toLocaleDateString()}`);
-                document.getElementById('register-btn').disabled = true;
-                document.getElementById('register-btn').textContent = 'Registration Not Open';
+                showError(`Registration opens on ${regStart.toLocaleDateString()}`);
+                registerBtn.disabled = true;
+                registerBtn.textContent = 'Registration Not Open';
+            } else {
+                console.log('Registration is open!');
+                registerBtn.disabled = false;
+                registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Team';
+                document.getElementById('error-container').innerHTML = '';
             }
         }
-        
+
         function generatePlayerRows() {
             if (!currentTournament) return;
-            const maxPlayers = currentTournament.kpSettings?.maxPlayersPerTeam || 4;
+            const maxPlayers = currentTournament.format === 'kp' && currentTournament.kpSettings ? currentTournament.kpSettings.maxPlayersPerTeam : 4;
             const playersContainer = document.getElementById('players-container');
             playersContainer.innerHTML = '';
             playerCount = 0;
-
             for (let i = 1; i <= maxPlayers; i++) {
-                addPlayerRowDOM(i);
+                addPlayerRow(i);
             }
+            document.getElementById('add-player-btn').style.display = 'none';
         }
 
-        function addPlayerRowDOM(playerNumber) {
+        function addPlayerRow(playerNumber) {
             playerCount = playerNumber;
             const playersContainer = document.getElementById('players-container');
             const playerForm = document.createElement('div');
             playerForm.className = 'player-form';
             playerForm.innerHTML = `
-                <div class="player-header">
-                    <h4>Player ${playerNumber} ${playerNumber === 1 ? '<span class="captain-badge">Team Captain</span>' : ''}</h4>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>Player ${playerNumber} ${playerNumber === 1 ? '<span class="captain-badge">Captain</span>' : ''}</label>
                 </div>
                 <div class="form-group">
-                    <label for="player-name-${playerNumber}">Player Name *</label>
-                    <input type="text" id="player-name-${playerNumber}" name="players[${playerNumber}][name]" required>
+                    <input type="text" id="player-name-${playerNumber}" name="players[${playerNumber}][name]" placeholder="Player Name *" required>
                 </div>
                 <div class="form-group">
-                    <label for="player-email-${playerNumber}">Email *</label>
-                    <input type="email" id="player-email-${playerNumber}" name="players[${playerNumber}][email]" required>
-                </div>
-                 <div class="form-group">
-                    <label for="player-phone-${playerNumber}">Phone Number</label>
-                    <input type="tel" id="player-phone-${playerNumber}" name="players[${playerNumber}][phoneNumber]" placeholder="+91 9876543210">
+                    <input type="email" id="player-email-${playerNumber}" name="players[${playerNumber}][email]" placeholder="Email *" required>
                 </div>
                 <div class="form-group">
-                    <label for="player-ingame-${playerNumber}">In-Game ID *</label>
-                    <input type="text" id="player-ingame-${playerNumber}" name="players[${playerNumber}][inGameId]" required>
+                    <input type="text" id="player-ingame-${playerNumber}" name="players[${playerNumber}][inGameId]" placeholder="In-Game ID *" required>
                 </div>
             `;
             playersContainer.appendChild(playerForm);
@@ -582,52 +936,42 @@
             const sessionData = getSessionData();
             if (!sessionData || !sessionData.token) {
                 showError('Please login to register for tournaments.');
-                // You might want a function to redirect to login page here.
                 return;
             }
-
             setLoading(true);
             try {
-                const teamData = { 
-                    teamName: formData.get('teamName'), 
-                    teamDescription: formData.get('teamDescription'),
-                    players: [] 
+                const teamData = {
+                    teamName: formData.get('teamName'),
+                    players: []
                 };
-
                 const maxPlayers = currentTournament.kpSettings?.maxPlayersPerTeam || 4;
                 for (let i = 1; i <= maxPlayers; i++) {
                     const name = formData.get(`players[${i}][name]`);
                     const email = formData.get(`players[${i}][email]`);
                     const inGameId = formData.get(`players[${i}][inGameId]`);
-                    const phoneNumber = formData.get(`players[${i}][phoneNumber]`);
-
                     if (!name || !email || !inGameId) {
                         throw new Error(`Please fill in all required fields for Player ${i}`);
                     }
-                    teamData.players.push({ name, email, inGameId, phoneNumber, role: i === 1 ? 'Captain' : 'Player' });
+                    teamData.players.push({ name, email, inGameId, role: i === 1 ? 'Captain' : 'Player' });
                 }
-
                 const entryFee = currentTournament.entryFee || 0;
                 if (entryFee <= 0) {
                     await registerFreeTeam(teamData, sessionData.token);
-                    return;
+                    return; 
                 }
-
                 const paymentPayload = { tournamentSlug: currentTournament.slug, teamData, amount: entryFee };
                 const response = await fetch(`${API_BASE_URL}/api/payments/initiate`, {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${sessionData.token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify(paymentPayload)
                 });
-
                 const result = await response.json();
-                if (!response.ok || !result.success) throw new Error(result.message || 'Failed to initiate payment.');
-                
+                if (!response.ok || !result.success) throw new Error(result.detail || 'Failed to initiate payment.');
                 redirectToPayU(result.payuData, result.payuUrl);
-
             } catch (error) {
                 console.error('Registration/Payment error:', error);
                 showError(error.message);
+            } finally {
                 setLoading(false);
             }
         }
@@ -636,119 +980,139 @@
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = payuUrl;
-            for (const key in payuData) {
+            Object.keys(payuData).forEach(key => {
                 const hiddenField = document.createElement('input');
                 hiddenField.type = 'hidden';
                 hiddenField.name = key;
                 hiddenField.value = payuData[key];
                 form.appendChild(hiddenField);
-            }
+            });
             document.body.appendChild(form);
             form.submit();
         }
-        
+
         async function registerFreeTeam(teamData, token) {
-             try {
-                const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament.slug}/register`, {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify(teamData)
-                });
-                const result = await response.json();
-                if (!response.ok) throw new Error(result.message || 'Free registration failed.');
-                showRegistrationSuccess(result.data);
-            } catch(error) {
-                 showError(error.message);
-            } finally {
-                setLoading(false);
-            }
+            const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament.slug}/register`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify(teamData)
+            });
+            const result = await response.json();
+            if (!response.ok || !result.success) throw new Error(result.detail || 'Free registration failed.');
+            showRegistrationSuccess(result.data);
         }
 
-        function loadTournamentRules(tournament) {
-            const container = document.getElementById('terms-section');
-            const entryFee = tournament.entryFee || 0;
-            const rules = tournament.rules || [
-                `One-time entry fee of ₹${entryFee.toLocaleString()} per team`,
-                'No additional fees for qualifying rounds',
-                'No refunds for eliminated teams',
-                'Organizers reserve the right to disqualify teams for misconduct'
-            ];
+        function loadRegistrationSummary(t) {
+            document.querySelector('.registration-summary').innerHTML = `
+                <h4><i class="fas fa-receipt"></i> Registration Summary</h4>
+                <div class="summary-item"><span>Entry Fee</span><span>₹${(t.entryFee || 0).toLocaleString()}</span></div>
+                <div class="summary-total"><div class="summary-item"><span>Total Due</span><span>₹${(t.entryFee || 0).toLocaleString()}</span></div></div>
+            `;
+        }
+
+        function loadTournamentRules(t) {
+            const rules = t.format === 'kp' ? [
+                `One-time entry fee of ₹${t.entryFee || 200} per team`,
+                `Teams divided into ${t.kpSettings.numberOfGroups || 4} groups of ${t.kpSettings.groupSize || 25}`,
+                `Top ${t.kpSettings.qualifiersPerGroup || 4} teams from each group qualify`,
+                `Maximum ${t.kpSettings.maxPlayersPerTeam || 4} players per team`,
+                'No additional fees for qualifying rounds'
+            ] : [`Entry fee: ₹${t.entryFee || 0} per team`];
+            rules.push('No refunds for eliminated teams', 'Organizers reserve the right to disqualify teams for misconduct');
+            document.getElementById('terms-section').innerHTML = `
+                <h4><i class="fas fa-file-contract"></i> Rules & Terms</h4>
+                <ul class="terms-list">${rules.map(r => `<li>${r}</li>`).join('')}</ul>
+                <div class="checkbox-group"><input type="checkbox" id="accept-terms" name="acceptTerms" required><label for="accept-terms">I accept the tournament rules</label></div>
+            `;
+        }
+        
+        function loadPaymentStructure(t) {
+            document.getElementById('payment-structure').innerHTML = `
+                <h4><i class="fas fa-coins"></i> Payment Required</h4>
+                <div class="round-payment"><span>One-Time Entry Fee</span><span class="round-fee">₹${(t.entryFee || 0).toLocaleString()}</span></div>`;
+        }
+
+        function loadTournamentStructure(t) {
+            const container = document.getElementById('tournament-structure-section');
+            if (t.format !== 'kp' || !t.kpSettings) { container.innerHTML = ''; return; }
+            const kp = t.kpSettings;
             container.innerHTML = `
-                <h4><i class="fas fa-file-contract"></i> Tournament Rules & Terms</h4>
-                <ul style="padding-left: 1.2rem; color: var(--text-secondary);">${rules.map(rule => `<li>${rule}</li>`).join('')}</ul>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="accept-terms" name="acceptTerms" required>
-                    <label for="accept-terms">I accept the tournament rules and terms</label>
+                <h4><i class="fas fa-sitemap"></i> Tournament Structure</h4>
+                <div class="kp-compact-flow">
+                    <div class="kp-detail-line"><i class="fas fa-layer-group"></i><span>Group Stage:</span><span class="detail-value">${kp.numberOfGroups}x${kp.groupSize} Teams</span></div>
+                    <div class="kp-detail-line"><i class="fas fa-sort-amount-up-alt"></i><span>Advancement:</span><span class="detail-value">Top ${kp.qualifiersPerGroup} Teams</span></div>
+                    <div class="kp-detail-line"><i class="fas fa-trophy"></i><span>Finals:</span><span class="detail-value">${kp.numberOfGroups * kp.qualifiersPerGroup} Teams Total</span></div>
                 </div>
             `;
         }
 
         function showError(message) {
-            const errorContainer = document.getElementById('error-container');
-            errorContainer.innerHTML = `<div class="message-box error-message"><i class="fas fa-exclamation-triangle"></i> <span>${message}</span></div>`;
+            document.getElementById('error-container').innerHTML = `<div class="message-box error-message"><i class="fas fa-exclamation-triangle"></i> <span>${message}</span></div>`;
         }
-        
-        async function checkUserRegistrationStatus() {
-            const sessionData = getSessionData();
-            if (!sessionData || !sessionData.token) return;
 
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament.slug}/registration-status`, {
-                    headers: { 'Authorization': `Bearer ${sessionData.token}` }
-                });
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result.data.isRegistered) showAlreadyRegistered(result.data);
-                }
-            } catch (error) {
-                console.error('Error checking registration status:', error);
-            }
-        }
-        
-        function showAlreadyRegistered(registrationData) {
-            const formContainer = document.querySelector('.registration-form-container');
-            formContainer.innerHTML = `
-                <div class="already-registered">
+        function showRegistrationSuccess(teamData) {
+            document.querySelector('.main-content').innerHTML = `
+                <div style="max-width: 800px; margin: 0 auto; text-align: center; padding: 3rem 2rem;">
                     <div class="success-icon"><i class="fas fa-check-circle"></i></div>
-                    <h2>Already Registered!</h2>
-                    <p>Your team <strong>"${registrationData.teamName}"</strong> is already in this tournament.</p>
+                    <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">Registration Successful! 🎉</h1>
+                    <p style="font-size: 1.2rem; color: var(--muted); margin-bottom: 2rem;">Your team <strong>"${teamData.teamName}"</strong> is registered for <strong>${currentTournament.title}</strong></p>
+                    <div class="whats-next-card" style="padding: 1.5rem; margin: 2rem 0; text-align: left;">
+                        <h4><i class="fas fa-lightbulb"></i> What's Next?</h4>
+                        <ul style="list-style: none; padding: 0; margin-top: 1rem;">
+                            <li style="margin-bottom: 0.5rem;"><i class="fas fa-check" style="color: #10b981; margin-right: 0.5rem;"></i> Check your email for confirmation.</li>
+                            <li style="margin-bottom: 0.5rem;"><i class="fas fa-check" style="color: #10b981; margin-right: 0.5rem;"></i> Join our Discord for updates.</li>
+                            <li><i class="fas fa-check" style="color: #10b981; margin-right: 0.5rem;"></i> Prepare for your matches!</li>
+                        </ul>
+                    </div>
                     <div class="registration-actions">
-                         <a href="tournament-details.html?slug=${currentTournament.slug}" class="btn">
-                            <i class="fas fa-arrow-left"></i> Back to Tournament
-                        </a>
-                         <a href="team-dashboard.html?tournament=${currentTournament.slug}" class="btn btn-primary">
-                            <i class="fas fa-users"></i> View Team Dashboard
-                        </a>
+                        <a href="tournament-details.html?slug=${currentTournament.slug}" class="btn btn-primary"><i class="fas fa-trophy"></i> View Tournament</a>
+                        <a href="tournaments.html" class="btn btn-secondary"><i class="fas fa-list"></i> More Tournaments</a>
                     </div>
                 </div>
             `;
         }
-        
-        function showRegistrationSuccess(teamData) {
-            const mainContent = document.querySelector('.main-content');
-            mainContent.innerHTML = `
-            <div class="registration-container">
-                <div class="registration-form-container">
-                    <div class="already-registered">
-                        <div class="success-icon"><i class="fas fa-check-circle"></i></div>
-                        <h1 style="font-size: 2rem;">Registration Successful! 🎉</h1>
-                        <p>Your team <strong>"${teamData.teamName}"</strong> has been registered for <strong>${currentTournament.title}</strong>.</p>
-                        <p>Check your email for confirmation and further instructions.</p>
-                        <div class="registration-actions">
-                             <a href="tournament-details.html?slug=${currentTournament.slug}" class="btn btn-primary">
-                                <i class="fas fa-trophy"></i> View Tournament
-                            </a>
-                            <a href="index.html" class="btn">
-                                <i class="fas fa-home"></i> Back to Home
-                            </a>
-                        </div>
+
+        async function checkUserRegistrationStatus() {
+            const sessionData = getSessionData();
+            if (!sessionData?.token) return;
+            const tournamentSlug = new URLSearchParams(window.location.search).get('slug');
+            if (!tournamentSlug) return;
+            setLoading(true);
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${tournamentSlug}/registration-status`, {
+                    headers: { 'Authorization': `Bearer ${sessionData.token}` }
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success && result.data.isRegistered) {
+                        showAlreadyRegistered(result.data);
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking registration status:', error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function showAlreadyRegistered(data) {
+            document.querySelector('.registration-form').innerHTML = `
+                <div class="already-registered">
+                    <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+                    <h2>Already Registered!</h2>
+                    <p>Your team <strong>"${data.teamName}"</strong> is already registered for this tournament.</p>
+                    <div class="registration-actions">
+                        <a href="tournament-details.html?slug=${currentTournament.slug}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Tournament</a>
+                        <a href="team-dashboard.html?tournament=${currentTournament.slug}" class="btn btn-primary"><i class="fas fa-users"></i> View Team Dashboard</a>
                     </div>
                 </div>
-            </div>`;
+            `;
         }
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            loadTournamentData();
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await testApiConnection();
+            await loadTournamentData();
+            await checkUserRegistrationStatus();
             document.getElementById('registration-form').addEventListener('submit', (e) => {
                 e.preventDefault();
                 submitRegistrationAndInitiatePayment(new FormData(e.target));
