@@ -3,26 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Team Dashboard | EArena</title>
+<title>Team Dashboard | GamingNexus</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
 crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="navbar.css">
+<script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
 <style>
+/* Theme variables (Cyberpunk) */
 :root {
---bg: #0f0f10;
---panel: #1f1f20;
---muted: #9aa0a6;
---copy: #e6e6e6;
---accent: #FFD700;
---accent-2: #e0ac10;
+--primary-color: #0AFAD9;      /* Electric Cyan */
+--bg-dark: #0D0A1A;            /* Dark Matter Black */
+--accent-secondary: #5D3FD3;   /* Deep Indigo */
+--panel: #161329;              /* Dark Indigo Panel */
+--text-primary: #F0F0F0;       /* Starlight White */
+--text-secondary: rgba(240, 240, 240, 0.7);
+--border-color: rgba(10, 250, 217, 0.2);
+--ease: 0.3s ease;
 --radius: 12px;
---border-color: rgba(255, 255, 255, 0.1);
+--container: 1200px;
+
+/* Legacy variables for compatibility */
+--copy: var(--text-primary);
+--muted: var(--text-secondary);
+--accent: var(--accent-secondary);
+--accent-2: var(--primary-color);
+--bg: var(--bg-dark);
 --success: #10b981;
 --warning: #f59e0b;
 --danger: #ef4444;
+}
+
+/* Loader */
+#loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-dark);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+#loader-wrapper.hidden {
+    opacity: 0;
+    pointer-events: none;
 }
 
 * {
@@ -33,33 +64,47 @@ box-sizing: border-box;
 
 body {
 margin: 0;
-font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-background: var(--bg);
-color: var(--copy);
-line-height: 1.5;
+font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background-color: var(--bg-dark);
+color: var(--text-primary);
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+line-height: 1.6;
 min-height: 100vh;
 }
 
 .site-header {
 position: fixed;
-top: 0;
-left: 0;
-right: 0;
-z-index: 1000;
-background: rgba(15, 15, 16, 0.8);
-backdrop-filter: blur(20px);
-border-bottom: 1px solid var(--border-color);
-height: 64px;
+inset: 0 0 auto 0;
 display: flex;
 align-items: center;
 justify-content: space-between;
-padding: 0 24px;
+padding: 0 2rem;
+background: rgba(26, 26, 26, 0.5);
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+z-index: 1200;
+border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+height: 60px;
+}
+
+.header-container {
+display: flex;
+align-items: center;
+justify-content: space-between;
+width: 100%;
 }
 
 .header-left {
 display: flex;
 align-items: center;
 gap: 24px;
+}
+
+.header-right {
+display: flex;
+align-items: center;
+gap: 1rem;
 }
 
 .back-link {
@@ -77,18 +122,10 @@ color: var(--accent);
 }
 
 .brand {
-display: flex;
-align-items: center;
-gap: 0.5rem;
 font-weight: 700;
-letter-spacing: -0.5px;
-color: var(--copy);
-font-size: 1.2rem;
+font-size: 1.5rem;
+color: var(--text-primary);
 text-decoration: none;
-}
-
-.brand .accent {
-color: var(--accent);
 }
 
 .user-menu {
@@ -106,7 +143,7 @@ font-weight: 500;
 }
 
 .main-content {
-margin-top: 64px;
+margin-top: 60px;
 padding: 32px 24px;
 max-width: 1400px;
 margin-left: auto;
@@ -527,24 +564,66 @@ flex-direction: column;
 </style>
 </head>
 <body>
-<header class="site-header">
-<div class="header-left">
-<a href="tournament-details.html" class="back-link" id="back-to-tournament">
-<i class="fas fa-arrow-left"></i>
-<span>Back to Tournament</span>
-</a>
+<div id="loader-wrapper">
+  <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
 </div>
 
-<a href="index.html" class="brand">
-<span><span class="accent">E</span>Arena</span>
-</a>
-
-<div class="user-menu">
-<div class="user-info" id="user-info">
-<span>Loading...</span>
-</div>
+<header class="site-header" role="banner">
+<div class="header-container">
+    <div class="header-left">
+        <a href="tournament-details.html" class="back-link" id="back-to-tournament">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Tournament</span>
+        </a>
+        <a href="index.html" class="brand" aria-hidden="false">GamingNexus</a>
+    </div>
+    <div class="header-right">
+        <nav class="primary" role="navigation" aria-label="Primary">
+            <div class="nav-links" role="menubar">
+                <a href="index.html#tournaments" role="menuitem">Tournaments</a>
+                <a href="index.html#why-us" role="menuitem">Why Us</a>
+                <a href="index.html#faq" role="menuitem">FAQ</a>
+            </div>
+        </nav>
+        <div class="nav-actions">
+            <div id="guest-menu">
+                <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
+            </div>
+            <div id="user-menu" style="display: none;">
+                <div class="profile-dropdown">
+                    <div class="profile-icon" id="profile-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="profile-modal" id="profile-modal">
+                        <div class="profile-header">
+                            <div class="profile-photo"><i class="fas fa-user"></i></div>
+                            <div class="profile-info">
+                                <div class="profile-username" id="modal-username">User</div>
+                            </div>
+                        </div>
+                        <div class="profile-actions">
+                            <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
+                                <i class="fas fa-user"></i>
+                                <span>My Account</span>
+                            </a>
+                            <button class="profile-action logout-action" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>   
 </div>
 </header>
+
+<div id="mobile-nav" class="mobile-nav" hidden>
+</div>
 
 <main class="main-content">
 <div class="dashboard-header">
@@ -1076,6 +1155,11 @@ showMessage(message, 'error');
 
 // --- EVENT LISTENERS ---
 document.addEventListener('DOMContentLoaded', () => {
+// Hide loader
+setTimeout(() => {
+    document.getElementById('loader-wrapper').classList.add('hidden');
+}, 1000);
+
 const sessionData = getSessionData();
 if (!sessionData || !sessionData.token) {
 redirectToAuth();
