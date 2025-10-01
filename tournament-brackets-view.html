@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">Tournament Brackets | GamingNexus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity=""
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
+  <link rel="stylesheet" href="navbar.css">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Theme variables (Cyberpunk) */
+    :root {
+      --primary-color: #0AFAD9;
+      /* Electric Cyan */
+      --bg-dark: #0D0A1A;
+      /* Dark Matter Black */
+      --accent-secondary: #5D3FD3;
+      /* Deep Indigo */
+      --panel: #161329;
+      /* Dark Indigo Panel */
+      --text-primary: #F0F0F0;
+      /* Starlight White */
+      --text-secondary: rgba(240, 240, 240, 0.7);
+      --border-color: rgba(10, 250, 217, 0.2);
+      --ease: 0.3s ease;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --container: 1200px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      width: min(94%, var(--container));
+      margin: 0 auto;
+    }
+
+    main {
+      padding-top: 80px;
+      /* Adjust for fixed header */
+      min-height: 100vh;
+    }
+
+    /* Loader */
+    #loader-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-dark);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    #loader-wrapper.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Tournament Hero */
+    .tournament-hero {
+      position: relative;
+      height: 60vh;
+      min-height: 450px;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: flex-end;
+      padding: 4rem 0;
+      color: var(--text-primary);
+    }
+
+    .tournament-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, var(--bg-dark) 15%, rgba(13, 10, 26, 0.4) 100%);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+    }
+
+    .tournament-title {
+      font-size: clamp(3.5rem, 6vw, 4.5rem);
+      /* Increased size to fill space */
+      font-weight: 800;
+      margin-bottom: 0;
+      /* Removed bottom margin */
+      line-height: 1.1;
+    }
+
+    .tournament-subtitle {
+      /* REMOVED: This is now hidden */
+      display: none;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      /* Added margin for space */
+    }
+
+    .btn-primary {
+      padding: 0.9rem 2rem;
+      border-radius: var(--radius-sm);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--primary-color);
+      color: var(--bg-dark);
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: #50FDE5;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(10, 250, 217, 0.2);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-secondary {
+      padding: 0.9rem 2rem;
+      border-radius: var(--radius-sm);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      margin-left: 1rem;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: var(--primary-color);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(10, 250, 217, 0.2);
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    /* Brackets-specific styles */
+    .user-team-section {
+      padding: 2rem 0;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .team-status-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .team-info h3 {
+      margin: 0 0 0.5rem 0;
+      color: var(--primary-color);
+      font-size: 1.1rem;
+    }
+
+    .team-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .team-name {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--text-primary);
+    }
+
+    .team-bracket {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .btn-sm {
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+    }
+
+    .brackets-section {
+      padding: 3rem 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .section-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+    }
+
+    .loading-state {
+      text-align: center;
+      padding: 4rem 0;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(10, 250, 217, 0.3);
+      border-top: 3px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Bracket Grid Styles */
+    .brackets-grid {
+      display: grid;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .bracket-group {
+      background: var(--panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .bracket-group.user-bracket {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 20px rgba(10, 250, 217, 0.2);
+    }
+
+    .bracket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .bracket-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .bracket-info {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .teams-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .team-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .team-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--primary-color);
+    }
+
+    .team-card.user-team {
+      background: rgba(10, 250, 217, 0.1);
+      border-color: var(--primary-color);
+    }
+
+    .team-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .team-card-name {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .team-badge {
+      background: var(--primary-color);
+      color: var(--bg-dark);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .team-players {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    /* No brackets message */
+    .no-brackets-message {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: var(--panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      margin: 2rem 0;
+    }
+
+    .no-brackets-message h3 {
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+
+    .no-brackets-message p {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .team-status-card {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .team-actions {
+        width: 100%;
+      }
+
+      .btn-sm {
+        width: 100%;
+      }
+
+      .bracket-header {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+      }
+
+      .bracket-info {
+        justify-content: center;
+      }
+
+      .teams-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .btn-success {
+      background: #10b981;
+      color: #fff;
+      cursor: default;
+    }
+
+    .btn-success:hover {
+      transform: none;
+      box-shadow: none;
+      background: #10b981;
+    }
+
+    /* Details Section */
+    .tournament-details {
+      padding: 4rem 0;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 3rem;
+    }
+
+    .details-main,
+    .info-card {
+      background: var(--panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 2rem;
+    }
+
+    .details-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .info-card h3 {
+      color: var(--primary-color);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .info-list {
+      list-style: none;
+    }
+
+    .info-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .info-list li:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      color: var(--text-secondary);
+    }
+
+    .info-value {
+      font-weight: 600;
+    }
+
+    .details-main h2,
+    .details-main h3 {
+      color: var(--primary-color);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+      /* Increased size */
+    }
+
+    #tournament-overview p,
+    #tournament-format-details p,
+    #tournament-format-details ul li {
+      font-size: 1.05rem;
+      /* Increased size */
+      line-height: 1.7;
+    }
+
+    /* Section Headers */
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-size: clamp(2.2rem, 5vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Leaderboard / Finalists */
+    .leaderboard-section {
+      padding: 4rem 0;
+    }
+
+    .finalists-table {
+      background: var(--panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 2rem;
+    }
+
+    .finalists-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .finalist-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: var(--radius-sm);
+      transition: all 0.3s ease;
+    }
+
+    .finalist-item:hover {
+      background: rgba(10, 250, 217, 0.1);
+      transform: translateX(5px);
+    }
+
+    .finalist-rank {
+      font-weight: 700;
+      color: var(--primary-color);
+      min-width: 30px;
+    }
+
+    .empty-finalists {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-secondary);
+      grid-column: span 2;
+    }
+
+    /* Schedule Section (Custom styles for table structure) */
+    .schedule-section {
+      padding: 4rem 0;
+    }
+
+    .schedule-table-container {
+      background: var(--panel);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      overflow-x: auto;
+      /* Allow horizontal scroll on mobile */
+      max-width: 800px;
+      margin: 2rem auto;
+    }
+
+    .schedule-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+      /* Ensure table looks good on mobile */
+    }
+
+    .schedule-table th,
+    .schedule-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .schedule-table th {
+      color: var(--primary-color);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .schedule-table td {
+      color: var(--text-primary);
+      font-size: 1rem;
+      /* Highlight current and past events */
+      transition: background-color 0.3s ease;
+    }
+
+    .schedule-table tr:hover {
+      background-color: rgba(10, 250, 217, 0.05);
+    }
+
+    .schedule-table .current-row {
+      background-color: rgba(0, 191, 255, 0.1);
+      /* Light Cyan background for current */
+      font-weight: 700;
+    }
+
+    .schedule-table .completed-row td {
+      color: var(--text-secondary);
+      /* Dim text for completed events */
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+
+
+    /* FAQ Section */
+    .faq-section {
+      padding: 4rem 0;
+    }
+
+    .faq-grid {
+      max-width: 800px;
+      margin: 3rem auto 0;
+      text-align: left;
+    }
+
+    .faq-item {
+      background: var(--panel);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-3px);
+    }
+
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .faq-question:hover span {
+      color: var(--primary-color);
+    }
+
+    .faq-question i {
+      transition: transform 0.3s ease;
+      color: var(--primary-color);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+    }
+
+    .faq-answer p {
+      color: var(--text-secondary);
+      padding: 0 1.5rem 1.5rem 1.5rem;
+      margin: 0;
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 200px;
+    }
+
+    .faq-item.active .faq-question i {
+      transform: rotate(45deg);
+    }
+
+    /* Footer */
+    footer.site-footer {
+      background: var(--panel);
+      padding: 5rem 2rem 2rem;
+      text-align: center;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .footer-grid {
+      max-width: var(--container);
+      margin: 0 auto 3rem auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 2.5rem;
+      text-align: left;
+    }
+
+    .footer-column h4 {
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .footer-column ul a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-column ul a:hover {
+      color: var(--primary-color);
+    }
+
+    .footer-brand .brand {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-brand p {
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .social-links a {
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      color: var(--primary-color);
+      transform: translateY(-2px);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border-color);
+      padding-top: 2rem;
+      opacity: 0.7;
+      font-size: 0.9rem;
+    }
+
+    /* --- RESPONSIVENESS --- */
+    @media (max-width: 920px) {
+      .details-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-actions {
+        flex-direction: column;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+        margin-left: 0;
+        margin-top: 0.5rem;
+      }
+
+      .finalists-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (min-width: 769px) {
+
+      /* Apply only on desktop */
+      .nav-actions {
+        padding-left: 1.5rem;
+        margin-left: 1.5rem;
+        border-left: 1px solid var(--border-color);
+      }
+    }
+
+    @media (min-width: 1600px) {
+      :root {
+        --container: 1400px;
+      }
+
+      .tournament-hero {
+        height: 70vh;
+        min-height: 600px;
+      }
+
+      .tournament-title {
+        font-size: clamp(3.5rem, 6vw, 4.5rem);
+      }
+
+      .tournament-subtitle {
+        font-size: 1.3rem;
+      }
+
+      .details-grid {
+        gap: 4rem;
+      }
+
+      .details-main,
+      .info-card {
+        padding: 3rem;
+      }
+
+      .section-title {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+      }
+    }
+
+    @media (min-width: 1920px) {
+      :root {
+        --container: 1600px;
+      }
+
+      .tournament-details,
+      .leaderboard-section,
+      .schedule-section,
+      .faq-section {
+        padding: 5rem 0;
+      }
+
+      .finalists-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+      }
+
+      .faq-grid {
+        max-width: 1200px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+      }
+
+      .details-main h2,
+      .details-main h3 {
+        font-size: 1.6rem;
+      }
+
+      #tournament-overview p,
+      #tournament-format-details p,
+      #tournament-format-details ul li {
+        font-size: 1.15rem;
+      }
+    }
+
+    /* Custom Scrollbar Design */
+    .scrollbar {
+      margin-left: 30px;
+      float: left;
+      height: 300px;
+      width: 65px;
+      background: #F5F5F5;
+      overflow-y: scroll;
+      margin-bottom: 25px;
+    }
+
+    .force-overflow {
+      min-height: 450px;
+    }
+
+    /* Custom Scrollbar Styles */
+    ::-webkit-scrollbar-track {
+      border: 1px solid var(--border-color);
+      background-color: var(--panel);
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+      background-color: var(--panel);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--primary-color);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: #50FDE5;
+    }
+
+    /* Firefox scrollbar */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary-color) var(--panel);
+    }
+
+    /* Status indicators */
+    .status-pending {
+      color: #fbbf24;
+    }
+
+    .status-active {
+      color: #10b981;
+    }
+
+    .status-completed {
+      color: #6b7280;
+    }
+
+    .status-registered {
+      color: var(--primary-color);
+    }
+
+    /* Team card improvements */
+    .team-card-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .team-players i {
+      margin-right: 0.25rem;
+    }
+
+    .team-status {
+      font-size: 0.75rem;
+    }
+
+    @media (min-width: 2560px) {
+      :root {
+        --container: 1800px;
+      }
+
+      .tournament-hero {
+        height: 75vh;
+        min-height: 800px;
+      }
+
+      .tournament-title {
+        font-size: clamp(4rem, 7vw, 5.5rem);
+      }
+
+      .finalists-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  </style>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            // Mapping primary color variable to Tailwind utility
+            'primary-neon': 'var(--primary-color)',
+            // Background colors based on theme variables
+            'bg-dark': 'var(--bg-dark)',
+            'bg-card': 'var(--panel)',
+            // Define a lightened neon for completed background
+            'bg-completed': 'rgba(10, 250, 217, 0.1)',
+            // Cyan for CURRENT phase text and border (use a slightly different color to distinguish)
+            'current-accent': '#00BFFF',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <div id="loader-wrapper">
+    <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie"
+      style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+  </div>
+
+  <header class="site-header">
+    <a href="index.html" class="brand">
+      GamingNexus
+    </a>
+    <div class="header-right">
+      <nav class="primary" role="navigation" aria-label="Primary">
+        <div class="nav-links" role="menubar">
+          <a href="index.html#tournaments" role="menuitem">Tournaments</a>
+          <a href="index.html#why-us" role="menuitem">Why Us</a>
+          <a href="index.html#faq" role="menuitem">FAQ</a>
+        </div>
+      </nav>
+      <div class="nav-actions">
+        <div id="guest-menu">
+          <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
+        </div>
+        <div id="user-menu" style="display: none;">
+          <div class="profile-dropdown">
+            <div class="profile-icon" id="profile-icon">
+              <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="profile-modal" id="profile-modal">
+              <div class="profile-header">
+                <div class="profile-photo"><i class="fas fa-user"></i></div>
+                <div class="profile-info">
+                  <div class="profile-username" id="modal-username">User</div>
+                </div>
+              </div>
+              <div class="profile-actions">
+                <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
+                  <i class="fas fa-user"></i>
+                  <span>My Account</span>
+                </a>
+                <button class="profile-action logout-action" onclick="logout()">
+                  <i class="fas fa-sign-out-alt"></i>
+                  <span>Logout</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <div id="mobile-nav" class="mobile-nav"></div>
+
+  <main>
+    <section class="tournament-hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1 class="tournament-title" id="tournament-title">Loading Tournament Brackets...</h1>
+          <p class="tournament-subtitle" id="tournament-subtitle">
+            <span id="tournament-format">Loading format...</span> • <span id="registered-teams">0 teams
+              registered</span>
+          </p>
+          <div class="hero-actions" id="hero-actions">
+            <button class="btn-secondary" id="back-to-tournament" onclick="goBackToTournament()">
+              <i class="fas fa-arrow-left"></i> Back to Tournament
+            </button>
+            <button class="btn-primary" id="my-team-action" style="display: none;">
+              <i class="fas fa-crosshairs"></i> Find My Team
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- User Team Status Section -->
+    <section class="user-team-section" id="user-team-section" style="display: none;">
+      <div class="container">
+        <div class="team-status-card">
+          <div class="team-info">
+            <h3><i class="fas fa-users"></i> Your Team</h3>
+            <div class="team-details">
+              <span class="team-name" id="user-team-name">Team Name</span>
+              <span class="team-bracket" id="user-team-bracket">Bracket: Loading...</span>
+            </div>
+          </div>
+          <div class="team-actions">
+            <button class="btn-primary btn-sm" onclick="scrollToMyBracket()">
+              <i class="fas fa-crosshairs"></i> Go to My Bracket
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Brackets Section -->
+    <section class="brackets-section" id="brackets-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Tournament Brackets</h2>
+          <p class="section-subtitle" id="brackets-subtitle">Loading bracket information...</p>
+        </div>
+
+        <!-- Brackets Content -->
+        <div class="brackets-content" id="brackets-content">
+          <div class="loading-state">
+            <div class="loading-spinner"></div>
+            <p>Loading tournament brackets...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    </div>
+    </div>
+    </div>
+    </section>
+
+
+    <tr>
+      <td colspan="4" style="text-align:center; color: var(--text-secondary); padding: 2rem;">Loading schedule...</td>
+    </tr>
+    </tbody>
+    </table>
+    </div>
+    <!-- END NEW SCHEDULE TABLE STRUCTURE -->
+
+    </div>
+    </section>
+
+
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>What do I need to get started?</span>
+        <i class="fas fa-plus"></i>
+      </button>
+      <div class="faq-answer">
+        <p>All you need is a GamingNexus account and the game you want to compete in! Check the specific tournament
+          rules for any additional requirements, but generally, it's that simple to start your competitive journey.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>How are prizes awarded?</span>
+        <i class="fas fa-plus"></i>
+      </button>
+      <div class="faq-answer">
+        <p>Prizes are typically awarded within 7-14 business days after a tournament concludes and results are verified.
+          Winnings are sent via the payment method you have on file in your user account.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question">
+        <span>What is the fair play policy?</span>
+        <i class="fas fa-plus"></i>
+      </button>
+      <div class="faq-answer">
+        <p>We have a zero-tolerance policy for cheating, hacking, or any form of unsportsmanlike conduct. All players
+          must adhere to our code of conduct, and we use advanced anti-cheat software to ensure a fair playing field.
+        </p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-column footer-brand">
+          <a href="index.html" class="brand">GamingNexus</a>
+          <p>The ultimate destination for competitive gaming.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h4>Tournaments</h4>
+          <ul>
+            <li><a href="index.html#tournaments">Browse All</a></li>
+            <li><a href="index.html#tournaments">Live Matches</a></li>
+            <li><a href="index.html#tournaments">Upcoming</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Community</h4>
+          <ul>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">Forums</a></li>
+            <li><a href="#">Support</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 GamingNexus. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Auto-detect API URL based on environment
+    const isLocal = window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.protocol === 'file:';
+    const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
+
+    let currentTournament = null;
+    let currentBrackets = null;
+    let userTeam = null;
+
+    // Helper Functions
+    function setLoading(isLoading) {
+      const loader = document.getElementById('loader-wrapper');
+      if (isLoading) {
+        loader.classList.remove('hidden');
+      } else {
+        loader.classList.add('hidden');
+      }
+    }
+
+    function getSessionData() {
+      const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+      try {
+        return session ? JSON.parse(session) : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function goBackToTournament() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const slug = urlParams.get('slug');
+      if (slug) {
+        window.location.href = `tournament-details.html?slug=${slug}`;
+      } else {
+        window.location.href = 'index.html#tournaments';
+      }
+    }
+
+    function scrollToMyBracket() {
+      const userBracket = document.querySelector('.bracket-group.user-bracket');
+      if (userBracket) {
+        userBracket.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    // API Functions
+    async function getTournamentData(tournamentSlug) {
+      const response = await fetch(`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}`);
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Tournament Not Found');
+        }
+        throw new Error('Failed to load tournament data');
+      }
+      const result = await response.json();
+      return result.data;
+    }
+
+    async function getBracketsData(tournamentId) {
+      const sessionData = getSessionData();
+      const headers = {};
+      if (sessionData?.token) {
+        headers['Authorization'] = `Bearer ${sessionData.token}`;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/tournaments/${tournamentId}/brackets`, {
+        headers: headers
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          return null; // No brackets yet
+        }
+        throw new Error('Failed to load brackets data');
+      }
+      
+      const result = await response.json();
+      return result.data;
+    }
+
+    // Brackets Rendering Functions
+    function updatePageHeader(tournament, brackets) {
+      document.getElementById('tournament-title').textContent = `${tournament.title} - Brackets`;
+      
+      const formatText = tournament.format ? tournament.format.toUpperCase() : 'Standard';
+      const teamsCount = tournament.participants ? tournament.participants.length : 0;
+      
+      document.getElementById('tournament-format').textContent = formatText + ' Format';
+      document.getElementById('registered-teams').textContent = `${teamsCount} teams registered`;
+      
+      // Set background image if available
+      const heroSection = document.querySelector('.tournament-hero');
+      if (tournament.posterImage) {
+        let imageUrl = tournament.posterImage;
+        if (!imageUrl.startsWith('http')) {
+          imageUrl = `${API_BASE_URL}/api/static/images/${imageUrl.split('/').pop()}`;
+        }
+        heroSection.style.backgroundImage = `url('${imageUrl}')`;
+      }
+    }
+
+    function showUserTeamSection(userTeam, brackets) {
+      const userTeamSection = document.getElementById('user-team-section');
+      const myTeamButton = document.getElementById('my-team-action');
+
+      if (userTeam && brackets) {
+        userTeamSection.style.display = 'block';
+        myTeamButton.style.display = 'inline-flex';
+        
+        document.getElementById('user-team-name').textContent = userTeam.teamName;
+        
+        // Find which bracket/group the user's team is in
+        let bracketInfo = 'Not assigned yet';
+        if (brackets.rounds) {
+          for (const [roundKey, roundData] of Object.entries(brackets.rounds)) {
+            const team = roundData.teams?.find(t => t.teamId === userTeam._id);
+            if (team) {
+              const roundNames = {
+                '1': 'Qualifier 1',
+                '2': 'Qualifier 2', 
+                '3': 'Qualifier 3',
+                '4': 'Qualifier 4',
+                'final': 'Finals'
+              };
+              bracketInfo = roundNames[roundKey] || `Round ${roundKey}`;
+              break;
+            }
+          }
+        }
+        
+        document.getElementById('user-team-bracket').textContent = `Bracket: ${bracketInfo}`;
+      } else {
+        userTeamSection.style.display = 'none';
+        myTeamButton.style.display = 'none';
+      }
+    }
+
+    function renderBrackets(brackets, tournament) {
+      const bracketsContent = document.getElementById('brackets-content');
+      const bracketsSubtitle = document.getElementById('brackets-subtitle');
+
+      if (!brackets) {
+        bracketsContent.innerHTML = `
+          <div class="no-brackets-message">
+            <h3><i class="fas fa-info-circle"></i> Brackets Not Available</h3>
+            <p>Tournament brackets will be generated after registration closes.</p>
+            <p>Check back once the tournament begins!</p>
+          </div>
+        `;
+        return;
+      }
+
+      if (!brackets.rounds || Object.keys(brackets.rounds).length === 0) {
+        bracketsContent.innerHTML = `
+          <div class="no-brackets-message">
+            <h3><i class="fas fa-clock"></i> Brackets Being Generated</h3>
+            <p>Tournament brackets are being prepared. Please check back soon!</p>
+            <div style="margin-top: 1.5rem;">
+              <p><strong>Registered Teams:</strong> ${tournament.participants?.length || 0}</p>
+              <p><strong>Format:</strong> ${tournament.format?.toUpperCase() || 'TBD'}</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // Render actual brackets
+      bracketsSubtitle.textContent = `${tournament.format?.toUpperCase()} Format • ${tournament.participants?.length || 0} teams competing`;
+
+      if (tournament.format === 'kp') {
+        renderKPBrackets(brackets);
+      } else {
+        renderGenericBrackets(brackets);
+      }
+    }
+
+    function renderKPBrackets(brackets) {
+      const bracketsContent = document.getElementById('brackets-content');
+      
+      const rounds = ['1', '2', '3', '4', 'final'];
+      
+      let html = '<div class="brackets-grid">';
+      
+      rounds.forEach(roundKey => {
+        const roundData = brackets.rounds[roundKey];
+        if (!roundData || !roundData.teams?.length) return;
+        
+        const roundNames = {
+          '1': 'Qualifier 1',
+          '2': 'Qualifier 2', 
+          '3': 'Qualifier 3',
+          '4': 'Qualifier 4',
+          'final': 'Finals'
+        };
+        
+        const isUserBracket = userTeam && roundData.teams.some(t => t.teamId === userTeam._id);
+        
+        html += `
+          <div class="bracket-group ${isUserBracket ? 'user-bracket' : ''}">
+            <div class="bracket-header">
+              <h3 class="bracket-title">${roundNames[roundKey]}</h3>
+              <div class="bracket-info">
+                <span>${roundData.teams.length} teams</span>
+                <span class="status-${roundData.status}">Status: ${roundData.status}</span>
+              </div>
+            </div>
+            <div class="teams-grid">
+              ${renderTeamsGrid(roundData.teams, roundKey)}
+            </div>
+          </div>
+        `;
+      });
+      
+      html += '</div>';
+      bracketsContent.innerHTML = html;
+    }
+
+    function renderGenericBrackets(brackets) {
+      const bracketsContent = document.getElementById('brackets-content');
+      
+      // For non-KP formats, show all teams in groups
+      if (brackets.rounds && brackets.rounds['1'] && brackets.rounds['1'].teams) {
+        let html = `
+          <div class="brackets-grid">
+            <div class="bracket-group">
+              <div class="bracket-header">
+                <h3 class="bracket-title">Tournament Bracket</h3>
+                <div class="bracket-info">
+                  <span>${brackets.rounds['1'].teams.length} teams</span>
+                </div>
+              </div>
+              <div class="teams-grid">
+                ${renderTeamsGrid(brackets.rounds['1'].teams, 'main')}
+              </div>
+            </div>
+          </div>
+        `;
+        bracketsContent.innerHTML = html;
+      }
+    }
+
+    function renderTeamsGrid(teams, roundKey) {
+      return teams.map(team => {
+        const isUserTeam = userTeam && team.teamId === userTeam._id;
+        
+        return `
+          <div class="team-card ${isUserTeam ? 'user-team' : ''}">
+            <div class="team-card-header">
+              <span class="team-card-name">${team.teamName}</span>
+              ${isUserTeam ? '<span class="team-badge">Your Team</span>' : ''}
+            </div>
+            <div class="team-card-info">
+              <div class="team-players">
+                <i class="fas fa-users"></i> ${team.players ? team.players.length : 'N/A'} players
+              </div>
+              <div class="team-status">
+                Status: <span class="status-${team.status || 'registered'}">${team.status || 'registered'}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Main initialization
+    async function initializePage() {
+      try {
+        setLoading(true);
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const slug = urlParams.get('slug');
+        
+        if (!slug) {
+          throw new Error('No tournament specified');
+        }
+        
+        // Load tournament data
+        currentTournament = await getTournamentData(slug);
+        
+        // Try to load brackets data using tournament ID
+        try {
+          currentBrackets = await getBracketsData(currentTournament._id);
+          
+          // Check if user is logged in and get their team info
+          const sessionData = getSessionData();
+          if (sessionData?.token && currentTournament.participants) {
+            const userEmail = sessionData.user?.email || sessionData.data?.user?.email;
+            if (userEmail) {
+              userTeam = currentTournament.participants.find(p => 
+                p.captainEmail === userEmail || 
+                p.players?.some(player => player.email === userEmail)
+              );
+            }
+          }
+        } catch (error) {
+          console.log('Brackets not available yet:', error.message);
+          currentBrackets = null;
+        }
+        
+        // Update page header
+        updatePageHeader(currentTournament, currentBrackets);
+        
+        // Show user team section if applicable
+        showUserTeamSection(userTeam, currentBrackets);
+        
+        // Render brackets
+        renderBrackets(currentBrackets, currentTournament);
+        
+      } catch (error) {
+        console.error('Error initializing page:', error);
+        document.getElementById('brackets-content').innerHTML = `
+          <div class="no-brackets-message">
+            <h3><i class="fas fa-exclamation-triangle"></i> Error Loading Tournament</h3>
+            <p>${error.message}</p>
+            <button class="btn-primary" onclick="goBackToTournament()">
+              <i class="fas fa-arrow-left"></i> Go Back
+            </button>
+          </div>
+        `;
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // Initialize page when DOM is loaded
+    document.addEventListener('DOMContentLoaded', initializePage);
+  </script>
+  <script src="navbar.js"></script>
+</body>
+</html>
