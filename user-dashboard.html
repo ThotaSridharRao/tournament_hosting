@@ -47,6 +47,32 @@
             line-height: 1.6;
             min-height: 100vh;
         }
+
+        /* Custom Scrollbar Styles */
+        ::-webkit-scrollbar-track {
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            background-color: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--panel);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: var(--accent-secondary);
+        }
+
+        /* Firefox scrollbar */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--panel) var(--bg-dark);
+        }
         
         /* Loader */
         #loader-wrapper {
@@ -542,9 +568,9 @@
                     
                     <nav class="primary">
                         <div class="nav-links">
-                            <a href="index.html#tournaments">Tournaments</a>
-                            <a href="index.html#why-us">Why Us</a>
-                            <a href="index.html#faq">FAQ</a>
+                            <a href="tournaments.html">Browse Tournaments</a>
+                            <a href="team-registration.html">Join Tournament</a>
+                            <a href="index.html">Home</a>
                         </div>
                     </nav>
                     

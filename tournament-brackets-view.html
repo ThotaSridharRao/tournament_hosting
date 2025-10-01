@@ -404,6 +404,37 @@
     }
 
     /* Responsive */
+    @media (max-width: 480px) {
+      .container {
+        width: min(96%, var(--container));
+      }
+
+      .tournament-title {
+        font-size: clamp(2.5rem, 8vw, 3.5rem);
+      }
+
+      .hero-actions {
+        gap: 0.75rem;
+      }
+
+      .btn-primary, .btn-secondary {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+      }
+
+      .section-title {
+        font-size: clamp(1.8rem, 6vw, 2.2rem);
+      }
+
+      .bracket-group {
+        padding: 1rem;
+      }
+
+      .team-card {
+        padding: 0.75rem;
+      }
+    }
+
     @media (max-width: 768px) {
       .team-status-card {
         flex-direction: column;
@@ -431,6 +462,16 @@
 
       .teams-grid {
         grid-template-columns: 1fr;
+      }
+
+      .schedule-table-container {
+        margin: 1rem 0;
+      }
+
+      .schedule-table th,
+      .schedule-table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.9rem;
       }
     }
 
@@ -914,27 +955,27 @@
     /* Custom Scrollbar Styles */
     ::-webkit-scrollbar-track {
       border: 1px solid var(--border-color);
-      background-color: var(--panel);
+      background-color: var(--bg-dark);
     }
 
     ::-webkit-scrollbar {
       width: 10px;
-      background-color: var(--panel);
+      background-color: var(--bg-dark);
     }
 
     ::-webkit-scrollbar-thumb {
-      background-color: var(--primary-color);
+      background-color: var(--panel);
       border-radius: 5px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background-color: #50FDE5;
+      background-color: var(--accent-secondary);
     }
 
     /* Firefox scrollbar */
     * {
       scrollbar-width: thin;
-      scrollbar-color: var(--primary-color) var(--panel);
+      scrollbar-color: var(--panel) var(--bg-dark);
     }
 
     /* Status indicators */
@@ -1025,9 +1066,9 @@
     <div class="header-right">
       <nav class="primary" role="navigation" aria-label="Primary">
         <div class="nav-links" role="menubar">
-          <a href="index.html#tournaments" role="menuitem">Tournaments</a>
-          <a href="index.html#why-us" role="menuitem">Why Us</a>
-          <a href="index.html#faq" role="menuitem">FAQ</a>
+          <a href="tournaments.html" role="menuitem">Browse Tournaments</a>
+          <a href="user-dashboard.html" role="menuitem">My Tournaments</a>
+          <a href="index.html#leaderboards" role="menuitem">Leaderboards</a>
         </div>
       </nav>
       <div class="nav-actions">

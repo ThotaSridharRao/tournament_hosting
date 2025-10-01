@@ -539,6 +539,45 @@ margin-bottom: 1rem;
 color: var(--success);
 }
 
+@media (max-width: 480px) {
+.container {
+    width: min(96%, var(--container));
+}
+
+.dashboard-header h1 {
+    font-size: clamp(1.8rem, 6vw, 2.2rem);
+}
+
+.dashboard-card {
+    padding: 1.5rem;
+}
+
+.team-status {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+}
+
+.round-details {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.round-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.btn {
+    width: 100%;
+    justify-content: center;
+}
+
+.stats-grid {
+    grid-template-columns: 1fr;
+}
+}
+
 @media (max-width: 768px) {
 .dashboard-grid {
 grid-template-columns: 1fr;
@@ -560,6 +599,28 @@ grid-template-columns: repeat(2, 1fr);
 .round-actions {
 flex-direction: column;
 }
+
+.dashboard-card {
+    padding: 1.5rem;
+}
+
+.stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+}
+
+@media (min-width: 1200px) {
+.container {
+    max-width: 1400px;
+}
+
+.dashboard-card {
+    padding: 2.5rem;
+}
+
+.round-details {
+    grid-template-columns: repeat(3, 1fr);
+}
 }
 
 /* Custom Scrollbar Design */
@@ -580,27 +641,27 @@ flex-direction: column;
 /* Custom Scrollbar Styles */
 ::-webkit-scrollbar-track {
     border: 1px solid var(--border-color);
-    background-color: var(--panel);
+    background-color: var(--bg-dark);
 }
 
 ::-webkit-scrollbar {
     width: 10px;
-    background-color: var(--panel);
+    background-color: var(--bg-dark);
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: var(--primary-color);
+    background-color: var(--panel);
     border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #50FDE5;
+    background-color: var(--accent-secondary);
 }
 
 /* Firefox scrollbar */
 * {
     scrollbar-width: thin;
-    scrollbar-color: var(--primary-color) var(--panel);
+    scrollbar-color: var(--panel) var(--bg-dark);
 }
 </style>
 </head>
@@ -621,9 +682,9 @@ flex-direction: column;
     <div class="header-right">
         <nav class="primary" role="navigation" aria-label="Primary">
             <div class="nav-links" role="menubar">
-                <a href="index.html#tournaments" role="menuitem">Tournaments</a>
-                <a href="index.html#why-us" role="menuitem">Why Us</a>
-                <a href="index.html#faq" role="menuitem">FAQ</a>
+                <a href="tournaments.html" role="menuitem">Browse Tournaments</a>
+                <a href="user-dashboard.html" role="menuitem">My Dashboard</a>
+                <a href="team-registration.html" role="menuitem">Join Tournament</a>
             </div>
         </nav>
         <div class="nav-actions">

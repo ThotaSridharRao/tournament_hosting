@@ -47,14 +47,56 @@ function setupMobileNav() {
 
   const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
   
-  // These are the navigation links, pointing to the sections on the homepage
-  const navLinksHTML = `
-    <div class="mobile-nav-links">
-      <a href="index.html#tournaments">Tournaments</a>
-      <a href="index.html#why-us">Why Us</a>
-      <a href="index.html#faq">FAQ</a>
-    </div>
-  `;
+  // Contextual navigation links based on current page
+  let navLinksHTML = '';
+  const currentPage = window.location.pathname.split('/').pop();
+  
+  if (currentPage === 'index.html' || currentPage === '') {
+    // Homepage navigation
+    navLinksHTML = `
+      <div class="mobile-nav-links">
+        <a href="#tournaments">Tournaments</a>
+        <a href="#why-us">Why Us</a>
+        <a href="#faq">FAQ</a>
+      </div>
+    `;
+  } else if (currentPage.includes('tournament') || currentPage.includes('bracket')) {
+    // Tournament-related pages
+    navLinksHTML = `
+      <div class="mobile-nav-links">
+        <a href="tournaments.html">Browse Tournaments</a>
+        <a href="user-dashboard.html">My Tournaments</a>
+        <a href="index.html#leaderboards">Leaderboards</a>
+      </div>
+    `;
+  } else if (currentPage.includes('dashboard') || currentPage.includes('team-registration')) {
+    // Dashboard and registration pages
+    navLinksHTML = `
+      <div class="mobile-nav-links">
+        <a href="tournaments.html">Browse Tournaments</a>
+        <a href="user-dashboard.html">My Dashboard</a>
+        <a href="index.html">Home</a>
+      </div>
+    `;
+  } else if (currentPage.includes('admin')) {
+    // Admin pages
+    navLinksHTML = `
+      <div class="mobile-nav-links">
+        <a href="admin-dashboard.html">Dashboard</a>
+        <a href="tournaments.html">Browse Tournaments</a>
+        <a href="index.html">Home</a>
+      </div>
+    `;
+  } else {
+    // Default navigation for other pages
+    navLinksHTML = `
+      <div class="mobile-nav-links">
+        <a href="tournaments.html">Tournaments</a>
+        <a href="index.html">Home</a>
+        <a href="auth.html">Sign In</a>
+      </div>
+    `;
+  }
   
   let userSectionHTML = '';
 
