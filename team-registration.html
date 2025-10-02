@@ -779,6 +779,16 @@
     </main>
 
     <script>
+        // --- Session Management ---
+        function getSessionData() {
+            const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+            try {
+                return session ? JSON.parse(session) : null;
+            } catch (error) {
+                return null;
+            }
+        }
+
         // --- Loader Function ---
         function setLoading(isLoading) {
             const loader = document.getElementById('loader-wrapper');

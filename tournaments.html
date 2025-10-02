@@ -2194,7 +2194,7 @@
     // Handle registration button clicks
     function handleRegistration(tournamentSlug) {
       // Check if user is authenticated
-      const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+      const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
 
       if (!session) {
         alert('Please log in to register for tournaments');
@@ -2273,7 +2273,7 @@
 
     // Authentication handling
     function checkUserAuthentication() {
-      const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+      const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
 
       if (session) {
         try {
