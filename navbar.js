@@ -55,7 +55,8 @@ function setupMobileNav() {
     // Homepage navigation
     navLinksHTML = `
       <div class="mobile-nav-links">
-        <a href="#tournaments">Tournaments</a>
+        <a href="tournaments.html">Tournaments</a>
+        <a href="user-dashboard.html"><i class="fas fa-plus-circle"></i> Host Tournament</a>
         <a href="#why-us">Why Us</a>
         <a href="#faq">FAQ</a>
       </div>
@@ -92,6 +93,7 @@ function setupMobileNav() {
     navLinksHTML = `
       <div class="mobile-nav-links">
         <a href="tournaments.html">Tournaments</a>
+        <a href="user-dashboard.html"><i class="fas fa-plus-circle"></i> Host Tournament</a>
         <a href="index.html">Home</a>
         <a href="auth.html">Sign In</a>
       </div>
@@ -131,7 +133,10 @@ function setupMobileNav() {
       <div class="guest-view">
         <i class="fas fa-gamepad"></i>
         <p>Join the arena to compete, win prizes, and track your stats!</p>
-        <button class="header-cta" style="width: 100%; margin-top: 1rem;" onclick="redirectToAuth()">Join Us Now</button>
+        <a href="user-dashboard.html" class="header-cta" style="width: 100%; margin-top: 1rem; display: inline-block; text-decoration: none; text-align: center;">
+          <i class="fas fa-plus-circle"></i> Host Tournament
+        </a>
+        <button class="header-cta" style="width: 100%; margin-top: 0.5rem;" onclick="redirectToAuth()">Join Us Now</button>
       </div>
     `;
   }

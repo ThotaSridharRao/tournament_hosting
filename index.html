@@ -18,9 +18,466 @@
     crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
-  <link rel="stylesheet" href="navbar.css">
+
 
   <style>
+    /* =========================
+       NAVBAR STYLES (Embedded)
+       ========================= */
+    
+    /* General Header Styles */
+    header.site-header {
+      position: fixed;
+      inset: 0 0 auto 0;
+      background: rgba(26, 26, 26, 0.5); 
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 1200;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      height: 60px;
+    }
+
+    .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--copy);
+      text-decoration: none;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* Navigation Styles */
+    .primary {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: var(--copy, #F0F0F0);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.3s ease;
+      padding: 0.5rem 0;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent-2, #0AFAD9);
+    }
+
+    .nav-links a.active {
+      color: var(--accent-2, #0AFAD9);
+      font-weight: 600;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-left: 2rem;
+      padding-left: 2rem;
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .header-cta {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .header-cta:hover {
+      opacity: 0.8;
+      filter: brightness(0.9);
+    }
+
+    /* Host Button Styles */
+    .host-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #ffffff;
+      color: #000000;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .host-btn:hover {
+      opacity: 0.8;
+      filter: brightness(0.9);
+    }
+
+    .host-btn i {
+      font-size: 1rem;
+    }
+
+    /* Profile Dropdown (Desktop) */
+    .profile-dropdown { 
+      position: relative; 
+      display: flex; 
+      align-items: center; 
+    }
+    
+    .profile-icon { 
+      width: 40px; 
+      height: 40px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      color: var(--copy); 
+      cursor: pointer; 
+      border-radius: 50%; 
+      transition: all 0.3s ease; 
+      font-size: 1.5rem; 
+    }
+    
+    .profile-icon:hover { 
+      color: var(--accent); 
+      background: rgba(255, 69, 0, 0.1); 
+      transform: scale(1.1); 
+    }
+    
+    .profile-modal { 
+      position: absolute; 
+      top: 100%; 
+      right: 0; 
+      background: var(--panel); 
+      border: 1px solid rgba(255, 255, 255, 0.1); 
+      border-radius: 12px; 
+      min-width: 280px; 
+      opacity: 0; 
+      visibility: hidden; 
+      transform: translateY(-10px); 
+      transition: all 0.3s ease; 
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); 
+      z-index: 1000; 
+      margin-top: 10px; 
+    }
+    
+    .profile-dropdown:hover .profile-modal { 
+      opacity: 1; 
+      visibility: visible; 
+      transform: translateY(0); 
+    }
+    
+    .profile-header { 
+      display: flex; 
+      align-items: center; 
+      gap: 1rem; 
+      padding: 1.5rem; 
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+    }
+    
+    .profile-photo { 
+      width: 50px; 
+      height: 50px; 
+      background: linear-gradient(135deg, var(--accent), var(--accent-2)); 
+      border-radius: 50%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      color: #000; 
+      font-size: 1.5rem; 
+      flex-shrink: 0; 
+    }
+    
+    .profile-username { 
+      font-weight: 700; 
+      font-size: 1.1rem; 
+    }
+    
+    .profile-actions { 
+      padding: 0.5rem; 
+    }
+    
+    .profile-action { 
+      display: flex; 
+      align-items: center; 
+      gap: 0.75rem; 
+      padding: 0.75rem 1rem; 
+      color: var(--muted); 
+      text-decoration: none; 
+      border-radius: 8px; 
+      transition: all 0.3s ease; 
+      font-weight: 600; 
+      width: 100%; 
+      border: none; 
+      background: none; 
+      cursor: pointer; 
+      font-family: inherit; 
+    }
+    
+    .profile-action:hover { 
+      background: rgba(255, 255, 255, 0.05); 
+      color: var(--accent); 
+      transform: translateX(4px); 
+    }
+    
+    .logout-action:hover { 
+      background: rgba(255, 0, 0, 0.1); 
+      color: #ff6b6b; 
+    }
+
+    /* Hamburger & Mobile Nav Panel */
+    .hamburger { 
+      display: none; 
+      background: none; 
+      border: none; 
+      color: var(--copy); 
+      font-size: 1.5rem; 
+      cursor: pointer; 
+    }
+    
+    .mobile-nav { 
+      position: fixed; 
+      top: 0; 
+      right: -100%; 
+      width: 300px; 
+      height: 100%; 
+      background: var(--panel); 
+      z-index: 2000; 
+      transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
+      box-shadow: -10px 0 30px rgba(0,0,0,0.5); 
+      padding-top: 60px; 
+      display: flex; 
+      flex-direction: column; 
+    }
+    
+    .mobile-nav.is-open { 
+      right: 0; 
+    }
+    
+    .mobile-nav-close { 
+      position: absolute; 
+      top: 1rem; 
+      right: 1.5rem; 
+      background: none; 
+      border: none; 
+      color: var(--muted); 
+      font-size: 1.75rem; 
+      cursor: pointer; 
+      line-height: 1; 
+      transition: color 0.2s ease, transform 0.3s ease; 
+    }
+    
+    .mobile-nav-close:hover { 
+      color: var(--copy); 
+      transform: rotate(90deg); 
+    }
+
+    /* Button container for side-by-side layout */
+    .mobile-nav .guest-view .button-container {
+      display: flex;
+      gap: 0.8rem;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .mobile-nav .guest-view { 
+      padding: 2rem; 
+      text-align: center; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      gap: 1rem; 
+      margin-top: 2rem; 
+    }
+    
+    .mobile-nav .guest-view i { 
+      font-size: 3rem; 
+      color: var(--accent); 
+    }
+    
+    .mobile-nav .guest-view p { 
+      color: var(--muted); 
+      line-height: 1.6; 
+    }
+
+    /* Mobile Navigation Links Styling */
+    .mobile-nav-links {
+        padding: 1rem;
+        margin-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .mobile-nav-links a {
+        color: var(--muted);
+        text-decoration: none;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .mobile-nav-links a:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--copy);
+    }
+
+    .mobile-nav-links a i {
+        margin-right: 0.5rem;
+        color: var(--accent-2, #0AFAD9);
+    }
+
+    /* Mobile Navigation Buttons - Standardized */
+    .mobile-nav .mobile-host-btn,
+    .guest-view .mobile-host-btn,
+    a.mobile-host-btn,
+    .mobile-join-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.4rem !important;
+        padding: 0.5rem 0.8rem !important;
+        border: none !important;
+        border-radius: 5px !important;
+        text-decoration: none !important;
+        font-weight: 600 !important;
+        font-size: 0.85rem !important;
+        line-height: 1 !important;
+        transition: all 0.3s ease !important;
+        margin: 0 !important;
+        width: auto !important;
+        box-sizing: border-box !important;
+        flex: 1 !important;
+        max-width: 120px !important;
+        min-height: 36px !important;
+        cursor: pointer !important;
+    }
+
+    /* Host button specific styling */
+    .mobile-nav .mobile-host-btn,
+    .guest-view .mobile-host-btn,
+    a.mobile-host-btn {
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        background-image: none !important;
+        color: #000000 !important;
+    }
+
+    /* Join Us button specific styling */
+    .mobile-join-btn {
+        background: linear-gradient(135deg, var(--accent, #5D3FD3), var(--accent-2, #0AFAD9)) !important;
+        color: #ffffff !important;
+    }
+
+    /* Icon sizing for mobile host button */
+    .mobile-nav .mobile-host-btn i,
+    .guest-view .mobile-host-btn i,
+    a.mobile-host-btn i {
+        font-size: 0.85rem !important;
+        color: #000000 !important;
+        line-height: 1 !important;
+    }
+
+    .mobile-nav .mobile-host-btn:hover,
+    .guest-view .mobile-host-btn:hover,
+    a.mobile-host-btn:hover {
+        opacity: 0.8 !important;
+        filter: brightness(0.9) !important;
+    }
+
+    .mobile-join-btn:hover {
+        opacity: 0.8;
+        filter: brightness(0.9);
+    }
+
+    /* Force override any inherited button styles */
+    .mobile-host-btn * {
+        color: inherit !important;
+    }
+    
+    /* Additional specificity for mobile host button */
+    #mobile-nav .guest-view a[href="user-dashboard.html"] {
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        background-image: none !important;
+        color: #000000 !important;
+    }
+    
+    #mobile-nav .guest-view a[href="user-dashboard.html"]:hover {
+        opacity: 0.8 !important;
+        filter: brightness(0.9) !important;
+    }
+
+    /* Responsive Media Queries */
+    @media (max-width: 768px) {
+      .header-container {
+        padding: 0 1rem;
+      }
+      
+      .primary {
+        display: none;
+      }
+      
+      .nav-actions { 
+        display: none; 
+      }
+      
+      .hamburger { 
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      /* Hide host button on mobile - will be in mobile menu */
+      .host-btn { 
+        display: none;
+      }
+    }
+
+    @media (min-width: 1600px) {
+      header.site-header { 
+        height: 80px; 
+        padding: 0 3rem; 
+      }
+      
+      .back-btn, .header-cta, .profile-username { 
+        font-size: 1.1rem; 
+      }
+      
+      .header-cta { 
+        padding: 0.7rem 1.25rem; 
+      }
+      
+      .profile-icon { 
+        font-size: 1.75rem; 
+      }
+    }
+
     /* =========================
        Theme variables (Cyberpunk)
        ========================= */
@@ -266,9 +723,8 @@
     }
 
     .btn-primary:hover {
-        background: #50FDE5; /* Lighter Cyan */
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(10, 250, 217, 0.2);
+        opacity: 0.8;
+        filter: brightness(0.9);
     }
 
     .hero-stats {
@@ -289,9 +745,8 @@
     }
     
     .stat-card:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 15px rgba(10, 250, 217, 0.4);
-        border-color: var(--primary-color);
+        opacity: 0.8;
+        filter: brightness(0.9);
     }
 
     .stat-card .label {
@@ -347,9 +802,8 @@
     }
 
     .feature-item:hover img {
-        transform: scale(1.1);
-        border-color: var(--primary-color);
-        filter: drop-shadow(0 0 25px rgba(10, 250, 217, 0.5));
+        opacity: 0.8;
+        filter: brightness(0.9);
     }
     
     .feature-item h3 {
@@ -421,7 +875,8 @@
     }
     
     .game-card:hover img {
-        transform: scale(1.05);
+        opacity: 0.8;
+        filter: brightness(0.9);
     }
     
     .carousel-nav-btn {
@@ -440,8 +895,8 @@
     }
     
     .carousel-nav-btn:hover {
-        background: var(--primary-color);
-        color: var(--bg-dark);
+        opacity: 0.8;
+        filter: brightness(0.9);
     }
     
     .prev-btn {
@@ -479,8 +934,51 @@
 
     .news-title, #tournaments-heading {
         font-size: clamp(2.2rem, 5vw, 3.5rem);
-        margin-bottom: 4rem;
+        margin-bottom: 2rem;
         font-weight: 800;
+    }
+
+    /* Tournament Action Buttons */
+    .tournament-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-bottom: 4rem;
+        flex-wrap: wrap;
+    }
+
+    .tournament-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        opacity: 0.8;
+        filter: brightness(0.9);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: var(--text-primary);
+        border-color: var(--border-color);
+    }
+
+    .btn-secondary:hover {
+        opacity: 0.8;
+        filter: brightness(0.9);
     }
     
     .news-grid, .tournaments-grid {
@@ -505,9 +1003,8 @@
     }
     
     .news-card:hover, .tournament-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        border-color: var(--primary-color);
+        opacity: 0.8;
+        filter: brightness(0.9);
     }
     
     .news-card img, .tournament-card img {
@@ -572,8 +1069,8 @@
         transition: border-color 0.3s ease, transform 0.3s ease;
     }
     .faq-item:hover {
-        border-color: var(--primary-color);
-        transform: translateY(-3px);
+        opacity: 0.8;
+        filter: brightness(0.9);
     }
     .faq-question {
         width: 100%;
@@ -908,7 +1405,7 @@
       <div class="header-right">
           <nav class="primary" role="navigation" aria-label="Primary">
               <div class="nav-links" role="menubar">
-                  <a href="#tournaments" role="menuitem">Tournaments</a>
+                  <a href="tournaments.html" role="menuitem">Tournaments</a>
                   <a href="#why-us" role="menuitem">Why Us</a>
                   <a href="#faq" role="menuitem">FAQ</a>
               </div>
@@ -1051,6 +1548,19 @@
       <h2 id="tournaments-heading">
         Tournaments
       </h2>
+      
+      <!-- Tournament Action Buttons -->
+      <div class="tournament-actions">
+        <a href="tournaments.html" class="btn btn-secondary tournament-btn">
+          <i class="fas fa-trophy"></i>
+          See All Tournaments
+        </a>
+        <a href="user-dashboard.html" class="btn btn-primary tournament-btn">
+          <i class="fas fa-plus-circle"></i>
+          Host Your Tournament
+        </a>
+      </div>
+      
       <div id="tournaments-grid" class="tournaments-grid">
         <!-- Tournament cards will be injected here by JavaScript -->
       </div>
@@ -1378,8 +1888,245 @@
 
 
 
+    
+    // =========================
+    // NAVBAR JAVASCRIPT (Embedded)
+    // =========================
+    
+    // --- NAVBAR HELPER FUNCTIONS ---
+    function redirectToAuth(tab = 'register') {
+      const returnUrl = encodeURIComponent(window.location.href);
+      window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
+    }
+
+    function getSessionData() {
+      const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+      try {
+        return session ? JSON.parse(session) : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('nexus_session');
+      sessionStorage.removeItem('nexus_session');
+      window.location.reload(); // Reload the current page to update the nav
+    }
+
+    // --- NAVBAR LOGIC ---
+    function checkUserAuthentication() {
+      const sessionData = getSessionData();
+      const guestMenu = document.getElementById('guest-menu');
+      const userMenu = document.getElementById('user-menu');
+      const user = sessionData?.data?.user || sessionData?.user;
+
+      if (user) {
+        document.getElementById('modal-username').textContent = user.username || user.email.split('@')[0];
+        if (guestMenu) guestMenu.style.display = 'none';
+        if (userMenu) userMenu.style.display = 'flex';
+      } else {
+        if (guestMenu) guestMenu.style.display = 'flex';
+        if (userMenu) userMenu.style.display = 'none';
+      }
+    }
+
+    function setupMobileNav() {
+      const sessionData = getSessionData();
+      const mobileNavContainer = document.getElementById('mobile-nav');
+      const user = sessionData?.data?.user || sessionData?.user;
+
+      const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
+      
+      // Contextual navigation links based on current page
+      let navLinksHTML = '';
+      const currentPage = window.location.pathname.split('/').pop();
+      
+      if (currentPage === 'index.html' || currentPage === '') {
+        // Homepage navigation
+        navLinksHTML = `
+          <div class="mobile-nav-links">
+            <a href="tournaments.html">
+              <i class="fas fa-trophy"></i>
+              Tournaments
+            </a>
+            <a href="#why-us">
+              <i class="fas fa-star"></i>
+              Why Us
+            </a>
+            <a href="#faq">
+              <i class="fas fa-question-circle"></i>
+              FAQ
+            </a>
+          </div>
+        `;
+      } else if (currentPage.includes('tournament') || currentPage.includes('bracket')) {
+        // Tournament-related pages
+        navLinksHTML = `
+          <div class="mobile-nav-links">
+            <a href="tournaments.html">Browse Tournaments</a>
+            <a href="user-dashboard.html">My Tournaments</a>
+          </div>
+        `;
+      } else if (currentPage.includes('dashboard') || currentPage.includes('team-registration')) {
+        // Dashboard and registration pages
+        navLinksHTML = `
+          <div class="mobile-nav-links">
+            <a href="tournaments.html">Browse Tournaments</a>
+            <a href="user-dashboard.html">My Dashboard</a>
+            <a href="index.html">Home</a>
+          </div>
+        `;
+      } else if (currentPage.includes('admin')) {
+        // Admin pages
+        navLinksHTML = `
+          <div class="mobile-nav-links">
+            <a href="admin-dashboard.html">Dashboard</a>
+            <a href="tournaments.html">Browse Tournaments</a>
+            <a href="index.html">Home</a>
+          </div>
+        `;
+      } else {
+        // Default navigation for other pages
+        navLinksHTML = `
+          <div class="mobile-nav-links">
+            <a href="tournaments.html">
+              <i class="fas fa-trophy"></i>
+              Tournaments
+            </a>
+            <a href="user-dashboard.html">
+              <i class="fas fa-plus-circle"></i>
+              Host Tournament
+            </a>
+            <a href="index.html">
+              <i class="fas fa-home"></i>
+              Home
+            </a>
+            <a href="auth.html">
+              <i class="fas fa-sign-in-alt"></i>
+              Sign In
+            </a>
+          </div>
+        `;
+      }
+      
+      let userSectionHTML = '';
+
+      if (user) {
+        // Logged-in user view
+        const username = user.username || user.email.split('@')[0];
+        userSectionHTML = `
+          <div class="profile-header">
+            <div class="profile-photo"><i class="fas fa-user"></i></div>
+            <div class="profile-info">
+              <div class="profile-username">${username}</div>
+            </div>
+          </div>
+          <div class="profile-actions">
+            <a href="user-dashboard.html" class="profile-action">
+              <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+            </a>
+            <a href="user-dashboard.html?tab=create" class="profile-action">
+              <i class="fas fa-plus"></i> <span>Create Tournament</span>
+            </a>
+            <a href="tournaments.html" class="profile-action">
+              <i class="fas fa-trophy"></i> <span>Browse Tournaments</span>
+            </a>
+            <button class="profile-action" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+            </button>
+          </div>
+        `;
+      } else {
+        // Guest view with clean white Host button
+        userSectionHTML = `
+          <div class="guest-view">
+            <i class="fas fa-gamepad"></i>
+            <p>Join the arena to compete, win prizes, and track your stats!</p>
+            <div class="button-container">
+              <a href="user-dashboard.html" class="mobile-host-btn">
+                <i class="fas fa-plus-circle"></i> Host
+              </a>
+              <button class="mobile-join-btn" onclick="redirectToAuth()">Join Us</button>
+            </div>
+          </div>
+        `;
+      }
+
+      // Combine the parts into the final HTML for the panel
+      mobileNavContainer.innerHTML = `
+        ${closeButtonHTML}
+        ${userSectionHTML}
+        ${navLinksHTML}
+      `;
+
+      // Add click handlers for navigation links to close mobile menu
+      setTimeout(() => {
+        const hostBtn = mobileNavContainer.querySelector('.mobile-host-btn');
+        const navLinks = mobileNavContainer.querySelectorAll('.mobile-nav-links a');
+        
+        if (hostBtn) {
+          hostBtn.addEventListener('click', () => {
+            // Close mobile nav when host button is clicked
+            const mobileNav = document.getElementById('mobile-nav');
+            if (mobileNav) {
+              mobileNav.classList.remove('is-open');
+            }
+          });
+        }
+
+        // Close mobile nav when any navigation link is clicked
+        navLinks.forEach(link => {
+          link.addEventListener('click', () => {
+            const mobileNav = document.getElementById('mobile-nav');
+            if (mobileNav) {
+              mobileNav.classList.remove('is-open');
+            }
+          });
+        });
+      }, 100);
+    }
+
+    // --- NAVBAR INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', () => {
+      const hamburger = document.querySelector('.hamburger');
+      const mobileNav = document.getElementById('mobile-nav');
+
+      if (!hamburger || !mobileNav) {
+          console.error("Navbar elements not found. Make sure the HTML is included.");
+          return;
+      }
+      
+      function closeMobileNav() {
+        mobileNav.classList.remove('is-open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+
+      hamburger.addEventListener('click', () => {
+        const isOpen = mobileNav.classList.toggle('is-open');
+        hamburger.setAttribute('aria-expanded', isOpen);
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!mobileNav.classList.contains('is-open')) return;
+        const closeButton = event.target.closest('.mobile-nav-close');
+        if (closeButton) {
+          closeMobileNav();
+          return;
+        }
+        const isClickInsideNav = event.target.closest('#mobile-nav');
+        const isClickOnHamburger = event.target.closest('.hamburger');
+        if (!isClickInsideNav && !isClickOnHamburger) {
+          closeMobileNav();
+        }
+      });
+      
+      // Set up the content of the navbars
+      checkUserAuthentication();
+      setupMobileNav();
+    });
+
   </script>
-  <script src="navbar.js"></script>
 </body>
 
 </html>

@@ -9,8 +9,479 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="navbar.css">
+
   <style>
+    /* =========================
+       NAVBAR STYLES (Embedded)
+       ========================= */
+    
+    /* General Header Styles */
+    header.site-header {
+      position: fixed;
+      inset: 0 0 auto 0;
+      background: rgba(26, 26, 26, 0.5); 
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 1200;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      height: 60px;
+    }
+
+    .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--copy);
+      text-decoration: none;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* Navigation Styles */
+    .primary {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      color: var(--copy, #F0F0F0);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.3s ease;
+      padding: 0.5rem 0;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent-2, #0AFAD9);
+    }
+
+    .nav-links a.active {
+      color: var(--accent-2, #0AFAD9);
+      font-weight: 600;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-left: 2rem;
+      padding-left: 2rem;
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .header-cta {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .header-cta:hover {
+      opacity: 0.8;
+      filter: brightness(0.9);
+    }
+
+    /* Host Button Styles */
+    .host-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #ffffff;
+      color: #000000;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .host-btn:hover {
+      opacity: 0.8;
+      filter: brightness(0.9);
+    }
+
+    .host-btn i {
+      font-size: 1rem;
+    }
+
+    /* Profile Dropdown (Desktop) */
+    .profile-dropdown { 
+      position: relative; 
+      display: flex; 
+      align-items: center; 
+    }
+    
+    .profile-icon { 
+      width: 40px; 
+      height: 40px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      color: var(--copy); 
+      cursor: pointer; 
+      border-radius: 50%; 
+      transition: all 0.3s ease; 
+      font-size: 1.5rem; 
+    }
+    
+    .profile-icon:hover { 
+      color: var(--accent); 
+      background: rgba(255, 69, 0, 0.1); 
+      transform: scale(1.1); 
+    }
+    
+    .profile-modal { 
+      position: absolute; 
+      top: 100%; 
+      right: 0; 
+      background: var(--panel); 
+      border: 1px solid rgba(255, 255, 255, 0.1); 
+      border-radius: 12px; 
+      min-width: 280px; 
+      opacity: 0; 
+      visibility: hidden; 
+      transform: translateY(-10px); 
+      transition: all 0.3s ease; 
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); 
+      z-index: 1000; 
+      margin-top: 10px; 
+    }
+    
+    .profile-dropdown:hover .profile-modal { 
+      opacity: 1; 
+      visibility: visible; 
+      transform: translateY(0); 
+    }
+    
+    .profile-header { 
+      display: flex; 
+      align-items: center; 
+      gap: 1rem; 
+      padding: 1.5rem; 
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+    }
+    
+    .profile-photo { 
+      width: 50px; 
+      height: 50px; 
+      background: linear-gradient(135deg, var(--accent), var(--accent-2)); 
+      border-radius: 50%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      color: #000; 
+      font-size: 1.5rem; 
+      flex-shrink: 0; 
+    }
+    
+    .profile-username { 
+      font-weight: 700; 
+      font-size: 1.1rem; 
+    }
+    
+    .profile-actions { 
+      padding: 0.5rem; 
+    }
+    
+    .profile-action { 
+      display: flex; 
+      align-items: center; 
+      gap: 0.75rem; 
+      padding: 0.75rem 1rem; 
+      color: var(--muted); 
+      text-decoration: none; 
+      border-radius: 8px; 
+      transition: all 0.3s ease; 
+      font-weight: 600; 
+      width: 100%; 
+      border: none; 
+      background: none; 
+      cursor: pointer; 
+      font-family: inherit; 
+    }
+    
+    .profile-action:hover { 
+      background: rgba(255, 255, 255, 0.05); 
+      color: var(--accent); 
+      transform: translateX(4px); 
+    }
+    
+    .logout-action:hover { 
+      background: rgba(255, 0, 0, 0.1); 
+      color: #ff6b6b; 
+    }
+
+    /* Hamburger & Mobile Nav Panel */
+    .hamburger { 
+      display: none; 
+      background: none; 
+      border: none; 
+      color: var(--copy); 
+      font-size: 1.5rem; 
+      cursor: pointer; 
+    }
+    
+    .mobile-nav { 
+      position: fixed; 
+      top: 0; 
+      right: -100%; 
+      width: 300px; 
+      height: 100%; 
+      background: var(--panel); 
+      z-index: 2000; 
+      transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
+      box-shadow: -10px 0 30px rgba(0,0,0,0.5); 
+      padding-top: 60px; 
+      display: flex; 
+      flex-direction: column; 
+    }
+    
+    .mobile-nav.is-open { 
+      right: 0; 
+    }
+    
+    .mobile-nav-close { 
+      position: absolute; 
+      top: 1rem; 
+      right: 1.5rem; 
+      background: none; 
+      border: none; 
+      color: var(--muted); 
+      font-size: 1.75rem; 
+      cursor: pointer; 
+      line-height: 1; 
+      transition: color 0.2s ease, transform 0.3s ease; 
+    }
+    
+    .mobile-nav-close:hover { 
+      color: var(--copy); 
+      transform: rotate(90deg); 
+    }
+
+    .mobile-nav .guest-view { 
+      padding: 2rem; 
+      text-align: center; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      gap: 1rem; 
+      margin-top: 2rem; 
+    }
+
+    /* Button container for side-by-side layout */
+    .mobile-nav .guest-view .button-container {
+      display: flex;
+      gap: 0.8rem;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .mobile-nav .guest-view i { 
+      font-size: 3rem; 
+      color: var(--accent); 
+    }
+    
+    .mobile-nav .guest-view p { 
+      color: var(--muted); 
+      line-height: 1.6; 
+    }
+
+    /* Mobile Navigation Links Styling */
+    .mobile-nav-links {
+        padding: 1rem;
+        margin-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .mobile-nav-links a {
+        color: var(--muted);
+        text-decoration: none;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .mobile-nav-links a:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--copy);
+    }
+
+    .mobile-nav-links a i {
+        margin-right: 0.5rem;
+        color: var(--accent-2, #0AFAD9);
+    }
+
+    /* Mobile Navigation Buttons */
+    .mobile-nav .mobile-host-btn,
+    .guest-view .mobile-host-btn,
+    a.mobile-host-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.4rem !important;
+        padding: 0.5rem 0.8rem !important;
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        background-image: none !important;
+        color: #000000 !important;
+        border: none !important;
+        border-radius: 5px !important;
+        text-decoration: none !important;
+        font-weight: 600 !important;
+        font-size: 0.85rem !important;
+        line-height: 1 !important;
+        transition: all 0.3s ease !important;
+        margin-bottom: 0 !important;
+        width: auto !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+        flex: 1 !important;
+        max-width: 120px !important;
+        min-height: 36px !important;
+        cursor: pointer !important;
+    }
+
+    /* Icon sizing for mobile host button */
+    .mobile-nav .mobile-host-btn i,
+    .guest-view .mobile-host-btn i,
+    a.mobile-host-btn i {
+        font-size: 0.85rem !important;
+        color: #000000 !important;
+    }
+
+    .mobile-nav .mobile-host-btn:hover,
+    .guest-view .mobile-host-btn:hover,
+    a.mobile-host-btn:hover {
+        opacity: 0.8 !important;
+        filter: brightness(0.9) !important;
+    }
+
+    .mobile-join-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.4rem !important;
+        padding: 0.5rem 0.8rem !important;
+        background: linear-gradient(135deg, var(--accent, #5D3FD3), var(--accent-2, #0AFAD9)) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 5px !important;
+        text-decoration: none !important;
+        font-weight: 600 !important;
+        font-size: 0.85rem !important;
+        line-height: 1 !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        margin-bottom: 0 !important;
+        width: auto !important;
+        box-sizing: border-box !important;
+        flex: 1 !important;
+        max-width: 120px !important;
+        min-height: 36px !important;
+        width: auto;
+        flex: 1;
+        max-width: 120px;
+        margin: 0;
+    }
+
+    .mobile-join-btn:hover {
+        opacity: 0.8;
+        filter: brightness(0.9);
+    }
+
+    /* Force override any inherited button styles */
+    .mobile-host-btn * {
+        color: inherit !important;
+    }
+    
+    /* Additional specificity for mobile host button */
+    #mobile-nav .guest-view a[href="user-dashboard.html"] {
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        background-image: none !important;
+        color: #000000 !important;
+    }
+    
+    #mobile-nav .guest-view a[href="user-dashboard.html"]:hover {
+        opacity: 0.8 !important;
+        filter: brightness(0.9) !important;
+    }
+
+    /* Responsive Media Queries */
+    @media (max-width: 768px) {
+      .header-container {
+        padding: 0 1rem;
+      }
+      
+      .primary {
+        display: none;
+      }
+      
+      .nav-actions { 
+        display: none; 
+      }
+      
+      .hamburger { 
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      /* Hide host button on mobile - will be in mobile menu */
+      .host-btn { 
+        display: none;
+      }
+    }
+
+    @media (min-width: 1600px) {
+      header.site-header { 
+        height: 80px; 
+        padding: 0 3rem; 
+      }
+      
+      .back-btn, .header-cta, .profile-username { 
+        font-size: 1.1rem; 
+      }
+      
+      .header-cta { 
+        padding: 0.7rem 1.25rem; 
+      }
+      
+      .profile-icon { 
+        font-size: 1.75rem; 
+      }
+    }
+
     /* =========================
        Theme variables (Cyberpunk) - Matching index.html
        ========================= */
@@ -56,12 +527,13 @@
     }
 
     .tournaments-container {
-      background: rgba(255, 255, 255, 0.95);
+      background: var(--panel);
       border-radius: 15px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       margin: 20px auto;
       max-width: 1400px;
       overflow: hidden;
+      border: 1px solid var(--border-color);
     }
 
     .tournaments-header {
@@ -72,20 +544,92 @@
     }
 
     .filters-section {
-      background: #f8f9fa;
+      background: var(--bg-dark);
       padding: 1.5rem;
-      border-bottom: 1px solid #dee2e6;
+      border-bottom: 1px solid var(--border-color);
     }
 
+    /* Tournament Card Styles - Matching index.html */
     .tournament-card {
-      border: none;
-      border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      margin-bottom: 1.5rem;
+      background: var(--panel);
+      border-radius: 12px;
       overflow: hidden;
-      color: inherit;
+      transition: all 0.3s ease;
+      border: 1px solid var(--border-color);
       text-decoration: none;
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    
+    .tournament-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      border-color: var(--primary-color);
+    }
+    
+    .tournament-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    
+    .tournament-content {
+      padding: 1.5rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    
+    .tournament-card h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      line-height: 1.4;
+      color: var(--text-primary);
+    }
+    
+    .tournament-card p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* Tournament Status Badge */
+    .tournament-status-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      z-index: 2;
+    }
+
+    .status-live {
+      background: linear-gradient(135deg, #ff4757, #ff3742);
+      color: white;
+    }
+
+    .status-upcoming {
+      background: linear-gradient(135deg, var(--primary-color), #00d2ff);
+      color: var(--bg-dark);
+    }
+
+    .status-registration {
+      background: linear-gradient(135deg, #2ed573, #7bed9f);
+      color: var(--bg-dark);
+    }
+
+    .status-completed {
+      background: linear-gradient(135deg, #5f27cd, #341f97);
+      color: white;
     }
 
     .container {
@@ -93,101 +637,16 @@
       margin: 0 auto;
     }
 
-    /* Header Styles */
-    header.site-header {
-      position: fixed;
-      inset: 0 0 auto 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 2rem;
-      background: rgba(26, 26, 26, 0.8);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      z-index: 1200;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s var(--ease-out-quart);
-      height: 60px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      color: var(--copy);
-      font-size: 1.2rem;
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .brand:hover {
-      color: var(--accent);
-      transform: scale(1.05);
-    }
-
-    .brand .accent {
-      color: var(--accent);
-    }
-
-    .brand::before {
-      content: "⬜";
-      font-size: 1rem;
-      color: var(--accent);
-    }
-
-    .back-btn {
-      color: var(--muted);
-      font-size: 0.9rem;
-      padding: 0.5rem 1rem;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .back-btn:hover {
-      color: var(--accent);
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .login-link {
-      color: var(--copy);
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s ease;
-    }
-
-    .login-link:hover {
-      color: var(--accent);
-    }
-
-    .header-cta {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #000;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .header-cta:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-    }
-
     /* Main content */
     main {
       margin-top: 60px;
       min-height: calc(100vh - 60px);
+    }
+
+    /* Active navigation link */
+    .nav-links a.active {
+      color: var(--primary-color);
+      font-weight: 700;
     }
 
     /* Page Header */
@@ -215,31 +674,90 @@
     .filters-section {
       padding: 2rem 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      z-index: 10;
     }
 
     .filters {
       display: flex;
-      gap: 1rem;
+      gap: 0.75rem;
       flex-wrap: wrap;
       justify-content: center;
+      padding: 2px 1rem 0 1rem; /* Added 2px top padding to prevent hover cut-off */
+      position: relative;
+      z-index: 11;
+    }
+
+    /* Search Bar Styles */
+    .search-container {
+      margin-bottom: 2.3125rem; /* 2rem + 5px = 37px total */
+      display: flex;
+      justify-content: center;
+      position: relative;
+      z-index: 5;
+      background: transparent;
+    }
+
+    .search-wrapper {
+      position: relative;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    #tournament-search {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 25px;
+      color: var(--copy);
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    #tournament-search:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(10, 250, 217, 0.2);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+      z-index: 6;
     }
 
     .filter-btn {
-      padding: 0.75rem 1.5rem;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.6rem 1.2rem;
+      background: transparent;
+      border: 2px solid var(--border-color);
       border-radius: 25px;
-      color: var(--copy);
+      color: var(--text-secondary);
       font-weight: 500;
+      font-size: 0.9rem;
       cursor: pointer;
       transition: all 0.3s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
-    .filter-btn:hover,
+    .filter-btn:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      transform: translateY(-2px);
+    }
+
     .filter-btn.active {
-      background: rgba(255, 215, 0, 0.1);
-      border-color: rgba(255, 215, 0, 0.3);
-      color: var(--accent);
+      background: var(--primary-color);
+      border-color: var(--primary-color);
+      color: var(--bg-dark);
+      font-weight: 600;
     }
 
     /* Tournaments Grid */
@@ -484,9 +1002,10 @@
       .filters {
         justify-content: flex-start;
         overflow-x: auto;
-        padding-bottom: 0.5rem;
+        padding: 2px 1rem 0.5rem 1rem; /* Added 2px top padding for hover effect */
         scrollbar-width: none;
         -ms-overflow-style: none;
+        gap: 0.5rem;
       }
 
       .filters::-webkit-scrollbar {
@@ -496,6 +1015,22 @@
       .filter-btn {
         white-space: nowrap;
         flex-shrink: 0;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+
+      .tournaments-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 0 1rem;
+      }
+
+      .page-header {
+        padding: 2rem 1rem 1rem;
+      }
+
+      .page-title {
+        font-size: 2rem;
       }
 
       .tournament-actions {
@@ -511,23 +1046,23 @@
         padding: 0 1rem;
       }
 
-      .site-header {
+      /* Search bar responsive improvements */
+      .search-container {
         padding: 0 1rem;
+        margin-bottom: 1.8125rem; /* 1.5rem + 5px = 29px total */
       }
 
-      .brand {
-        font-size: 1rem;
+      .search-wrapper {
+        max-width: 100%;
       }
 
-      .back-btn {
-        font-size: 0.8rem;
-        padding: 0.4rem 0.8rem;
-      }
-
-      /* Mobile search improvements */
       #tournament-search {
-        font-size: 16px !important;
-        /* Prevents zoom on iOS */
+        font-size: 16px !important; /* Prevents zoom on iOS */
+        padding: 0.875rem 1rem 0.875rem 2.75rem;
+      }
+
+      .search-icon {
+        left: 1.125rem;
       }
     }
 
@@ -551,138 +1086,40 @@
       .stat-label {
         font-size: 0.8rem;
       }
+
+      /* Mobile search bar adjustments */
+      .search-container {
+        margin-bottom: 1.3125rem; /* 1rem + 5px = 21px total */
+      }
+
+      #tournament-search {
+        padding: 1rem 1rem 1rem 3rem;
+        font-size: 16px !important;
+        border-radius: 30px;
+      }
+
+      .search-icon {
+        left: 1.25rem;
+        font-size: 1.1rem;
+      }
+
+      .filters-section {
+        padding: 1.5rem 0;
+      }
+
+      .filters {
+        padding: 2px 0.5rem 0.5rem 0.5rem; /* Added 2px top padding for hover effect */
+        gap: 0.4rem;
+      }
+
+      .filter-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+        border-radius: 20px;
+      }
     }
 
-    /* Profile Dropdown Styles */
-    .profile-dropdown {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
 
-    .profile-icon {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--copy);
-      cursor: pointer;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-      font-size: 1.5rem;
-    }
-
-    .profile-icon:hover {
-      color: var(--accent);
-      background: rgba(255, 215, 0, 0.1);
-      transform: scale(1.1);
-    }
-
-    .profile-modal {
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background: var(--panel);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      min-width: 280px;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-10px);
-      transition: all 0.3s ease;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      margin-top: 10px;
-    }
-
-    .profile-dropdown:hover .profile-modal {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .profile-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .profile-photo {
-      width: 50px;
-      height: 50px;
-      background: linear-gradient(135deg, var(--accent), #e0ac10);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #000;
-      font-size: 1.5rem;
-      flex-shrink: 0;
-    }
-
-    .profile-info {
-      flex: 1;
-    }
-
-    .profile-username {
-      font-weight: 700;
-      color: var(--copy);
-      font-size: 1.1rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .profile-role {
-      background: linear-gradient(135deg, var(--accent), #e0ac10);
-      color: #000;
-      padding: 0.25rem 0.5rem;
-      border-radius: 12px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      display: inline-block;
-    }
-
-    .profile-actions {
-      padding: 0.5rem;
-    }
-
-    .profile-action {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem 1rem;
-      color: var(--copy);
-      text-decoration: none;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-      font-weight: 600;
-      font-size: 0.95rem;
-      width: 100%;
-      border: none;
-      background: none;
-      cursor: pointer;
-      font-family: inherit;
-    }
-
-    .profile-action:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--accent);
-      transform: translateX(4px);
-    }
-
-    .logout-action:hover {
-      background: rgba(255, 0, 0, 0.1);
-      color: #ff6b6b;
-    }
-
-    .profile-action i {
-      width: 16px;
-      text-align: center;
-    }
 
     #user-menu {
       display: flex;
@@ -695,7 +1132,7 @@
       float: left;
       height: 300px;
       width: 65px;
-      background: #F5F5F5;
+      background: var(--panel);
       overflow-y: scroll;
       margin-bottom: 25px;
     }
@@ -759,54 +1196,93 @@
 </head>
 
 <body>
-  <header class="site-header">
-    <a href="index.html" class="back-btn">
-      <i class="fas fa-arrow-left"></i>
-      Back to Home
-    </a>
-
-    <a href="index.html" class="brand">
-      GamingNexus
-    </a>
-
-    <div class="nav-actions">
-      <!-- Not logged in -->
-      <div id="guest-menu">
-        <a href="auth.html?tab=login&returnUrl=tournaments.html" class="login-link">Log in</a>
-        <button class="header-cta" onclick="redirectToAuth()">Sign up</button>
-      </div>
-
-      <!-- Logged in -->
-      <div id="user-menu" style="display: none;">
-        <div class="profile-dropdown">
-          <div class="profile-icon" id="profile-icon">
-            <i class="fas fa-user-circle"></i>
-          </div>
-          <div class="profile-modal" id="profile-modal">
-            <div class="profile-header">
-              <div class="profile-photo">
-                <i class="fas fa-user"></i>
+  <header class="site-header" role="banner">
+  <div class="header-container">
+      <a href="index.html" class="brand" aria-hidden="false">GamingNexus</a>
+      <div class="header-right">
+          <nav class="primary" role="navigation" aria-label="Primary">
+              <div class="nav-links" role="menubar">
+                  <a href="index.html" role="menuitem">Home</a>
+                  <a href="tournaments.html" role="menuitem" class="active">Tournaments</a>
+                  <a href="index.html#why-us" role="menuitem">Why Us</a>
+                  <a href="index.html#faq" role="menuitem">FAQ</a>
               </div>
-              <div class="profile-info">
-                <div class="profile-username" id="modal-username">User</div>
-                <div class="profile-role" id="modal-role-badge" style="display: none;">Admin</div>
+          </nav>
+          <div class="nav-actions">
+            <div id="guest-menu">
+              <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
+            </div>
+            <div id="user-menu" style="display: none;">
+              <div class="profile-dropdown">
+                <div class="profile-icon" id="profile-icon">
+                  <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="profile-modal" id="profile-modal">
+                  <div class="profile-header">
+                    <div class="profile-photo"><i class="fas fa-user"></i></div>
+                    <div class="profile-info">
+                      <div class="profile-username" id="modal-username">User</div>
+                    </div>
+                  </div>
+                  <div class="profile-actions">
+                    <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
+                      <i class="fas fa-user"></i>
+                      <span>My Account</span>
+                    </a>
+                    <button class="profile-action logout-action" onclick="logout()">
+                      <i class="fas fa-sign-out-alt"></i>
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="profile-actions">
-              <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
-                <i class="fas fa-user"></i>
-                <span>My Account</span>
-              </a>
-              <button class="profile-action logout-action" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-              </button>
-            </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </header>
+          <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+              <i class="fas fa-bars"></i>
+          </button>
+      </div>   
+  </div>
+</header>
+
+<div id="mobile-nav" class="mobile-nav" hidden>
+  <button class="mobile-nav-close" onclick="closeMobileNav()">
+    <i class="fas fa-times"></i>
+  </button>
+  
+  <!-- Guest View (when not logged in) -->
+  <div id="mobile-guest-view" class="guest-view">
+    <i class="fas fa-user-circle"></i>
+    <p>Join GamingNexus to host tournaments and compete with the best players!</p>
+    <a href="user-dashboard.html" class="mobile-host-btn">
+      <i class="fas fa-plus-circle"></i>
+      Host Tournament
+    </a>
+    <button class="mobile-join-btn" onclick="redirectToAuth()">
+      Join Us
+    </button>
+  </div>
+  
+  <!-- Navigation Links -->
+  <div class="mobile-nav-links">
+    <a href="index.html">
+      <i class="fas fa-home"></i>
+      Home
+    </a>
+    <a href="tournaments.html">
+      <i class="fas fa-trophy"></i>
+      Tournaments
+    </a>
+    <a href="index.html#why-us">
+      <i class="fas fa-star"></i>
+      Why Us
+    </a>
+    <a href="index.html#faq">
+      <i class="fas fa-question-circle"></i>
+      FAQ
+    </a>
+  </div>
+</div>
 
   <main>
     <!-- Page Header -->
@@ -823,27 +1299,10 @@
     <section class="filters-section">
       <div class="container">
         <!-- Search Bar -->
-        <div style="margin-bottom: 2rem; display: flex; justify-content: center;">
-          <div style="position: relative; max-width: 400px; width: 100%;">
-            <input type="text" id="tournament-search" placeholder="Search tournaments..." style="
-                width: 100%;
-                padding: 0.75rem 1rem 0.75rem 2.5rem;
-                background: rgba(255, 255, 255, 0.1);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                border-radius: 25px;
-                color: var(--copy);
-                font-size: 1rem;
-                outline: none;
-                transition: all 0.3s ease;
-              " />
-            <i class="fas fa-search" style="
-              position: absolute;
-              left: 1rem;
-              top: 50%;
-              transform: translateY(-50%);
-              color: var(--muted);
-              pointer-events: none;
-            "></i>
+        <div class="search-container">
+          <div class="search-wrapper">
+            <input type="text" id="tournament-search" placeholder="Search tournaments..." />
+            <i class="fas fa-search search-icon"></i>
           </div>
         </div>
 
@@ -852,11 +1311,8 @@
           <button class="filter-btn" data-filter="live">Live</button>
           <button class="filter-btn" data-filter="upcoming">Upcoming</button>
           <button class="filter-btn" data-filter="registration_open">Registration Open</button>
-          <button class="filter-btn" data-filter="completed">Past Results</button>
-          <button class="filter-btn" data-filter="pubg">PUBG</button>
-          <button class="filter-btn" data-filter="bgmi">BGMI</button>
-          <button class="filter-btn" data-filter="admin">Official Tournaments</button>
-          <button class="filter-btn" data-filter="user_hosted">Community Hosted</button>
+          <button class="filter-btn" data-filter="admin">Official</button>
+          <button class="filter-btn" data-filter="user_hosted">Community</button>
         </div>
       </div>
     </section>
@@ -891,7 +1347,7 @@
             <li><a href="tournaments.html">Browse All</a></li>
             <li><a href="tournaments.html?filter=live">Live Matches</a></li>
             <li><a href="tournaments.html?filter=upcoming">Upcoming</a></li>
-            <li><a href="tournaments.html?filter=completed">Past Results</a></li>
+            <li><a href="tournaments.html?filter=registration_open">Registration Open</a></li>
           </ul>
         </div>
         <div class="footer-column">
@@ -1310,10 +1766,8 @@
 
         if (filter === 'all') {
           show = true;
-        } else if (filter === 'live' || filter === 'upcoming' || filter === 'registration_open' || filter === 'completed') {
+        } else if (filter === 'live' || filter === 'upcoming' || filter === 'registration_open') {
           show = status === filter;
-        } else if (filter === 'pubg' || filter === 'bgmi') {
-          show = game === filter;
         } else if (filter === 'admin') {
           show = hostingType === 'admin';
         } else if (filter === 'user_hosted') {
@@ -1378,10 +1832,8 @@
           let showByFilter = false;
           if (currentFilter === 'all') {
             showByFilter = true;
-          } else if (['live', 'upcoming', 'registration_open', 'completed'].includes(currentFilter)) {
+          } else if (['live', 'upcoming', 'registration_open'].includes(currentFilter)) {
             showByFilter = status === currentFilter;
-          } else if (['pubg', 'bgmi'].includes(currentFilter)) {
-            showByFilter = gameType === currentFilter;
           } else if (currentFilter === 'admin') {
             showByFilter = hostingType === 'admin';
           } else if (currentFilter === 'user_hosted') {
@@ -1610,7 +2062,7 @@
       const urlParams = new URLSearchParams(window.location.search);
       const filter = urlParams.get('filter');
 
-      if (filter && ['live', 'upcoming', 'registration_open', 'completed', 'pubg', 'bgmi'].includes(filter)) {
+      if (filter && ['live', 'upcoming', 'registration_open', 'admin', 'user_hosted'].includes(filter)) {
         currentFilter = filter;
 
         // Update active filter button
@@ -1739,6 +2191,33 @@
         loadFallbackData();
         handleUrlParams();
       });
+
+    // Mobile Navigation Functions
+    function openMobileNav() {
+      const mobileNav = document.getElementById('mobile-nav');
+      if (mobileNav) {
+        mobileNav.hidden = false;
+        mobileNav.classList.add('is-open');
+      }
+    }
+
+    function closeMobileNav() {
+      const mobileNav = document.getElementById('mobile-nav');
+      if (mobileNav) {
+        mobileNav.classList.remove('is-open');
+        setTimeout(() => {
+          mobileNav.hidden = true;
+        }, 400);
+      }
+    }
+
+    // Add hamburger click event
+    document.addEventListener('DOMContentLoaded', () => {
+      const hamburger = document.querySelector('.hamburger');
+      if (hamburger) {
+        hamburger.addEventListener('click', openMobileNav);
+      }
+    });
     });
 
     // Authentication handling
@@ -1843,6 +2322,224 @@
       }
     }
 
+
+    
+    // =========================
+    // NAVBAR JAVASCRIPT (Embedded)
+    // =========================
+    
+    // --- NAVBAR HELPER FUNCTIONS ---
+    function redirectToAuth(tab = 'register') {
+      const returnUrl = encodeURIComponent(window.location.href);
+      window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
+    }
+
+    function getSessionData() {
+      const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+      try {
+        return session ? JSON.parse(session) : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('nexus_session');
+      sessionStorage.removeItem('nexus_session');
+      window.location.reload(); // Reload the current page to update the nav
+    }
+
+    // --- NAVBAR LOGIC ---
+    function checkUserAuthentication() {
+      const sessionData = getSessionData();
+      const guestMenu = document.getElementById('guest-menu');
+      const userMenu = document.getElementById('user-menu');
+      const user = sessionData?.data?.user || sessionData?.user;
+
+      if (user) {
+        document.getElementById('modal-username').textContent = user.username || user.email.split('@')[0];
+        if (guestMenu) guestMenu.style.display = 'none';
+        if (userMenu) userMenu.style.display = 'flex';
+      } else {
+        if (guestMenu) guestMenu.style.display = 'flex';
+        if (userMenu) userMenu.style.display = 'none';
+      }
+    }
+
+    function setupMobileNav() {
+      const sessionData = getSessionData();
+      const mobileNavContainer = document.getElementById('mobile-nav');
+      const user = sessionData?.data?.user || sessionData?.user;
+
+      const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
+      
+      // Contextual navigation links based on current page
+      let navLinksHTML = '';
+      const currentPage = window.location.pathname.split('/').pop();
+      
+      if (currentPage === 'index.html' || currentPage === '') {
+        // Homepage navigation
+        navLinksHTML = `
+          <div class="mobile-nav-links">
+            <a href="tournaments.html">Tournaments</a>
+            <a href="user-dashboard.html"><i class="fas fa-plus-circle"></i> Host Tournament</a>
+            <a href="#why-us">Why Us</a>
+            <a href="#faq">FAQ</a>
+          </div>
+        `;
+      } else if (currentPage.includes('tournament') || currentPage.includes('bracket')) {
+        // Tournament-related pages
+        navLinksHTML = `
+          <div class="mobile-nav-links">
+            <a href="tournaments.html">Browse Tournaments</a>
+            <a href="user-dashboard.html">My Tournaments</a>
+          </div>
+        `;
+      } else if (currentPage.includes('dashboard') || currentPage.includes('team-registration')) {
+        // Dashboard and registration pages
+        navLinksHTML = `
+          <div class="mobile-nav-links">
+            <a href="tournaments.html">Browse Tournaments</a>
+            <a href="user-dashboard.html">My Dashboard</a>
+            <a href="index.html">Home</a>
+          </div>
+        `;
+      } else if (currentPage.includes('admin')) {
+        // Admin pages
+        navLinksHTML = `
+          <div class="mobile-nav-links">
+            <a href="admin-dashboard.html">Dashboard</a>
+            <a href="tournaments.html">Browse Tournaments</a>
+            <a href="index.html">Home</a>
+          </div>
+        `;
+      } else {
+        // Default navigation for other pages
+        navLinksHTML = `
+          <div class="mobile-nav-links">
+            <a href="tournaments.html">Tournaments</a>
+            <a href="user-dashboard.html"><i class="fas fa-plus-circle"></i> Host Tournament</a>
+            <a href="index.html">Home</a>
+            <a href="auth.html">Sign In</a>
+          </div>
+        `;
+      }
+      
+      let userSectionHTML = '';
+
+      if (user) {
+        // Logged-in user view
+        const username = user.username || user.email.split('@')[0];
+        userSectionHTML = `
+          <div class="profile-header">
+            <div class="profile-photo"><i class="fas fa-user"></i></div>
+            <div class="profile-info">
+              <div class="profile-username">${username}</div>
+            </div>
+          </div>
+          <div class="profile-actions">
+            <a href="user-dashboard.html" class="profile-action">
+              <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+            </a>
+            <a href="user-dashboard.html?tab=create" class="profile-action">
+              <i class="fas fa-plus"></i> <span>Create Tournament</span>
+            </a>
+            <a href="tournaments.html" class="profile-action">
+              <i class="fas fa-trophy"></i> <span>Browse Tournaments</span>
+            </a>
+            <button class="profile-action" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+            </button>
+          </div>
+        `;
+      } else {
+        // Guest view with clean white Host button
+        userSectionHTML = `
+          <div class="guest-view">
+            <i class="fas fa-gamepad"></i>
+            <p>Join the arena to compete, win prizes, and track your stats!</p>
+            <div class="button-container">
+              <a href="user-dashboard.html" class="mobile-host-btn">
+                <i class="fas fa-plus-circle"></i> Host
+              </a>
+              <button class="mobile-join-btn" onclick="redirectToAuth()">Join Us</button>
+            </div>
+          </div>
+        `;
+      }
+
+      // Combine the parts into the final HTML for the panel
+      mobileNavContainer.innerHTML = `
+        ${closeButtonHTML}
+        ${userSectionHTML}
+        ${navLinksHTML}
+      `;
+
+      // Add click handlers for navigation links to close mobile menu
+      setTimeout(() => {
+        const hostBtn = mobileNavContainer.querySelector('.mobile-host-btn');
+        const navLinks = mobileNavContainer.querySelectorAll('.mobile-nav-links a');
+        
+        if (hostBtn) {
+          hostBtn.addEventListener('click', () => {
+            // Close mobile nav when host button is clicked
+            const mobileNav = document.getElementById('mobile-nav');
+            if (mobileNav) {
+              mobileNav.classList.remove('is-open');
+            }
+          });
+        }
+
+        // Close mobile nav when any navigation link is clicked
+        navLinks.forEach(link => {
+          link.addEventListener('click', () => {
+            const mobileNav = document.getElementById('mobile-nav');
+            if (mobileNav) {
+              mobileNav.classList.remove('is-open');
+            }
+          });
+        });
+      }, 100);
+    }
+
+    // --- NAVBAR INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', () => {
+      const hamburger = document.querySelector('.hamburger');
+      const mobileNav = document.getElementById('mobile-nav');
+
+      if (!hamburger || !mobileNav) {
+          console.error("Navbar elements not found. Make sure the HTML is included.");
+          return;
+      }
+      
+      function closeMobileNav() {
+        mobileNav.classList.remove('is-open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+
+      hamburger.addEventListener('click', () => {
+        const isOpen = mobileNav.classList.toggle('is-open');
+        hamburger.setAttribute('aria-expanded', isOpen);
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!mobileNav.classList.contains('is-open')) return;
+        const closeButton = event.target.closest('.mobile-nav-close');
+        if (closeButton) {
+          closeMobileNav();
+          return;
+        }
+        const isClickInsideNav = event.target.closest('#mobile-nav');
+        const isClickOnHamburger = event.target.closest('.hamburger');
+        if (!isClickInsideNav && !isClickOnHamburger) {
+          closeMobileNav();
+        }
+      });
+      
+      // Set up the content of the navbars
+      checkUserAuthentication();
+      setupMobileNav();
+    });
 
   </script>
 </body>

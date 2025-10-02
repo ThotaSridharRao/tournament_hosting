@@ -2,16 +2,22 @@
 header.site-header {
   position: fixed;
   inset: 0 0 auto 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2rem;
   background: rgba(26, 26, 26, 0.5); 
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   z-index: 1200;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   height: 60px;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .brand {
@@ -25,6 +31,36 @@ header.site-header {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+/* Navigation Styles */
+.primary {
+  display: flex;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-links a {
+  color: var(--copy, #F0F0F0);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+  padding: 0.5rem 0;
+}
+
+.nav-links a:hover {
+  color: var(--accent-2, #0AFAD9);
+}
+
+.nav-links a.active {
+  color: var(--accent-2, #0AFAD9);
+  font-weight: 600;
 }
 
 .nav-actions {
@@ -47,6 +83,33 @@ header.site-header {
 .header-cta:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(255, 69, 0, 0.3);
+}
+
+/* Host Button Styles */
+.host-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.host-btn:hover {
+  background: #f0f0f0;
+  color: #000000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.host-btn i {
+  font-size: 1rem;
 }
 
 /* Profile Dropdown (Desktop) */
@@ -81,8 +144,28 @@ header.site-header {
 
 /* Responsive Media Queries */
 @media (max-width: 768px) {
-  .nav-actions { display: none; }
-  .hamburger { display: inline-flex; }
+  .header-container {
+    padding: 0 1rem;
+  }
+  
+  .primary {
+    display: none;
+  }
+  
+  .nav-actions { 
+    display: none; 
+  }
+  
+  .hamburger { 
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Hide host button on mobile - will be in mobile menu */
+  .host-btn { 
+    display: none;
+  }
 }
 
 @media (min-width: 1600px) {
@@ -171,4 +254,55 @@ header.site-header {
 .mobile-nav-links a:hover {
     background: rgba(255, 255, 255, 0.05); /* Uses --glass variable from other pages */
     color: var(--copy);
+}
+
+.mobile-nav-links a i {
+    margin-right: 0.5rem;
+    color: var(--accent-2, #0AFAD9);
+}
+
+/* Mobile Navigation Buttons */
+.mobile-host-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+    width: 100%;
+    justify-content: center;
+}
+
+.mobile-host-btn:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+}
+
+.mobile-join-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, var(--accent, #5D3FD3), var(--accent-2, #0AFAD9));
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.mobile-join-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(93, 63, 211, 0.3);
+}
 }
