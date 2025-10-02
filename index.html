@@ -1834,11 +1834,22 @@
           }
         }
 
-        // --- NEW LOGIC TO HANDLE STATUS ---
-        const status = tournament.status || 'upcoming'; // Default to 'upcoming' if status is missing
+        // --- STATUS NORMALIZATION LOGIC ---
+        // Function to normalize status values to match admin dashboard
+        function normalizeStatus(status) {
+          const statusMap = {
+            'live': 'ongoing',
+            'completed': 'ended',
+            'cancelled': 'ended'
+          };
+          return statusMap[status] || status;
+        }
+        
+        const rawStatus = tournament.status || 'upcoming';
+        const status = normalizeStatus(rawStatus);
         const statusText = status.replace(/_/g, ' ');
         const statusClass = `status-${status}`;
-        // --- END OF NEW LOGIC ---
+        // --- END OF STATUS LOGIC ---
 
         return `
                 <a href="tournament-details.html?slug=${tournament.slug}" class="tournament-card">

@@ -960,8 +960,8 @@
     <script>
         // --- INLINED NAVBAR.JS ---
         function redirectToAuth(tab = 'register') { const returnUrl = encodeURIComponent(window.location.href); window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`; }
-        function getSessionData() { const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session'); try { return session ? JSON.parse(session) : null; } catch (error) { return null; } }
-        function logout() { localStorage.removeItem('earena_session'); sessionStorage.removeItem('earena_session'); window.location.reload(); }
+        function getSessionData() { const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session'); try { return session ? JSON.parse(session) : null; } catch (error) { return null; } }
+        function logout() { localStorage.removeItem('nexus_session'); sessionStorage.removeItem('nexus_session'); window.location.reload(); }
         function checkUserAuthentication() {
             const sessionData = getSessionData();
             const userMenu = document.getElementById('user-menu');

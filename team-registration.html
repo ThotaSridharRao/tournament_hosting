@@ -921,27 +921,46 @@
             const now = new Date();
             const regStart = new Date(currentTournament.registrationStart);
             const regEnd = new Date(currentTournament.registrationEnd);
-            const restrictedStatuses = ['cancelled', 'completed'];
+            // Function to normalize status values to match admin dashboard
+            function normalizeStatus(status) {
+                const statusMap = {
+                    'live': 'ongoing',
+                    'completed': 'ended',
+                    'cancelled': 'ended'
+                };
+                return statusMap[status] || status;
+            }
+
+            const normalizedStatus = normalizeStatus(currentTournament.status);
+            const restrictedStatuses = ['ended', 'registration_closed'];
 
             const registerBtn = document.getElementById('register-btn');
 
-            if (restrictedStatuses.includes(currentTournament.status)) {
+            if (restrictedStatuses.includes(normalizedStatus)) {
                 showError('Registration is not currently open for this tournament.');
                 registerBtn.disabled = true;
                 registerBtn.textContent = 'Registration Closed';
-            } else if (now > regEnd) {
-                showError('Registration for this tournament has ended.');
-                registerBtn.disabled = true;
-                registerBtn.textContent = 'Registration Closed';
-            } else if (now < regStart) {
-                showError(`Registration opens on ${regStart.toLocaleDateString()}`);
-                registerBtn.disabled = true;
-                registerBtn.textContent = 'Registration Not Open';
+            } else if (normalizedStatus === 'registration_open') {
+                // Check if registration is actually open based on dates
+                if (now > regEnd) {
+                    showError('Registration for this tournament has ended.');
+                    registerBtn.disabled = true;
+                    registerBtn.textContent = 'Registration Closed';
+                } else if (now < regStart) {
+                    showError(`Registration opens on ${regStart.toLocaleDateString()}`);
+                    registerBtn.disabled = true;
+                    registerBtn.textContent = 'Registration Not Open';
+                } else {
+                    console.log('Registration is open!');
+                    registerBtn.disabled = false;
+                    registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Team';
+                    document.getElementById('error-container').innerHTML = '';
+                }
             } else {
-                console.log('Registration is open!');
-                registerBtn.disabled = false;
-                registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register Team';
-                document.getElementById('error-container').innerHTML = '';
+                // Status is not registration_open
+                showError('Registration is not currently available for this tournament.');
+                registerBtn.disabled = true;
+                registerBtn.textContent = 'Registration Unavailable';
             }
         }
 

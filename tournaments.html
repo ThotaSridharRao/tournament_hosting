@@ -1572,15 +1572,28 @@
     const API_BASE_URL = 'https://t2-237c.onrender.com';
 
     // Status configurations
-    // Simplified status configurations
+    // Status configurations - standardized with admin dashboard
     const statusConfig = {
       upcoming: "Upcoming",
-      registration_open: "Registration Open",
+      registration_open: "Registration Open", 
       registration_closed: "Registration Closed",
       ongoing: "Ongoing",
       ended: "Ended",
-      live: "Live" // Kept for backward compatibility if needed
+      // Legacy status mappings for backward compatibility
+      live: "Ongoing", // Map 'live' to 'ongoing'
+      completed: "Ended", // Map 'completed' to 'ended'
+      default: "Unknown"
     };
+
+    // Function to normalize status values to match admin dashboard
+    function normalizeStatus(status) {
+      const statusMap = {
+        'live': 'ongoing',
+        'completed': 'ended',
+        'cancelled': 'ended'
+      };
+      return statusMap[status] || status;
+    }
 
     // Fetch tournaments from API
     async function fetchTournaments(filters = {}) {
@@ -1613,8 +1626,8 @@
               title: tournament.title,
               description: tournament.description || '',
               game: tournament.game || 'Unknown',
-              status: tournament.status,
-              badge: getStatusBadge(tournament.status),
+              status: normalizeStatus(tournament.status),
+              badge: getStatusBadge(normalizeStatus(tournament.status)),
               prizePool: tournament.prizePool || 0,
               maxTeams: tournament.maxTeams || 16,
               participants: tournament.participants || [],
@@ -1666,7 +1679,8 @@
       }
 
       // Determine if we should show the register button
-      const showRegisterButton = tournament.status === 'registration_open';
+      const normalizedStatus = normalizeStatus(tournament.status);
+      const showRegisterButton = normalizedStatus === 'registration_open';
 
       const actionsHTML = showRegisterButton ? `
         <div class="tournament-actions">
@@ -1749,9 +1763,9 @@
       `;
 
       return `
-        <div class="tournament-card" data-status="${tournament.status}" data-game="${tournament.game}" data-hosting-type="${tournament.hostingType}">
+        <div class="tournament-card" data-status="${normalizedStatus}" data-game="${tournament.game}" data-hosting-type="${tournament.hostingType}">
           <div class="tournament-image" style="background-image: url('${tournament.posterImage || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'}'); background-size: cover; background-position: center;">
-            <div class="tournament-badge">${statusConfig[tournament.status] || 'Unknown'}</div>
+            <div class="tournament-badge">${statusConfig[normalizedStatus] || 'Unknown'}</div>
           </div>
           <div class="tournament-content">
             <h3 class="tournament-title">${tournament.title}</h3>
