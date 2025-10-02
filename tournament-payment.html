@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament Payment - GamingNexus</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0AFAD9;
+            /* Electric Cyan */
+            --bg-dark: #0D0A1A;
+            /* Dark Matter Black */
+            --accent-secondary: #5D3FD3;
+            /* Deep Indigo */
+            --panel: #161329;
+            /* Dark Indigo Panel */
+            --text-primary: #F0F0F0;
+            /* Starlight White */
+            --text-secondary: rgba(240, 240, 240, 0.7);
+            --border-color: rgba(10, 250, 217, 0.2);
+            --ease: 0.3s ease;
+
+            /* Legacy variables for compatibility */
+            --copy: var(--text-primary);
+            --muted: var(--text-secondary);
+            --accent: var(--accent-secondary);
+            /* Using Indigo as main accent */
+            --accent-2: var(--primary-color);
+            /* Using Cyan as secondary accent */
+            --radius: 12px;
+            --container: 1400px;
+
+            /* Additional colors */
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --secondary-color: #495057;
+            --dark-bg: var(--bg-dark);
+            --card-bg: var(--panel);
+            --text-light: var(--text-primary);
+            --text-muted: var(--text-secondary);
+
+            /* Enhanced easing curves */
+            --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+            --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            min-height: 100vh;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.6;
+        }
+
+        .payment-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin: 20px auto;
+            max-width: 800px;
+            overflow: hidden;
+        }
+
+        .payment-header {
+            background: linear-gradient(135deg, var(--primary-color), #8e44ad);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .tournament-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .fee-breakdown {
+            background: white;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .fee-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 0;
+        }
+
+        .fee-item.total {
+            border-top: 2px solid #dee2e6;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-top: 1rem;
+            padding-top: 1rem;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .payment-method {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method:hover {
+            border-color: var(--primary-color);
+            background: #f8f9fa;
+        }
+
+        .payment-method.selected {
+            border-color: var(--primary-color);
+            background: rgba(111, 66, 193, 0.1);
+        }
+
+        .payment-method i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: #5a359a;
+        }
+
+        .security-info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Loading Animation - Consistent with index.html */
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        #loader-wrapper.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 10, 26, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-content {
+            background: var(--panel);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            max-width: 400px;
+            color: var(--text-primary);
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border: 3px solid rgba(10, 250, 217, 0.2);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Enhanced Responsive Design */
+        @media (max-width: 768px) {
+            .payment-container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+
+            .payment-header {
+                padding: 1rem;
+            }
+
+            .payment-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+
+            .row {
+                margin: 0;
+            }
+
+            .col-md-8,
+            .col-md-4 {
+                padding: 0 0.5rem;
+            }
+
+            .btn {
+                font-size: 0.875rem;
+                padding: 0.75rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .payment-container {
+                margin: 5px;
+            }
+
+            .payment-header h1 {
+                font-size: 1.25rem;
+            }
+
+            .loading-content {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .card {
+                margin-bottom: 1rem;
+            }
+
+            .btn-lg {
+                font-size: 1rem;
+                padding: 0.75rem 1.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="payment-container">
+            <!-- Header -->
+            <div class="payment-header">
+                <h1><i class="fas fa-credit-card me-3"></i>Tournament Payment</h1>
+                <p class="mb-0">Complete your hosting fee payment to publish your tournament</p>
+            </div>
+
+            <div class="p-4">
+                <!-- Tournament Information -->
+                <div class="tournament-info">
+                    <h5><i class="fas fa-trophy me-2"></i>Tournament Details</h5>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h6 id="tournamentTitle">Loading...</h6>
+                            <p class="text-muted mb-1" id="tournamentGame">Game: Loading...</p>
+                            <p class="text-muted mb-1" id="tournamentDates">Dates: Loading...</p>
+                            <p class="text-muted mb-0" id="tournamentTeams">Teams: Loading...</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <span class="badge bg-warning text-dark fs-6">Pending Payment</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fee Breakdown -->
+                <div class="fee-breakdown">
+                    <h5><i class="fas fa-calculator me-2"></i>Hosting Fee Breakdown</h5>
+                    <div id="feeDetails">
+                        <div class="text-center py-3">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Calculating fees...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <div>
+                    <h5><i class="fas fa-payment me-2"></i>Select Payment Method</h5>
+                    <div class="payment-methods">
+                        <div class="payment-method" data-method="card">
+                            <i class="fas fa-credit-card"></i>
+                            <div class="fw-bold">Credit/Debit Card</div>
+                            <small class="text-muted">Visa, Mastercard, RuPay</small>
+                        </div>
+                        <div class="payment-method" data-method="upi">
+                            <i class="fab fa-google-pay"></i>
+                            <div class="fw-bold">UPI</div>
+                            <small class="text-muted">Google Pay, PhonePe, Paytm</small>
+                        </div>
+                        <div class="payment-method" data-method="netbanking">
+                            <i class="fas fa-university"></i>
+                            <div class="fw-bold">Net Banking</div>
+                            <small class="text-muted">All major banks</small>
+                        </div>
+                        <div class="payment-method" data-method="wallet">
+                            <i class="fas fa-wallet"></i>
+                            <div class="fw-bold">Wallet</div>
+                            <small class="text-muted">Paytm, Mobikwik, etc.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Button -->
+                <button class="btn btn-primary" id="proceedPayment" disabled>
+                    <i class="fas fa-lock me-2"></i>Proceed to Secure Payment
+                </button>
+
+                <!-- Security Information -->
+                <div class="security-info">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-shield-alt text-success me-2"></i>
+                        <div>
+                            <strong>Secure Payment</strong>
+                            <p class="mb-0 small">Your payment is processed securely through PayU. We don't store your
+                                payment information.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Back to Dashboard -->
+                <div class="text-center mt-3">
+                    <a href="user-dashboard.html" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner-border mb-3" role="status">
+                <span class="visually-hidden">Processing...</span>
+            </div>
+            <h5>Processing Payment</h5>
+            <p class="text-muted">Please wait while we redirect you to the payment gateway...</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentUser = null;
+        let tournamentId = null;
+        let tournamentData = null;
+        let selectedPaymentMethod = null;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            checkAuthentication();
+            getTournamentId();
+            setupEventListeners();
+            loadTournamentData();
+        });
+
+        function checkAuthentication() {
+            const authToken = getCookie('auth_token');
+            const userData = getCookie('user_data');
+
+            if (!authToken || !userData) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const [email, role] = userData.split('|');
+            currentUser = { email, role, token: authToken };
+        }
+
+        function getTournamentId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            tournamentId = urlParams.get('id');
+
+            if (!tournamentId) {
+                showAlert('Tournament ID not found', 'danger');
+                setTimeout(() => {
+                    window.location.href = 'user-dashboard.html';
+                }, 2000);
+                return;
+            }
+        }
+
+        function setupEventListeners() {
+            // Payment method selection
+            document.querySelectorAll('.payment-method').forEach(method => {
+                method.addEventListener('click', function () {
+                    selectPaymentMethod(this.dataset.method);
+                });
+            });
+
+            // Proceed payment button
+            document.getElementById('proceedPayment').addEventListener('click', initiatePayment);
+        }
+
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+
+            // Update UI
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+
+            document.querySelector(`[data-method="${method}"]`).classList.add('selected');
+            document.getElementById('proceedPayment').disabled = false;
+        }
+
+        async function loadTournamentData() {
+            try {
+                const response = await fetch(`/api/user-tournaments/${tournamentId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${currentUser.token}`
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    tournamentData = result.data;
+                    displayTournamentInfo();
+                    await calculateAndDisplayFees();
+                } else {
+                    showAlert('Failed to load tournament data: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error loading tournament:', error);
+                showAlert('Failed to load tournament data', 'danger');
+            }
+        }
+
+        function displayTournamentInfo() {
+            document.getElementById('tournamentTitle').textContent = tournamentData.title;
+            document.getElementById('tournamentGame').textContent = `Game: ${tournamentData.game}`;
+
+            const regStart = new Date(tournamentData.registrationStart).toLocaleDateString();
+            const regEnd = new Date(tournamentData.registrationEnd).toLocaleDateString();
+            document.getElementById('tournamentDates').textContent = `Registration: ${regStart} - ${regEnd}`;
+
+            document.getElementById('tournamentTeams').textContent = `Max Teams: ${tournamentData.maxTeams}`;
+        }
+
+        async function calculateAndDisplayFees() {
+            try {
+                const response = await fetch('/api/user-tournaments/calculate-fee', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentUser.token}`
+                    },
+                    body: JSON.stringify({
+                        registrationStart: tournamentData.registrationStart,
+                        registrationEnd: tournamentData.registrationEnd
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    displayFeeBreakdown(result.data);
+                } else {
+                    showAlert('Failed to calculate fees: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error calculating fees:', error);
+                showAlert('Failed to calculate fees', 'danger');
+            }
+        }
+
+        function displayFeeBreakdown(feeData) {
+            const breakdown = feeData.breakdown;
+
+            document.getElementById('feeDetails').innerHTML = `
+                <div class="fee-item">
+                    <span>Registration Duration:</span>
+                    <span>${feeData.registrationDurationDays} days</span>
+                </div>
+                <div class="fee-item">
+                    <span>Base Fee (${breakdown.baseDays} days):</span>
+                    <span>₹${breakdown.baseFeeAmount}</span>
+                </div>
+                <div class="fee-item">
+                    <span>Additional Days (${breakdown.additionalDays} × ₹${breakdown.additionalDayRate}):</span>
+                    <span>₹${breakdown.additionalDaysTotal}</span>
+                </div>
+                <div class="fee-item">
+                    <span>Platform Fee (${(breakdown.platformFeePercentage * 100).toFixed(1)}%):</span>
+                    <span>₹${breakdown.platformFeeAmount.toFixed(2)}</span>
+                </div>
+                ${breakdown.taxAmount > 0 ? `
+                <div class="fee-item">
+                    <span>Tax (${(breakdown.taxPercentage * 100).toFixed(1)}%):</span>
+                    <span>₹${breakdown.taxAmount.toFixed(2)}</span>
+                </div>
+                ` : ''}
+                <div class="fee-item total">
+                    <span>Total Amount:</span>
+                    <span>₹${feeData.totalFee.toFixed(2)}</span>
+                </div>
+            `;
+        }
+
+        async function initiatePayment() {
+            if (!selectedPaymentMethod) {
+                showAlert('Please select a payment method', 'warning');
+                return;
+            }
+
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.style.display = 'flex';
+
+            try {
+                const response = await fetch(`/api/user-tournaments/${tournamentId}/payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentUser.token}`
+                    },
+                    body: JSON.stringify({
+                        paymentMethod: selectedPaymentMethod,
+                        returnUrl: window.location.origin + '/user-dashboard.html'
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Create and submit PayU form
+                    createAndSubmitPayUForm(result.data.payuData, result.paymentUrl);
+                } else {
+                    loadingOverlay.style.display = 'none';
+                    showAlert('Payment initiation failed: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error initiating payment:', error);
+                loadingOverlay.style.display = 'none';
+                showAlert('Payment initiation failed', 'danger');
+            }
+        }
+
+        function createAndSubmitPayUForm(payuData, payuUrl) {
+            // Create a form element
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = payuUrl;
+
+            // Add all PayU data as hidden inputs
+            Object.keys(payuData).forEach(key => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = payuData[key];
+                form.appendChild(input);
+            });
+
+            // Append form to body and submit
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+            document.body.appendChild(alertDiv);
+
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Handle payment status from URL parameters
+        window.addEventListener('load', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paymentStatus = urlParams.get('payment');
+            const message = urlParams.get('message');
+
+            if (paymentStatus === 'success') {
+                showAlert('Payment successful! Your tournament is now active.', 'success');
+                setTimeout(() => {
+                    window.location.href = 'user-dashboard.html';
+                }, 3000);
+            } else if (paymentStatus === 'failed') {
+                showAlert('Payment failed: ' + (message || 'Unknown error'), 'danger');
+            } else if (paymentStatus === 'error') {
+                showAlert('Payment error: ' + (message || 'Processing failed'), 'danger');
+            }
+        });
+    </script>
+</body>
+
+</html>

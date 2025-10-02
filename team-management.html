@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Management - EArena</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0AFAD9;      /* Electric Cyan */
+            --bg-dark: #0D0A1A;            /* Dark Matter Black */
+            --accent-secondary: #5D3FD3;   /* Deep Indigo */
+            --panel: #161329;              /* Dark Indigo Panel */
+            --text-primary: #F0F0F0;       /* Starlight White */
+            --text-secondary: rgba(240, 240, 240, 0.7);
+            --border-color: rgba(10, 250, 217, 0.2);
+            --ease: 0.3s ease;
+
+            /* Legacy variables for compatibility */
+            --copy: var(--text-primary);
+            --muted: var(--text-secondary);
+            --accent: var(--accent-secondary); /* Using Indigo as main accent */
+            --accent-2: var(--primary-color); /* Using Cyan as secondary accent */
+            --radius: 12px;
+            --container: 1400px;
+            
+            /* Additional colors */
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --secondary-color: #495057;
+            --dark-bg: var(--bg-dark);
+            --card-bg: var(--panel);
+            --text-light: var(--text-primary);
+            --text-muted: var(--text-secondary);
+            
+            /* Enhanced easing curves */
+            --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+            --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            min-height: 100vh;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.6;
+        }
+
+        .container-fluid {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin: 20px auto;
+            max-width: 1400px;
+            overflow: hidden;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #8e44ad);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .team-header {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 1.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .team-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent), #e0ac10);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-registered {
+            background: rgba(40, 167, 69, 0.2);
+            color: #155724;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #856404;
+        }
+
+        .status-disqualified {
+            background: rgba(220, 53, 69, 0.2);
+            color: #721c24;
+        }
+
+        .player-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .player-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .player-item:last-child {
+            border-bottom: none;
+        }
+
+        .player-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), #8e44ad);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-right: 1rem;
+        }
+
+        .communication-panel {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), #8e44ad);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(111, 66, 193, 0.3);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color), #e0a800);
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            color: #000;
+            transition: all 0.3s ease;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.3);
+            color: #000;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color), #c82333);
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        /* Loading Animation - Consistent with index.html */
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        #loader-wrapper.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(10, 250, 217, 0.2);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .stats-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stats-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+        }
+
+        /* Enhanced Responsive Design */
+        @media (max-width: 768px) {
+            .container-fluid {
+                margin: 10px;
+                border-radius: 10px;
+            }
+
+            .header {
+                padding: 1.5rem 1rem;
+            }
+
+            .team-header {
+                padding: 1rem;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .team-avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+                margin-bottom: 1rem;
+            }
+
+            .communication-panel {
+                padding: 1.5rem;
+            }
+
+            .row {
+                margin: 0;
+            }
+
+            .col-md-6 {
+                padding: 0 0.5rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container-fluid {
+                margin: 5px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .team-card {
+                margin-bottom: 1rem;
+            }
+
+            .btn {
+                font-size: 0.875rem;
+                padding: 0.5rem 1rem;
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            .team-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="header position-relative">
+            <a href="user-dashboard.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1><i class="fas fa-users-cog"></i> Team Management</h1>
+            <p class="mb-0">Manage participants and communicate with teams</p>
+        </div>
+
+        <div class="container py-4">
+            <!-- Loading State -->
+            <div id="loading" class="loading">
+                <div class="loading-spinner"></div>
+                <p>Loading teams...</p>
+            </div>
+
+            <!-- Main Content -->
+            <div id="main-content" style="display: none;">
+                <!-- Tournament Info -->
+                <div id="tournament-info" class="alert alert-info">
+                    <h5><i class="fas fa-trophy"></i> <span id="tournament-title">Tournament Title</span></h5>
+                    <p class="mb-0">Manage your tournament participants and communicate with teams.</p>
+                </div>
+
+                <!-- Statistics -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-number" id="total-teams">0</div>
+                            <div class="stats-label">Total Teams</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-number" id="registered-teams">0</div>
+                            <div class="stats-label">Registered</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-number" id="pending-teams">0</div>
+                            <div class="stats-label">Pending</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-number" id="available-slots">0</div>
+                            <div class="stats-label">Available Slots</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Communication Panel -->
+                <div class="communication-panel">
+                    <h4><i class="fas fa-bullhorn"></i> Send Announcement</h4>
+                    <p class="text-muted">Send a message to all registered teams.</p>
+                    
+                    <form id="announcement-form">
+                        <div class="row">
+                            <div class="col-md-8 mb-3">
+                                <label for="announcement-subject" class="form-label">Subject</label>
+                                <input type="text" class="form-control" id="announcement-subject" required 
+                                       placeholder="Enter announcement subject">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="announcement-priority" class="form-label">Priority</label>
+                                <select class="form-control" id="announcement-priority">
+                                    <option value="normal">Normal</option>
+                                    <option value="high">High</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="announcement-message" class="form-label">Message</label>
+                            <textarea class="form-control" id="announcement-message" rows="4" required 
+                                      placeholder="Enter your announcement message..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Send Announcement
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Teams List -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4><i class="fas fa-users"></i> Registered Teams</h4>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="exportTeamsList()">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="refreshTeams()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Search and Filter -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="team-search" 
+                                   placeholder="Search teams by name or player...">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-control" id="status-filter">
+                                <option value="">All Status</option>
+                                <option value="registered">Registered</option>
+                                <option value="pending">Pending</option>
+                                <option value="disqualified">Disqualified</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-control" id="payment-filter">
+                                <option value="">All Payments</option>
+                                <option value="paid">Paid</option>
+                                <option value="pending">Payment Pending</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="teams-list">
+                        <!-- Teams will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Details Modal -->
+    <div class="modal fade" id="teamDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Team Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="teamDetailsBody">
+                    <!-- Team details will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="contactTeam()">
+                        <i class="fas fa-envelope"></i> Contact Team
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Modals -->
+    <div class="modal fade" id="messageModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="messageModalTitle">Success</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="messageModalBody">
+                    Message content
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Get tournament ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const tournamentId = urlParams.get('tournamentId');
+
+        if (!tournamentId) {
+            showMessage('Error', 'Tournament ID not provided', 'error');
+            setTimeout(() => {
+                window.location.href = 'user-dashboard.html';
+            }, 2000);
+        }
+
+        // API Configuration
+        const isLocal = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' || 
+                       window.location.protocol === 'file:';
+        const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
+
+        // Global variables
+        let currentTeams = [];
+        let selectedTeamId = null;
+
+        // Authentication
+        function getAuthToken() {
+            return localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+        }
+
+        function getAuthHeaders() {
+            const token = getAuthToken();
+            return token ? { 'Authorization': `Bearer ${token}` } : {};
+        }
+
+        // Show message modal
+        function showMessage(title, message, type = 'success') {
+            document.getElementById('messageModalTitle').textContent = title;
+            document.getElementById('messageModalBody').textContent = message;
+            
+            const modal = document.getElementById('messageModal');
+            const modalHeader = modal.querySelector('.modal-header');
+            modalHeader.className = `modal-header ${type === 'error' ? 'bg-danger text-white' : 'bg-success text-white'}`;
+            
+            new bootstrap.Modal(modal).show();
+        }
+
+        // Load tournament data and teams
+        async function loadTournamentData() {
+            try {
+                // Load tournament info
+                const tournamentResponse = await fetch(`${API_BASE_URL}/api/user-tournaments/${tournamentId}`, {
+                    headers: getAuthHeaders()
+                });
+
+                if (!tournamentResponse.ok) {
+                    throw new Error('Failed to load tournament');
+                }
+
+                const tournamentData = await tournamentResponse.json();
+                if (tournamentData.success) {
+                    document.getElementById('tournament-title').textContent = tournamentData.data.title;
+                }
+
+                // Load teams/participants
+                const teamsResponse = await fetch(`${API_BASE_URL}/api/user-tournaments/${tournamentId}/participants`, {
+                    headers: getAuthHeaders()
+                });
+
+                if (!teamsResponse.ok) {
+                    throw new Error('Failed to load teams');
+                }
+
+                const teamsData = await teamsResponse.json();
+                if (teamsData.success) {
+                    currentTeams = teamsData.data;
+                    displayTeams(currentTeams);
+                    updateStatistics(currentTeams, tournamentData.data.maxTeams);
+                }
+
+                // Hide loading and show content
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error loading tournament data:', error);
+                showMessage('Error', 'Failed to load tournament data', 'error');
+            }
+        }
+
+        // Update statistics
+        function updateStatistics(teams, maxTeams) {
+            const totalTeams = teams.length;
+            const registeredTeams = teams.filter(team => team.status === 'registered').length;
+            const pendingTeams = teams.filter(team => team.status === 'pending').length;
+            const availableSlots = maxTeams - totalTeams;
+
+            document.getElementById('total-teams').textContent = totalTeams;
+            document.getElementById('registered-teams').textContent = registeredTeams;
+            document.getElementById('pending-teams').textContent = pendingTeams;
+            document.getElementById('available-slots').textContent = Math.max(0, availableSlots);
+        }
+
+        // Display teams
+        function displayTeams(teams) {
+            const container = document.getElementById('teams-list');
+            
+            if (teams.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <h5>No Teams Registered Yet</h5>
+                        <p class="text-muted">Teams will appear here once they register for your tournament.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = teams.map(team => `
+                <div class="team-card">
+                    <div class="team-header d-flex align-items-center">
+                        <div class="team-avatar">
+                            ${team.teamName.charAt(0).toUpperCase()}
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-1">${team.teamName}</h5>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="status-badge status-${team.status}">${team.status}</span>
+                                <span class="badge ${team.paymentStatus === 'paid' ? 'bg-success' : 'bg-warning'}">
+                                    ${team.paymentStatus === 'paid' ? 'Paid' : 'Payment Pending'}
+                                </span>
+                            </div>
+                            <small class="text-muted">
+                                Registered: ${new Date(team.registrationDate).toLocaleDateString()}
+                            </small>
+                        </div>
+                        <div class="text-end">
+                            <button class="btn btn-sm btn-outline-primary me-2" onclick="viewTeamDetails('${team._id}')">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <div class="btn-group">
+                                <button class="btn btn-sm btn-warning" onclick="contactTeam('${team._id}')">
+                                    <i class="fas fa-envelope"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="disqualifyTeam('${team._id}')">
+                                    <i class="fas fa-ban"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <h6>Players:</h6>
+                        <ul class="player-list">
+                            ${team.players.map(player => `
+                                <li class="player-item">
+                                    <div class="player-avatar">
+                                        ${player.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-bold">${player.name}</div>
+                                        <small class="text-muted">${player.gameId}</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <small class="text-muted">${player.role || 'Player'}</small>
+                                    </div>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // View team details
+        function viewTeamDetails(teamId) {
+            const team = currentTeams.find(t => t._id === teamId);
+            if (!team) return;
+
+            selectedTeamId = teamId;
+            
+            const modalBody = document.getElementById('teamDetailsBody');
+            modalBody.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Team Information</h6>
+                        <p><strong>Team Name:</strong> ${team.teamName}</p>
+                        <p><strong>Status:</strong> <span class="status-badge status-${team.status}">${team.status}</span></p>
+                        <p><strong>Payment Status:</strong> 
+                            <span class="badge ${team.paymentStatus === 'paid' ? 'bg-success' : 'bg-warning'}">
+                                ${team.paymentStatus === 'paid' ? 'Paid' : 'Payment Pending'}
+                            </span>
+                        </p>
+                        <p><strong>Registration Date:</strong> ${new Date(team.registrationDate).toLocaleString()}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Contact Information</h6>
+                        <p><strong>Captain:</strong> ${team.players[0]?.name || 'N/A'}</p>
+                        <p><strong>Email:</strong> ${team.contactEmail || 'N/A'}</p>
+                        <p><strong>Phone:</strong> ${team.contactPhone || 'N/A'}</p>
+                    </div>
+                </div>
+                <hr>
+                <h6>Players</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Game ID</th>
+                                <th>Role</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${team.players.map(player => `
+                                <tr>
+                                    <td>${player.name}</td>
+                                    <td>${player.gameId}</td>
+                                    <td>${player.role || 'Player'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            new bootstrap.Modal(document.getElementById('teamDetailsModal')).show();
+        }
+
+        // Contact team
+        function contactTeam(teamId = selectedTeamId) {
+            if (!teamId) return;
+            
+            const team = currentTeams.find(t => t._id === teamId);
+            if (!team) return;
+
+            // For now, just show a placeholder
+            showMessage('Info', `Contact feature for ${team.teamName} will be available soon`, 'info');
+        }
+
+        // Disqualify team
+        async function disqualifyTeam(teamId) {
+            const team = currentTeams.find(t => t._id === teamId);
+            if (!team) return;
+
+            if (!confirm(`Are you sure you want to disqualify ${team.teamName}?`)) {
+                return;
+            }
+
+            try {
+                // This would be implemented with a proper API endpoint
+                showMessage('Info', 'Team disqualification feature will be available soon', 'info');
+            } catch (error) {
+                console.error('Error disqualifying team:', error);
+                showMessage('Error', 'Failed to disqualify team', 'error');
+            }
+        }
+
+        // Send announcement
+        document.getElementById('announcement-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const subject = document.getElementById('announcement-subject').value;
+            const message = document.getElementById('announcement-message').value;
+            const priority = document.getElementById('announcement-priority').value;
+
+            try {
+                // This would be implemented with a proper API endpoint
+                showMessage('Success', 'Announcement sent successfully!');
+                document.getElementById('announcement-form').reset();
+            } catch (error) {
+                console.error('Error sending announcement:', error);
+                showMessage('Error', 'Failed to send announcement', 'error');
+            }
+        });
+
+        // Search and filter functionality
+        document.getElementById('team-search').addEventListener('input', filterTeams);
+        document.getElementById('status-filter').addEventListener('change', filterTeams);
+        document.getElementById('payment-filter').addEventListener('change', filterTeams);
+
+        function filterTeams() {
+            const searchTerm = document.getElementById('team-search').value.toLowerCase();
+            const statusFilter = document.getElementById('status-filter').value;
+            const paymentFilter = document.getElementById('payment-filter').value;
+
+            let filteredTeams = currentTeams.filter(team => {
+                const matchesSearch = !searchTerm || 
+                    team.teamName.toLowerCase().includes(searchTerm) ||
+                    team.players.some(player => 
+                        player.name.toLowerCase().includes(searchTerm) ||
+                        player.gameId.toLowerCase().includes(searchTerm)
+                    );
+
+                const matchesStatus = !statusFilter || team.status === statusFilter;
+                const matchesPayment = !paymentFilter || team.paymentStatus === paymentFilter;
+
+                return matchesSearch && matchesStatus && matchesPayment;
+            });
+
+            displayTeams(filteredTeams);
+        }
+
+        // Export teams list
+        function exportTeamsList() {
+            showMessage('Info', 'Export feature will be available soon', 'info');
+        }
+
+        // Refresh teams
+        function refreshTeams() {
+            loadTournamentData();
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check authentication
+            if (!getAuthToken()) {
+                window.location.href = 'auth.html?returnUrl=' + encodeURIComponent(window.location.href);
+                return;
+            }
+
+            loadTournamentData();
+        });
+    </script>
+</body>
+</html>

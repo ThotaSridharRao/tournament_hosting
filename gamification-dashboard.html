@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamification Dashboard - Tournament Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="navbar.css" rel="stylesheet">
+    <style>
+        .dashboard-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .badge-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            transition: all 0.2s ease;
+        }
+        
+        .badge-item.new-badge {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            border-color: #ffc107;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        .badge-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-right: 15px;
+        }
+        
+        .loyalty-tier {
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .loyalty-tier.bronze { background: linear-gradient(135deg, #cd7f32, #b8860b); }
+        .loyalty-tier.silver { background: linear-gradient(135deg, #c0c0c0, #a8a8a8); }
+        .loyalty-tier.gold { background: linear-gradient(135deg, #ffd700, #ffed4e); }
+        .loyalty-tier.platinum { background: linear-gradient(135deg, #e5e4e2, #d3d3d3); }
+        .loyalty-tier.diamond { background: linear-gradient(135deg, #b9f2ff, #87ceeb); }
+        
+        .progress-ring {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+        }
+        
+        .progress-ring-circle {
+            stroke: rgba(255, 255, 255, 0.3);
+            stroke-width: 8;
+            fill: transparent;
+            r: 52;
+            cx: 60;
+            cy: 60;
+        }
+        
+        .progress-ring-progress {
+            stroke: white;
+            stroke-width: 8;
+            fill: transparent;
+            r: 52;
+            cx: 60;
+            cy: 60;
+            stroke-dasharray: 326.73;
+            stroke-dashoffset: 326.73;
+            transform: rotate(-90deg);
+            transform-origin: 60px 60px;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+        
+        .recommendation-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            transition: all 0.2s ease;
+        }
+        
+        .recommendation-card:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.2);
+        }
+        
+        .recommendation-score {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .reason-tag {
+            display: inline-block;
+            background: #e9ecef;
+            color: #495057;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            margin: 2px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-color, #0AFAD9), var(--accent-secondary, #5D3FD3));
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #007bff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 16px;
+        }
+        
+        .tier-benefits {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .tier-benefits li {
+            padding: 5px 0;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .tier-benefits li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .preferences-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .preference-section {
+            margin-bottom: 20px;
+        }
+        
+        .preference-section h6 {
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        
+        .preference-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .preference-tag {
+            background: #e9ecef;
+            color: #495057;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .preference-tag.selected {
+            background: #007bff;
+            color: white;
+        }
+        
+        .preference-tag:hover {
+            background: #dee2e6;
+        }
+        
+        .preference-tag.selected:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-trophy me-2"></i>Tournament Platform
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="tournaments.html">Tournaments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="user-dashboard.html">Dashboard</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="auth.html" id="authLink">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2><i class="fas fa-gamepad me-2"></i>Gamification Dashboard</h2>
+                        <p class="text-muted">Track your achievements, loyalty status, and discover new tournaments</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-outline-primary" onclick="refreshDashboard()">
+                            <i class="fas fa-sync me-2"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        <div id="loadingSpinner" class="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p>Loading your gamification data...</p>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div id="dashboardContent" style="display: none;">
+            <div class="row">
+                <!-- Loyalty Status -->
+                <div class="col-lg-4">
+                    <div class="dashboard-card">
+                        <h4><i class="fas fa-crown me-2"></i>Loyalty Status</h4>
+                        <div id="loyaltyStatus">
+                            <!-- Loyalty status will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="dashboard-card">
+                        <h5><i class="fas fa-chart-bar me-2"></i>Quick Stats</h5>
+                        <div id="quickStats">
+                            <!-- Quick stats will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Badges and Achievements -->
+                <div class="col-lg-8">
+                    <div class="dashboard-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4><i class="fas fa-medal me-2"></i>Badges & Achievements</h4>
+                            <div>
+                                <button class="btn btn-sm btn-outline-primary me-2" onclick="checkNewBadges('participant')">
+                                    <i class="fas fa-user me-1"></i>Check Participant Badges
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" onclick="checkNewBadges('organizer')">
+                                    <i class="fas fa-crown me-1"></i>Check Organizer Badges
+                                </button>
+                            </div>
+                        </div>
+                        <div id="badgesContainer">
+                            <!-- Badges will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tournament Recommendations -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="dashboard-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4><i class="fas fa-magic me-2"></i>Recommended Tournaments</h4>
+                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#preferencesModal">
+                                <i class="fas fa-cog me-1"></i>Preferences
+                            </button>
+                        </div>
+                        <div id="recommendationsContainer">
+                            <!-- Recommendations will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="dashboard-card">
+                        <h4><i class="fas fa-history me-2"></i>Recent Activity</h4>
+                        <div id="recentActivity">
+                            <!-- Recent activity will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preferences Modal -->
+    <div class="modal fade" id="preferencesModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-cog me-2"></i>Tournament Preferences</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="preferences-form">
+                        <div class="preference-section">
+                            <h6>Preferred Games</h6>
+                            <div class="preference-tags" id="gamePreferences">
+                                <!-- Game preferences will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <div class="preference-section">
+                            <h6>Tournament Formats</h6>
+                            <div class="preference-tags" id="formatPreferences">
+                                <!-- Format preferences will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <div class="preference-section">
+                            <h6>Entry Fee Range</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="minEntryFee" class="form-label">Minimum ($)</label>
+                                    <input type="number" class="form-control" id="minEntryFee" min="0" value="0">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="maxEntryFee" class="form-label">Maximum ($)</label>
+                                    <input type="number" class="form-control" id="maxEntryFee" min="0" value="100">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="preference-section">
+                            <h6>Tournament Size</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="minTournamentSize" class="form-label">Minimum Teams</label>
+                                    <input type="number" class="form-control" id="minTournamentSize" min="2" value="8">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="maxTournamentSize" class="form-label">Maximum Teams</label>
+                                    <input type="number" class="form-control" id="maxTournamentSize" min="2" value="64">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="preference-section">
+                            <h6>Venue Types</h6>
+                            <div class="preference-tags" id="venuePreferences">
+                                <!-- Venue preferences will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="savePreferences()">
+                        <i class="fas fa-save me-2"></i>Save Preferences
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="navbar.js"></script>
+    <script>
+        let dashboardData = null;
+        let userPreferences = {};
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
+        });
+
+        // Load gamification dashboard
+        async function loadDashboard() {
+            showLoading(true);
+
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = 'auth.html';
+                    return;
+                }
+
+                const response = await fetch('/api/user/gamification-dashboard', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    dashboardData = data.data;
+                    renderDashboard();
+                    document.getElementById('dashboardContent').style.display = 'block';
+                } else {
+                    const error = await response.json();
+                    showError(error.detail || 'Failed to load dashboard');
+                }
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                showError('Failed to load dashboard');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Render dashboard components
+        function renderDashboard() {
+            if (!dashboardData) return;
+
+            renderLoyaltyStatus();
+            renderBadges();
+            renderRecommendations();
+            renderQuickStats();
+            renderRecentActivity();
+        }
+
+        // Render loyalty status
+        function renderLoyaltyStatus() {
+            const loyalty = dashboardData.loyalty;
+            if (!loyalty.current_tier) return;
+
+            const tier = loyalty.current_tier;
+            const progressPercent = loyalty.next_tier_points ? 
+                ((loyalty.total_points - (loyalty.next_tier_points - loyalty.points_to_next_tier)) / loyalty.points_to_next_tier) * 100 : 100;
+
+            const html = `
+                <div class="loyalty-tier ${tier.id}">
+                    <div class="progress-ring">
+                        <svg width="120" height="120">
+                            <circle class="progress-ring-circle" />
+                            <circle class="progress-ring-progress" style="stroke-dashoffset: ${326.73 - (326.73 * progressPercent / 100)};" />
+                        </svg>
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+                            <i class="${tier.icon} fa-2x mb-2"></i>
+                            <div style="font-size: 12px; font-weight: bold;">${loyalty.total_points} PTS</div>
+                        </div>
+                    </div>
+                    
+                    <h5>${tier.name}</h5>
+                    
+                    ${loyalty.next_tier_points ? `
+                        <p class="mb-2">${loyalty.points_to_next_tier} points to next tier</p>
+                        <div class="progress mb-3" style="height: 6px;">
+                            <div class="progress-bar bg-light" style="width: ${progressPercent}%"></div>
+                        </div>
+                    ` : '<p class="mb-2">Maximum tier achieved!</p>'}
+                    
+                    <div class="text-start">
+                        <h6>Benefits:</h6>
+                        <ul class="tier-benefits">
+                            ${tier.benefits.map(benefit => `<li>${benefit}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('loyaltyStatus').innerHTML = html;
+        }
+
+        // Render badges
+        function renderBadges() {
+            const badges = dashboardData.badges.badges || [];
+            
+            if (badges.length === 0) {
+                document.getElementById('badgesContainer').innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-medal fa-3x mb-3"></i>
+                        <p>No badges earned yet. Participate in tournaments to earn your first badge!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div class="row">';
+            badges.forEach(badge => {
+                const isNew = badge.isNew;
+                html += `
+                    <div class="col-md-6">
+                        <div class="badge-item ${isNew ? 'new-badge' : ''}">
+                            <div class="badge-icon" style="background-color: ${badge.badgeColor};">
+                                <i class="${badge.badgeIcon}"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">
+                                    ${badge.badgeName}
+                                    ${isNew ? '<span class="badge bg-warning ms-2">NEW!</span>' : ''}
+                                </h6>
+                                <p class="text-muted mb-1">${badge.badgeDescription}</p>
+                                <small class="text-muted">
+                                    Earned: ${new Date(badge.awardedAt).toLocaleDateString()}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+
+            document.getElementById('badgesContainer').innerHTML = html;
+        }
+
+        // Render tournament recommendations
+        function renderRecommendations() {
+            const recommendations = dashboardData.recommendations || [];
+            
+            if (recommendations.length === 0) {
+                document.getElementById('recommendationsContainer').innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-search fa-3x mb-3"></i>
+                        <p>No recommendations available. Update your preferences to get personalized suggestions!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            recommendations.forEach(rec => {
+                const tournament = rec.tournament;
+                const score = Math.round(rec.score);
+                
+                html += `
+                    <div class="recommendation-card">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">${tournament.title}</h6>
+                                <p class="text-muted mb-1">${tournament.game} • ${tournament.format}</p>
+                                <div class="d-flex align-items-center mb-2">
+                                    <small class="text-muted me-3">
+                                        <i class="fas fa-users me-1"></i>${tournament.participants?.length || 0}/${tournament.maxTeams}
+                                    </small>
+                                    <small class="text-muted me-3">
+                                        <i class="fas fa-dollar-sign me-1"></i>${tournament.entryFee}
+                                    </small>
+                                    <small class="text-muted">
+                                        <i class="fas fa-trophy me-1"></i>$${tournament.prizePool}
+                                    </small>
+                                </div>
+                                <div class="mb-2">
+                                    ${rec.reasons.map(reason => `<span class="reason-tag">${reason}</span>`).join('')}
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <div class="recommendation-score">${score}% Match</div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                Registration ends: ${new Date(tournament.registrationEnd).toLocaleDateString()}
+                            </small>
+                            <div>
+                                <button class="btn btn-sm btn-outline-primary me-2" onclick="viewTournament('${tournament._id}')">
+                                    <i class="fas fa-eye me-1"></i>View
+                                </button>
+                                <button class="btn btn-sm btn-primary" onclick="registerForTournament('${tournament._id}')">
+                                    <i class="fas fa-sign-in-alt me-1"></i>Register
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('recommendationsContainer').innerHTML = html;
+        }
+
+        // Render quick stats
+        function renderQuickStats() {
+            const loyalty = dashboardData.loyalty;
+            const badges = dashboardData.badges;
+            
+            const html = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">${loyalty.total_points || 0}</div>
+                        <div class="stat-label">Loyalty Points</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${badges.total_badges || 0}</div>
+                        <div class="stat-label">Badges Earned</div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('quickStats').innerHTML = html;
+        }
+
+        // Render recent activity
+        function renderRecentActivity() {
+            const recentActivities = dashboardData.loyalty.recent_activities || [];
+            
+            if (recentActivities.length === 0) {
+                document.getElementById('recentActivity').innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-history fa-2x mb-3"></i>
+                        <p>No recent activity. Start participating in tournaments to see your activity here!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            recentActivities.slice(0, 10).forEach(activity => {
+                const activityIcons = {
+                    'tournament_participation': 'fas fa-play',
+                    'tournament_completion': 'fas fa-check',
+                    'tournament_win': 'fas fa-trophy',
+                    'tournament_organization': 'fas fa-crown',
+                    'social_media_share': 'fas fa-share-alt',
+                    'early_registration': 'fas fa-clock'
+                };
+                
+                const icon = activityIcons[activity.activity] || 'fas fa-star';
+                
+                html += `
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="${icon}"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between">
+                                <span>${activity.activity.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                                <span class="text-success">+${activity.pointsAwarded} pts</span>
+                            </div>
+                            <small class="text-muted">${new Date(activity.timestamp).toLocaleString()}</small>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('recentActivity').innerHTML = html;
+        }
+
+        // Check for new badges
+        async function checkNewBadges(userType) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/user/badges/check?user_type=${userType}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.data.new_badges.length > 0) {
+                        showSuccess(`Congratulations! You earned ${data.data.new_badges.length} new badge(s)!`);
+                        loadDashboard(); // Refresh dashboard
+                    } else {
+                        showSuccess('No new badges available at this time.');
+                    }
+                } else {
+                    const error = await response.json();
+                    showError(error.detail || 'Failed to check badges');
+                }
+            } catch (error) {
+                console.error('Error checking badges:', error);
+                showError('Failed to check badges');
+            }
+        }
+
+        // Load and show preferences modal
+        function loadPreferences() {
+            // Load available options
+            const games = ['Valorant', 'CS:GO', 'League of Legends', 'Dota 2', 'Fortnite', 'Apex Legends'];
+            const formats = ['Single Elimination', 'Double Elimination', 'Round Robin', 'Swiss System'];
+            const venueTypes = ['online', 'physical', 'hybrid'];
+
+            // Render game preferences
+            let gameHtml = '';
+            games.forEach(game => {
+                gameHtml += `<span class="preference-tag" data-value="${game}" onclick="togglePreference('game', '${game}')">${game}</span>`;
+            });
+            document.getElementById('gamePreferences').innerHTML = gameHtml;
+
+            // Render format preferences
+            let formatHtml = '';
+            formats.forEach(format => {
+                formatHtml += `<span class="preference-tag" data-value="${format}" onclick="togglePreference('format', '${format}')">${format}</span>`;
+            });
+            document.getElementById('formatPreferences').innerHTML = formatHtml;
+
+            // Render venue preferences
+            let venueHtml = '';
+            venueTypes.forEach(venue => {
+                const displayName = venue.charAt(0).toUpperCase() + venue.slice(1);
+                venueHtml += `<span class="preference-tag" data-value="${venue}" onclick="togglePreference('venue', '${venue}')">${displayName}</span>`;
+            });
+            document.getElementById('venuePreferences').innerHTML = venueHtml;
+        }
+
+        // Toggle preference selection
+        function togglePreference(type, value) {
+            const element = document.querySelector(`#${type}Preferences [data-value="${value}"]`);
+            element.classList.toggle('selected');
+        }
+
+        // Save user preferences
+        async function savePreferences() {
+            try {
+                const preferences = {
+                    preferredGames: Array.from(document.querySelectorAll('#gamePreferences .selected')).map(el => el.dataset.value),
+                    preferredFormats: Array.from(document.querySelectorAll('#formatPreferences .selected')).map(el => el.dataset.value),
+                    preferredVenueTypes: Array.from(document.querySelectorAll('#venuePreferences .selected')).map(el => el.dataset.value),
+                    preferredEntryFeeRange: {
+                        min: parseInt(document.getElementById('minEntryFee').value) || 0,
+                        max: parseInt(document.getElementById('maxEntryFee').value) || 100
+                    },
+                    preferredTournamentSizes: {
+                        min: parseInt(document.getElementById('minTournamentSize').value) || 8,
+                        max: parseInt(document.getElementById('maxTournamentSize').value) || 64
+                    }
+                };
+
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/user/preferences', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(preferences)
+                });
+
+                if (response.ok) {
+                    showSuccess('Preferences saved successfully!');
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('preferencesModal'));
+                    modal.hide();
+                    loadDashboard(); // Refresh recommendations
+                } else {
+                    const error = await response.json();
+                    showError(error.detail || 'Failed to save preferences');
+                }
+            } catch (error) {
+                console.error('Error saving preferences:', error);
+                showError('Failed to save preferences');
+            }
+        }
+
+        // View tournament details
+        function viewTournament(tournamentId) {
+            // Record interaction
+            recordInteraction('view', tournamentId);
+            
+            // Navigate to tournament details
+            window.open(`tournament-details.html?id=${tournamentId}`, '_blank');
+        }
+
+        // Register for tournament
+        function registerForTournament(tournamentId) {
+            // Record interaction
+            recordInteraction('register_intent', tournamentId);
+            
+            // Navigate to registration
+            window.open(`tournament-details.html?id=${tournamentId}&register=true`, '_blank');
+        }
+
+        // Record user interaction
+        async function recordInteraction(type, tournamentId, metadata = {}) {
+            try {
+                const token = localStorage.getItem('token');
+                await fetch('/api/user/interactions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        interaction_type: type,
+                        tournament_id: tournamentId,
+                        metadata: metadata
+                    })
+                });
+            } catch (error) {
+                console.error('Error recording interaction:', error);
+            }
+        }
+
+        // Refresh dashboard
+        function refreshDashboard() {
+            loadDashboard();
+        }
+
+        // Show preferences modal
+        document.getElementById('preferencesModal').addEventListener('show.bs.modal', function() {
+            loadPreferences();
+        });
+
+        // Utility functions
+        function showLoading(show) {
+            document.getElementById('loadingSpinner').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

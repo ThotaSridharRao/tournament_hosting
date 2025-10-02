@@ -1194,7 +1194,10 @@
     });
 
    // API Configuration (Page-specific)
-    const API_BASE_URL = 'https://t2-237c.onrender.com';
+    const isLocal = window.location.hostname === 'localhost' || 
+                   window.location.hostname === '127.0.0.1' || 
+                   window.location.protocol === 'file:';
+    const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
 
     // API Functions (Page-specific)
     async function fetchTournaments() {

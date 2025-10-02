@@ -112,7 +112,13 @@ function setupMobileNav() {
       </div>
       <div class="profile-actions">
         <a href="user-dashboard.html" class="profile-action">
-          <i class="fas fa-user-cog"></i> <span>My Account</span>
+          <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+        </a>
+        <a href="user-dashboard.html?tab=create" class="profile-action">
+          <i class="fas fa-plus"></i> <span>Create Tournament</span>
+        </a>
+        <a href="tournaments.html" class="profile-action">
+          <i class="fas fa-trophy"></i> <span>Browse Tournaments</span>
         </a>
         <button class="profile-action" onclick="logout()">
           <i class="fas fa-sign-out-alt"></i> <span>Logout</span>

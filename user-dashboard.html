@@ -1,80 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard | GamingNexus</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
-    <link rel="stylesheet" href="navbar.css">
-
+    <title>User Dashboard - GamingNexus</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Theme variables (Cyberpunk) */
         :root {
-          --primary-color: #0AFAD9;      /* Electric Cyan */
-          --bg-dark: #0D0A1A;            /* Dark Matter Black */
-          --accent-secondary: #5D3FD3;   /* Deep Indigo */
-          --panel: #161329;              /* Dark Indigo Panel */
-          --text-primary: #F0F0F0;       /* Starlight White */
-          --text-secondary: rgba(240, 240, 240, 0.7);
-          --border-color: rgba(10, 250, 217, 0.2);
-          --ease: 0.3s ease;
-          --radius: 12px;
-          --container: 1200px;
-        }
+            --primary-color: #0AFAD9;      /* Electric Cyan */
+            --bg-dark: #0D0A1A;            /* Dark Matter Black */
+            --accent-secondary: #5D3FD3;   /* Deep Indigo */
+            --panel: #161329;              /* Dark Indigo Panel */
+            --text-primary: #F0F0F0;       /* Starlight White */
+            --text-secondary: rgba(240, 240, 240, 0.7);
+            --border-color: rgba(10, 250, 217, 0.2);
+            --ease: 0.3s ease;
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
+            /* Legacy variables for compatibility */
+            --copy: var(--text-primary);
+            --muted: var(--text-secondary);
+            --accent: var(--accent-secondary); /* Using Indigo as main accent */
+            --accent-2: var(--primary-color); /* Using Cyan as secondary accent */
+            --radius: 12px;
+            --container: 1400px;
+            
+            /* Additional colors */
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --secondary-color: #495057;
+            --dark-bg: var(--bg-dark);
+            --card-bg: var(--panel);
+            --text-light: var(--text-primary);
+            --text-muted: var(--text-secondary);
+            
+            /* Enhanced easing curves */
+            --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+            --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         body {
-            margin: 0;
-            font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
             background-color: var(--bg-dark);
-            color: var(--text-primary);
-            line-height: 1.6;
             min-height: 100vh;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.6;
         }
 
-        /* Custom Scrollbar Styles */
-        ::-webkit-scrollbar-track {
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-dark);
+        .dashboard-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin: 20px auto;
+            max-width: 1200px;
+            overflow: hidden;
         }
 
-        ::-webkit-scrollbar {
-            width: 10px;
-            background-color: var(--bg-dark);
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-color), #8e44ad);
+            color: white;
+            padding: 2rem;
+            text-align: center;
         }
 
-        ::-webkit-scrollbar-thumb {
-            background-color: var(--panel);
-            border-radius: 5px;
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--secondary-color);
+            font-weight: 500;
+            padding: 1rem 1.5rem;
+            margin: 0 0.25rem;
+            border-radius: 10px 10px 0 0;
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background-color: var(--accent-secondary);
+        .nav-tabs .nav-link.active {
+            background: var(--primary-color);
+            color: white;
         }
 
-        /* Firefox scrollbar */
-        * {
-            scrollbar-width: thin;
-            scrollbar-color: var(--panel) var(--bg-dark);
+        .tab-content {
+            padding: 2rem;
         }
-        
-        /* Loader */
+
+        .tournament-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .tournament-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .status-draft { background: var(--secondary-color); color: white; }
+        .status-pending-payment { background: var(--warning-color); color: black; }
+        .status-active { background: var(--success-color); color: white; }
+        .status-completed { background: var(--info-color); color: white; }
+        .status-cancelled { background: var(--danger-color); color: white; }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 0.75rem 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #5a359a;
+            transform: translateY(-2px);
+        }
+
+        .pricing-display {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 2px solid var(--primary-color);
+        }
+
+        .pricing-breakdown {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+        }
+
+        .total-fee {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* Loading Animation - Consistent with index.html */
         #loader-wrapper {
             position: fixed;
             top: 0;
@@ -93,538 +176,984 @@
             pointer-events: none;
         }
 
-        .main-content {
-            margin-top: 80px; /* Adjust for fixed header height */
-            padding: 2rem;
-            max-width: var(--container);
-            margin-left: auto;
-            margin-right: auto;
+        .loading-spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(10, 250, 217, 0.2);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-        .dashboard-header {
-            margin-bottom: 3rem;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        .dashboard-title {
-            font-size: clamp(2rem, 4vw, 2.5rem);
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-        }
-        .dashboard-title .accent { color: var(--primary-color); }
-
-        .dashboard-subtitle {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
+        .alert {
+            border-radius: 10px;
+            border: none;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .stat-card {
-            background: var(--panel);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
+        .stats-card {
+            background: white;
+            border-radius: 15px;
             padding: 1.5rem;
             text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(10, 250, 217, 0.1);
-        }
-
-        .stat-value {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: var(--primary-color);
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-        }
-        
-        .dashboard-section {
-            background: var(--panel);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            color: var(--bg-dark);
-            padding: 0.6rem 1.2rem;
-            border-radius: 6px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary:hover {
-            filter: brightness(1.1);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(10, 250, 217, 0.2);
-        }
-
-        .tournament-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .tournament-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .tournament-item:hover {
-            background: rgba(10, 250, 217, 0.1);
-        }
-
-        .tournament-info a {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.25rem;
-            text-decoration: none;
-        }
-        .tournament-info a:hover { text-decoration: underline; color: var(--primary-color); }
-        .tournament-status {
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            text-transform: uppercase;
-        }
-
-        .tournament-status.ended { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-        .tournament-status.ongoing { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
-        .tournament-status.registration-open { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: var(--text-secondary);
-        }
-
-        .empty-state i {
-            font-size: 3rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             margin-bottom: 1rem;
-            opacity: 0.3;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: bold;
             color: var(--primary-color);
         }
 
-        .recommendations-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
+        .modal-content {
+            border-radius: 15px;
+            border: none;
         }
 
-        .tournament-card {
-            background: var(--panel);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            border: 1px solid var(--border-color);
-            text-decoration: none;
-            color: var(--text-primary);
-            display: flex;
-            flex-direction: column;
-        }
-    
-        .tournament-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            border-color: var(--primary-color);
-        }
-        
-        .tournament-card img {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-        }
-        
-        .tournament-content {
-            padding: 1rem;
-        }
-        
-        .tournament-card h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        
-        .tournament-card p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
+        .modal-header {
+            background: var(--primary-color);
+            color: white;
+            border-radius: 15px 15px 0 0;
         }
 
+        /* Enhanced Responsive Design */
         @media (max-width: 768px) {
-            .main-content { padding: 1.5rem; }
-            .stats-grid { grid-template-columns: 1fr; }
+            .dashboard-container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .dashboard-header {
+                padding: 1rem;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .tab-content {
+                padding: 1rem;
+            }
+
+            .nav-tabs .nav-link {
+                font-size: 0.875rem;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .stats-card {
+                margin-bottom: 1rem;
+            }
+
+            .btn {
+                font-size: 0.875rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-container {
+                margin: 5px;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.25rem;
+            }
+
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+
+            .nav-tabs .nav-link {
+                flex: 1;
+                text-align: center;
+                margin-bottom: 0.25rem;
+            }
+
+            .modal-dialog {
+                margin: 1rem;
+            }
+
+            .form-control, .form-select {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
         }
     </style>
 </head>
-
 <body>
-    <div id="loader-wrapper">
-      <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
-    </div>
-
-    <header class="site-header"></header>
-
-    <div id="mobile-nav" class="mobile-nav"></div>
-
-    <main class="main-content" style="opacity: 0; transition: opacity 0.5s ease;">
-        <div class="dashboard-header">
-            <h1 class="dashboard-title">Welcome back, <span id="welcome-username" class="accent">User</span>!</h1>
-            <p class="dashboard-subtitle">Manage your tournaments and track your gaming progress.</p>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card">
-                <span class="stat-value" id="tournaments-joined">0</span>
-                <span class="stat-label">Tournaments Joined</span>
+    <div class="container-fluid">
+        <div class="dashboard-container">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <h1><i class="fas fa-trophy me-3"></i>Tournament Dashboard</h1>
+                <p class="mb-0">Create and manage your tournaments</p>
             </div>
-        </div>
 
-        <div class="dashboard-section">
-            <div class="section-header">
-                <h2 class="section-title">My Tournaments</h2>
-                <a href="index.html#tournaments" class="btn-primary">
-                    <i class="fas fa-plus"></i> Join Tournament
-                </a>
-            </div>
-            <div class="tournament-list" id="user-tournaments">
-                <div class="empty-state">
-                    <i class="fas fa-trophy"></i>
-                    <h3>No tournaments yet</h3>
-                    <p>Join your first tournament to get started!</p>
-                </div>
-            </div>
-        </div>
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                        <i class="fas fa-chart-line me-2"></i>Overview
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tournaments-tab" data-bs-toggle="tab" data-bs-target="#tournaments" type="button" role="tab">
+                        <i class="fas fa-list me-2"></i>My Tournaments
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="create-tab" data-bs-toggle="tab" data-bs-target="#create" type="button" role="tab">
+                        <i class="fas fa-plus me-2"></i>Create Tournament
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="support-tab" data-bs-toggle="tab" data-bs-target="#support" type="button" role="tab">
+                        <i class="fas fa-headset me-2"></i>Support & Disputes
+                    </button>
+                </li>
+            </ul>
 
-        <div class="dashboard-section">
-            <div class="section-header">
-                <h2 class="section-title">Recommended For You</h2>
-            </div>
-            <div class="recommendations-grid" id="recommendations-grid">
-                 <div class="empty-state">
-                    <p>Loading recommendations...</p>
-                </div>
-            </div>
-        </div>
-    </main>
-    
-    <script>
-        // --- START: CONSOLIDATED SCRIPT (LOGIC FROM NAVBAR.JS + PAGE SCRIPT) ---
-
-        // --- PART 1: LOGIC FROM NAVBAR.JS ---
-
-        // Helper function to redirect to the authentication page
-        function redirectToAuth(tab = 'register') {
-            const returnUrl = encodeURIComponent(window.location.href);
-            window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
-        }
-
-        // Helper function to get user session data from localStorage
-        function getSessionData() {
-            const session = localStorage.getItem('nexus_session');
-            try {
-                return session ? JSON.parse(session) : null;
-            } catch (error) {
-                console.error("Error parsing session data:", error);
-                return null;
-            }
-        }
-
-        // Logout function to clear session and reload
-        function logout() {
-            localStorage.removeItem('nexus_session');
-            window.location.reload();
-        }
-
-        // Updates the desktop navbar based on login status
-        function checkUserAuthentication() {
-            const sessionData = getSessionData();
-            const guestMenu = document.getElementById('guest-menu');
-            const userMenu = document.getElementById('user-menu');
-            const user = sessionData?.user;
-
-            if (user) {
-                // User is logged in
-                const username = user.username || user.email.split('@')[0];
-                const modalUsername = document.getElementById('modal-username');
-                if (modalUsername) modalUsername.textContent = username;
-
-                if (guestMenu) guestMenu.style.display = 'none';
-                if (userMenu) userMenu.style.display = 'flex';
-            } else {
-                // User is a guest
-                if (guestMenu) guestMenu.style.display = 'flex';
-                if (userMenu) userMenu.style.display = 'none';
-            }
-        }
-
-        // Builds and populates the mobile navigation panel
-        function setupMobileNav() {
-            const sessionData = getSessionData();
-            const mobileNavContainer = document.getElementById('mobile-nav');
-            if (!mobileNavContainer) return; // Safety check
-
-            const user = sessionData?.user;
-            const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
-            const navLinksHTML = `
-                <div class="mobile-nav-links">
-                  <a href="index.html#tournaments">Tournaments</a>
-                  <a href="index.html#why-us">Why Us</a>
-                  <a href="index.html#faq">FAQ</a>
-                </div>`;
-            
-            let userSectionHTML = '';
-
-            if (user) {
-                // Logged-in user view for mobile
-                const username = user.username || user.email.split('@')[0];
-                userSectionHTML = `
-                  <div class="profile-header">
-                    <div class="profile-photo"><i class="fas fa-user"></i></div>
-                    <div class="profile-info"><div class="profile-username">${username}</div></div>
-                  </div>
-                  <div class="profile-actions">
-                    <a href="user-dashboard.html" class="profile-action"><i class="fas fa-user-cog"></i> <span>My Account</span></a>
-                    <button class="profile-action" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></button>
-                  </div>`;
-            } else {
-                // Guest view for mobile
-                userSectionHTML = `
-                  <div class="guest-view">
-                    <i class="fas fa-gamepad"></i>
-                    <p>Join the arena to compete, win prizes, and track your stats!</p>
-                    <button class="header-cta" style="width: 100%; margin-top: 1rem;" onclick="redirectToAuth()">Join Us Now</button>
-                  </div>`;
-            }
-
-            mobileNavContainer.innerHTML = `${closeButtonHTML}${userSectionHTML}${navLinksHTML}`;
-        }
-
-        // --- PART 2: LOGIC FROM USER-DASHBOARD.HTML ---
-
-        const API_BASE_URL = 'https://t2-237c.onrender.com';
-
-        function setLoading(isLoading) {
-            const loader = document.getElementById('loader-wrapper');
-            const mainContent = document.querySelector('.main-content');
-            if (isLoading) {
-                loader.classList.remove('hidden');
-                mainContent.style.opacity = 0;
-            } else {
-                loader.classList.add('hidden');
-                mainContent.style.opacity = 1;
-            }
-        }
-
-        function checkAuthAndRedirect() {
-            const sessionData = getSessionData();
-            if (!sessionData || !sessionData.user) {
-                window.location.href = 'auth.html';
-                return null;
-            }
-            return sessionData;
-        }
-
-        async function loadUserData() {
-            const sessionData = checkAuthAndRedirect();
-            if (!sessionData) return;
-
-            const user = sessionData.user;
-            const username = user.username || user.email.split('@')[0];
-
-            document.getElementById('welcome-username').textContent = username;
-
-            try {
-                await Promise.all([
-                    loadUserTournaments(sessionData.token),
-                    loadRecommendations()
-                ]);
-            } catch (error) {
-                console.error('Error loading user data:', error);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        async function loadUserTournaments(token) {
-            const tournamentsContainer = document.getElementById('user-tournaments');
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/users/me/tournaments`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (!response.ok) throw new Error('Failed to fetch tournaments');
-
-                const result = await response.json();
-                if (result.success && result.data.length > 0) {
-                    tournamentsContainer.innerHTML = result.data.map(t => {
-                        const statusClass = t.status.replace('_', '-');
-                        return `
-                            <div class="tournament-item">
-                                <div class="tournament-info">
-                                    <a href="tournament-details.html?slug=${t.slug}">${t.title}</a>
-                                    <div class="tournament-status ${statusClass}">${t.status.replace('_', ' ')}</div>
-                                </div>
-                                <div><a href="tournament-details.html?slug=${t.slug}" style="font-size: 0.9rem;">View</a></div>
-                            </div>`;
-                    }).join('');
-                    document.getElementById('tournaments-joined').textContent = result.data.length;
-                } else {
-                     tournamentsContainer.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-trophy"></i>
-                            <h3>No tournaments yet</h3>
-                            <p>Join your first tournament to get started!</p>
-                        </div>`;
-                }
-            } catch (error) {
-                console.error('Error loading tournaments:', error);
-                tournamentsContainer.innerHTML = `<div class="empty-state"><p style="color: #ef4444;">Could not load tournaments.</p></div>`;
-            }
-        }
-        
-        async function loadRecommendations() {
-            const recommendationsContainer = document.getElementById('recommendations-grid');
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/tournaments`);
-                if (!response.ok) throw new Error('Network response was not ok');
-                const result = await response.json();
-                const allTournaments = result.data || [];
-
-                const recommendations = allTournaments.filter(t => t.status === 'registration_open').slice(0, 3);
-                
-                if (recommendations.length > 0) {
-                    recommendationsContainer.innerHTML = recommendations.map(t => {
-                        const poster = t.posterImage || 'https://placehold.co/600x400/161329/F0F0F0?text=Nexus';
-                        return `
-                            <a href="tournament-details.html?slug=${t.slug}" class="tournament-card">
-                                <img src="${poster}" alt="${t.title}">
-                                <div class="tournament-content">
-                                    <h3>${t.title}</h3>
-                                    <p>💰 ₹${(t.prizePool || 0).toLocaleString('en-IN')} Prize Pool</p>
-                                </div>
-                            </a>`;
-                    }).join('');
-                } else {
-                    recommendationsContainer.innerHTML = `<div class="empty-state"><p>No open tournaments to recommend right now.</p></div>`;
-                }
-            } catch (error) {
-                console.error('Error loading recommendations:', error);
-                recommendationsContainer.innerHTML = `<div class="empty-state"><p style="color: #ef4444;">Could not load recommendations.</p></div>`;
-            }
-        }
-
-        // --- PART 3: INITIALIZATION LOGIC ---
-
-        document.addEventListener('DOMContentLoaded', () => {
-            setLoading(true);
-            const header = document.querySelector('.site-header');
-            
-            header.innerHTML = `
-                <a href="index.html" class="brand">GamingNexus</a>
-                <div class="header-right">
-                    
-                    <nav class="primary">
-                        <div class="nav-links">
-                            <a href="tournaments.html">Browse Tournaments</a>
-                            <a href="team-registration.html">Join Tournament</a>
-                            <a href="index.html">Home</a>
+            <!-- Tab Content -->
+            <div class="tab-content" id="dashboardTabContent">
+                <!-- Overview Tab -->
+                <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6">
+                            <div class="stats-card">
+                                <div class="stats-number" id="totalTournaments">0</div>
+                                <div class="text-muted">Total Tournaments</div>
+                            </div>
                         </div>
-                    </nav>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="stats-card">
+                                <div class="stats-number" id="activeTournaments">0</div>
+                                <div class="text-muted">Active Tournaments</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="stats-card">
+                                <div class="stats-number" id="totalParticipants">0</div>
+                                <div class="text-muted">Total Participants</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="stats-card">
+                                <div class="stats-number" id="totalRevenue">₹0</div>
+                                <div class="text-muted">Prize Pool Total</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h4>Recent Activity</h4>
+                            <div id="recentActivity">
+                                <div class="text-center text-muted py-4">
+                                    <i class="fas fa-clock fa-2x mb-3"></i>
+                                    <p>No recent activity</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- My Tournaments Tab -->
+                <div class="tab-pane fade" id="tournaments" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4>My Tournaments</h4>
+                        <div class="d-flex gap-2">
+                            <select class="form-select" id="statusFilter" style="width: auto;">
+                                <option value="">All Status</option>
+                                <option value="draft">Draft</option>
+                                <option value="pending_payment">Pending Payment</option>
+                                <option value="active">Active</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                            <button class="btn btn-outline-primary" onclick="loadUserTournaments()">
+                                <i class="fas fa-refresh"></i>
+                            </button>
+                        </div>
+                    </div>
                     
-                    <div class="nav-actions">
-                        <div id="guest-menu" style="display: none;"><button class="header-cta" onclick="redirectToAuth()">Join Us</button></div>
-                        <div id="user-menu" style="display: none;">
-                            <div class="profile-dropdown">
-                                <div class="profile-icon" id="profile-icon"><i class="fas fa-user-circle"></i></div>
-                                <div class="profile-modal" id="profile-modal">
-                                    <div class="profile-header">
-                                        <div class="profile-photo"><i class="fas fa-user"></i></div>
-                                        <div class="profile-info"><div class="profile-username" id="modal-username">User</div></div>
+                    <div id="tournamentsContainer">
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-trophy fa-3x mb-3"></i>
+                            <h5>No tournaments yet</h5>
+                            <p>Create your first tournament to get started!</p>
+                            <button class="btn btn-primary" onclick="switchToCreateTab()">
+                                <i class="fas fa-plus me-2"></i>Create Tournament
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create Tournament Tab -->
+                <div class="tab-pane fade" id="create" role="tabpanel">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h4 class="mb-4">Create New Tournament</h4>
+                            
+                            <form id="createTournamentForm">
+                                <!-- Basic Information -->
+                                <div class="card tournament-card">
+                                    <div class="card-header">
+                                        <h5><i class="fas fa-info-circle me-2"></i>Basic Information</h5>
                                     </div>
-                                    <div class="profile-actions">
-                                        <a href="user-dashboard.html" class="profile-action"><i class="fas fa-user"></i><span>My Account</span></a>
-                                        <button class="profile-action logout-action" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="tournamentTitle" class="form-label">Tournament Title *</label>
+                                                <input type="text" class="form-control" id="tournamentTitle" required maxlength="100">
+                                                <div class="form-text">Choose an engaging title for your tournament</div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="tournamentGame" class="form-label">Game *</label>
+                                                <select class="form-select" id="tournamentGame" required>
+                                                    <option value="">Select Game</option>
+                                                    <option value="BGMI">BGMI</option>
+                                                    <option value="Free Fire">Free Fire</option>
+                                                    <option value="Call of Duty Mobile">Call of Duty Mobile</option>
+                                                    <option value="Valorant">Valorant</option>
+                                                    <option value="CS:GO">CS:GO</option>
+                                                    <option value="Clash Royale">Clash Royale</option>
+                                                    <option value="Other">Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="tournamentDescription" class="form-label">Description *</label>
+                                            <textarea class="form-control" id="tournamentDescription" rows="4" required maxlength="2000" placeholder="Describe your tournament, rules, and any special instructions..."></textarea>
+                                            <div class="form-text">Provide clear information about rules, format, and requirements</div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="tournamentFormat" class="form-label">Tournament Format *</label>
+                                                <select class="form-select" id="tournamentFormat" required>
+                                                    <option value="">Select Format</option>
+                                                    <option value="single_elimination">Single Elimination</option>
+                                                    <option value="double_elimination">Double Elimination</option>
+                                                    <option value="round_robin">Round Robin</option>
+                                                    <option value="swiss">Swiss System</option>
+                                                    <option value="kp">Kill Points (KP)</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="maxTeams" class="form-label">Maximum Teams *</label>
+                                                <input type="number" class="form-control" id="maxTeams" required min="2" max="500" value="16">
+                                                <div class="form-text">Between 2 and 500 teams</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Schedule & Dates -->
+                                <div class="card tournament-card">
+                                    <div class="card-header">
+                                        <h5><i class="fas fa-calendar me-2"></i>Schedule & Dates</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="registrationStart" class="form-label">Registration Start *</label>
+                                                <input type="datetime-local" class="form-control" id="registrationStart" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="registrationEnd" class="form-label">Registration End *</label>
+                                                <input type="datetime-local" class="form-control" id="registrationEnd" required>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="tournamentStart" class="form-label">Tournament Start *</label>
+                                                <input type="datetime-local" class="form-control" id="tournamentStart" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="tournamentEnd" class="form-label">Tournament End *</label>
+                                                <input type="datetime-local" class="form-control" id="tournamentEnd" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Prize & Entry -->
+                                <div class="card tournament-card">
+                                    <div class="card-header">
+                                        <h5><i class="fas fa-money-bill me-2"></i>Prize & Entry</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="entryFee" class="form-label">Entry Fee (₹)</label>
+                                                <input type="number" class="form-control" id="entryFee" min="0" max="10000" value="0">
+                                                <div class="form-text">Set to 0 for free tournaments</div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="prizePool" class="form-label">Prize Pool (₹)</label>
+                                                <input type="number" class="form-control" id="prizePool" min="0" max="100000" value="0">
+                                                <div class="form-text">Total prize money for winners</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Venue Information -->
+                                <div class="card tournament-card">
+                                    <div class="card-header">
+                                        <h5><i class="fas fa-map-marker-alt me-2"></i>Venue Information</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="venueType" class="form-label">Venue Type *</label>
+                                            <select class="form-select" id="venueType" required>
+                                                <option value="online">Online</option>
+                                                <option value="physical">Physical Venue</option>
+                                                <option value="hybrid">Hybrid (Online + Physical)</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div id="physicalVenueDetails" style="display: none;">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="venueName" class="form-label">Venue Name</label>
+                                                    <input type="text" class="form-control" id="venueName">
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="venueCapacity" class="form-label">Venue Capacity</label>
+                                                    <input type="number" class="form-control" id="venueCapacity" min="1">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="venueAddress" class="form-label">Address</label>
+                                                <textarea class="form-control" id="venueAddress" rows="3"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="resetForm()">
+                                        <i class="fas fa-undo me-2"></i>Reset Form
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-plus me-2"></i>Create Tournament
+                                        <span class="loading-spinner spinner-border spinner-border-sm ms-2" role="status"></span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Pricing Display -->
+                        <div class="col-lg-4">
+                            <div class="sticky-top" style="top: 20px;">
+                                <div class="pricing-display">
+                                    <h5><i class="fas fa-calculator me-2"></i>Hosting Fee Calculator</h5>
+                                    
+                                    <div id="pricingInfo">
+                                        <div class="text-center text-muted py-4">
+                                            <i class="fas fa-info-circle fa-2x mb-3"></i>
+                                            <p>Select registration dates to calculate hosting fee</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="pricingBreakdown" style="display: none;">
+                                        <div class="pricing-breakdown mb-3">
+                                            <div class="d-flex justify-content-between">
+                                                <span>Registration Duration:</span>
+                                                <span id="durationDays">0 days</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Base Fee (2 days):</span>
+                                                <span id="baseFee">₹0</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Additional Days:</span>
+                                                <span id="additionalFee">₹0</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Platform Fee (5%):</span>
+                                                <span id="platformFee">₹0</span>
+                                            </div>
+                                            <hr>
+                                        </div>
+                                        
+                                        <div class="text-center">
+                                            <div class="total-fee" id="totalFee">₹0</div>
+                                            <small class="text-muted">Total Hosting Fee</small>
+                                        </div>
+                                        
+                                        <div class="mt-3">
+                                            <small class="text-muted">
+                                                <i class="fas fa-info-circle me-1"></i>
+                                                Payment required before tournament publication
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pricing Tiers Info -->
+                                <div class="card mt-3">
+                                    <div class="card-header">
+                                        <h6><i class="fas fa-tags me-2"></i>Pricing Tiers</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="small">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span>Base (up to 2 days):</span>
+                                                <strong>₹10</strong>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span>Additional days:</span>
+                                                <strong>₹2.50/day</strong>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Platform fee:</span>
+                                                <strong>5%</strong>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <button class="hamburger" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
-                </div>`;
+                </div>
 
-            // Step 2: Now that HTML exists, add event listeners and populate navbar
-            const hamburger = document.querySelector('.hamburger');
-            const mobileNav = document.getElementById('mobile-nav');
+                <!-- Support & Disputes Tab -->
+                <div class="tab-pane fade" id="support" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="text-center mb-4">
+                                <h4><i class="fas fa-headset me-3"></i>Support & Dispute Resolution</h4>
+                                <p class="text-muted">Get help with tournament issues or submit support requests</p>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                                            <h5>Dispute Resolution</h5>
+                                            <p class="text-muted">Report issues with tournaments, organizers, or request refunds</p>
+                                            <a href="dispute-support.html" class="btn btn-warning">
+                                                <i class="fas fa-exclamation-triangle me-2"></i>Access Disputes
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-question-circle fa-3x text-info mb-3"></i>
+                                            <h5>General Support</h5>
+                                            <p class="text-muted">Get help with technical issues, account problems, or general questions</p>
+                                            <a href="dispute-support.html" class="btn btn-info">
+                                                <i class="fas fa-question-circle me-2"></i>Get Support
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h6><i class="fas fa-info-circle me-2"></i>How It Works</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <h6 class="text-warning"><i class="fas fa-exclamation-triangle me-2"></i>Dispute Resolution</h6>
+                                                    <ul class="list-unstyled">
+                                                        <li><i class="fas fa-check text-success me-2"></i>Report tournament issues</li>
+                                                        <li><i class="fas fa-check text-success me-2"></i>Request refunds for cancelled tournaments</li>
+                                                        <li><i class="fas fa-check text-success me-2"></i>Report organizer misconduct</li>
+                                                        <li><i class="fas fa-check text-success me-2"></i>Get automated refund processing</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <h6 class="text-info"><i class="fas fa-question-circle me-2"></i>General Support</h6>
+                                                    <ul class="list-unstyled">
+                                                        <li><i class="fas fa-check text-success me-2"></i>Technical assistance</li>
+                                                        <li><i class="fas fa-check text-success me-2"></i>Account-related help</li>
+                                                        <li><i class="fas fa-check text-success me-2"></i>Payment issues</li>
+                                                        <li><i class="fas fa-check text-success me-2"></i>General questions</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            if (hamburger && mobileNav) {
-                const closeMobileNav = () => {
-                    mobileNav.classList.remove('is-open');
-                    hamburger.setAttribute('aria-expanded', 'false');
-                };
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Tournament Created!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <i class="fas fa-trophy fa-3x text-success mb-3"></i>
+                        <h5 id="createdTournamentTitle">Tournament Title</h5>
+                        <p class="text-muted">Your tournament has been created successfully!</p>
+                        <div class="alert alert-info">
+                            <i class="fas fa-credit-card me-2"></i>
+                            Complete payment to publish your tournament and start accepting registrations.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="proceedToPayment">
+                        <i class="fas fa-credit-card me-2"></i>Proceed to Payment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                hamburger.addEventListener('click', () => {
-                    const isOpen = mobileNav.classList.toggle('is-open');
-                    hamburger.setAttribute('aria-expanded', isOpen);
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="navbar.js"></script>
+    <script>
+        let currentUser = null;
+        let createdTournamentId = null;
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            setupEventListeners();
+            setDefaultDates();
+        });
+
+        function checkAuthentication() {
+            const authToken = getCookie('auth_token');
+            const userData = getCookie('user_data');
+            
+            if (!authToken || !userData) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            const [email, role] = userData.split('|');
+            currentUser = { email, role, token: authToken };
+            
+            // Load dashboard data
+            loadDashboardData();
+        }
+
+        function setupEventListeners() {
+            // Form submission
+            document.getElementById('createTournamentForm').addEventListener('submit', handleFormSubmit);
+            
+            // Date change listeners for pricing calculation
+            document.getElementById('registrationStart').addEventListener('change', calculateHostingFee);
+            document.getElementById('registrationEnd').addEventListener('change', calculateHostingFee);
+            
+            // Venue type change
+            document.getElementById('venueType').addEventListener('change', toggleVenueDetails);
+            
+            // Status filter
+            document.getElementById('statusFilter').addEventListener('change', loadUserTournaments);
+            
+            // Tab change listeners
+            document.getElementById('tournaments-tab').addEventListener('click', loadUserTournaments);
+            document.getElementById('overview-tab').addEventListener('click', loadDashboardStats);
+        }
+
+        function setDefaultDates() {
+            const now = new Date();
+            const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+            const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+            
+            document.getElementById('registrationStart').value = formatDateForInput(tomorrow);
+            document.getElementById('registrationEnd').value = formatDateForInput(new Date(tomorrow.getTime() + 3 * 24 * 60 * 60 * 1000));
+            document.getElementById('tournamentStart').value = formatDateForInput(nextWeek);
+            document.getElementById('tournamentEnd').value = formatDateForInput(new Date(nextWeek.getTime() + 24 * 60 * 60 * 1000));
+            
+            // Calculate initial pricing
+            setTimeout(calculateHostingFee, 100);
+        }
+
+        function formatDateForInput(date) {
+            return date.toISOString().slice(0, 16);
+        }
+
+        async function calculateHostingFee() {
+            const regStart = document.getElementById('registrationStart').value;
+            const regEnd = document.getElementById('registrationEnd').value;
+            
+            if (!regStart || !regEnd) {
+                document.getElementById('pricingInfo').style.display = 'block';
+                document.getElementById('pricingBreakdown').style.display = 'none';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/user-tournaments/calculate-fee', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentUser.token}`
+                    },
+                    body: JSON.stringify({
+                        registrationStart: regStart,
+                        registrationEnd: regEnd
+                    })
                 });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayPricingBreakdown(result.data);
+                } else {
+                    showAlert('Error calculating fee: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error calculating hosting fee:', error);
+                showAlert('Failed to calculate hosting fee', 'danger');
+            }
+        }
 
-                // Add event listener to the mobile nav container for closing
-                mobileNav.addEventListener('click', (event) => {
-                    if (event.target.closest('.mobile-nav-close')) {
-                        closeMobileNav();
+        function displayPricingBreakdown(feeData) {
+            document.getElementById('pricingInfo').style.display = 'none';
+            document.getElementById('pricingBreakdown').style.display = 'block';
+            
+            document.getElementById('durationDays').textContent = `${feeData.registrationDurationDays} days`;
+            document.getElementById('baseFee').textContent = `₹${feeData.breakdown.baseFeeAmount}`;
+            document.getElementById('additionalFee').textContent = `₹${feeData.breakdown.additionalDaysTotal}`;
+            document.getElementById('platformFee').textContent = `₹${feeData.breakdown.platformFeeAmount.toFixed(2)}`;
+            document.getElementById('totalFee').textContent = `₹${feeData.totalFee.toFixed(2)}`;
+        }
+
+        function toggleVenueDetails() {
+            const venueType = document.getElementById('venueType').value;
+            const physicalDetails = document.getElementById('physicalVenueDetails');
+            
+            if (venueType === 'physical' || venueType === 'hybrid') {
+                physicalDetails.style.display = 'block';
+            } else {
+                physicalDetails.style.display = 'none';
+            }
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const spinner = submitBtn.querySelector('.loading-spinner');
+            
+            submitBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            
+            try {
+                const formData = collectFormData();
+                
+                const response = await fetch('/api/user-tournaments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentUser.token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    createdTournamentId = result.data._id;
+                    document.getElementById('createdTournamentTitle').textContent = result.data.title;
+                    
+                    // Show success modal
+                    const modal = new bootstrap.Modal(document.getElementById('successModal'));
+                    modal.show();
+                    
+                    // Reset form
+                    document.getElementById('createTournamentForm').reset();
+                    setDefaultDates();
+                    
+                    // Refresh tournaments list
+                    loadUserTournaments();
+                    loadDashboardStats();
+                } else {
+                    showAlert('Error creating tournament: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error creating tournament:', error);
+                showAlert('Failed to create tournament. Please try again.', 'danger');
+            } finally {
+                submitBtn.disabled = false;
+                spinner.style.display = 'none';
+            }
+        }
+
+        function collectFormData() {
+            const venueType = document.getElementById('venueType').value;
+            let venueDetails = null;
+            
+            if (venueType === 'physical' || venueType === 'hybrid') {
+                venueDetails = {
+                    name: document.getElementById('venueName').value,
+                    address: document.getElementById('venueAddress').value,
+                    capacity: parseInt(document.getElementById('venueCapacity').value) || 0,
+                    city: '',
+                    state: '',
+                    country: 'India',
+                    postalCode: '',
+                    zones: [],
+                    amenities: []
+                };
+            }
+            
+            return {
+                title: document.getElementById('tournamentTitle').value,
+                game: document.getElementById('tournamentGame').value,
+                description: document.getElementById('tournamentDescription').value,
+                registrationStart: document.getElementById('registrationStart').value,
+                registrationEnd: document.getElementById('registrationEnd').value,
+                tournamentStart: document.getElementById('tournamentStart').value,
+                tournamentEnd: document.getElementById('tournamentEnd').value,
+                maxTeams: parseInt(document.getElementById('maxTeams').value),
+                entryFee: parseFloat(document.getElementById('entryFee').value) || 0,
+                prizePool: parseFloat(document.getElementById('prizePool').value) || 0,
+                format: document.getElementById('tournamentFormat').value,
+                venueType: venueType,
+                venueDetails: venueDetails
+            };
+        }
+
+        async function loadDashboardData() {
+            await Promise.all([
+                loadDashboardStats(),
+                loadUserTournaments()
+            ]);
+        }
+
+        async function loadDashboardStats() {
+            try {
+                const response = await fetch('/api/user-tournaments', {
+                    headers: {
+                        'Authorization': `Bearer ${currentUser.token}`
                     }
                 });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const tournaments = result.data;
+                    
+                    document.getElementById('totalTournaments').textContent = tournaments.length;
+                    document.getElementById('activeTournaments').textContent = 
+                        tournaments.filter(t => t.status === 'active').length;
+                    
+                    const totalParticipants = tournaments.reduce((sum, t) => sum + (t.participant_count || 0), 0);
+                    document.getElementById('totalParticipants').textContent = totalParticipants;
+                    
+                    const totalRevenue = tournaments.reduce((sum, t) => sum + (t.prizePool || 0), 0);
+                    document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toLocaleString()}`;
+                }
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
             }
+        }
 
-            // Step 3: Populate the navbar with user/guest data
-            checkUserAuthentication();
-            setupMobileNav();
+        async function loadUserTournaments() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const container = document.getElementById('tournamentsContainer');
             
-            // Step 4: Load the main dashboard content
-            loadUserData();
+            try {
+                let url = '/api/user-tournaments';
+                if (statusFilter) {
+                    url += `?status_filter=${statusFilter}`;
+                }
+                
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${currentUser.token}`
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayTournaments(result.data);
+                } else {
+                    container.innerHTML = '<div class="alert alert-danger">Failed to load tournaments</div>';
+                }
+            } catch (error) {
+                console.error('Error loading tournaments:', error);
+                container.innerHTML = '<div class="alert alert-danger">Failed to load tournaments</div>';
+            }
+        }
+
+        function displayTournaments(tournaments) {
+            const container = document.getElementById('tournamentsContainer');
+            
+            if (tournaments.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-trophy fa-3x mb-3"></i>
+                        <h5>No tournaments found</h5>
+                        <p>Create your first tournament to get started!</p>
+                        <button class="btn btn-primary" onclick="switchToCreateTab()">
+                            <i class="fas fa-plus me-2"></i>Create Tournament
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = tournaments.map(tournament => `
+                <div class="card tournament-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="card-title">${tournament.title}</h5>
+                                <p class="text-muted mb-1">
+                                    <i class="fas fa-gamepad me-2"></i>${tournament.game}
+                                </p>
+                                <p class="text-muted mb-0">
+                                    <i class="fas fa-users me-2"></i>${tournament.participant_count || 0}/${tournament.maxTeams} teams
+                                </p>
+                            </div>
+                            <span class="status-badge status-${tournament.status}">${tournament.status.replace('_', ' ').toUpperCase()}</span>
+                        </div>
+                        
+                        <p class="card-text">${tournament.description.substring(0, 100)}${tournament.description.length > 100 ? '...' : ''}</p>
+                        
+                        <div class="row text-center mb-3">
+                            <div class="col-4">
+                                <small class="text-muted">Entry Fee</small>
+                                <div class="fw-bold">₹${tournament.entryFee || 0}</div>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted">Prize Pool</small>
+                                <div class="fw-bold">₹${tournament.prizePool || 0}</div>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted">Format</small>
+                                <div class="fw-bold">${tournament.format}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                Created: ${new Date(tournament.createdAt).toLocaleDateString()}
+                            </small>
+                            <div class="btn-group">
+                                <button class="btn btn-outline-primary btn-sm" onclick="viewTournament('${tournament._id}')">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" onclick="editTournament('${tournament._id}')">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                ${tournament.status === 'draft' || tournament.status === 'pending_payment' ? 
+                                    `<button class="btn btn-outline-danger btn-sm" onclick="deleteTournament('${tournament._id}')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>` : ''
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function switchToCreateTab() {
+            const createTab = new bootstrap.Tab(document.getElementById('create-tab'));
+            createTab.show();
+        }
+
+        function resetForm() {
+            document.getElementById('createTournamentForm').reset();
+            setDefaultDates();
+            document.getElementById('pricingInfo').style.display = 'block';
+            document.getElementById('pricingBreakdown').style.display = 'none';
+        }
+
+        function viewTournament(tournamentId) {
+            // TODO: Implement tournament view
+            window.open(`tournament-details.html?id=${tournamentId}`, '_blank');
+        }
+
+        function editTournament(tournamentId) {
+            // TODO: Implement tournament editing
+            showAlert('Tournament editing coming soon!', 'info');
+        }
+
+        async function deleteTournament(tournamentId) {
+            if (!confirm('Are you sure you want to delete this tournament?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/user-tournaments/${tournamentId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${currentUser.token}`
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('Tournament deleted successfully', 'success');
+                    loadUserTournaments();
+                    loadDashboardStats();
+                } else {
+                    showAlert('Error deleting tournament: ' + result.message, 'danger');
+                }
+            } catch (error) {
+                console.error('Error deleting tournament:', error);
+                showAlert('Failed to delete tournament', 'danger');
+            }
+        }
+
+        // Proceed to payment button handler
+        document.getElementById('proceedToPayment').addEventListener('click', function() {
+            if (createdTournamentId) {
+                // TODO: Implement payment flow
+                window.location.href = `tournament-payment.html?id=${createdTournamentId}`;
+            }
         });
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.querySelector('.tab-content').insertBefore(alertDiv, document.querySelector('.tab-content').firstChild);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
     </script>
 </body>
 </html>

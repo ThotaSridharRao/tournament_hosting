@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venue Management - Tournament Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="navbar.css" rel="stylesheet">
+    <style>
+        .venue-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .zone-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            background: #f8f9fa;
+        }
+        
+        .capacity-indicator {
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .capacity-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #ffc107, #dc3545);
+            transition: width 0.3s ease;
+        }
+        
+        .seat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 5px;
+            margin: 15px 0;
+        }
+        
+        .seat {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .seat.available {
+            background: #e8f5e8;
+            border-color: #28a745;
+            color: #28a745;
+        }
+        
+        .seat.occupied {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+        
+        .seat.selected {
+            background: #cce5ff;
+            border-color: #007bff;
+            color: #007bff;
+            transform: scale(1.1);
+        }
+        
+        .venue-map {
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            background: white;
+            min-height: 400px;
+        }
+        
+        .zone-section {
+            border: 1px dashed #007bff;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px;
+            background: rgba(0, 123, 255, 0.05);
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, var(--primary-color, #0AFAD9), var(--accent-secondary, #5D3FD3));
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .location-info {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .amenity-tag {
+            display: inline-block;
+            background: #e9ecef;
+            color: #495057;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin: 2px;
+        }
+        
+        .team-assignment {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin: 5px 0;
+            background: white;
+        }
+        
+        .team-assignment.assigned {
+            background: #e8f5e8;
+            border-color: #28a745;
+        }
+        
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-trophy me-2"></i>Tournament Platform
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="tournaments.html">Tournaments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="user-dashboard.html">Dashboard</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="auth.html" id="authLink">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2><i class="fas fa-map-marker-alt me-2"></i>Venue Management</h2>
+                        <p class="text-muted">Manage physical tournament venues, seating, and capacity</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#venueSetupModal">
+                            <i class="fas fa-plus me-2"></i>Setup Venue
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tournament Selection -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <label for="tournamentSelect" class="form-label">Select Tournament</label>
+                <select class="form-select" id="tournamentSelect">
+                    <option value="">Choose a tournament...</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">&nbsp;</label>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary" onclick="loadVenueData()">
+                        <i class="fas fa-sync me-2"></i>Refresh
+                    </button>
+                    <button class="btn btn-success" onclick="autoAssignSeats()">
+                        <i class="fas fa-magic me-2"></i>Auto Assign
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        <div id="loadingSpinner" class="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p>Loading venue data...</p>
+        </div>
+
+        <!-- Venue Overview -->
+        <div id="venueOverview" style="display: none;">
+            <div class="row">
+                <!-- Venue Details -->
+                <div class="col-md-4">
+                    <div class="venue-card">
+                        <h5><i class="fas fa-building me-2"></i>Venue Details</h5>
+                        <div id="venueDetails">
+                            <!-- Venue information will be loaded here -->
+                        </div>
+                        
+                        <div class="location-info mt-3">
+                            <h6><i class="fas fa-map me-2"></i>Location Services</h6>
+                            <button class="btn btn-sm btn-outline-primary me-2" onclick="getDirections()">
+                                <i class="fas fa-directions me-1"></i>Directions
+                            </button>
+                            <button class="btn btn-sm btn-outline-info" onclick="findNearbyAmenities()">
+                                <i class="fas fa-search-location me-1"></i>Nearby
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Capacity Stats -->
+                    <div class="stats-card">
+                        <h6><i class="fas fa-chart-pie me-2"></i>Capacity Overview</h6>
+                        <div id="capacityStats">
+                            <!-- Capacity statistics will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Venue Map and Seating -->
+                <div class="col-md-8">
+                    <div class="venue-map">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5><i class="fas fa-map me-2"></i>Venue Layout</h5>
+                            <div>
+                                <button class="btn btn-sm btn-outline-secondary me-2" onclick="toggleView('grid')">
+                                    <i class="fas fa-th me-1"></i>Grid View
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="toggleView('list')">
+                                    <i class="fas fa-list me-1"></i>List View
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="venueMapContent">
+                            <!-- Venue map will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zone Management -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="venue-card">
+                        <h5><i class="fas fa-layer-group me-2"></i>Zone Management</h5>
+                        <div id="zoneManagement">
+                            <!-- Zone management interface will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Assignments -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="venue-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5><i class="fas fa-users me-2"></i>Team Assignments</h5>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assignmentModal">
+                                <i class="fas fa-plus me-2"></i>Manual Assignment
+                            </button>
+                        </div>
+                        <div id="teamAssignments">
+                            <!-- Team assignments will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Venue Setup Modal -->
+    <div class="modal fade" id="venueSetupModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-building me-2"></i>Setup Venue</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="venueSetupForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="venueName" class="form-label">Venue Name *</label>
+                                    <input type="text" class="form-control" id="venueName" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="venueCapacity" class="form-label">Total Capacity *</label>
+                                    <input type="number" class="form-control" id="venueCapacity" min="1" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="venueAddress" class="form-label">Address *</label>
+                            <textarea class="form-control" id="venueAddress" rows="2" required></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="venueCity" class="form-label">City *</label>
+                                    <input type="text" class="form-control" id="venueCity" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="venueState" class="form-label">State *</label>
+                                    <input type="text" class="form-control" id="venueState" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="venuePostalCode" class="form-label">Postal Code *</label>
+                                    <input type="text" class="form-control" id="venuePostalCode" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="venueCountry" class="form-label">Country *</label>
+                            <input type="text" class="form-control" id="venueCountry" value="United States" required>
+                        </div>
+                        
+                        <!-- Zones Section -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label class="form-label">Venue Zones</label>
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="addZone()">
+                                    <i class="fas fa-plus me-1"></i>Add Zone
+                                </button>
+                            </div>
+                            <div id="zonesContainer">
+                                <!-- Zones will be added here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Amenities -->
+                        <div class="mb-3">
+                            <label for="venueAmenities" class="form-label">Amenities (comma-separated)</label>
+                            <input type="text" class="form-control" id="venueAmenities" 
+                                   placeholder="Parking, WiFi, Food Court, Restrooms">
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="venueDirections" class="form-label">Directions</label>
+                                    <textarea class="form-control" id="venueDirections" rows="2"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="venueParkingInfo" class="form-label">Parking Information</label>
+                                    <textarea class="form-control" id="venueParkingInfo" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveVenueSetup()">
+                        <i class="fas fa-save me-2"></i>Save Venue
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manual Assignment Modal -->
+    <div class="modal fade" id="assignmentModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i>Manual Seat Assignment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="assignmentForm">
+                        <div class="mb-3">
+                            <label for="teamSelect" class="form-label">Select Team</label>
+                            <select class="form-select" id="teamSelect" required>
+                                <option value="">Choose a team...</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="zoneSelect" class="form-label">Select Zone</label>
+                            <select class="form-select" id="zoneSelect">
+                                <option value="">Any available zone</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="seatNumber" class="form-label">Seat Number (Optional)</label>
+                            <input type="text" class="form-control" id="seatNumber" 
+                                   placeholder="Leave blank for auto-assignment">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="assignSeat()">
+                        <i class="fas fa-check me-2"></i>Assign Seat
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nearby Amenities Modal -->
+    <div class="modal fade" id="amenitiesModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-map-marker-alt me-2"></i>Nearby Amenities</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="amenitiesContent">
+                        <!-- Nearby amenities will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="navbar.js"></script>
+    <script>
+        let currentTournament = null;
+        let venueData = null;
+        let currentView = 'grid';
+        let zoneCounter = 0;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserTournaments();
+        });
+
+        // Load user tournaments for selection
+        async function loadUserTournaments() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = 'auth.html';
+                    return;
+                }
+
+                const response = await fetch('/api/user/tournaments', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const select = document.getElementById('tournamentSelect');
+                    select.innerHTML = '<option value="">Choose a tournament...</option>';
+                    
+                    data.data.forEach(tournament => {
+                        if (tournament.venueType === 'physical' || tournament.venueType === 'hybrid') {
+                            const option = document.createElement('option');
+                            option.value = tournament._id;
+                            option.textContent = `${tournament.title} (${tournament.venueType})`;
+                            select.appendChild(option);
+                        }
+                    });
+                } else {
+                    showError('Failed to load tournaments');
+                }
+            } catch (error) {
+                console.error('Error loading tournaments:', error);
+                showError('Failed to load tournaments');
+            }
+        }
+
+        // Load venue data for selected tournament
+        async function loadVenueData() {
+            const tournamentId = document.getElementById('tournamentSelect').value;
+            if (!tournamentId) {
+                document.getElementById('venueOverview').style.display = 'none';
+                return;
+            }
+
+            showLoading(true);
+            currentTournament = tournamentId;
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/tournaments/${tournamentId}/venue`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    venueData = data.data;
+                    renderVenueOverview();
+                    document.getElementById('venueOverview').style.display = 'block';
+                } else if (response.status === 404) {
+                    // No venue setup yet
+                    document.getElementById('venueOverview').style.display = 'none';
+                    showError('No venue setup found for this tournament. Please setup the venue first.');
+                } else {
+                    showError('Failed to load venue data');
+                }
+            } catch (error) {
+                console.error('Error loading venue data:', error);
+                showError('Failed to load venue data');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Render venue overview
+        function renderVenueOverview() {
+            if (!venueData) return;
+
+            const venue = venueData.venueDetails;
+            
+            // Render venue details
+            document.getElementById('venueDetails').innerHTML = `
+                <h6>${venue.name}</h6>
+                <p class="text-muted mb-2">${venue.address}</p>
+                <p class="text-muted mb-2">${venue.city}, ${venue.state} ${venue.postalCode}</p>
+                <p class="text-muted mb-3">${venue.country}</p>
+                
+                <div class="mb-2">
+                    <strong>Total Capacity:</strong> ${venue.capacity}
+                </div>
+                
+                ${venue.amenities && venue.amenities.length > 0 ? `
+                    <div class="mb-2">
+                        <strong>Amenities:</strong><br>
+                        ${venue.amenities.map(amenity => `<span class="amenity-tag">${amenity}</span>`).join('')}
+                    </div>
+                ` : ''}
+                
+                ${venue.directions ? `
+                    <div class="mb-2">
+                        <strong>Directions:</strong><br>
+                        <small class="text-muted">${venue.directions}</small>
+                    </div>
+                ` : ''}
+                
+                ${venue.parkingInfo ? `
+                    <div class="mb-2">
+                        <strong>Parking:</strong><br>
+                        <small class="text-muted">${venue.parkingInfo}</small>
+                    </div>
+                ` : ''}
+            `;
+
+            // Load and render capacity stats
+            loadCapacityStats();
+            
+            // Render venue map
+            renderVenueMap();
+            
+            // Render zone management
+            renderZoneManagement();
+            
+            // Load team assignments
+            loadTeamAssignments();
+        }
+
+        // Load capacity statistics
+        async function loadCapacityStats() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/tournaments/${currentTournament}/venue/capacity`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderCapacityStats(data.data);
+                }
+            } catch (error) {
+                console.error('Error loading capacity stats:', error);
+            }
+        }
+
+        // Render capacity statistics
+        function renderCapacityStats(stats) {
+            const utilizationColor = stats.utilizationPercentage > 80 ? '#dc3545' : 
+                                   stats.utilizationPercentage > 60 ? '#ffc107' : '#28a745';
+            
+            document.getElementById('capacityStats').innerHTML = `
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span>Occupied</span>
+                        <span>${stats.totalAssigned}/${stats.totalCapacity}</span>
+                    </div>
+                    <div class="capacity-indicator">
+                        <div class="capacity-fill" style="width: ${stats.utilizationPercentage}%; background-color: ${utilizationColor}"></div>
+                    </div>
+                    <small>${stats.utilizationPercentage.toFixed(1)}% utilized</small>
+                </div>
+                
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="h5 mb-0">${stats.totalAssigned}</div>
+                        <small>Assigned</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="h5 mb-0">${stats.totalAvailable}</div>
+                        <small>Available</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="h5 mb-0">${Object.keys(stats.zoneUtilization).length}</div>
+                        <small>Zones</small>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render venue map
+        function renderVenueMap() {
+            if (!venueData) return;
+
+            const venue = venueData.venueDetails;
+            const assignments = venueData.seatAssignments || {};
+            
+            let mapContent = '';
+            
+            if (currentView === 'grid') {
+                // Grid view with visual seat layout
+                if (venue.zones && venue.zones.length > 0) {
+                    venue.zones.forEach(zone => {
+                        const zoneAssignments = Object.values(assignments).filter(a => a.zoneId === zone.zoneId);
+                        const occupiedSeats = zoneAssignments.length;
+                        const availableSeats = zone.capacity - occupiedSeats;
+                        
+                        mapContent += `
+                            <div class="zone-section">
+                                <h6>${zone.zoneName} (${occupiedSeats}/${zone.capacity})</h6>
+                                <div class="seat-grid">
+                                    ${Array.from({length: zone.capacity}, (_, i) => {
+                                        const seatNumber = i + 1;
+                                        const isOccupied = zoneAssignments.some(a => a.seatNumber == seatNumber);
+                                        return `<div class="seat ${isOccupied ? 'occupied' : 'available'}" 
+                                                     data-zone="${zone.zoneId}" data-seat="${seatNumber}">
+                                                    ${seatNumber}
+                                                </div>`;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    // Single zone layout
+                    const totalSeats = venue.capacity;
+                    const occupiedCount = Object.keys(assignments).length;
+                    
+                    mapContent = `
+                        <div class="zone-section">
+                            <h6>General Seating (${occupiedCount}/${totalSeats})</h6>
+                            <div class="seat-grid">
+                                ${Array.from({length: totalSeats}, (_, i) => {
+                                    const seatNumber = i + 1;
+                                    const isOccupied = Object.values(assignments).some(a => a.seatNumber == seatNumber);
+                                    return `<div class="seat ${isOccupied ? 'occupied' : 'available'}" 
+                                                 data-seat="${seatNumber}">
+                                                ${seatNumber}
+                                            </div>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            } else {
+                // List view with detailed information
+                mapContent = '<div class="list-group">';
+                
+                if (venue.zones && venue.zones.length > 0) {
+                    venue.zones.forEach(zone => {
+                        const zoneAssignments = Object.values(assignments).filter(a => a.zoneId === zone.zoneId);
+                        const utilizationPercent = (zoneAssignments.length / zone.capacity) * 100;
+                        
+                        mapContent += `
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">${zone.zoneName}</h6>
+                                        <p class="mb-1">${zone.description || 'No description'}</p>
+                                        <small>Price Multiplier: ${zone.priceMultiplier}x</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge bg-primary">${zoneAssignments.length}/${zone.capacity}</span>
+                                        <div class="capacity-indicator mt-1" style="width: 100px;">
+                                            <div class="capacity-fill" style="width: ${utilizationPercent}%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                mapContent += '</div>';
+            }
+            
+            document.getElementById('venueMapContent').innerHTML = mapContent;
+        }
+
+        // Render zone management interface
+        function renderZoneManagement() {
+            if (!venueData) return;
+
+            const venue = venueData.venueDetails;
+            const assignments = venueData.seatAssignments || {};
+            
+            let zoneContent = '';
+            
+            if (venue.zones && venue.zones.length > 0) {
+                venue.zones.forEach(zone => {
+                    const zoneAssignments = Object.values(assignments).filter(a => a.zoneId === zone.zoneId);
+                    const utilizationPercent = (zoneAssignments.length / zone.capacity) * 100;
+                    
+                    zoneContent += `
+                        <div class="zone-card">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h6>${zone.zoneName}</h6>
+                                    <p class="text-muted mb-1">${zone.description || 'No description'}</p>
+                                    <small>Capacity: ${zone.capacity} | Price: ${zone.priceMultiplier}x</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="capacity-indicator">
+                                        <div class="capacity-fill" style="width: ${utilizationPercent}%"></div>
+                                    </div>
+                                    <small>${zoneAssignments.length}/${zone.capacity} assigned (${utilizationPercent.toFixed(1)}%)</small>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="manageZone('${zone.zoneId}')">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                zoneContent = '<p class="text-muted">No zones configured. All seating is general admission.</p>';
+            }
+            
+            document.getElementById('zoneManagement').innerHTML = zoneContent;
+        }
+
+        // Load team assignments
+        async function loadTeamAssignments() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/tournaments/${currentTournament}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderTeamAssignments(data.data.participants || []);
+                    populateTeamSelect(data.data.participants || []);
+                }
+            } catch (error) {
+                console.error('Error loading team assignments:', error);
+            }
+        }
+
+        // Render team assignments
+        function renderTeamAssignments(teams) {
+            const assignments = venueData?.seatAssignments || {};
+            
+            let assignmentContent = '';
+            
+            teams.forEach(team => {
+                const assignment = assignments[team.teamId];
+                const isAssigned = !!assignment;
+                
+                assignmentContent += `
+                    <div class="team-assignment ${isAssigned ? 'assigned' : ''}">
+                        <div>
+                            <strong>${team.teamName}</strong>
+                            <br>
+                            <small class="text-muted">${team.players?.length || 0} players</small>
+                        </div>
+                        <div>
+                            ${isAssigned ? `
+                                <span class="badge bg-success">
+                                    ${assignment.zoneId ? `Zone: ${assignment.zoneId}` : 'General'}
+                                    ${assignment.seatNumber ? ` | Seat: ${assignment.seatNumber}` : ''}
+                                </span>
+                                <button class="btn btn-sm btn-outline-danger ms-2" onclick="removeAssignment('${team.teamId}')">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            ` : `
+                                <span class="badge bg-secondary">Unassigned</span>
+                                <button class="btn btn-sm btn-outline-primary ms-2" onclick="quickAssign('${team.teamId}')">
+                                    <i class="fas fa-plus"></i> Assign
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            if (assignmentContent === '') {
+                assignmentContent = '<p class="text-muted">No registered teams found.</p>';
+            }
+            
+            document.getElementById('teamAssignments').innerHTML = assignmentContent;
+        }
+
+        // Populate team select dropdown
+        function populateTeamSelect(teams) {
+            const select = document.getElementById('teamSelect');
+            select.innerHTML = '<option value="">Choose a team...</option>';
+            
+            const assignments = venueData?.seatAssignments || {};
+            
+            teams.forEach(team => {
+                if (!assignments[team.teamId]) { // Only show unassigned teams
+                    const option = document.createElement('option');
+                    option.value = team.teamId;
+                    option.textContent = team.teamName;
+                    select.appendChild(option);
+                }
+            });
+            
+            // Populate zone select
+            const zoneSelect = document.getElementById('zoneSelect');
+            zoneSelect.innerHTML = '<option value="">Any available zone</option>';
+            
+            if (venueData?.venueDetails?.zones) {
+                venueData.venueDetails.zones.forEach(zone => {
+                    const option = document.createElement('option');
+                    option.value = zone.zoneId;
+                    option.textContent = `${zone.zoneName} (${zone.capacity} capacity)`;
+                    zoneSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Toggle between grid and list view
+        function toggleView(view) {
+            currentView = view;
+            renderVenueMap();
+        }
+
+        // Add zone to venue setup form
+        function addZone() {
+            zoneCounter++;
+            const container = document.getElementById('zonesContainer');
+            const zoneDiv = document.createElement('div');
+            zoneDiv.className = 'zone-card';
+            zoneDiv.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6>Zone ${zoneCounter}</h6>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeZone(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control zone-name" placeholder="Zone Name" required>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="number" class="form-control zone-capacity" placeholder="Capacity" min="1" required>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <input type="number" class="form-control zone-multiplier" placeholder="Price Multiplier" 
+                               value="1.0" step="0.1" min="0.1">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control zone-description" placeholder="Description (optional)">
+                    </div>
+                </div>
+            `;
+            container.appendChild(zoneDiv);
+        }
+
+        // Remove zone from venue setup form
+        function removeZone(button) {
+            button.closest('.zone-card').remove();
+        }
+
+        // Save venue setup
+        async function saveVenueSetup() {
+            const form = document.getElementById('venueSetupForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const tournamentId = document.getElementById('tournamentSelect').value;
+            if (!tournamentId) {
+                showError('Please select a tournament first');
+                return;
+            }
+
+            // Collect form data
+            const venueDetails = {
+                name: document.getElementById('venueName').value,
+                address: document.getElementById('venueAddress').value,
+                city: document.getElementById('venueCity').value,
+                state: document.getElementById('venueState').value,
+                country: document.getElementById('venueCountry').value,
+                postalCode: document.getElementById('venuePostalCode').value,
+                capacity: parseInt(document.getElementById('venueCapacity').value),
+                zones: [],
+                amenities: document.getElementById('venueAmenities').value.split(',').map(a => a.trim()).filter(a => a),
+                directions: document.getElementById('venueDirections').value || null,
+                parkingInfo: document.getElementById('venueParkingInfo').value || null
+            };
+
+            // Collect zones
+            const zoneCards = document.querySelectorAll('#zonesContainer .zone-card');
+            zoneCards.forEach((card, index) => {
+                const zoneName = card.querySelector('.zone-name').value;
+                const zoneCapacity = parseInt(card.querySelector('.zone-capacity').value);
+                const zoneMultiplier = parseFloat(card.querySelector('.zone-multiplier').value) || 1.0;
+                const zoneDescription = card.querySelector('.zone-description').value || null;
+
+                if (zoneName && zoneCapacity) {
+                    venueDetails.zones.push({
+                        zoneId: `zone_${index + 1}`,
+                        zoneName: zoneName,
+                        capacity: zoneCapacity,
+                        priceMultiplier: zoneMultiplier,
+                        description: zoneDescription
+                    });
+                }
+            });
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/tournaments/${tournamentId}/venue`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(venueDetails)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showSuccess('Venue setup saved successfully!');
+                    
+                    // Close modal and refresh data
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('venueSetupModal'));
+                    modal.hide();
+                    
+                    // Reset form
+                    form.reset();
+                    document.getElementById('zonesContainer').innerHTML = '';
+                    zoneCounter = 0;
+                    
+                    // Reload venue data
+                    loadVenueData();
+                } else {
+                    const error = await response.json();
+                    showError(error.detail || 'Failed to save venue setup');
+                }
+            } catch (error) {
+                console.error('Error saving venue setup:', error);
+                showError('Failed to save venue setup');
+            }
+        }
+
+        // Quick assign seat to team
+        async function quickAssign(teamId) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/tournaments/${currentTournament}/venue/assign-seat?team_id=${teamId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    showSuccess('Seat assigned successfully!');
+                    loadVenueData(); // Refresh data
+                } else {
+                    const error = await response.json();
+                    showError(error.detail || 'Failed to assign seat');
+                }
+            } catch (error) {
+                console.error('Error assigning seat:', error);
+                showError('Failed to assign seat');
+            }
+        }
+
+        // Manual seat assignment
+        async function assignSeat() {
+            const teamId = document.getElementById('teamSelect').value;
+            const zoneId = document.getElementById('zoneSelect').value || null;
+            const seatNumber = document.getElementById('seatNumber').value || null;
+
+            if (!teamId) {
+                showError('Please select a team');
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                const url = new URL(`/api/tournaments/${currentTournament}/venue/assign-seat`, window.location.origin);
+                url.searchParams.append('team_id', teamId);
+                if (zoneId) url.searchParams.append('zone_id', zoneId);
+                if (seatNumber) url.searchParams.append('seat_number', seatNumber);
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    showSuccess('Seat assigned successfully!');
+                    
+                    // Close modal and refresh data
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('assignmentModal'));
+                    modal.hide();
+                    
+                    // Reset form
+                    document.getElementById('assignmentForm').reset();
+                    
+                    loadVenueData(); // Refresh data
+                } else {
+                    const error = await response.json();
+                    showError(error.detail || 'Failed to assign seat');
+                }
+            } catch (error) {
+                console.error('Error assigning seat:', error);
+                showError('Failed to assign seat');
+            }
+        }
+
+        // Remove seat assignment
+        async function removeAssignment(teamId) {
+            if (!confirm('Are you sure you want to remove this seat assignment?')) {
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/tournaments/${currentTournament}/venue/assign-seat/${teamId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    showSuccess('Seat assignment removed successfully!');
+                    loadVenueData(); // Refresh data
+                } else {
+                    const error = await response.json();
+                    showError(error.detail || 'Failed to remove seat assignment');
+                }
+            } catch (error) {
+                console.error('Error removing seat assignment:', error);
+                showError('Failed to remove seat assignment');
+            }
+        }
+
+        // Auto assign seats to all unassigned teams
+        async function autoAssignSeats() {
+            if (!currentTournament) {
+                showError('Please select a tournament first');
+                return;
+            }
+
+            if (!confirm('This will automatically assign seats to all unassigned teams. Continue?')) {
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                
+                // First get tournament data to find unassigned teams
+                const tournamentResponse = await fetch(`/api/tournaments/${currentTournament}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!tournamentResponse.ok) {
+                    showError('Failed to load tournament data');
+                    return;
+                }
+
+                const tournamentData = await tournamentResponse.json();
+                const teams = tournamentData.data.participants || [];
+                const assignments = venueData?.seatAssignments || {};
+                
+                const unassignedTeams = teams.filter(team => !assignments[team.teamId]).map(team => team.teamId);
+                
+                if (unassignedTeams.length === 0) {
+                    showSuccess('All teams are already assigned!');
+                    return;
+                }
+
+                // Auto assign seats
+                const response = await fetch(`/api/tournaments/${currentTournament}/venue/auto-assign`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(unassignedTeams)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const result = data.data;
+                    
+                    let message = `Auto-assignment completed!\n`;
+                    message += `✅ Assigned: ${result.assigned.length} teams\n`;
+                    if (result.failed.length > 0) {
+                        message += `❌ Failed: ${result.failed.length} teams\n`;
+                    }
+                    if (result.skipped.length > 0) {
+                        message += `⏭️ Skipped: ${result.skipped.length} teams (already assigned)`;
+                    }
+                    
+                    showSuccess(message);
+                    loadVenueData(); // Refresh data
+                } else {
+                    const error = await response.json();
+                    showError(error.detail || 'Failed to auto-assign seats');
+                }
+            } catch (error) {
+                console.error('Error auto-assigning seats:', error);
+                showError('Failed to auto-assign seats');
+            }
+        }
+
+        // Get directions to venue
+        async function getDirections() {
+            if (!venueData?.venueDetails) {
+                showError('No venue data available');
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                const venueAddress = venueData.venueDetails.address + ', ' + 
+                                   venueData.venueDetails.city + ', ' + 
+                                   venueData.venueDetails.state;
+
+                const response = await fetch('/api/venues/directions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        venue_address: venueAddress
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    window.open(data.data.directions_url, '_blank');
+                } else {
+                    showError('Failed to generate directions');
+                }
+            } catch (error) {
+                console.error('Error getting directions:', error);
+                showError('Failed to get directions');
+            }
+        }
+
+        // Find nearby amenities
+        async function findNearbyAmenities() {
+            if (!venueData?.venueDetails) {
+                showError('No venue data available');
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                
+                // Mock coordinates for demo (in real implementation, would geocode the address)
+                const response = await fetch(`/api/venues/nearby-amenities?latitude=40.7128&longitude=-74.0060&radius_km=2`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showNearbyAmenities(data.data.amenities);
+                } else {
+                    showError('Failed to find nearby amenities');
+                }
+            } catch (error) {
+                console.error('Error finding amenities:', error);
+                showError('Failed to find nearby amenities');
+            }
+        }
+
+        // Show nearby amenities in modal
+        function showNearbyAmenities(amenities) {
+            let content = '';
+            
+            const amenityIcons = {
+                'parking': 'fas fa-parking',
+                'restaurant': 'fas fa-utensils',
+                'lodging': 'fas fa-bed',
+                'gas_station': 'fas fa-gas-pump',
+                'hospital': 'fas fa-hospital',
+                'bank': 'fas fa-university'
+            };
+            
+            amenities.forEach(amenity => {
+                const icon = amenityIcons[amenity.type] || 'fas fa-map-marker-alt';
+                content += `
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="${icon} fa-2x text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title mb-1">${amenity.name}</h6>
+                                    <p class="card-text text-muted mb-1">${amenity.address}</p>
+                                    <small class="text-muted">
+                                        <i class="fas fa-walking me-1"></i>${amenity.distance_km} km away
+                                        ${amenity.rating ? `| <i class="fas fa-star text-warning me-1"></i>${amenity.rating}/5` : ''}
+                                        ${amenity.phone ? `| <i class="fas fa-phone me-1"></i>${amenity.phone}` : ''}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            if (content === '') {
+                content = '<p class="text-muted text-center">No nearby amenities found.</p>';
+            }
+            
+            document.getElementById('amenitiesContent').innerHTML = content;
+            
+            const modal = new bootstrap.Modal(document.getElementById('amenitiesModal'));
+            modal.show();
+        }
+
+        // Utility functions
+        function showLoading(show) {
+            document.getElementById('loadingSpinner').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Event listeners
+        document.getElementById('tournamentSelect').addEventListener('change', loadVenueData);
+    </script>
+</body>
+</html>

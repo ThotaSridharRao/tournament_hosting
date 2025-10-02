@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispute Resolution & Support - Gaming Nexus</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="navbar.css" rel="stylesheet">
+    <style>
+        .dispute-card, .support-card {
+            border-left: 4px solid #007bff;
+            transition: all 0.3s ease;
+        }
+        
+        .dispute-card:hover, .support-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+        
+        .priority-high { border-left-color: #dc3545; }
+        .priority-urgent { border-left-color: #fd7e14; }
+        .priority-normal { border-left-color: #007bff; }
+        .priority-low { border-left-color: #6c757d; }
+        
+        .message-thread {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+        }
+        
+        .message-item {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            background-color: white;
+            border-left: 3px solid #007bff;
+        }
+        
+        .message-admin {
+            border-left-color: #28a745;
+            background-color: #f8fff9;
+        }
+        
+        .evidence-item {
+            display: inline-block;
+            margin: 0.25rem;
+            padding: 0.5rem;
+            background-color: #e9ecef;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            color: #495057;
+        }
+        
+        .evidence-item:hover {
+            background-color: #dee2e6;
+            color: #495057;
+        }
+        
+        .tab-content {
+            margin-top: 1rem;
+        }
+        
+        .create-ticket-form {
+            background-color: #f8f9fa;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .ticket-stats {
+            background: linear-gradient(135deg, var(--primary-color, #0AFAD9), var(--accent-secondary, #5D3FD3));
+            color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-gamepad me-2"></i>Gaming Nexus
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tournaments.html">Tournaments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="user-dashboard.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="dispute-support.html">Support</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="userProfile">
+                            <i class="fas fa-user me-1"></i>
+                            <span id="userEmail">Loading...</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="logout()">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="display-6">
+                    <i class="fas fa-headset me-3"></i>Dispute Resolution & Support
+                </h1>
+                <p class="lead text-muted">Get help with tournament issues or submit support requests</p>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="ticket-stats">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalTickets">0</span>
+                        <span class="stat-label">Total Tickets</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-number" id="openTickets">0</span>
+                        <span class="stat-label">Open Tickets</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-number" id="resolvedTickets">0</span>
+                        <span class="stat-label">Resolved</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-number" id="avgResponseTime">0h</span>
+                        <span class="stat-label">Avg Response</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs" id="supportTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="disputes-tab" data-bs-toggle="tab" data-bs-target="#disputes" type="button" role="tab">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Dispute Tickets
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="support-tab" data-bs-toggle="tab" data-bs-target="#support" type="button" role="tab">
+                    <i class="fas fa-question-circle me-2"></i>Support Tickets
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="create-tab" data-bs-toggle="tab" data-bs-target="#create" type="button" role="tab">
+                    <i class="fas fa-plus me-2"></i>Create Ticket
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="supportTabContent">
+            <!-- Dispute Tickets Tab -->
+            <div class="tab-pane fade show active" id="disputes" role="tabpanel">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4>Your Dispute Tickets</h4>
+                            <button class="btn btn-outline-primary" onclick="refreshDisputes()">
+                                <i class="fas fa-sync-alt me-2"></i>Refresh
+                            </button>
+                        </div>
+                        <div id="disputesList" class="row">
+                            <!-- Dispute tickets will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support Tickets Tab -->
+            <div class="tab-pane fade" id="support" role="tabpanel">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4>Your Support Tickets</h4>
+                            <button class="btn btn-outline-primary" onclick="refreshSupport()">
+                                <i class="fas fa-sync-alt me-2"></i>Refresh
+                            </button>
+                        </div>
+                        <div id="supportList" class="row">
+                            <!-- Support tickets will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Ticket Tab -->
+            <div class="tab-pane fade" id="create" role="tabpanel">
+                <div class="create-ticket-form">
+                    <h4 class="mb-4">Create New Ticket</h4>
+                    
+                    <!-- Ticket Type Selection -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100 ticket-type-card" onclick="selectTicketType('dispute')">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                                    <h5>Dispute Ticket</h5>
+                                    <p class="text-muted">Report issues with tournaments, organizers, or request refunds</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100 ticket-type-card" onclick="selectTicketType('support')">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-question-circle fa-3x text-info mb-3"></i>
+                                    <h5>Support Ticket</h5>
+                                    <p class="text-muted">Get help with technical issues, account problems, or general questions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dispute Form -->
+                    <div id="disputeForm" class="ticket-form" style="display: none;">
+                        <h5 class="mb-3">Create Dispute Ticket</h5>
+                        <form id="createDisputeForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="disputeTournament" class="form-label">Tournament *</label>
+                                    <select class="form-select" id="disputeTournament" required>
+                                        <option value="">Select Tournament</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="disputeType" class="form-label">Dispute Type *</label>
+                                    <select class="form-select" id="disputeType" required>
+                                        <option value="">Select Type</option>
+                                        <option value="refund_request">Refund Request</option>
+                                        <option value="organizer_misconduct">Organizer Misconduct</option>
+                                        <option value="tournament_cancellation">Tournament Cancellation</option>
+                                        <option value="technical_issue">Technical Issue</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="disputePriority" class="form-label">Priority</label>
+                                    <select class="form-select" id="disputePriority">
+                                        <option value="normal">Normal</option>
+                                        <option value="high">High</option>
+                                        <option value="urgent">Urgent</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="disputeTitle" class="form-label">Title *</label>
+                                    <input type="text" class="form-control" id="disputeTitle" required maxlength="100">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="disputeDescription" class="form-label">Description *</label>
+                                <textarea class="form-control" id="disputeDescription" rows="5" required maxlength="2000" 
+                                    placeholder="Please provide detailed information about your dispute..."></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="disputeEvidence" class="form-label">Evidence (URLs)</label>
+                                <textarea class="form-control" id="disputeEvidence" rows="3" 
+                                    placeholder="Provide URLs to screenshots, videos, or other evidence (one per line)"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Create Dispute Ticket
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Support Form -->
+                    <div id="supportForm" class="ticket-form" style="display: none;">
+                        <h5 class="mb-3">Create Support Ticket</h5>
+                        <form id="createSupportForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="supportCategory" class="form-label">Category *</label>
+                                    <select class="form-select" id="supportCategory" required>
+                                        <option value="">Select Category</option>
+                                        <option value="technical">Technical Issue</option>
+                                        <option value="payment">Payment Problem</option>
+                                        <option value="tournament">Tournament Question</option>
+                                        <option value="account">Account Issue</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="supportPriority" class="form-label">Priority</label>
+                                    <select class="form-select" id="supportPriority">
+                                        <option value="normal">Normal</option>
+                                        <option value="high">High</option>
+                                        <option value="urgent">Urgent</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="supportSubject" class="form-label">Subject *</label>
+                                <input type="text" class="form-control" id="supportSubject" required maxlength="100">
+                            </div>
+                            <div class="mb-3">
+                                <label for="supportDescription" class="form-label">Description *</label>
+                                <textarea class="form-control" id="supportDescription" rows="5" required maxlength="2000" 
+                                    placeholder="Please describe your issue or question in detail..."></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="supportTags" class="form-label">Tags (optional)</label>
+                                <input type="text" class="form-control" id="supportTags" 
+                                    placeholder="Enter tags separated by commas (e.g., payment, mobile, bug)">
+                            </div>
+                            <button type="submit" class="btn btn-info">
+                                <i class="fas fa-question-circle me-2"></i>Create Support Ticket
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ticket Detail Modal -->
+    <div class="modal fade" id="ticketModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ticketModalTitle">Ticket Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="ticketModalBody">
+                    <!-- Ticket details will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="addMessageBtn" onclick="showAddMessage()">
+                        <i class="fas fa-comment me-2"></i>Add Message
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Message Modal -->
+    <div class="modal fade" id="addMessageModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addMessageForm">
+                        <div class="mb-3">
+                            <label for="messageText" class="form-label">Message *</label>
+                            <textarea class="form-control" id="messageText" rows="4" required 
+                                placeholder="Type your message here..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="messageAttachments" class="form-label">Attachments (URLs)</label>
+                            <textarea class="form-control" id="messageAttachments" rows="2" 
+                                placeholder="Provide URLs to attachments (one per line)"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="submitMessage()">
+                        <i class="fas fa-paper-plane me-2"></i>Send Message
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="navbar.js"></script>
+    <script>
+        let currentTicketId = null;
+        let currentTicketType = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadUserTournaments();
+            loadTicketStats();
+            loadDisputes();
+            loadSupport();
+        });
+
+        // Authentication check
+        function checkAuth() {
+            const authToken = getCookie('auth_token');
+            const userData = getCookie('user_data');
+            
+            if (!authToken || !userData) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            
+            const [email, role] = userData.split('|');
+            document.getElementById('userEmail').textContent = email;
+        }
+
+        // Cookie helper
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Load user tournaments for dispute form
+        async function loadUserTournaments() {
+            try {
+                const authToken = getCookie('auth_token');
+                const response = await fetch('/api/user-tournaments', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const select = document.getElementById('disputeTournament');
+                    select.innerHTML = '<option value="">Select Tournament</option>';
+                    
+                    data.data.forEach(tournament => {
+                        const option = document.createElement('option');
+                        option.value = tournament._id;
+                        option.textContent = tournament.title;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading tournaments:', error);
+            }
+        }
+
+        // Load ticket statistics
+        async function loadTicketStats() {
+            try {
+                const authToken = getCookie('auth_token');
+                
+                // Load dispute tickets
+                const disputeResponse = await fetch('/api/disputes', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                // Load support tickets
+                const supportResponse = await fetch('/api/support/tickets', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                let totalTickets = 0;
+                let openTickets = 0;
+                let resolvedTickets = 0;
+                
+                if (disputeResponse.ok) {
+                    const disputeData = await disputeResponse.json();
+                    if (disputeData.success) {
+                        totalTickets += disputeData.data.length;
+                        openTickets += disputeData.data.filter(t => t.status === 'open').length;
+                        resolvedTickets += disputeData.data.filter(t => t.status === 'resolved').length;
+                    }
+                }
+                
+                if (supportResponse.ok) {
+                    const supportData = await supportResponse.json();
+                    if (supportData.success) {
+                        totalTickets += supportData.data.length;
+                        openTickets += supportData.data.filter(t => t.status === 'open').length;
+                        resolvedTickets += supportData.data.filter(t => t.status === 'resolved').length;
+                    }
+                }
+                
+                document.getElementById('totalTickets').textContent = totalTickets;
+                document.getElementById('openTickets').textContent = openTickets;
+                document.getElementById('resolvedTickets').textContent = resolvedTickets;
+                document.getElementById('avgResponseTime').textContent = '24h'; // Placeholder
+                
+            } catch (error) {
+                console.error('Error loading ticket stats:', error);
+            }
+        }
+
+        // Load dispute tickets
+        async function loadDisputes() {
+            try {
+                const authToken = getCookie('auth_token');
+                const response = await fetch('/api/disputes', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const disputesList = document.getElementById('disputesList');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.data.length > 0) {
+                        disputesList.innerHTML = data.data.map(dispute => createDisputeCard(dispute)).join('');
+                    } else {
+                        disputesList.innerHTML = `
+                            <div class="col-12">
+                                <div class="text-center py-5">
+                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No dispute tickets found</h5>
+                                    <p class="text-muted">You haven't created any dispute tickets yet.</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    throw new Error('Failed to load disputes');
+                }
+            } catch (error) {
+                console.error('Error loading disputes:', error);
+                document.getElementById('disputesList').innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Error loading dispute tickets. Please try again.
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Load support tickets
+        async function loadSupport() {
+            try {
+                const authToken = getCookie('auth_token');
+                const response = await fetch('/api/support/tickets', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const supportList = document.getElementById('supportList');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.data.length > 0) {
+                        supportList.innerHTML = data.data.map(ticket => createSupportCard(ticket)).join('');
+                    } else {
+                        supportList.innerHTML = `
+                            <div class="col-12">
+                                <div class="text-center py-5">
+                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No support tickets found</h5>
+                                    <p class="text-muted">You haven't created any support tickets yet.</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    throw new Error('Failed to load support tickets');
+                }
+            } catch (error) {
+                console.error('Error loading support tickets:', error);
+                document.getElementById('supportList').innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Error loading support tickets. Please try again.
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Create dispute card HTML
+        function createDisputeCard(dispute) {
+            const statusColor = getStatusColor(dispute.status);
+            const priorityClass = `priority-${dispute.priority}`;
+            const createdDate = new Date(dispute.created_at).toLocaleDateString();
+            
+            return `
+                <div class="col-md-6 mb-3">
+                    <div class="card dispute-card ${priorityClass}" onclick="viewTicket('${dispute._id}', 'dispute')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="card-title mb-0">${dispute.title}</h6>
+                                <span class="badge ${statusColor} status-badge">${dispute.status}</span>
+                            </div>
+                            <p class="card-text text-muted small mb-2">${dispute.description.substring(0, 100)}...</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>${createdDate}
+                                </small>
+                                <span class="badge bg-secondary">${dispute.dispute_type}</span>
+                            </div>
+                            <div class="mt-2">
+                                <span class="badge bg-light text-dark">${dispute.priority} priority</span>
+                                ${dispute.messages && dispute.messages.length > 0 ? 
+                                    `<span class="badge bg-info">${dispute.messages.length} messages</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Create support card HTML
+        function createSupportCard(ticket) {
+            const statusColor = getStatusColor(ticket.status);
+            const createdDate = new Date(ticket.created_at).toLocaleDateString();
+            
+            return `
+                <div class="col-md-6 mb-3">
+                    <div class="card support-card" onclick="viewTicket('${ticket._id}', 'support')">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="card-title mb-0">${ticket.subject}</h6>
+                                <span class="badge ${statusColor} status-badge">${ticket.status}</span>
+                            </div>
+                            <p class="card-text text-muted small mb-2">${ticket.description.substring(0, 100)}...</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>${createdDate}
+                                </small>
+                                <span class="badge bg-secondary">${ticket.category}</span>
+                            </div>
+                            <div class="mt-2">
+                                <span class="badge bg-light text-dark">${ticket.priority} priority</span>
+                                ${ticket.messages && ticket.messages.length > 0 ? 
+                                    `<span class="badge bg-info">${ticket.messages.length} messages</span>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Get status color
+        function getStatusColor(status) {
+            switch (status) {
+                case 'open': return 'bg-primary';
+                case 'in_progress': return 'bg-warning';
+                case 'resolved': return 'bg-success';
+                case 'closed': return 'bg-secondary';
+                default: return 'bg-secondary';
+            }
+        }
+
+        // Select ticket type
+        function selectTicketType(type) {
+            // Remove active class from all cards
+            document.querySelectorAll('.ticket-type-card').forEach(card => {
+                card.classList.remove('border-primary');
+            });
+            
+            // Add active class to selected card
+            event.currentTarget.classList.add('border-primary');
+            
+            // Show appropriate form
+            document.getElementById('disputeForm').style.display = type === 'dispute' ? 'block' : 'none';
+            document.getElementById('supportForm').style.display = type === 'support' ? 'block' : 'none';
+        }
+
+        // Create dispute ticket
+        document.getElementById('createDisputeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                tournament_id: document.getElementById('disputeTournament').value,
+                dispute_type: document.getElementById('disputeType').value,
+                priority: document.getElementById('disputePriority').value,
+                title: document.getElementById('disputeTitle').value,
+                description: document.getElementById('disputeDescription').value,
+                evidence: document.getElementById('disputeEvidence').value.split('\n').filter(url => url.trim())
+            };
+            
+            try {
+                const authToken = getCookie('auth_token');
+                const response = await fetch(`/api/tournaments/${formData.tournament_id}/dispute`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    alert('Dispute ticket created successfully!');
+                    document.getElementById('createDisputeForm').reset();
+                    loadDisputes();
+                    loadTicketStats();
+                    // Switch to disputes tab
+                    document.getElementById('disputes-tab').click();
+                } else {
+                    throw new Error('Failed to create dispute ticket');
+                }
+            } catch (error) {
+                console.error('Error creating dispute:', error);
+                alert('Error creating dispute ticket. Please try again.');
+            }
+        });
+
+        // Create support ticket
+        document.getElementById('createSupportForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                category: document.getElementById('supportCategory').value,
+                priority: document.getElementById('supportPriority').value,
+                subject: document.getElementById('supportSubject').value,
+                description: document.getElementById('supportDescription').value,
+                tags: document.getElementById('supportTags').value.split(',').map(tag => tag.trim()).filter(tag => tag)
+            };
+            
+            try {
+                const authToken = getCookie('auth_token');
+                const response = await fetch('/api/support/ticket', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    alert('Support ticket created successfully!');
+                    document.getElementById('createSupportForm').reset();
+                    loadSupport();
+                    loadTicketStats();
+                    // Switch to support tab
+                    document.getElementById('support-tab').click();
+                } else {
+                    throw new Error('Failed to create support ticket');
+                }
+            } catch (error) {
+                console.error('Error creating support ticket:', error);
+                alert('Error creating support ticket. Please try again.');
+            }
+        });
+
+        // View ticket details
+        async function viewTicket(ticketId, type) {
+            currentTicketId = ticketId;
+            currentTicketType = type;
+            
+            try {
+                const authToken = getCookie('auth_token');
+                const endpoint = type === 'dispute' ? `/api/disputes/${ticketId}` : `/api/support/tickets/${ticketId}`;
+                
+                const response = await fetch(endpoint, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        displayTicketDetails(data.data, type);
+                        new bootstrap.Modal(document.getElementById('ticketModal')).show();
+                    }
+                } else {
+                    throw new Error('Failed to load ticket details');
+                }
+            } catch (error) {
+                console.error('Error loading ticket details:', error);
+                alert('Error loading ticket details. Please try again.');
+            }
+        }
+
+        // Display ticket details in modal
+        function displayTicketDetails(ticket, type) {
+            const title = type === 'dispute' ? ticket.title : ticket.subject;
+            const description = ticket.description;
+            const status = ticket.status;
+            const priority = ticket.priority;
+            const createdDate = new Date(ticket.created_at).toLocaleDateString();
+            
+            document.getElementById('ticketModalTitle').textContent = title;
+            
+            let detailsHtml = `
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Status:</strong> <span class="badge ${getStatusColor(status)}">${status}</span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Priority:</strong> <span class="badge bg-light text-dark">${priority}</span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Created:</strong> ${createdDate}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Type:</strong> ${type === 'dispute' ? ticket.dispute_type : ticket.category}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <strong>Description:</strong>
+                    <p class="mt-2">${description}</p>
+                </div>
+            `;
+            
+            // Add evidence for disputes
+            if (type === 'dispute' && ticket.evidence && ticket.evidence.length > 0) {
+                detailsHtml += `
+                    <div class="mb-3">
+                        <strong>Evidence:</strong>
+                        <div class="mt-2">
+                            ${ticket.evidence.map(url => `<a href="${url}" target="_blank" class="evidence-item"><i class="fas fa-external-link-alt me-1"></i>Evidence</a>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Add tags for support tickets
+            if (type === 'support' && ticket.tags && ticket.tags.length > 0) {
+                detailsHtml += `
+                    <div class="mb-3">
+                        <strong>Tags:</strong>
+                        <div class="mt-2">
+                            ${ticket.tags.map(tag => `<span class="badge bg-secondary me-1">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Add messages thread
+            if (ticket.messages && ticket.messages.length > 0) {
+                detailsHtml += `
+                    <div class="mb-3">
+                        <strong>Messages:</strong>
+                        <div class="message-thread mt-2">
+                            ${ticket.messages.map(message => `
+                                <div class="message-item ${message.sender_role === 'admin' ? 'message-admin' : ''}">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <strong>${message.sender_email}</strong>
+                                        <small class="text-muted">${new Date(message.timestamp).toLocaleString()}</small>
+                                    </div>
+                                    <p class="mb-0">${message.message}</p>
+                                    ${message.attachments && message.attachments.length > 0 ? 
+                                        `<div class="mt-2">${message.attachments.map(url => `<a href="${url}" target="_blank" class="evidence-item"><i class="fas fa-paperclip me-1"></i>Attachment</a>`).join('')}</div>` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('ticketModalBody').innerHTML = detailsHtml;
+        }
+
+        // Show add message modal
+        function showAddMessage() {
+            new bootstrap.Modal(document.getElementById('addMessageModal')).show();
+        }
+
+        // Submit message
+        async function submitMessage() {
+            const messageText = document.getElementById('messageText').value;
+            const attachments = document.getElementById('messageAttachments').value.split('\n').filter(url => url.trim());
+            
+            if (!messageText.trim()) {
+                alert('Please enter a message');
+                return;
+            }
+            
+            try {
+                const authToken = getCookie('auth_token');
+                const endpoint = currentTicketType === 'dispute' ? 
+                    `/api/disputes/${currentTicketId}/message` : 
+                    `/api/support/tickets/${currentTicketId}/message`;
+                
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        message: messageText,
+                        attachments: attachments
+                    })
+                });
+                
+                if (response.ok) {
+                    alert('Message added successfully!');
+                    document.getElementById('addMessageForm').reset();
+                    bootstrap.Modal.getInstance(document.getElementById('addMessageModal')).hide();
+                    // Refresh ticket details
+                    viewTicket(currentTicketId, currentTicketType);
+                } else {
+                    throw new Error('Failed to add message');
+                }
+            } catch (error) {
+                console.error('Error adding message:', error);
+                alert('Error adding message. Please try again.');
+            }
+        }
+
+        // Refresh functions
+        function refreshDisputes() {
+            loadDisputes();
+            loadTicketStats();
+        }
+
+        function refreshSupport() {
+            loadSupport();
+            loadTicketStats();
+        }
+
+        // Logout function
+        function logout() {
+            document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            document.cookie = 'user_data=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            window.location.href = 'auth.html';
+        }
+
+        // Style for ticket type cards
+        const style = document.createElement('style');
+        style.textContent = `
+            .ticket-type-card {
+                cursor: pointer;
+                transition: all 0.3s ease;
+                border: 2px solid transparent;
+            }
+            
+            .ticket-type-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            }
+            
+            .ticket-type-card.border-primary {
+                border-color: #007bff !important;
+                background-color: #f8f9ff;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
