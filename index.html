@@ -16,7 +16,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity=""
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
 
 
@@ -24,12 +24,12 @@
     /* =========================
        NAVBAR STYLES (Embedded)
        ========================= */
-    
+
     /* General Header Styles */
     header.site-header {
       position: fixed;
       inset: 0 0 auto 0;
-      background: rgba(26, 26, 26, 0.5); 
+      background: rgba(26, 26, 26, 0.5);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       z-index: 1200;
@@ -141,157 +141,157 @@
     }
 
     /* Profile Dropdown (Desktop) */
-    .profile-dropdown { 
-      position: relative; 
-      display: flex; 
-      align-items: center; 
+    .profile-dropdown {
+      position: relative;
+      display: flex;
+      align-items: center;
     }
-    
-    .profile-icon { 
-      width: 40px; 
-      height: 40px; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      color: var(--copy); 
-      cursor: pointer; 
-      border-radius: 50%; 
-      transition: all 0.3s ease; 
-      font-size: 1.5rem; 
+
+    .profile-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--copy);
+      cursor: pointer;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      font-size: 1.5rem;
     }
-    
-    .profile-icon:hover { 
-      color: var(--accent); 
-      background: rgba(255, 69, 0, 0.1); 
-      transform: scale(1.1); 
+
+    .profile-icon:hover {
+      color: var(--accent);
+      background: rgba(255, 69, 0, 0.1);
+      transform: scale(1.1);
     }
-    
-    .profile-modal { 
-      position: absolute; 
-      top: 100%; 
-      right: 0; 
-      background: var(--panel); 
-      border: 1px solid rgba(255, 255, 255, 0.1); 
-      border-radius: 12px; 
-      min-width: 280px; 
-      opacity: 0; 
-      visibility: hidden; 
-      transform: translateY(-10px); 
-      transition: all 0.3s ease; 
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); 
-      z-index: 1000; 
-      margin-top: 10px; 
+
+    .profile-modal {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--panel);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      min-width: 280px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      margin-top: 10px;
     }
-    
-    .profile-dropdown:hover .profile-modal { 
-      opacity: 1; 
-      visibility: visible; 
-      transform: translateY(0); 
+
+    .profile-dropdown:hover .profile-modal {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
     }
-    
-    .profile-header { 
-      display: flex; 
-      align-items: center; 
-      gap: 1rem; 
-      padding: 1.5rem; 
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
-    .profile-photo { 
-      width: 50px; 
-      height: 50px; 
-      background: linear-gradient(135deg, var(--accent), var(--accent-2)); 
-      border-radius: 50%; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      color: #000; 
-      font-size: 1.5rem; 
-      flex-shrink: 0; 
+
+    .profile-photo {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 1.5rem;
+      flex-shrink: 0;
     }
-    
-    .profile-username { 
-      font-weight: 700; 
-      font-size: 1.1rem; 
+
+    .profile-username {
+      font-weight: 700;
+      font-size: 1.1rem;
     }
-    
-    .profile-actions { 
-      padding: 0.5rem; 
+
+    .profile-actions {
+      padding: 0.5rem;
     }
-    
-    .profile-action { 
-      display: flex; 
-      align-items: center; 
-      gap: 0.75rem; 
-      padding: 0.75rem 1rem; 
-      color: var(--muted); 
-      text-decoration: none; 
-      border-radius: 8px; 
-      transition: all 0.3s ease; 
-      font-weight: 600; 
-      width: 100%; 
-      border: none; 
-      background: none; 
-      cursor: pointer; 
-      font-family: inherit; 
+
+    .profile-action {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      color: var(--muted);
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      width: 100%;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-family: inherit;
     }
-    
-    .profile-action:hover { 
-      background: rgba(255, 255, 255, 0.05); 
-      color: var(--accent); 
-      transform: translateX(4px); 
+
+    .profile-action:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--accent);
+      transform: translateX(4px);
     }
-    
-    .logout-action:hover { 
-      background: rgba(255, 0, 0, 0.1); 
-      color: #ff6b6b; 
+
+    .logout-action:hover {
+      background: rgba(255, 0, 0, 0.1);
+      color: #ff6b6b;
     }
 
     /* Hamburger & Mobile Nav Panel */
-    .hamburger { 
-      display: none; 
-      background: none; 
-      border: none; 
-      color: var(--copy); 
-      font-size: 1.5rem; 
-      cursor: pointer; 
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--copy);
+      font-size: 1.5rem;
+      cursor: pointer;
     }
-    
-    .mobile-nav { 
-      position: fixed; 
-      top: 0; 
-      right: -100%; 
-      width: 300px; 
-      height: 100%; 
-      background: var(--panel); 
-      z-index: 2000; 
-      transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
-      box-shadow: -10px 0 30px rgba(0,0,0,0.5); 
-      padding-top: 60px; 
-      display: flex; 
-      flex-direction: column; 
+
+    .mobile-nav {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 300px;
+      height: 100%;
+      background: var(--panel);
+      z-index: 2000;
+      transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+      padding-top: 60px;
+      display: flex;
+      flex-direction: column;
     }
-    
-    .mobile-nav.is-open { 
-      right: 0; 
+
+    .mobile-nav.is-open {
+      right: 0;
     }
-    
-    .mobile-nav-close { 
-      position: absolute; 
-      top: 1rem; 
-      right: 1.5rem; 
-      background: none; 
-      border: none; 
-      color: var(--muted); 
-      font-size: 1.75rem; 
-      cursor: pointer; 
-      line-height: 1; 
-      transition: color 0.2s ease, transform 0.3s ease; 
+
+    .mobile-nav-close {
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.75rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s ease, transform 0.3s ease;
     }
-    
-    .mobile-nav-close:hover { 
-      color: var(--copy); 
-      transform: rotate(90deg); 
+
+    .mobile-nav-close:hover {
+      color: var(--copy);
+      transform: rotate(90deg);
     }
 
     /* Button container for side-by-side layout */
@@ -303,53 +303,53 @@
       align-items: center;
     }
 
-    .mobile-nav .guest-view { 
-      padding: 2rem; 
-      text-align: center; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      gap: 1rem; 
-      margin-top: 2rem; 
+    .mobile-nav .guest-view {
+      padding: 2rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 2rem;
     }
-    
-    .mobile-nav .guest-view i { 
-      font-size: 3rem; 
-      color: var(--accent); 
+
+    .mobile-nav .guest-view i {
+      font-size: 3rem;
+      color: var(--accent);
     }
-    
-    .mobile-nav .guest-view p { 
-      color: var(--muted); 
-      line-height: 1.6; 
+
+    .mobile-nav .guest-view p {
+      color: var(--muted);
+      line-height: 1.6;
     }
 
     /* Mobile Navigation Links Styling */
     .mobile-nav-links {
-        padding: 1rem;
-        margin-top: 1rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
     }
 
     .mobile-nav-links a {
-        color: var(--muted);
-        text-decoration: none;
-        padding: 0.75rem 1rem;
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.2s ease;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.2s ease;
     }
 
     .mobile-nav-links a:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: var(--copy);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--copy);
     }
 
     .mobile-nav-links a i {
-        margin-right: 0.5rem;
-        color: var(--accent-2, #0AFAD9);
+      margin-right: 0.5rem;
+      color: var(--accent-2, #0AFAD9);
     }
 
     /* Mobile Navigation Buttons - Standardized */
@@ -357,80 +357,80 @@
     .guest-view .mobile-host-btn,
     a.mobile-host-btn,
     .mobile-join-btn {
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 0.4rem !important;
-        padding: 0.5rem 0.8rem !important;
-        border: none !important;
-        border-radius: 5px !important;
-        text-decoration: none !important;
-        font-weight: 600 !important;
-        font-size: 0.85rem !important;
-        line-height: 1 !important;
-        transition: all 0.3s ease !important;
-        margin: 0 !important;
-        width: auto !important;
-        box-sizing: border-box !important;
-        flex: 1 !important;
-        max-width: 120px !important;
-        min-height: 36px !important;
-        cursor: pointer !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 0.4rem !important;
+      padding: 0.5rem 0.8rem !important;
+      border: none !important;
+      border-radius: 5px !important;
+      text-decoration: none !important;
+      font-weight: 600 !important;
+      font-size: 0.85rem !important;
+      line-height: 1 !important;
+      transition: all 0.3s ease !important;
+      margin: 0 !important;
+      width: auto !important;
+      box-sizing: border-box !important;
+      flex: 1 !important;
+      max-width: 120px !important;
+      min-height: 36px !important;
+      cursor: pointer !important;
     }
 
     /* Host button specific styling */
     .mobile-nav .mobile-host-btn,
     .guest-view .mobile-host-btn,
     a.mobile-host-btn {
-        background: #ffffff !important;
-        background-color: #ffffff !important;
-        background-image: none !important;
-        color: #000000 !important;
+      background: #ffffff !important;
+      background-color: #ffffff !important;
+      background-image: none !important;
+      color: #000000 !important;
     }
 
     /* Join Us button specific styling */
     .mobile-join-btn {
-        background: linear-gradient(135deg, var(--accent, #5D3FD3), var(--accent-2, #0AFAD9)) !important;
-        color: #ffffff !important;
+      background: linear-gradient(135deg, var(--accent, #5D3FD3), var(--accent-2, #0AFAD9)) !important;
+      color: #ffffff !important;
     }
 
     /* Icon sizing for mobile host button */
     .mobile-nav .mobile-host-btn i,
     .guest-view .mobile-host-btn i,
     a.mobile-host-btn i {
-        font-size: 0.85rem !important;
-        color: #000000 !important;
-        line-height: 1 !important;
+      font-size: 0.85rem !important;
+      color: #000000 !important;
+      line-height: 1 !important;
     }
 
     .mobile-nav .mobile-host-btn:hover,
     .guest-view .mobile-host-btn:hover,
     a.mobile-host-btn:hover {
-        opacity: 0.8 !important;
-        filter: brightness(0.9) !important;
+      opacity: 0.8 !important;
+      filter: brightness(0.9) !important;
     }
 
     .mobile-join-btn:hover {
-        opacity: 0.8;
-        filter: brightness(0.9);
+      opacity: 0.8;
+      filter: brightness(0.9);
     }
 
     /* Force override any inherited button styles */
     .mobile-host-btn * {
-        color: inherit !important;
+      color: inherit !important;
     }
-    
+
     /* Additional specificity for mobile host button */
     #mobile-nav .guest-view a[href="user-dashboard.html"] {
-        background: #ffffff !important;
-        background-color: #ffffff !important;
-        background-image: none !important;
-        color: #000000 !important;
+      background: #ffffff !important;
+      background-color: #ffffff !important;
+      background-image: none !important;
+      color: #000000 !important;
     }
-    
+
     #mobile-nav .guest-view a[href="user-dashboard.html"]:hover {
-        opacity: 0.8 !important;
-        filter: brightness(0.9) !important;
+      opacity: 0.8 !important;
+      filter: brightness(0.9) !important;
     }
 
     /* Responsive Media Queries */
@@ -438,43 +438,45 @@
       .header-container {
         padding: 0 1rem;
       }
-      
+
       .primary {
         display: none;
       }
-      
-      .nav-actions { 
-        display: none; 
+
+      .nav-actions {
+        display: none;
       }
-      
-      .hamburger { 
+
+      .hamburger {
         display: inline-flex;
         align-items: center;
         justify-content: center;
       }
-      
+
       /* Hide host button on mobile - will be in mobile menu */
-      .host-btn { 
+      .host-btn {
         display: none;
       }
     }
 
     @media (min-width: 1600px) {
-      header.site-header { 
-        height: 80px; 
-        padding: 0 3rem; 
+      header.site-header {
+        height: 80px;
+        padding: 0 3rem;
       }
-      
-      .back-btn, .header-cta, .profile-username { 
-        font-size: 1.1rem; 
+
+      .back-btn,
+      .header-cta,
+      .profile-username {
+        font-size: 1.1rem;
       }
-      
-      .header-cta { 
-        padding: 0.7rem 1.25rem; 
+
+      .header-cta {
+        padding: 0.7rem 1.25rem;
       }
-      
-      .profile-icon { 
-        font-size: 1.75rem; 
+
+      .profile-icon {
+        font-size: 1.75rem;
       }
     }
 
@@ -482,11 +484,16 @@
        Theme variables (Cyberpunk)
        ========================= */
     :root {
-      --primary-color: #0AFAD9;      /* Electric Cyan */
-      --bg-dark: #0D0A1A;            /* Dark Matter Black */
-      --accent-secondary: #5D3FD3;   /* Deep Indigo */
-      --panel: #161329;              /* Dark Indigo Panel */
-      --text-primary: #F0F0F0;       /* Starlight White */
+      --primary-color: #0AFAD9;
+      /* Electric Cyan */
+      --bg-dark: #0D0A1A;
+      /* Dark Matter Black */
+      --accent-secondary: #5D3FD3;
+      /* Deep Indigo */
+      --panel: #161329;
+      /* Dark Indigo Panel */
+      --text-primary: #F0F0F0;
+      /* Starlight White */
       --text-secondary: rgba(240, 240, 240, 0.7);
       --border-color: rgba(10, 250, 217, 0.2);
       --ease: 0.3s ease;
@@ -494,8 +501,10 @@
       /* Legacy variables for compatibility */
       --copy: var(--text-primary);
       --muted: var(--text-secondary);
-      --accent: var(--accent-secondary); /* Using Indigo as main accent */
-      --accent-2: var(--primary-color); /* Using Cyan as secondary accent */
+      --accent: var(--accent-secondary);
+      /* Using Indigo as main accent */
+      --accent-2: var(--primary-color);
+      /* Using Cyan as secondary accent */
       --radius: 12px;
       --container: 1400px;
     }
@@ -520,7 +529,7 @@
         animation-iteration-count: 1 !important;
       }
     }
-    
+
     /* =========================
        Base resets & accessibility
        ========================= */
@@ -548,10 +557,12 @@
       -moz-osx-font-smoothing: grayscale;
       line-height: 1.6;
       -webkit-text-size-adjust: 100%;
-      overflow-x: hidden; /* Prevent horizontal scrollbars */
-      font-size: 16px; /* Base font size */
+      overflow-x: hidden;
+      /* Prevent horizontal scrollbars */
+      font-size: 16px;
+      /* Base font size */
     }
-    
+
     @media (min-width: 1600px) {
       body {
         font-size: 17px;
@@ -560,7 +571,8 @@
 
     @media (min-width: 1920px) {
       body {
-        font-size: 18px; /* Increase base font size on large screens */
+        font-size: 18px;
+        /* Increase base font size on large screens */
       }
     }
 
@@ -612,67 +624,70 @@
       margin: 0 auto;
     }
 
-    
+
     /* =========================
        Hero section
        ========================= */
     .hero {
-      min-height: 90vh; /* Reduced height to move content up */
+      min-height: 90vh;
+      /* Reduced height to move content up */
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       position: relative;
-      padding: 6.4rem 2rem 4rem 2rem; /* Adjusted top padding */
+      padding: 6.4rem 2rem 4rem 2rem;
+      /* Adjusted top padding */
       overflow: hidden;
     }
-    
+
     .hero-video-bg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-        overflow: hidden;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
     }
 
     .hero-video-bg video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
-    
+
     .hero::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(13, 10, 26, 0.6); /* Reduced overlay opacity from 0.7 to 0.6 */
-        z-index: 2;
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(13, 10, 26, 0.6);
+      /* Reduced overlay opacity from 0.7 to 0.6 */
+      z-index: 2;
     }
-    
+
     .hero::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 150px;
-        background: linear-gradient(to top, var(--bg-dark) 20%, transparent);
-        z-index: 3;
-        pointer-events: none;
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 150px;
+      background: linear-gradient(to top, var(--bg-dark) 20%, transparent);
+      z-index: 3;
+      pointer-events: none;
     }
 
     .hero-content-wrapper {
-        position: relative;
-        z-index: 3;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 3rem;
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3rem;
     }
 
     .hero__content {
@@ -682,96 +697,98 @@
       width: auto;
       padding: 0;
     }
-    
+
     .hero__content .tournament-name {
       font-size: clamp(2.8rem, 7vw, 6.5rem);
       margin-bottom: 1rem;
       font-weight: 800;
       letter-spacing: -2px;
     }
-    
+
     .hero__content .prize-pool {
-        font-size: clamp(1.1rem, 2.5vw, 1.6rem);
-        margin-bottom: 2.5rem;
-        opacity: 0.9;
-        line-height: 1.7;
-        color: var(--text-secondary);
-        max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      margin-bottom: 2.5rem;
+      opacity: 0.9;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .hero-buttons {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
     }
-    
+
     /* Primary Button */
     .btn-primary {
-        padding: 1.1rem 2.8rem;
-        border-radius: 6px;
-        font-size: 1.2rem;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-block;
-        background: var(--primary-color);
-        color: var(--bg-dark); /* Changed text color for contrast */
+      padding: 1.1rem 2.8rem;
+      border-radius: 6px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      background: var(--primary-color);
+      color: var(--bg-dark);
+      /* Changed text color for contrast */
     }
 
     .btn-primary:hover {
-        opacity: 0.8;
-        filter: brightness(0.9);
+      opacity: 0.8;
+      filter: brightness(0.9);
     }
 
     .hero-stats {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
     .stat-card {
-        background: rgba(13, 10, 26, 0.5); /* Semi-transparent background */
-        backdrop-filter: blur(5px);
-        border-radius: 50px;
-        padding: 0.75rem 1.5rem;
-        text-align: center;
-        border: 1px solid var(--border-color);
-        transition: all 0.3s ease;
+      background: rgba(13, 10, 26, 0.5);
+      /* Semi-transparent background */
+      backdrop-filter: blur(5px);
+      border-radius: 50px;
+      padding: 0.75rem 1.5rem;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
     }
-    
+
     .stat-card:hover {
-        opacity: 0.8;
-        filter: brightness(0.9);
+      opacity: 0.8;
+      filter: brightness(0.9);
     }
 
     .stat-card .label {
-        font-size: 0.8rem;
-        color: var(--text-secondary);
-        text-transform: uppercase;
-        letter-spacing: 1px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .stat-card .value {
-        font-size: 1.2rem;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: center;
     }
-    
+
     /* =========================
        Features Section
        ========================= */
     .features-section {
-        padding: 8rem 2rem;
+      padding: 8rem 2rem;
     }
-    
+
     .features-grid {
       display: flex;
       justify-content: center;
@@ -780,7 +797,7 @@
       max-width: 1100px;
       margin: 0 auto;
     }
-    
+
     .feature-item {
       text-align: center;
       max-width: 300px;
@@ -789,29 +806,29 @@
       align-items: center;
       gap: 1rem;
     }
-    
+
     .feature-item img {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin-bottom: 1rem;
-        border: 2px solid var(--border-color);
-        transition: all 0.3s ease;
-        filter: drop-shadow(0 0 15px rgba(10, 250, 217, 0.25));
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      border: 2px solid var(--border-color);
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 0 15px rgba(10, 250, 217, 0.25));
     }
 
     .feature-item:hover img {
-        opacity: 0.8;
-        filter: brightness(0.9);
+      opacity: 0.8;
+      filter: brightness(0.9);
     }
-    
+
     .feature-item h3 {
       font-weight: 700;
       font-size: 1.2rem;
       margin-bottom: 0.25rem;
     }
-    
+
     .feature-item p {
       font-size: 0.9rem;
       color: var(--text-secondary);
@@ -822,292 +839,317 @@
        Games Section
        ========================= */
     .games-section {
-        padding: 5rem 2rem;
-        text-align: center;
+      padding: 5rem 2rem;
+      text-align: center;
     }
 
     .games-header {
-        margin-bottom: 4rem;
+      margin-bottom: 4rem;
     }
 
     .games-title {
-        font-size: clamp(2.2rem, 5vw, 3.5rem);
-        margin-bottom: 1rem;
-        font-weight: 800;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      margin-bottom: 1rem;
+      font-weight: 800;
     }
 
     .games-subtitle {
-        font-size: clamp(1.1rem, 2.5vw, 1.6rem);
-        color: var(--text-secondary);
-        max-width: 600px;
-        margin: 0 auto;
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
     }
 
     .games-carousel-wrapper {
-        position: relative;
-        max-width: 1400px; /* Increased width */
-        margin: 0 auto;
+      position: relative;
+      max-width: 1400px;
+      /* Increased width */
+      margin: 0 auto;
     }
 
     .games-carousel {
-        overflow: hidden;
+      overflow: hidden;
     }
 
     .games-track {
-        display: flex;
-        transition: transform 0.5s ease-in-out;
+      display: flex;
+      transition: transform 0.5s ease-in-out;
     }
-    
+
     .game-card {
-        flex: 0 0 50%;
-        max-width: 50%;
-        padding: 0 0.75rem;
-        height: 550px; 
+      flex: 0 0 50%;
+      max-width: 50%;
+      padding: 0 0.75rem;
+      height: 550px;
     }
 
     .game-card img {
-        width: 100%;
-        height: 100%; 
-        border-radius: 12px;
-        object-fit: contain; /* Changed to contain to show the full image */
-        object-position: center bottom; 
-        transition: transform 0.3s ease;
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      object-fit: contain;
+      /* Changed to contain to show the full image */
+      object-position: center bottom;
+      transition: transform 0.3s ease;
     }
-    
+
     .game-card:hover img {
-        opacity: 0.8;
-        filter: brightness(0.9);
+      opacity: 0.8;
+      filter: brightness(0.9);
     }
-    
+
     .carousel-nav-btn {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background: rgba(240, 240, 240, 0.1);
-        border: 1px solid var(--border-color);
-        color: var(--text-primary);
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        cursor: pointer;
-        z-index: 10;
-        transition: all 0.3s ease;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(240, 240, 240, 0.1);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.3s ease;
     }
-    
+
     .carousel-nav-btn:hover {
-        opacity: 0.8;
-        filter: brightness(0.9);
+      opacity: 0.8;
+      filter: brightness(0.9);
     }
-    
+
     .prev-btn {
-        left: -20px;
+      left: -20px;
     }
-    
+
     .next-btn {
-        right: -20px;
+      right: -20px;
     }
-    
+
     .carousel-progress-bar {
-        width: 200px;
-        height: 4px;
-        background: rgba(240, 240, 240, 0.1);
-        margin: 2rem auto 0;
-        border-radius: 2px;
+      width: 200px;
+      height: 4px;
+      background: rgba(240, 240, 240, 0.1);
+      margin: 2rem auto 0;
+      border-radius: 2px;
     }
-    
+
     #carousel-progress {
-        width: 0;
-        height: 100%;
-        background: var(--primary-color);
-        border-radius: 2px;
-        transition: width 0.5s ease-in-out;
+      width: 0;
+      height: 100%;
+      background: var(--primary-color);
+      border-radius: 2px;
+      transition: width 0.5s ease-in-out;
     }
-    
-    
+
+
     /* =========================
        News & Tournaments Section
        ========================= */
-    .news-section, #tournaments {
-        padding: 5rem 2rem;
-        text-align: center;
+    .news-section,
+    #tournaments {
+      padding: 5rem 2rem;
+      text-align: center;
     }
 
-    .news-title, #tournaments-heading {
-        font-size: clamp(2.2rem, 5vw, 3.5rem);
-        margin-bottom: 2rem;
-        font-weight: 800;
+    .news-title,
+    #tournaments-heading {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      margin-bottom: 2rem;
+      font-weight: 800;
     }
 
     /* Tournament Action Buttons */
     .tournament-actions {
-        display: flex;
-        justify-content: center;
-        gap: 1.5rem;
-        margin-bottom: 4rem;
-        flex-wrap: wrap;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+      flex-wrap: wrap;
     }
 
     .tournament-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 1rem 2rem;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
     }
 
     .btn-primary {
-        background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
-        color: #fff;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
+      color: #fff;
     }
 
     .btn-primary:hover {
-        opacity: 0.8;
-        filter: brightness(0.9);
+      opacity: 0.8;
+      filter: brightness(0.9);
     }
 
     .btn-secondary {
-        background: transparent;
-        color: var(--text-primary);
-        border-color: var(--border-color);
+      background: transparent;
+      color: var(--text-primary);
+      border-color: var(--border-color);
     }
 
     .btn-secondary:hover {
-        opacity: 0.8;
-        filter: brightness(0.9);
+      opacity: 0.8;
+      filter: brightness(0.9);
     }
-    
-    .news-grid, .tournaments-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        max-width: 1200px;
-        margin: 0 auto;
-        text-align: left;
+
+    .news-grid,
+    .tournaments-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: left;
     }
-    
-    .news-card, .tournament-card {
-        background: var(--panel);
-        border-radius: 12px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        border: 1px solid var(--border-color);
-        text-decoration: none;
-        color: var(--text-primary);
-        display: flex;
-        flex-direction: column;
+
+    .news-card,
+    .tournament-card {
+      background: var(--panel);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: 1px solid var(--border-color);
+      text-decoration: none;
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
     }
-    
-    .news-card:hover, .tournament-card:hover {
-        opacity: 0.8;
-        filter: brightness(0.9);
+
+    .news-card:hover,
+    .tournament-card:hover {
+      opacity: 0.8;
+      filter: brightness(0.9);
     }
-    
-    .news-card img, .tournament-card img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
+
+    .news-card img,
+    .tournament-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
     }
-    
-    .news-content, .tournament-content {
-        padding: 1.5rem;
-        flex-grow: 1; /* Make content grow to fill space */
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between; /* Push footer to bottom */
+
+    .news-content,
+    .tournament-content {
+      padding: 1.5rem;
+      flex-grow: 1;
+      /* Make content grow to fill space */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      /* Push footer to bottom */
     }
-    
+
     .news-meta {
-        color: var(--text-secondary);
-        font-size: 0.8rem;
-        margin-bottom: 0.5rem;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      margin-bottom: 0.5rem;
     }
-    
+
     .news-meta .league-name {
-        color: var(--primary-color);
-        font-weight: 600;
+      color: var(--primary-color);
+      font-weight: 600;
     }
-    
-    .news-card h3, .tournament-card h3 {
-        font-size: 1.2rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-        line-height: 1.4;
+
+    .news-card h3,
+    .tournament-card h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      line-height: 1.4;
     }
-    
-    .news-card p, .tournament-card p {
-        color: var(--text-secondary);
-        font-size: 0.9rem;
+
+    .news-card p,
+    .tournament-card p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
     }
 
     /* =========================
        FAQ Section
        ========================= */
     .faq-section {
-        padding: 5rem 2rem;
-        text-align: center;
+      padding: 5rem 2rem;
+      text-align: center;
     }
+
     .faq-title {
-        font-size: clamp(2.2rem, 5vw, 3.5rem);
-        margin-bottom: 4rem;
-        font-weight: 800;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      margin-bottom: 4rem;
+      font-weight: 800;
     }
+
     .faq-grid {
-        max-width: 800px;
-        margin: 0 auto;
-        text-align: left;
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: left;
     }
+
     .faq-item {
-        background: var(--panel);
-        border-radius: 8px;
-        margin-bottom: 1rem;
-        border: 1px solid var(--border-color);
-        transition: border-color 0.3s ease, transform 0.3s ease;
+      background: var(--panel);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      border: 1px solid var(--border-color);
+      transition: border-color 0.3s ease, transform 0.3s ease;
     }
+
     .faq-item:hover {
-        opacity: 0.8;
-        filter: brightness(0.9);
+      opacity: 0.8;
+      filter: brightness(0.9);
     }
+
     .faq-question {
-        width: 100%;
-        background: none;
-        border: none;
-        padding: 1.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        color: var(--text-primary);
-        font-size: 1.1rem;
-        font-weight: 600;
-        transition: color 0.3s ease;
+      width: 100%;
+      background: none;
+      border: none;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: color 0.3s ease;
     }
+
     .faq-question:hover {
-        color: var(--primary-color);
+      color: var(--primary-color);
     }
+
     .faq-question i {
-        transition: transform 0.3s ease;
-        color: var(--primary-color);
+      transition: transform 0.3s ease;
+      color: var(--primary-color);
     }
+
     .faq-answer {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
     }
+
     .faq-answer p {
-        color: var(--text-secondary);
-        padding: 0 1.5rem 1.5rem 1.5rem;
-        margin: 0;
+      color: var(--text-secondary);
+      padding: 0 1.5rem 1.5rem 1.5rem;
+      margin: 0;
     }
+
     .faq-item.active .faq-answer {
-        max-height: 200px; /* Adjust as needed */
+      max-height: 200px;
+      /* Adjust as needed */
     }
+
     .faq-item.active .faq-question i {
-        transform: rotate(45deg);
+      transform: rotate(45deg);
     }
 
     /* =========================
@@ -1128,7 +1170,7 @@
       gap: 2.5rem;
       text-align: left;
     }
-    
+
     .footer-column h4 {
       color: var(--text-primary);
       margin-bottom: 1.5rem;
@@ -1136,7 +1178,8 @@
       font-weight: 700;
     }
 
-    .footer-column ul a, .footer-column p {
+    .footer-column ul a,
+    .footer-column p {
       color: var(--text-secondary);
       text-decoration: none;
       transition: all 0.3s ease;
@@ -1144,14 +1187,14 @@
       margin-bottom: 0.75rem;
       font-size: 1rem;
     }
-    
+
     .footer-column ul a:hover {
-        color: var(--primary-color);
+      color: var(--primary-color);
     }
-    
+
     .footer-brand .brand {
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
     }
 
     .footer-brand p {
@@ -1187,57 +1230,61 @@
        Responsive
        ========================= */
     @media (min-width: 768px) {
-        .game-card {
-            flex-basis: 33.33%;
-            max-width: 33.33%;
-        }
+      .game-card {
+        flex-basis: 33.33%;
+        max-width: 33.33%;
+      }
     }
-    
+
     @media (min-width: 1024px) {
-        .game-card {
-            flex-basis: 25%;
-            max-width: 25%;
-        }
+      .game-card {
+        flex-basis: 25%;
+        max-width: 25%;
+      }
     }
-    
+
     @media (min-width: 1280px) {
-        .game-card {
-            flex-basis: 20%;
-            max-width: 20%;
-        }
+      .game-card {
+        flex-basis: 20%;
+        max-width: 20%;
+      }
     }
-    
+
     @media (min-width: 1920px) {
-        .tournaments-grid {
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Increased min card width */
-        }
-        
-        .feature-item img {
-            width: 100px;
-            height: 100px;
-        }
+      .tournaments-grid {
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        /* Increased min card width */
+      }
 
-        .feature-item h3 {
-            font-size: 1.5rem;
-        }
+      .feature-item img {
+        width: 100px;
+        height: 100px;
+      }
 
-        .feature-item p {
-            font-size: 1.1rem;
-        }
+      .feature-item h3 {
+        font-size: 1.5rem;
+      }
+
+      .feature-item p {
+        font-size: 1.1rem;
+      }
     }
+
     /* in index.html, inside <style> */
 
     .header-container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
     }
+
     @media (max-width:920px) {
-      
+
       .header-container {
         justify-content: space-between;
-      }  
+      }
+
       .features-grid {
         flex-direction: column;
         align-items: center;
@@ -1246,301 +1293,320 @@
     }
 
     @media (max-width: 768px) {
-        .hero h1, .hero__content .tournament-name {
-            font-size: 2.5rem;
-        }
-        .hero-buttons {
-            flex-direction: column;
-            align-items: center;
-        }
-        .tournaments-grid {
-            grid-template-columns: 1fr;
-        }
+
+      .hero h1,
+      .hero__content .tournament-name {
+        font-size: 2.5rem;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .tournaments-grid {
+        grid-template-columns: 1fr;
+      }
     }
-    
+
     /* =========================
        Animations & Loader
        ========================= */
     .fade-in-element {
-        opacity: 0;
-        transform: translateY(20px);
-        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    }
-    .fade-in-element.is-visible {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    
-    #loader-wrapper {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: var(--bg-dark);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        transition: opacity 0.5s ease;
-    }
-    #loader-wrapper.hidden {
-        opacity: 0;
-        pointer-events: none;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
     }
 
-    .site-header, main, .site-footer {
-        opacity: 0;
-        transition: opacity 0.6s ease;
+    .fade-in-element.is-visible {
+      opacity: 1;
+      transform: translateY(0);
     }
+
+    #loader-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-dark);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    #loader-wrapper.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .site-header,
+    main,
+    .site-footer {
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
     body.loaded .site-header,
     body.loaded main,
     body.loaded .site-footer {
-        opacity: 1;
+      opacity: 1;
     }
+
     /* Find this existing rule and add 'position: relative;' */
-    .news-card, .tournament-card {
-        background: var(--panel);
-        border-radius: 12px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        border: 1px solid var(--border-color);
-        text-decoration: none;
-        color: var(--text-primary);
-        display: flex;
-        flex-direction: column;
-        position: relative; /* <-- ADD THIS LINE */
+    .news-card,
+    .tournament-card {
+      background: var(--panel);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: 1px solid var(--border-color);
+      text-decoration: none;
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      /* <-- ADD THIS LINE */
     }
 
     /* Add this entire new block of CSS for the status badges */
     .tournament-status-badge {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        padding: 0.3rem 0.6rem;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        z-index: 2;
-        backdrop-filter: blur(4px);
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      z-index: 2;
+      backdrop-filter: blur(4px);
     }
-    
+
     .status-registration-open {
-        background: rgba(34, 197, 94, 0.5); /* Green */
-        color: #f0f0f0;
+      background: rgba(34, 197, 94, 0.5);
+      /* Green */
+      color: #f0f0f0;
     }
-    
+
     .status-ongoing {
-        background: rgba(59, 130, 246, 0.5); /* Blue */
-        color: #f0f0f0;
+      background: rgba(59, 130, 246, 0.5);
+      /* Blue */
+      color: #f0f0f0;
     }
-    
+
     .status-ended {
-        background: rgba(239, 68, 68, 0.5); /* Red */
-        color: #f0f0f0;
+      background: rgba(239, 68, 68, 0.5);
+      /* Red */
+      color: #f0f0f0;
     }
-    
+
     .status-upcoming,
     .status-registration-closed {
-        background: rgba(107, 114, 128, 0.5); /* Gray */
-        color: #f0f0f0;
+      background: rgba(107, 114, 128, 0.5);
+      /* Gray */
+      color: #f0f0f0;
     }
 
     /* Custom Scrollbar Design */
     .scrollbar {
-        margin-left: 30px;
-        float: left;
-        height: 300px;
-        width: 65px;
-        background: #F5F5F5;
-        overflow-y: scroll;
-        margin-bottom: 25px;
+      margin-left: 30px;
+      float: left;
+      height: 300px;
+      width: 65px;
+      background: #F5F5F5;
+      overflow-y: scroll;
+      margin-bottom: 25px;
     }
 
     .force-overflow {
-        min-height: 450px;
+      min-height: 450px;
     }
 
     /* Custom Scrollbar Styles */
     ::-webkit-scrollbar-track {
-        border: 1px solid var(--border-color);
-        background-color: var(--bg-dark);
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-dark);
     }
 
     ::-webkit-scrollbar {
-        width: 10px;
-        background-color: var(--bg-dark);
+      width: 10px;
+      background-color: var(--bg-dark);
     }
 
     ::-webkit-scrollbar-thumb {
-        background-color: var(--panel);
-        border-radius: 5px;
+      background-color: var(--panel);
+      border-radius: 5px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-        background-color: var(--accent-secondary);
+      background-color: var(--accent-secondary);
     }
 
     /* Firefox scrollbar */
     * {
-        scrollbar-width: thin;
-        scrollbar-color: var(--panel) var(--bg-dark);
+      scrollbar-width: thin;
+      scrollbar-color: var(--panel) var(--bg-dark);
     }
-
   </style>
 </head>
 
 <body>
 
   <div id="loader-wrapper">
-    <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+    <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie"
+      style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
   </div>
 
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header" role="banner">
-  <div class="header-container">
+    <div class="header-container">
       <a href="index.html" class="brand" aria-hidden="false">GamingNexus</a>
       <div class="header-right">
-          <nav class="primary" role="navigation" aria-label="Primary">
-              <div class="nav-links" role="menubar">
-                  <a href="tournaments.html" role="menuitem">Tournaments</a>
-                  <a href="#why-us" role="menuitem">Why Us</a>
-                  <a href="#faq" role="menuitem">FAQ</a>
+        <nav class="primary" role="navigation" aria-label="Primary">
+          <div class="nav-links" role="menubar">
+            <a href="tournaments.html" role="menuitem">Tournaments</a>
+            <a href="#why-us" role="menuitem">Why Us</a>
+            <a href="#faq" role="menuitem">FAQ</a>
+          </div>
+        </nav>
+        <div class="nav-actions">
+          <div id="guest-menu">
+            <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
+          </div>
+          <div id="user-menu" style="display: none;">
+            <div class="profile-dropdown">
+              <div class="profile-icon" id="profile-icon">
+                <i class="fas fa-user-circle"></i>
               </div>
-          </nav>
-          <div class="nav-actions">
-            <div id="guest-menu">
-              <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
-            </div>
-            <div id="user-menu" style="display: none;">
-              <div class="profile-dropdown">
-                <div class="profile-icon" id="profile-icon">
-                  <i class="fas fa-user-circle"></i>
+              <div class="profile-modal" id="profile-modal">
+                <div class="profile-header">
+                  <div class="profile-photo"><i class="fas fa-user"></i></div>
+                  <div class="profile-info">
+                    <div class="profile-username" id="modal-username">User</div>
+                  </div>
                 </div>
-                <div class="profile-modal" id="profile-modal">
-                  <div class="profile-header">
-                    <div class="profile-photo"><i class="fas fa-user"></i></div>
-                    <div class="profile-info">
-                      <div class="profile-username" id="modal-username">User</div>
-                    </div>
-                  </div>
-                  <div class="profile-actions">
-                    <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
-                      <i class="fas fa-user"></i>
-                      <span>My Account</span>
-                    </a>
-                    <button class="profile-action logout-action" onclick="logout()">
-                      <i class="fas fa-sign-out-alt"></i>
-                      <span>Logout</span>
-                    </button>
-                  </div>
+                <div class="profile-actions">
+                  <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
+                    <i class="fas fa-user"></i>
+                    <span>My Account</span>
+                  </a>
+                  <button class="profile-action logout-action" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-          <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
-              <i class="fas fa-bars"></i>
-          </button>
-      </div>   
-  </div>
-</header>
+        </div>
+        <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
 
-<div id="mobile-nav" class="mobile-nav" hidden>
+  <div id="mobile-nav" class="mobile-nav" hidden>
   </div>
 
   <main id="main">
     <!-- HERO -->
     <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-video-bg">
-            <video autoplay loop muted playsinline poster="">
-                <source src="/35506-405897842_small.webm" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+      <div class="hero-video-bg">
+        <video autoplay loop muted playsinline poster="">
+          <source src="/35506-405897842_small.webm" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div class="hero-content-wrapper">
+        <div class="hero__content" role="region" aria-label="Hero">
+          <h1 id="hero-title" class="tournament-name">Challenge your game!</h1>
+          <div id="prize-pool" class="prize-pool">
+            Level up your game, win real prizes, and be part of a community of over 34 million serious gamers.
+          </div>
+
+          <div class="hero-buttons">
+            <a href="#tournaments" class="btn-primary" id="cta-learn-more">Start Playing Now</a>
+          </div>
         </div>
-        <div class="hero-content-wrapper">
-            <div class="hero__content" role="region" aria-label="Hero">
-                <h1 id="hero-title" class="tournament-name">Challenge your game!</h1>
-                <div id="prize-pool" class="prize-pool">
-                Level up your game, win real prizes, and be part of a community of over 34 million serious gamers.
-                </div>
-                
-                <div class="hero-buttons">
-                    <a href="#tournaments" class="btn-primary" id="cta-learn-more">Start Playing Now</a>
-                </div>
+
+        <div class="hero-stats">
+          <div class="stat-card">
+            <div class="label">Players Online</div>
+            <div class="value">
+              <i class="fas fa-user"></i>
+              <span id="players-online">50,000 +</span>
             </div>
-            
-            <div class="hero-stats">
-                <div class="stat-card">
-                    <div class="label">Players Online</div>
-                    <div class="value">
-                        <i class="fas fa-user"></i>
-                        <span id="players-online">50,000 +</span>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">Live Matches</div>
-                    <div class="value">
-                        <i class="fas fa-crosshairs"></i>
-                        <span id="live-matches">100 +</span>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">Rewards to Date</div>
-                    <div class="value">
-                        <i class="fas fa-trophy"></i>
-                        <span id="rewards-to-date">₹1,00,000 +</span>
-                    </div>
-                </div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Live Matches</div>
+            <div class="value">
+              <i class="fas fa-crosshairs"></i>
+              <span id="live-matches">100 +</span>
             </div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Rewards to Date</div>
+            <div class="value">
+              <i class="fas fa-trophy"></i>
+              <span id="rewards-to-date">₹1,00,000 +</span>
+            </div>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- FEATURES -->
     <section class="section features-section fade-in-element">
-        <div class="features-grid">
-            <div class="feature-item" role="listitem">
-              <img src="/assets/gameIcon.png" alt="Play Icon">
-              <h3>Play</h3>
-              <p>Compete at your level in the best games. Join ranked matches, climb the leaderboards, and test your skills against top players.</p>
-            </div>
-            <div class="feature-item" role="listitem">
-              <img src="/assets/videoIcon.png" alt="Watch Icon">
-              <h3>Watch</h3>
-              <p>Experience the action live. Follow top matches, learn from the best, and stay connected to the competitive scene.</p>
-            </div>
-            <div class="feature-item" role="listitem">
-              <img src="/assets/trophyIcon.png" alt="Win Icon">
-              <h3>Win</h3>
-              <p>Earn rewards for your grind. Complete missions, climb the ranks, and get prizes for your performance.</p>
-            </div>
+      <div class="features-grid">
+        <div class="feature-item" role="listitem">
+          <img src="/assets/gameIcon.png" alt="Play Icon">
+          <h3>Play</h3>
+          <p>Compete at your level in the best games. Join ranked matches, climb the leaderboards, and test your skills
+            against top players.</p>
         </div>
+        <div class="feature-item" role="listitem">
+          <img src="/assets/videoIcon.png" alt="Watch Icon">
+          <h3>Watch</h3>
+          <p>Experience the action live. Follow top matches, learn from the best, and stay connected to the competitive
+            scene.</p>
+        </div>
+        <div class="feature-item" role="listitem">
+          <img src="/assets/trophyIcon.png" alt="Win Icon">
+          <h3>Win</h3>
+          <p>Earn rewards for your grind. Complete missions, climb the ranks, and get prizes for your performance.</p>
+        </div>
+      </div>
     </section>
-    
+
     <!-- GAMES -->
     <section class="section games-section fade-in-element">
-        <div class="games-header">
-            <h2 class="games-title">Explore your favourite games on EArena</h2>
-            <p class="games-subtitle">From CS2 and Overwatch 2 to other competitive titles, EArena brings players the best gaming experience across supported games.</p>
+      <div class="games-header">
+        <h2 class="games-title">Explore your favourite games on EArena</h2>
+        <p class="games-subtitle">From CS2 and Overwatch 2 to other competitive titles, EArena brings players the best
+          gaming experience across supported games.</p>
+      </div>
+      <div class="games-carousel-wrapper">
+        <div class="games-carousel">
+          <div class="games-track">
+            <div class="game-card"><img src="/assets/dota2.webp" alt="Dota 2"></div>
+            <div class="game-card"><img src="/assets/leagueoflegends.webp" alt="League of Legends"></div>
+            <div class="game-card"><img src="/assets/brawlstar.webp" alt="Brawl Stars"></div>
+            <div class="game-card"><img src="/assets/bgmi.webp" alt="PUBG Mobile"></div>
+            <div class="game-card"><img src="/assets/callofduty.webp" alt="Call of Duty"></div>
+            <div class="game-card"><img src="/assets/valorant.webp" alt="Valorant"></div>
+          </div>
         </div>
-        <div class="games-carousel-wrapper">
-            <div class="games-carousel">
-                <div class="games-track">
-                    <div class="game-card"><img src="/assets/dota2.webp" alt="Dota 2"></div>
-                    <div class="game-card"><img src="/assets/leagueoflegends.webp" alt="League of Legends"></div>
-                    <div class="game-card"><img src="/assets/brawlstar.webp" alt="Brawl Stars"></div>
-                    <div class="game-card"><img src="/assets/bgmi.webp" alt="PUBG Mobile"></div>
-                    <div class="game-card"><img src="/assets/callofduty.webp" alt="Call of Duty"></div>
-                    <div class="game-card"><img src="/assets/valorant.webp" alt="Valorant"></div>
-                </div>
-            </div>
-            <button class="carousel-nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
-            <button class="carousel-nav-btn next-btn"><i class="fas fa-chevron-right"></i></button>
-        </div>
-        <div class="carousel-progress-bar">
-            <div id="carousel-progress"></div>
-        </div>
+        <button class="carousel-nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+        <button class="carousel-nav-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+      </div>
+      <div class="carousel-progress-bar">
+        <div id="carousel-progress"></div>
+      </div>
     </section>
 
     <!-- Tournaments -->
@@ -1548,7 +1614,7 @@
       <h2 id="tournaments-heading">
         Tournaments
       </h2>
-      
+
       <!-- Tournament Action Buttons -->
       <div class="tournament-actions">
         <a href="tournaments.html" class="btn btn-secondary tournament-btn">
@@ -1560,90 +1626,95 @@
           Host Your Tournament
         </a>
       </div>
-      
+
       <div id="tournaments-grid" class="tournaments-grid">
         <!-- Tournament cards will be injected here by JavaScript -->
       </div>
     </section>
-    
+
     <!-- NEWS -->
     <section class="section news-section fade-in-element">
-        <h2 class="news-title">News</h2>
-        <div class="news-grid">
-            <a href="#" class="news-card">
-                <img src="https://placehold.co/600x400/161329/F0F0F0?text=News+1" alt="News 1">
-                <div class="news-content">
-                    <div>
-                        <p class="news-meta"><span class="league-name">ESEA LEAGUE</span> - 11 SEPT 2024</p>
-                        <h3>ZywOo's Origin Story: Unearthing the Stats from His Early Days</h3>
-                        <p>From the moment he set foot in organised Counter-Strike, ZywOo was a force to be reckoned with.</p>
-                    </div>
-                </div>
-            </a>
-            <a href="#" class="news-card">
-                <img src="https://placehold.co/600x400/161329/F0F0F0?text=News+2" alt="News 2">
-                <div class="news-content">
-                     <div>
-                        <p class="news-meta"><span class="league-name">ESEA LEAGUE</span> - 9 SEPT 2024</p>
-                        <h3>Faire Open divisions, Cast at ESL Pro League, Clear Your Weekend!</h3>
-                        <p>Check out our latest updates for Season 55!</p>
-                    </div>
-                </div>
-            </a>
-            <a href="#" class="news-card">
-                <img src="https://placehold.co/600x400/161329/F0F0F0?text=News+3" alt="News 3">
-                <div class="news-content">
-                    <div>
-                        <p class="news-meta"><span class="league-name">ESEA LEAGUE</span> - 20 AUG 2024</p>
-                        <h3>Does FACEIT matchmaking prepare you for official matches?</h3>
-                        <p>We analyzed the average ELO at every level of the Counter-Strike ecosystem!</p>
-                    </div>
-                </div>
-            </a>
-        </div>
+      <h2 class="news-title">News</h2>
+      <div class="news-grid">
+        <a href="#" class="news-card">
+          <img src="https://placehold.co/600x400/161329/F0F0F0?text=News+1" alt="News 1">
+          <div class="news-content">
+            <div>
+              <p class="news-meta"><span class="league-name">ESEA LEAGUE</span> - 11 SEPT 2024</p>
+              <h3>ZywOo's Origin Story: Unearthing the Stats from His Early Days</h3>
+              <p>From the moment he set foot in organised Counter-Strike, ZywOo was a force to be reckoned with.</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="news-card">
+          <img src="https://placehold.co/600x400/161329/F0F0F0?text=News+2" alt="News 2">
+          <div class="news-content">
+            <div>
+              <p class="news-meta"><span class="league-name">ESEA LEAGUE</span> - 9 SEPT 2024</p>
+              <h3>Faire Open divisions, Cast at ESL Pro League, Clear Your Weekend!</h3>
+              <p>Check out our latest updates for Season 55!</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="news-card">
+          <img src="https://placehold.co/600x400/161329/F0F0F0?text=News+3" alt="News 3">
+          <div class="news-content">
+            <div>
+              <p class="news-meta"><span class="league-name">ESEA LEAGUE</span> - 20 AUG 2024</p>
+              <h3>Does FACEIT matchmaking prepare you for official matches?</h3>
+              <p>We analyzed the average ELO at every level of the Counter-Strike ecosystem!</p>
+            </div>
+          </div>
+        </a>
+      </div>
     </section>
 
     <!-- FAQ -->
     <section id="faq" class="section faq-section fade-in-element">
-        <h2 class="faq-title">Frequently Asked Questions</h2>
-        <div class="faq-grid">
-            <div class="faq-item">
-                <button class="faq-question">
-                    <span>What do I need to get started?</span>
-                    <i class="fas fa-plus"></i>
-                </button>
-                <div class="faq-answer">
-                    <p>All you need is an account and the game you want to compete in! Check the specific tournament rules for any additional requirements, but generally, it's that simple to start your competitive journey.</p>
-                </div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question">
-                    <span>How are prizes awarded?</span>
-                    <i class="fas fa-plus"></i>
-                </button>
-                <div class="faq-answer">
-                    <p>Prizes are typically awarded within 7-14 business days after a tournament concludes and results are verified. Winnings are sent via the payment method you have on file in your user account.</p>
-                </div>
-            </div>
-            <div class="faq-item">
-                <button class="faq-question">
-                    <span>What is the fair play policy?</span>
-                    <i class="fas fa-plus"></i>
-                </button>
-                <div class="faq-answer">
-                    <p>We have a zero-tolerance policy for cheating, hacking, or any form of unsportsmanlike conduct. All players must adhere to our code of conduct, and we use advanced anti-cheat software to ensure a fair playing field.</p>
-                </div>
-            </div>
-             <div class="faq-item">
-                <button class="faq-question">
-                    <span>Can I stream my matches?</span>
-                    <i class="fas fa-plus"></i>
-                </button>
-                <div class="faq-answer">
-                    <p>Absolutely! We encourage players to stream their matches. Just be sure to check the specific tournament rules, as some events may have restrictions or require a stream delay.</p>
-                </div>
-            </div>
+      <h2 class="faq-title">Frequently Asked Questions</h2>
+      <div class="faq-grid">
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What do I need to get started?</span>
+            <i class="fas fa-plus"></i>
+          </button>
+          <div class="faq-answer">
+            <p>All you need is an account and the game you want to compete in! Check the specific tournament rules for
+              any additional requirements, but generally, it's that simple to start your competitive journey.</p>
+          </div>
         </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How are prizes awarded?</span>
+            <i class="fas fa-plus"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Prizes are typically awarded within 7-14 business days after a tournament concludes and results are
+              verified. Winnings are sent via the payment method you have on file in your user account.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What is the fair play policy?</span>
+            <i class="fas fa-plus"></i>
+          </button>
+          <div class="faq-answer">
+            <p>We have a zero-tolerance policy for cheating, hacking, or any form of unsportsmanlike conduct. All
+              players must adhere to our code of conduct, and we use advanced anti-cheat software to ensure a fair
+              playing field.</p>
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Can I stream my matches?</span>
+            <i class="fas fa-plus"></i>
+          </button>
+          <div class="faq-answer">
+            <p>Absolutely! We encourage players to stream their matches. Just be sure to check the specific tournament
+              rules, as some events may have restrictions or require a stream delay.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
   </main>
@@ -1654,12 +1725,12 @@
         <div class="footer-column footer-brand">
           <a href="index.html" class="brand">GamingNexus</a>
           <p>The ultimate destination for competitive gaming.</p>
-           <div class="social-links">
-              <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-              <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
-              <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-              <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
-            </div>
+          <div class="social-links">
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+          </div>
         </div>
         <div class="footer-column">
           <h4>Tournaments</h4>
@@ -1689,7 +1760,7 @@
       <div class="footer-bottom">
         <p>&copy; 2025 GamingNexus. All rights reserved.</p>
       </div>
-    </footer>
+  </footer>
 
   <script>
 
@@ -1703,72 +1774,105 @@
       }
     });
 
-   // API Configuration (Page-specific)
-    const isLocal = window.location.hostname === 'localhost' || 
-                   window.location.hostname === '127.0.0.1' || 
-                   window.location.protocol === 'file:';
-    const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
+    // API Configuration (Production)
+    const API_BASE_URL = 'https://t2-237c.onrender.com';
 
     // API Functions (Page-specific)
     async function fetchTournaments() {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/tournaments`);
-        if (!response.ok) throw new Error('Network response was not ok');
+        console.log('Fetching tournaments from:', `${API_BASE_URL}/api/tournaments`);
+        const response = await fetch(`${API_BASE_URL}/api/tournaments`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const result = await response.json();
+        console.log('Tournaments fetched successfully:', result.data?.length || 0, 'tournaments');
         return result.data || [];
       } catch (error) {
-        console.error('Error fetching tournaments:', error);
-        return [];
+        console.error('Error fetching tournaments:', error.message);
+        throw error; // Re-throw error so page doesn't load without data
       }
     }
 
     async function populateAllSections() {
       try {
-        // Fetch and render tournaments
+        // Fetch and render tournaments - this will throw error if backend is down
         const tournaments = await fetchTournaments();
         populateTournamentsGrid(tournaments);
 
-        // ✅ Only hide loader AFTER tournaments are injected
-        document.getElementById('loader-wrapper').classList.add('hidden');
+        // ✅ Only hide loader AFTER tournaments are successfully loaded
+        const loader = document.getElementById('loader-wrapper');
+        if (loader) {
+          loader.classList.add('hidden');
+        }
         document.body.classList.add('loaded');
 
       } catch (error) {
-        console.error('Error populating content sections:', error);
+        console.error('Backend is not available:', error.message);
 
-        // If API fails, still hide loader so user sees fallback
-        document.getElementById('loader-wrapper').classList.add('hidden');
-        document.body.classList.add('loaded');
+        // Show error message instead of loading the page
+        const loader = document.getElementById('loader-wrapper');
+        if (loader) {
+          loader.innerHTML = `
+            <div style="text-align: center; color: var(--text-primary);">
+              <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ffc107; margin-bottom: 1rem;"></i>
+              <h3>Backend Server Unavailable</h3>
+              <p>Unable to connect to the server. Please try again later.</p>
+              <button onclick="window.location.reload()" style="
+                padding: 0.75rem 1.5rem; 
+                background: var(--primary-color); 
+                color: var(--bg-dark); 
+                border: none; 
+                border-radius: 6px; 
+                font-weight: 600; 
+                cursor: pointer;
+                margin-top: 1rem;
+              ">
+                <i class="fas fa-sync-alt"></i> Retry
+              </button>
+            </div>
+          `;
+        }
+
+        // Don't hide loader or mark as loaded - keep showing the error state
       }
     }
 
 
 
     function populateTournamentsGrid(tournaments) {
-        const grid = document.getElementById('tournaments-grid');
-        if (!grid) return;
-        if (tournaments.length === 0) {
-            grid.innerHTML = '<p style="text-align: center; width: 100%; grid-column: 1 / -1;">No tournaments available at the moment. Check back soon!</p>';
-            return;
-        }
-        grid.innerHTML = tournaments.slice(0, 6).map(tournament => {
-            const rawPoster = tournament.posterImage || tournament.backgroundImage || null;
-            let finalPoster = 'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop';
-           
-            if (rawPoster) {
-                if (rawPoster.startsWith('http')) {
-                    finalPoster = rawPoster;
-                } else {
-                    finalPoster = new URL(rawPoster, API_BASE_URL).href;
-                }
-            }
-            
-            // --- NEW LOGIC TO HANDLE STATUS ---
-            const status = tournament.status || 'upcoming'; // Default to 'upcoming' if status is missing
-            const statusText = status.replace(/_/g, ' ');
-            const statusClass = `status-${status}`;
-            // --- END OF NEW LOGIC ---
+      const grid = document.getElementById('tournaments-grid');
+      if (!grid) return;
+      if (tournaments.length === 0) {
+        grid.innerHTML = '<p style="text-align: center; width: 100%; grid-column: 1 / -1;">No tournaments available at the moment. Check back soon!</p>';
+        return;
+      }
+      grid.innerHTML = tournaments.slice(0, 6).map(tournament => {
+        const rawPoster = tournament.posterImage || tournament.backgroundImage || null;
+        let finalPoster = 'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop';
 
-            return `
+        if (rawPoster) {
+          if (rawPoster.startsWith('http')) {
+            finalPoster = rawPoster;
+          } else {
+            finalPoster = new URL(rawPoster, API_BASE_URL).href;
+          }
+        }
+
+        // --- NEW LOGIC TO HANDLE STATUS ---
+        const status = tournament.status || 'upcoming'; // Default to 'upcoming' if status is missing
+        const statusText = status.replace(/_/g, ' ');
+        const statusClass = `status-${status}`;
+        // --- END OF NEW LOGIC ---
+
+        return `
                 <a href="tournament-details.html?slug=${tournament.slug}" class="tournament-card">
                     <div class="tournament-status-badge ${statusClass}">${statusText}</div>
                     
@@ -1784,7 +1888,7 @@
                     </div>
                 </a>
             `;
-        }).join('');
+      }).join('');
     }
 
     // Smooth scroll for navigation links (Page-specific)
@@ -1808,78 +1912,98 @@
     let currentIndex = 0;
 
     function getVisibleCards() {
-        if (window.innerWidth >= 1280) return 5;
-        if (window.innerWidth >= 1024) return 4;
-        if (window.innerWidth >= 768) return 3;
-        return 2;
+      if (window.innerWidth >= 1280) return 5;
+      if (window.innerWidth >= 1024) return 4;
+      if (window.innerWidth >= 768) return 3;
+      return 2;
     }
 
     function updateCarousel() {
-        if (!track) return; // Guard clause
-        const visibleCards = getVisibleCards();
-        cardWidth = track.clientWidth / visibleCards;
-        track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
-        
-        const totalScrollableItems = cards.length - visibleCards;
-        const progressPercentage = totalScrollableItems > 0 ? (currentIndex / totalScrollableItems) * 100 : 0;
-        progress.style.width = `${progressPercentage}%`;
-        
-        prevBtn.disabled = currentIndex === 0;
-        nextBtn.disabled = currentIndex >= totalScrollableItems;
+      if (!track) return; // Guard clause
+      const visibleCards = getVisibleCards();
+      cardWidth = track.clientWidth / visibleCards;
+      track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+
+      const totalScrollableItems = cards.length - visibleCards;
+      const progressPercentage = totalScrollableItems > 0 ? (currentIndex / totalScrollableItems) * 100 : 0;
+      progress.style.width = `${progressPercentage}%`;
+
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.disabled = currentIndex >= totalScrollableItems;
     }
 
     nextBtn.addEventListener('click', () => {
-        const visibleCards = getVisibleCards();
-        if (currentIndex < cards.length - visibleCards) {
-            currentIndex++;
-            updateCarousel();
-        }
+      const visibleCards = getVisibleCards();
+      if (currentIndex < cards.length - visibleCards) {
+        currentIndex++;
+        updateCarousel();
+      }
     });
 
     prevBtn.addEventListener('click', () => {
-        if (currentIndex > 0) {
-            currentIndex--;
-            updateCarousel();
-        }
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateCarousel();
+      }
     });
-    
+
     window.addEventListener('resize', updateCarousel);
-    
+
     // FAQ Accordion
     const faqItems = document.querySelectorAll('.faq-item');
     faqItems.forEach(item => {
-        const question = item.querySelector('.faq-question');
-        question.addEventListener('click', () => {
-            const currentlyActive = document.querySelector('.faq-item.active');
-            if (currentlyActive && currentlyActive !== item) {
-                currentlyActive.classList.remove('active');
-            }
-            item.classList.toggle('active');
-        });
+      const question = item.querySelector('.faq-question');
+      question.addEventListener('click', () => {
+        const currentlyActive = document.querySelector('.faq-item.active');
+        if (currentlyActive && currentlyActive !== item) {
+          currentlyActive.classList.remove('active');
+        }
+        item.classList.toggle('active');
+      });
     });
-    
+
     // Scroll Animations
     function animateOnScroll() {
-        const elements = document.querySelectorAll('.fade-in-element');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
+      const elements = document.querySelectorAll('.fade-in-element');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
 
-        elements.forEach(el => observer.observe(el));
+      elements.forEach(el => observer.observe(el));
     }
 
     window.addEventListener('load', () => {
       if (navigator.onLine) {
-        populateAllSections(); // loader hides inside here
+        populateAllSections(); // Only loads page if backend responds successfully
       } else {
         console.error('No internet connection detected.');
-        document.getElementById('loader-wrapper').classList.add('hidden');
-        document.body.classList.add('loaded');
+        const loader = document.getElementById('loader-wrapper');
+        if (loader) {
+          loader.innerHTML = `
+            <div style="text-align: center; color: var(--text-primary);">
+              <i class="fas fa-wifi" style="font-size: 3rem; color: #dc3545; margin-bottom: 1rem;"></i>
+              <h3>No Internet Connection</h3>
+              <p>Please check your internet connection and try again.</p>
+              <button onclick="window.location.reload()" style="
+                padding: 0.75rem 1.5rem; 
+                background: var(--primary-color); 
+                color: var(--bg-dark); 
+                border: none; 
+                border-radius: 6px; 
+                font-weight: 600; 
+                cursor: pointer;
+                margin-top: 1rem;
+              ">
+                <i class="fas fa-sync-alt"></i> Retry
+              </button>
+            </div>
+          `;
+        }
       }
 
       animateOnScroll();
@@ -1888,11 +2012,11 @@
 
 
 
-    
+
     // =========================
     // NAVBAR JAVASCRIPT (Embedded)
     // =========================
-    
+
     // --- NAVBAR HELPER FUNCTIONS ---
     function redirectToAuth(tab = 'register') {
       const returnUrl = encodeURIComponent(window.location.href);
@@ -1937,11 +2061,11 @@
       const user = sessionData?.data?.user || sessionData?.user;
 
       const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
-      
+
       // Contextual navigation links based on current page
       let navLinksHTML = '';
       const currentPage = window.location.pathname.split('/').pop();
-      
+
       if (currentPage === 'index.html' || currentPage === '') {
         // Homepage navigation
         navLinksHTML = `
@@ -2009,7 +2133,7 @@
           </div>
         `;
       }
-      
+
       let userSectionHTML = '';
 
       if (user) {
@@ -2064,7 +2188,7 @@
       setTimeout(() => {
         const hostBtn = mobileNavContainer.querySelector('.mobile-host-btn');
         const navLinks = mobileNavContainer.querySelectorAll('.mobile-nav-links a');
-        
+
         if (hostBtn) {
           hostBtn.addEventListener('click', () => {
             // Close mobile nav when host button is clicked
@@ -2093,10 +2217,10 @@
       const mobileNav = document.getElementById('mobile-nav');
 
       if (!hamburger || !mobileNav) {
-          console.error("Navbar elements not found. Make sure the HTML is included.");
-          return;
+        console.error("Navbar elements not found. Make sure the HTML is included.");
+        return;
       }
-      
+
       function closeMobileNav() {
         mobileNav.classList.remove('is-open');
         hamburger.setAttribute('aria-expanded', 'false');
@@ -2120,7 +2244,7 @@
           closeMobileNav();
         }
       });
-      
+
       // Set up the content of the navbars
       checkUserAuthentication();
       setupMobileNav();
@@ -2130,4 +2254,3 @@
 </body>
 
 </html>
-
