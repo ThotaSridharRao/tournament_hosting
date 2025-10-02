@@ -1765,8 +1765,7 @@
             document.getElementById('tournamentStart').value = formatDateForInput(nextWeek);
             document.getElementById('tournamentEnd').value = formatDateForInput(new Date(nextWeek.getTime() + 24 * 60 * 60 * 1000));
             
-            // Calculate initial pricing
-            setTimeout(calculateHostingFee, 100);
+            // Pricing will be calculated when user selects dates
         }
 
         function formatDateForInput(date) {
@@ -1777,7 +1776,24 @@
             const regStart = document.getElementById('registrationStart').value;
             const regEnd = document.getElementById('registrationEnd').value;
             
+            // Show default message if dates are not selected
             if (!regStart || !regEnd) {
+                document.getElementById('pricingInfo').style.display = 'block';
+                document.getElementById('pricingBreakdown').style.display = 'none';
+                return;
+            }
+            
+            // Validate date order
+            const startDate = new Date(regStart);
+            const endDate = new Date(regEnd);
+            
+            if (startDate >= endDate) {
+                document.getElementById('pricingInfo').innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-exclamation-triangle fa-2x mb-3 text-warning"></i>
+                        <p>Registration end date must be after start date</p>
+                    </div>
+                `;
                 document.getElementById('pricingInfo').style.display = 'block';
                 document.getElementById('pricingBreakdown').style.display = 'none';
                 return;
@@ -1787,8 +1803,7 @@
                 const response = await fetch('/api/user-tournaments/calculate-fee', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${currentUser.token}`
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         registrationStart: regStart,
@@ -1801,11 +1816,27 @@
                 if (result.success) {
                     displayPricingBreakdown(result.data);
                 } else {
-                    showAlert('Error calculating fee: ' + result.message, 'danger');
+                    console.error('Fee calculation error:', result.message);
+                    document.getElementById('pricingInfo').innerHTML = `
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-exclamation-triangle fa-2x mb-3 text-warning"></i>
+                            <p>Error calculating fee: ${result.message}</p>
+                        </div>
+                    `;
+                    document.getElementById('pricingInfo').style.display = 'block';
+                    document.getElementById('pricingBreakdown').style.display = 'none';
                 }
             } catch (error) {
                 console.error('Error calculating hosting fee:', error);
-                showAlert('Failed to calculate hosting fee', 'danger');
+                // Don't show alert on page load, just show default message
+                document.getElementById('pricingInfo').innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-info-circle fa-2x mb-3"></i>
+                        <p>Select registration dates to calculate hosting fee</p>
+                    </div>
+                `;
+                document.getElementById('pricingInfo').style.display = 'block';
+                document.getElementById('pricingBreakdown').style.display = 'none';
             }
         }
 
