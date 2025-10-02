@@ -1072,6 +1072,9 @@
 
 
 
+            <!-- Error Container -->
+            <div id="error-container" style="display: none; margin: 1rem 2rem 0 2rem;"></div>
+
             <!-- Tab Content -->
             <div class="tab-content" id="dashboardTabContent">
                 <!-- Overview Tab -->
@@ -1590,6 +1593,270 @@
             }
         }
 
+        function isAuthenticated() {
+            const sessionData = getSessionData();
+            return sessionData && sessionData.token && sessionData.user;
+        }
+
+        function getAuthToken() {
+            const sessionData = getSessionData();
+            return sessionData ? sessionData.token : null;
+        }
+
+        function requireAuthentication() {
+            if (!isAuthenticated()) {
+                logWarning('AUTH_REQUIRED', 'Authentication required - redirecting to login', {
+                    currentUrl: window.location.href,
+                    hasSession: !!getSessionData(),
+                    referrer: document.referrer
+                });
+                const returnUrl = encodeURIComponent(window.location.href);
+                window.location.href = `auth.html?returnUrl=${returnUrl}`;
+                return false;
+            }
+            return true;
+        }
+
+        function handleAuthenticationError() {
+            logWarning('AUTH_ERROR', 'Authentication failed - clearing session and redirecting to login', {
+                currentUrl: window.location.href,
+                hasLocalStorage: !!localStorage.getItem('nexus_session'),
+                hasSessionStorage: !!sessionStorage.getItem('nexus_session')
+            });
+            
+            localStorage.removeItem('nexus_session');
+            sessionStorage.removeItem('nexus_session');
+            const returnUrl = encodeURIComponent(window.location.href);
+            window.location.href = `auth.html?returnUrl=${returnUrl}`;
+        }
+
+        function showLoadingState() {
+            // Show loading indicators for stats
+            const statsElements = document.querySelectorAll('.stats-number');
+            statsElements.forEach(el => {
+                el.innerHTML = '<i class="fas fa-spinner fa-spin text-primary"></i>';
+            });
+            
+            // Hide any previous error messages
+            const errorContainer = document.getElementById('error-container');
+            if (errorContainer) {
+                errorContainer.style.display = 'none';
+            }
+        }
+
+        function hideLoadingState() {
+            // Remove loading indicators
+            const statsElements = document.querySelectorAll('.stats-number');
+            statsElements.forEach(el => {
+                if (el.innerHTML.includes('fa-spinner')) {
+                    el.innerHTML = '0'; // Default value
+                }
+            });
+        }
+
+        function showSuccessMessage(message, autoHide = true) {
+            const errorContainer = document.getElementById('error-container');
+            if (errorContainer) {
+                errorContainer.innerHTML = `
+                    <div class="alert alert-success" role="alert">
+                        <i class="fas fa-check-circle"></i> ${message}
+                    </div>
+                `;
+                errorContainer.style.display = 'block';
+                
+                if (autoHide) {
+                    setTimeout(() => {
+                        errorContainer.style.display = 'none';
+                    }, 5000);
+                }
+            }
+        }
+
+        function showEmptyState(container, title, message, icon = 'fas fa-inbox') {
+            if (container) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-5">
+                        <i class="${icon} fa-3x mb-3"></i>
+                        <h5>${title}</h5>
+                        <p>${message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function showErrorMessage(message) {
+            // Show error message in the dashboard
+            const errorContainer = document.getElementById('error-container');
+            if (errorContainer) {
+                errorContainer.innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i> ${message}
+                    </div>
+                `;
+                errorContainer.style.display = 'block';
+            } else {
+                console.error('Error container not found, message:', message);
+            }
+        }
+
+        // Centralized API error handler
+        async function handleApiResponse(response, context = 'API call') {
+            const responseContext = {
+                status: response.status,
+                statusText: response.statusText,
+                url: response.url,
+                headers: Object.fromEntries(response.headers.entries())
+            };
+            
+            if (response.status === 401) {
+                logWarning('AUTH_FAILURE', `Authentication failed for ${context}`, responseContext);
+                handleAuthenticationError();
+                return null;
+            }
+            
+            if (response.status === 404) {
+                logWarning('API_NOT_FOUND', `${context}: Endpoint not found`, responseContext);
+                throw new Error(`${context} feature is not available`);
+            }
+            
+            if (response.status === 500) {
+                logError('SERVER_ERROR', `${context}: Server error`, responseContext);
+                throw new Error('Server error - please try again later');
+            }
+            
+            if (!response.ok) {
+                logError('HTTP_ERROR', `${context}: HTTP error ${response.status}`, responseContext);
+                throw new Error(`${context} failed`);
+            }
+            
+            try {
+                const result = await response.json();
+                if (!result.success) {
+                    logError('API_ERROR', `${context}: API returned error`, { 
+                        ...responseContext, 
+                        apiMessage: result.message 
+                    });
+                    throw new Error(result.message || `${context} failed`);
+                }
+                
+                logInfo('API_SUCCESS', `${context} completed successfully`, {
+                    dataLength: result.data ? (Array.isArray(result.data) ? result.data.length : 'object') : 'none'
+                });
+                
+                return result;
+            } catch (error) {
+                if (error.name === 'SyntaxError') {
+                    logError('JSON_PARSE_ERROR', `${context}: Invalid JSON response`, responseContext);
+                    throw new Error('Invalid server response');
+                }
+                throw error;
+            }
+        }
+
+        // Centralized fetch wrapper with authentication
+        async function authenticatedFetch(url, options = {}) {
+            if (!isAuthenticated()) {
+                throw new Error('User not authenticated');
+            }
+            
+            const sessionData = getSessionData();
+            const headers = {
+                'Authorization': `Bearer ${sessionData.token}`,
+                ...options.headers
+            };
+            
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    headers
+                });
+                
+                return response;
+            } catch (error) {
+                if (error.message.includes('fetch') || error.name === 'TypeError') {
+                    throw new Error('Backend server is not available');
+                }
+                throw error;
+            }
+        }
+
+        // Retry mechanism for failed requests
+        async function retryApiCall(apiCall, maxRetries = 2, delay = 1000) {
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    return await apiCall();
+                } catch (error) {
+                    logError('API_RETRY', `Attempt ${attempt} failed`, { error: error.message, attempt, maxRetries });
+                    
+                    if (attempt === maxRetries) {
+                        throw error;
+                    }
+                    
+                    // Don't retry authentication errors
+                    if (error.message.includes('Authentication') || error.message.includes('401')) {
+                        throw error;
+                    }
+                    
+                    // Wait before retrying
+                    await new Promise(resolve => setTimeout(resolve, delay * attempt));
+                }
+            }
+        }
+
+        // Enhanced logging utility
+        function logError(category, message, context = {}) {
+            const timestamp = new Date().toISOString();
+            const sessionData = getSessionData();
+            const userId = sessionData?.user?.id || 'anonymous';
+            
+            const logEntry = {
+                timestamp,
+                category,
+                message,
+                userId,
+                userAgent: navigator.userAgent,
+                url: window.location.href,
+                context
+            };
+            
+            console.error(`[${category}] ${message}`, logEntry);
+            
+            // In production, you might want to send this to a logging service
+            // sendToLoggingService(logEntry);
+        }
+
+        function logWarning(category, message, context = {}) {
+            const timestamp = new Date().toISOString();
+            const sessionData = getSessionData();
+            const userId = sessionData?.user?.id || 'anonymous';
+            
+            const logEntry = {
+                timestamp,
+                category,
+                message,
+                userId,
+                context
+            };
+            
+            console.warn(`[${category}] ${message}`, logEntry);
+        }
+
+        function logInfo(category, message, context = {}) {
+            const timestamp = new Date().toISOString();
+            const sessionData = getSessionData();
+            const userId = sessionData?.user?.id || 'anonymous';
+            
+            const logEntry = {
+                timestamp,
+                category,
+                message,
+                userId,
+                context
+            };
+            
+            console.log(`[${category}] ${message}`, logEntry);
+        }
+
         function logout() {
             localStorage.removeItem('nexus_session');
             sessionStorage.removeItem('nexus_session');
@@ -1600,7 +1867,7 @@
             const sessionData = getSessionData();
             const guestMenu = document.getElementById('guest-menu');
             const userMenu = document.getElementById('user-menu');
-            const user = sessionData?.data?.user || sessionData?.user;
+            const user = sessionData?.user;
 
             if (user) {
                 const usernameElement = document.getElementById('modal-username');
@@ -1623,7 +1890,7 @@
         function setupMobileNav() {
             const sessionData = getSessionData();
             const mobileNavContainer = document.getElementById('mobile-nav');
-            const user = sessionData?.data?.user || sessionData?.user;
+            const user = sessionData?.user;
 
             console.log('Setting up mobile nav...', { mobileNavContainer, user });
 
@@ -1796,6 +2063,11 @@
 
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication first
+            if (!requireAuthentication()) {
+                return; // Exit if not authenticated (user will be redirected)
+            }
+            
             setupEventListeners();
             setDefaultDates();
             
@@ -1995,10 +2267,11 @@
             try {
                 const formData = collectFormData();
                 
+                const sessionData = getSessionData();
                 const response = await fetch('/api/user-tournaments', {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${currentUser?.token || 'demo-token'}`
+                        'Authorization': `Bearer ${sessionData.token}`
                     },
                     body: formData
                 });
@@ -2100,46 +2373,52 @@
 
         async function loadDashboardStats() {
             try {
-                // Load hosted tournaments count
+                // Check authentication first
+                if (!isAuthenticated()) {
+                    console.warn('User not authenticated, redirecting to login');
+                    requireAuthentication();
+                    return;
+                }
+
                 const sessionData = getSessionData();
-                const user = sessionData?.data?.user || sessionData?.user;
+                const user = sessionData.user;
                 
                 let hostedCount = 0;
                 let joinedTournaments = [];
                 
-                if (user) {
-                    // Get hosted tournaments
-                    try {
-                        const hostedResponse = await fetch('/api/user-tournaments', {
-                            headers: {
-                                'Authorization': `Bearer ${sessionData.data?.token || sessionData.token || 'demo-token'}`
-                            }
-                        });
-                        if (hostedResponse.ok) {
-                            const hostedResult = await hostedResponse.json();
-                            hostedCount = hostedResult.data ? hostedResult.data.length : 0;
-                        }
-                    } catch (error) {
-                        console.error('Error loading hosted tournaments:', error);
-                        if (error.message.includes('fetch')) {
-                            console.warn('Backend server might not be running');
-                        }
+                // Show loading state
+                showLoadingState();
+                
+                // Get hosted tournaments
+                try {
+                    const hostedResult = await retryApiCall(async () => {
+                        const response = await authenticatedFetch('/api/user-tournaments');
+                        return await handleApiResponse(response, 'Load hosted tournaments');
+                    });
+                    
+                    if (hostedResult) {
+                        hostedCount = hostedResult.data ? hostedResult.data.length : 0;
+                        console.log(`Loaded ${hostedCount} hosted tournaments`);
                     }
+                } catch (error) {
+                    console.error('Error loading hosted tournaments:', error);
+                    showErrorMessage(error.message);
+                }
 
-                    // Get joined tournaments
-                    try {
-                        const joinedResponse = await fetch('/api/users/me/tournaments', {
-                            headers: {
-                                'Authorization': `Bearer ${sessionData.data?.token || sessionData.token || 'demo-token'}`
-                            }
-                        });
-                        if (joinedResponse.ok) {
-                            const joinedResult = await joinedResponse.json();
-                            joinedTournaments = joinedResult.data || [];
-                        }
-                    } catch (error) {
-                        console.error('Error loading joined tournaments:', error);
+                // Get joined tournaments
+                try {
+                    const joinedResult = await retryApiCall(async () => {
+                        const response = await authenticatedFetch('/api/users/me/tournaments');
+                        return await handleApiResponse(response, 'Load joined tournaments');
+                    });
+                    
+                    if (joinedResult) {
+                        joinedTournaments = joinedResult.data || [];
+                        console.log(`Loaded ${joinedTournaments.length} joined tournaments`);
                     }
+                } catch (error) {
+                    console.error('Error loading joined tournaments:', error);
+                    showErrorMessage(error.message);
                 }
 
                 // Calculate stats
@@ -2162,6 +2441,14 @@
                 if (totalParticipantsEl) totalParticipantsEl.textContent = totalParticipants.toString();
                 if (totalRevenueEl) totalRevenueEl.textContent = `₹${totalPrizePools.toLocaleString()}`;
                 
+                // Hide loading state
+                hideLoadingState();
+                
+                // Show success message if data was loaded successfully
+                if (hostedCount > 0 || joinedCount > 0) {
+                    console.log('Dashboard data loaded successfully');
+                }
+                
             } catch (error) {
                 console.error('Error loading dashboard stats:', error);
                 // Fallback to default values with null checks
@@ -2174,6 +2461,9 @@
                 if (activeTournamentsEl) activeTournamentsEl.textContent = '0';
                 if (totalParticipantsEl) totalParticipantsEl.textContent = '0';
                 if (totalRevenueEl) totalRevenueEl.textContent = '₹0';
+                
+                // Hide loading state even on error
+                hideLoadingState();
             }
         }
 
@@ -2184,27 +2474,45 @@
 
         async function loadJoinedTournaments() {
             try {
-                // Check if user is authenticated
-                const sessionData = getSessionData();
-                const user = sessionData?.data?.user || sessionData?.user;
-                
-                if (!user) {
-                    // Show message for non-authenticated users
+                // Check authentication first
+                if (!isAuthenticated()) {
+                    console.warn('User not authenticated for joined tournaments');
                     displayJoinedTournaments([]);
                     return;
+                }
+
+                const sessionData = getSessionData();
+                const user = sessionData.user;
+                
+                // Show loading state
+                const container = document.getElementById('joinedTournamentsContainer');
+                if (container) {
+                    container.innerHTML = `
+                        <div class="text-center py-4">
+                            <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+                            <p class="mt-2 text-muted">Loading your tournaments...</p>
+                        </div>
+                    `;
                 }
 
                 const response = await fetch('/api/users/me/tournaments', {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${sessionData.data?.token || sessionData.token || 'demo-token'}`
+                        'Authorization': `Bearer ${sessionData.token}`
                     }
                 });
+
+                if (response.status === 401) {
+                    console.warn('Authentication failed for joined tournaments');
+                    handleAuthenticationError();
+                    return;
+                }
 
                 if (response.ok) {
                     const result = await response.json();
                     if (result.success) {
                         let tournaments = result.data || [];
+                        console.log(`Successfully loaded ${tournaments.length} joined tournaments`);
                         
                         // Apply status filter if selected
                         const statusFilter = document.getElementById('joinedStatusFilter');
@@ -2226,18 +2534,41 @@
                         displayJoinedTournaments(tournaments);
                     } else {
                         console.error('Failed to load joined tournaments:', result.message);
-                        displayJoinedTournaments([]);
+                        displayJoinedTournamentsError('Failed to load tournament data');
                     }
+                } else if (response.status === 404) {
+                    console.warn('Joined tournaments endpoint not found');
+                    displayJoinedTournamentsError('Joined tournaments feature is not available');
+                } else if (response.status === 500) {
+                    console.error('Server error loading joined tournaments');
+                    displayJoinedTournamentsError('Server error - please try again later');
                 } else {
                     console.error('Failed to fetch joined tournaments:', response.status);
-                    if (response.status === 404) {
-                        console.warn('API endpoint not found - this might be expected if backend is not running');
-                    }
-                    displayJoinedTournaments([]);
+                    displayJoinedTournamentsError('Failed to load joined tournaments');
                 }
             } catch (error) {
                 console.error('Error loading joined tournaments:', error);
-                displayJoinedTournaments([]);
+                if (error.message.includes('fetch') || error.name === 'TypeError') {
+                    displayJoinedTournamentsError('Backend server is not available');
+                } else {
+                    displayJoinedTournamentsError('Failed to load joined tournaments');
+                }
+            }
+        }
+
+        function displayJoinedTournamentsError(message) {
+            const container = document.getElementById('joinedTournamentsContainer');
+            if (container) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-exclamation-triangle fa-3x mb-3 text-warning"></i>
+                        <h5>Error Loading Tournaments</h5>
+                        <p>${message}</p>
+                        <button class="btn btn-outline-primary mt-2" onclick="loadJoinedTournaments()">
+                            <i class="fas fa-refresh"></i> Try Again
+                        </button>
+                    </div>
+                `;
             }
         }
 
@@ -2507,6 +2838,165 @@
             setTimeout(() => {
                 alertDiv.remove();
             }, 5000);
+        }
+
+        // Unit Tests for Authentication Functions
+        function runAuthenticationTests() {
+            console.log('🧪 Running authentication unit tests...');
+            
+            let testsPassed = 0;
+            let testsTotal = 0;
+            
+            function test(name, testFn) {
+                testsTotal++;
+                try {
+                    testFn();
+                    console.log(`✅ ${name}`);
+                    testsPassed++;
+                } catch (error) {
+                    console.error(`❌ ${name}: ${error.message}`);
+                }
+            }
+            
+            // Test getSessionData function
+            test('getSessionData returns null when no session exists', () => {
+                localStorage.removeItem('nexus_session');
+                sessionStorage.removeItem('nexus_session');
+                const result = getSessionData();
+                if (result !== null) throw new Error('Expected null, got ' + result);
+            });
+            
+            test('getSessionData returns parsed session data', () => {
+                const testSession = { token: 'test-token', user: { id: '123', email: 'test@example.com' } };
+                localStorage.setItem('nexus_session', JSON.stringify(testSession));
+                const result = getSessionData();
+                if (!result || result.token !== 'test-token') throw new Error('Session data not parsed correctly');
+                localStorage.removeItem('nexus_session');
+            });
+            
+            test('getSessionData handles invalid JSON gracefully', () => {
+                localStorage.setItem('nexus_session', 'invalid-json');
+                const result = getSessionData();
+                if (result !== null) throw new Error('Expected null for invalid JSON');
+                localStorage.removeItem('nexus_session');
+            });
+            
+            // Test isAuthenticated function
+            test('isAuthenticated returns false when no session', () => {
+                localStorage.removeItem('nexus_session');
+                sessionStorage.removeItem('nexus_session');
+                const result = isAuthenticated();
+                if (result !== false) throw new Error('Expected false when no session');
+            });
+            
+            test('isAuthenticated returns false when session missing token', () => {
+                const testSession = { user: { id: '123' } }; // Missing token
+                localStorage.setItem('nexus_session', JSON.stringify(testSession));
+                const result = isAuthenticated();
+                if (result !== false) throw new Error('Expected false when token missing');
+                localStorage.removeItem('nexus_session');
+            });
+            
+            test('isAuthenticated returns false when session missing user', () => {
+                const testSession = { token: 'test-token' }; // Missing user
+                localStorage.setItem('nexus_session', JSON.stringify(testSession));
+                const result = isAuthenticated();
+                if (result !== false) throw new Error('Expected false when user missing');
+                localStorage.removeItem('nexus_session');
+            });
+            
+            test('isAuthenticated returns true when valid session', () => {
+                const testSession = { token: 'test-token', user: { id: '123', email: 'test@example.com' } };
+                localStorage.setItem('nexus_session', JSON.stringify(testSession));
+                const result = isAuthenticated();
+                if (result !== true) throw new Error('Expected true for valid session');
+                localStorage.removeItem('nexus_session');
+            });
+            
+            // Test getAuthToken function
+            test('getAuthToken returns null when no session', () => {
+                localStorage.removeItem('nexus_session');
+                sessionStorage.removeItem('nexus_session');
+                const result = getAuthToken();
+                if (result !== null) throw new Error('Expected null when no session');
+            });
+            
+            test('getAuthToken returns token from session', () => {
+                const testSession = { token: 'test-token-123', user: { id: '123' } };
+                localStorage.setItem('nexus_session', JSON.stringify(testSession));
+                const result = getAuthToken();
+                if (result !== 'test-token-123') throw new Error('Expected test-token-123, got ' + result);
+                localStorage.removeItem('nexus_session');
+            });
+            
+            // Test authenticatedFetch function
+            test('authenticatedFetch throws error when not authenticated', async () => {
+                localStorage.removeItem('nexus_session');
+                sessionStorage.removeItem('nexus_session');
+                try {
+                    await authenticatedFetch('/test-url');
+                    throw new Error('Expected function to throw error');
+                } catch (error) {
+                    if (!error.message.includes('not authenticated')) {
+                        throw new Error('Expected authentication error, got: ' + error.message);
+                    }
+                }
+            });
+            
+            // Test handleApiResponse function
+            test('handleApiResponse handles 401 status correctly', async () => {
+                const mockResponse = {
+                    status: 401,
+                    statusText: 'Unauthorized',
+                    url: '/test',
+                    headers: new Map(),
+                    ok: false
+                };
+                
+                const result = await handleApiResponse(mockResponse, 'Test API');
+                if (result !== null) throw new Error('Expected null for 401 response');
+            });
+            
+            test('handleApiResponse throws error for 404 status', async () => {
+                const mockResponse = {
+                    status: 404,
+                    statusText: 'Not Found',
+                    url: '/test',
+                    headers: new Map(),
+                    ok: false
+                };
+                
+                try {
+                    await handleApiResponse(mockResponse, 'Test API');
+                    throw new Error('Expected function to throw error for 404');
+                } catch (error) {
+                    if (!error.message.includes('not available')) {
+                        throw new Error('Expected "not available" error, got: ' + error.message);
+                    }
+                }
+            });
+            
+            console.log(`🧪 Tests completed: ${testsPassed}/${testsTotal} passed`);
+            
+            if (testsPassed === testsTotal) {
+                console.log('🎉 All authentication tests passed!');
+            } else {
+                console.warn(`⚠️ ${testsTotal - testsPassed} tests failed`);
+            }
+            
+            return { passed: testsPassed, total: testsTotal };
+        }
+
+        // Run tests in development mode (when URL contains localhost or file://)
+        if (window.location.hostname === 'localhost' || window.location.protocol === 'file:') {
+            // Run tests after a short delay to ensure all functions are loaded
+            setTimeout(() => {
+                try {
+                    runAuthenticationTests();
+                } catch (error) {
+                    console.error('Error running tests:', error);
+                }
+            }, 1000);
         }
 
 
