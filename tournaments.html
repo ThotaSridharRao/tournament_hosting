@@ -2147,8 +2147,8 @@
         return;
       }
 
-      // Redirect to tournament details page where registration can happen
-      window.location.href = `tournament-details.html?slug=${tournamentSlug}`;
+      // User is already logged in, redirect directly to team registration
+      window.location.href = `team-registration.html?slug=${tournamentSlug}`;
     }
 
     // Initialize when page loads
