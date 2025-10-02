@@ -777,7 +777,11 @@
           };
           localStorage.setItem('nexus_session', JSON.stringify(session));
           showSuccess('Login successful! Redirecting...');
-          setTimeout(() => { window.location.href = result.redirect_path || 'index.html'; }, 1500);
+          // Check for return URL in query parameters
+          const urlParams = new URLSearchParams(window.location.search);
+          const returnUrl = urlParams.get('returnUrl');
+          const redirectUrl = returnUrl ? decodeURIComponent(returnUrl) : (result.redirect_path || 'index.html');
+          setTimeout(() => { window.location.href = redirectUrl; }, 1500);
         } else {
           showError(result.message || 'Login failed. Please check your credentials.');
         }
