@@ -1292,10 +1292,10 @@
                     <div class="form-group"><label class="form-label">Game</label><input type="text" name="game" class="form-input" value="${t.game || ''}" required></div>
                     <div class="form-group"><label class="form-label">Description</label><textarea name="description" class="form-textarea" required>${t.description || ''}</textarea></div>
                     <div class="form-grid">
-                        <div class="form-group"><label class="form-label">Reg. Start</label><input type="datetime-local" name="registrationStart" class="form-input" value="${formattedDate(t.registrationStart)}" required></div>
-                        <div class="form-group"><label class="form-label">Reg. End</label><input type="datetime-local" name="registrationEnd" class="form-input" value="${formattedDate(t.registrationEnd)}" required></div>
-                        <div class="form-group"><label class="form-label">Tourney Start</label><input type="datetime-local" name="tournamentStart" class="form-input" value="${formattedDate(t.tournamentStart)}" required></div>
-                        <div class="form-group"><label class="form-label">Tourney End</label><input type="datetime-local" name="tournamentEnd" class="form-input" value="${formattedDate(t.tournamentEnd)}" required></div>
+                        <div class="form-group"><label class="form-label">Registration Start</label><input type="datetime-local" name="registrationStart" class="form-input" value="${formattedDate(t.registrationStart)}" required></div>
+                        <div class="form-group"><label class="form-label">Registration End</label><input type="datetime-local" name="registrationEnd" class="form-input" value="${formattedDate(t.registrationEnd)}" required></div>
+                        <div class="form-group"><label class="form-label">Tournament Start</label><input type="datetime-local" name="tournamentStart" class="form-input" value="${formattedDate(t.tournamentStart)}" required></div>
+                        <div class="form-group"><label class="form-label">Tournament End</label><input type="datetime-local" name="tournamentEnd" class="form-input" value="${formattedDate(t.tournamentEnd)}" required></div>
                         <div class="form-group"><label class="form-label">Prize Pool (₹)</label><input type="number" name="prizePool" class="form-input" value="${t.prizePool || 0}" min="0" required></div>
                         <div class="form-group"><label class="form-label">Max Teams</label><input type="number" name="maxTeams" class="form-input" value="${t.maxTeams || 2}" min="2" required></div>
                         <div class="form-group"><label class="form-label">Entry Fee (₹)</label><input type="number" name="entryFee" class="form-input" value="${t.entryFee || 0}" min="0" required></div>
@@ -1508,7 +1508,21 @@
             const btn = form.querySelector('.submit-btn');
             btn.textContent = 'Creating...'; btn.disabled = true;
             try {
-                const formData = new FormData(form);
+                const formData = new FormData();
+                
+                // Add all form fields, including file only if selected
+                const formElements = form.elements;
+                for (let element of formElements) {
+                    if (element.type === 'file') {
+                        // Only include file if user selected one
+                        if (element.files && element.files.length > 0 && element.files[0].size > 0) {
+                            formData.append(element.name, element.files[0]);
+                        }
+                    } else if (element.name && element.value !== undefined) {
+                        formData.append(element.name, element.value);
+                    }
+                }
+
                 const response = await fetch(`${API_BASE_URL}/api/tournaments`, {
                     method: 'POST', headers: { 'Authorization': `Bearer ${getSessionData()?.token}` }, body: formData
                 });
@@ -1543,7 +1557,21 @@
             btn.disabled = true;
 
             try {
-                const formData = new FormData(form);
+                const formData = new FormData();
+                
+                // Add all form fields except file inputs
+                const formElements = form.elements;
+                for (let element of formElements) {
+                    if (element.type === 'file') {
+                        // Only include file if user selected one
+                        if (element.files && element.files.length > 0 && element.files[0].size > 0) {
+                            formData.append(element.name, element.files[0]);
+                        }
+                    } else if (element.name && element.value !== undefined) {
+                        formData.append(element.name, element.value);
+                    }
+                }
+
                 const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}`, {
                     method: 'PATCH',
                     headers: {
