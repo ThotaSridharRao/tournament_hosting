@@ -185,17 +185,41 @@
             text-decoration: none;
             font-weight: 500;
             font-size: 0.95rem;
-            transition: color 0.3s ease;
-            padding: 0.5rem 0;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            position: relative;
+            overflow: hidden;
+            margin: 0 0.25rem;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-secondary));
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
         }
 
         .nav-links a:hover {
             color: var(--accent-2, #0AFAD9);
         }
 
+        .nav-links a:hover::after {
+            transform: translateX(0);
+        }
+
         .nav-links a.active {
             color: var(--accent-2, #0AFAD9);
             font-weight: 600;
+        }
+
+        .nav-links a.active::after {
+            transform: translateX(0);
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-secondary));
         }
 
         .nav-actions {
@@ -400,11 +424,38 @@
             border-radius: 8px;
             font-weight: 600;
             transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mobile-nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-secondary));
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
         }
 
         .mobile-nav-links a:hover {
             background: rgba(255, 255, 255, 0.05);
             color: var(--copy);
+        }
+
+        .mobile-nav-links a:hover::after {
+            transform: translateX(0);
+        }
+
+        .mobile-nav-links a.active {
+            color: var(--accent-2, #0AFAD9);
+            background: rgba(10, 250, 217, 0.1);
+        }
+
+        .mobile-nav-links a.active::after {
+            transform: translateX(0);
         }
 
         .mobile-nav-links a i {
@@ -707,6 +758,43 @@
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(10, 250, 217, 0.2);
             background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Table styling for better readability */
+        .table {
+            color: var(--text-primary);
+        }
+
+        .table th {
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+            font-weight: 600;
+            padding: 1rem 0.75rem;
+        }
+
+        .table td {
+            background: rgba(0, 0, 0, 0.1);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+            padding: 1rem 0.75rem;
+            vertical-align: middle;
+        }
+
+        .table-hover tbody tr:hover {
+            background: rgba(10, 250, 217, 0.1);
+            color: var(--text-primary);
+        }
+
+        .table td a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .table td a:hover {
+            color: var(--accent-secondary);
+            text-decoration: underline;
         }
 
         /* Enhanced dropdown styling */
@@ -2267,6 +2355,29 @@
             const targetPane = document.getElementById(tabName);
             if (targetPane) {
                 targetPane.classList.add('show', 'active');
+
+                // Update active nav link
+                const allNavLinks = document.querySelectorAll('.nav-links a[onclick*="switchToTab"]');
+                allNavLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+
+                // Find and activate the current nav link
+                const activeNavLink = document.querySelector(`.nav-links a[onclick*="switchToTab('${tabName}')"]`);
+                if (activeNavLink) {
+                    activeNavLink.classList.add('active');
+                }
+
+                // Also update mobile nav links
+                const allMobileNavLinks = document.querySelectorAll('.mobile-nav-links a[onclick*="switchToTab"]');
+                allMobileNavLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+
+                const activeMobileNavLink = document.querySelector(`.mobile-nav-links a[onclick*="switchToTab('${tabName}')"]`);
+                if (activeMobileNavLink) {
+                    activeMobileNavLink.classList.add('active');
+                }
 
                 // Load data for specific tabs
                 if (tabName === 'tournaments') {
