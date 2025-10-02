@@ -1129,7 +1129,7 @@
                                                 <label for="tournamentFormat" class="form-label">Tournament Format *</label>
                                                 <select class="form-select" id="tournamentFormat" required>
                                                     <option value="">Select Format</option>
-                                                    <option value="single_elimination">Single Elimination</option>
+                                                    <option value="single-elimination">Single Elimination</option>
                                                     <option value="double_elimination">Double Elimination</option>
                                                     <option value="round_robin">Round Robin</option>
                                                     <option value="swiss">Swiss System</option>
@@ -1184,13 +1184,26 @@
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="entryFee" class="form-label">Entry Fee (₹)</label>
-                                                <input type="number" class="form-control" id="entryFee" min="0" max="10000" value="0">
+                                                <input type="number" class="form-control" id="entryFee" min="0" max="10000" value="0" required>
                                                 <div class="form-text">Set to 0 for free tournaments</div>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="prizePool" class="form-label">Prize Pool (₹)</label>
-                                                <input type="number" class="form-control" id="prizePool" min="0" max="100000" value="0">
+                                                <input type="number" class="form-control" id="prizePool" min="0" max="100000" value="0" required>
                                                 <div class="form-text">Total prize money for winners</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="maxPlayersPerTeam" class="form-label">Max Players per Team *</label>
+                                                <input type="number" class="form-control" id="maxPlayersPerTeam" min="1" max="10" value="4" required>
+                                                <div class="form-text">Maximum number of players allowed per team</div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="tournamentPoster" class="form-label">Tournament Poster</label>
+                                                <input type="file" class="form-control" id="tournamentPoster" accept="image/*">
+                                                <div class="form-text">Upload a poster image for your tournament (optional)</div>
                                             </div>
                                         </div>
                                     </div>
@@ -1227,6 +1240,48 @@
                                                 <label for="venueAddress" class="form-label">Address</label>
                                                 <textarea class="form-control" id="venueAddress" rows="3"></textarea>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- KP Format Schedule (Hidden by default) -->
+                                <div class="card tournament-card" id="kpFormatFields" style="display: none;">
+                                    <div class="card-header">
+                                        <h5><i class="fas fa-calendar-alt me-2"></i>KP Format Schedule</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="qualifier1Date" class="form-label">Qualifier 1 Date</label>
+                                                <input type="datetime-local" class="form-control" id="qualifier1Date">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="qualifier2Date" class="form-label">Qualifier 2 Date</label>
+                                                <input type="datetime-local" class="form-control" id="qualifier2Date">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="qualifier3Date" class="form-label">Qualifier 3 Date</label>
+                                                <input type="datetime-local" class="form-control" id="qualifier3Date">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="qualifier4Date" class="form-label">Qualifier 4 Date</label>
+                                                <input type="datetime-local" class="form-control" id="qualifier4Date">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="finalMatchDate" class="form-label">Final Match Date</label>
+                                                <input type="datetime-local" class="form-control" id="finalMatchDate">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            <strong>KP Format:</strong> Teams compete in multiple qualifier rounds to accumulate kill points. Top teams advance to the final match.
                                         </div>
                                     </div>
                                 </div>
@@ -1625,10 +1680,27 @@
 
         // Tab switching function
         function switchToTab(tabName) {
-            const tabButton = document.getElementById(tabName + '-tab');
-            if (tabButton) {
-                tabButton.click();
+            // Hide all tab panes
+            const allPanes = document.querySelectorAll('.tab-pane');
+            allPanes.forEach(pane => {
+                pane.classList.remove('show', 'active');
+            });
+            
+            // Show the selected tab pane
+            const targetPane = document.getElementById(tabName);
+            if (targetPane) {
+                targetPane.classList.add('show', 'active');
+                
+                // Load data for specific tabs
+                if (tabName === 'tournaments') {
+                    loadUserTournaments();
+                } else if (tabName === 'overview') {
+                    loadDashboardStats();
+                } else if (tabName === 'joined') {
+                    loadJoinedTournaments();
+                }
             }
+            
             // Close mobile nav if open
             const mobileNav = document.getElementById('mobile-nav');
             if (mobileNav && mobileNav.classList.contains('is-open')) {
@@ -1643,6 +1715,9 @@
             loadDashboardData();
             initializeNavbar();
             
+            // Show overview tab by default
+            switchToTab('overview');
+            
             // Hide loading screen after initialization
             setTimeout(() => {
                 const loader = document.getElementById('loader-wrapper');
@@ -1654,21 +1729,30 @@
 
         function setupEventListeners() {
             // Form submission
-            document.getElementById('createTournamentForm').addEventListener('submit', handleFormSubmit);
+            const createForm = document.getElementById('createTournamentForm');
+            if (createForm) {
+                createForm.addEventListener('submit', handleFormSubmit);
+            }
             
             // Date change listeners for pricing calculation
-            document.getElementById('registrationStart').addEventListener('change', calculateHostingFee);
-            document.getElementById('registrationEnd').addEventListener('change', calculateHostingFee);
+            const regStart = document.getElementById('registrationStart');
+            const regEnd = document.getElementById('registrationEnd');
+            if (regStart) regStart.addEventListener('change', calculateHostingFee);
+            if (regEnd) regEnd.addEventListener('change', calculateHostingFee);
             
             // Venue type change
-            document.getElementById('venueType').addEventListener('change', toggleVenueDetails);
+            const venueType = document.getElementById('venueType');
+            if (venueType) venueType.addEventListener('change', toggleVenueDetails);
+            
+            // Tournament format change
+            const tournamentFormat = document.getElementById('tournamentFormat');
+            if (tournamentFormat) tournamentFormat.addEventListener('change', toggleKpFormatFields);
             
             // Status filter
-            document.getElementById('statusFilter').addEventListener('change', loadUserTournaments);
+            const statusFilter = document.getElementById('statusFilter');
+            if (statusFilter) statusFilter.addEventListener('change', loadUserTournaments);
             
-            // Tab change listeners
-            document.getElementById('tournaments-tab').addEventListener('click', loadUserTournaments);
-            document.getElementById('overview-tab').addEventListener('click', loadDashboardStats);
+            // Note: Tab listeners removed since we moved navigation to navbar
         }
 
         function setDefaultDates() {
@@ -1747,6 +1831,17 @@
             }
         }
 
+        function toggleKpFormatFields() {
+            const tournamentFormat = document.getElementById('tournamentFormat').value;
+            const kpFields = document.getElementById('kpFormatFields');
+            
+            if (tournamentFormat === 'kp') {
+                kpFields.style.display = 'block';
+            } else {
+                kpFields.style.display = 'none';
+            }
+        }
+
         async function handleFormSubmit(e) {
             e.preventDefault();
             
@@ -1762,10 +1857,9 @@
                 const response = await fetch('/api/user-tournaments', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${currentUser.token}`
+                        'Authorization': `Bearer ${currentUser?.token || 'demo-token'}`
                     },
-                    body: JSON.stringify(formData)
+                    body: formData
                 });
                 
                 const result = await response.json();
@@ -1798,11 +1892,42 @@
         }
 
         function collectFormData() {
+            const formData = new FormData();
+            
+            // Basic tournament info
+            formData.append('title', document.getElementById('tournamentTitle').value);
+            formData.append('game', document.getElementById('tournamentGame').value);
+            formData.append('description', document.getElementById('tournamentDescription').value);
+            formData.append('registrationStart', document.getElementById('registrationStart').value);
+            formData.append('registrationEnd', document.getElementById('registrationEnd').value);
+            formData.append('tournamentStart', document.getElementById('tournamentStart').value);
+            formData.append('tournamentEnd', document.getElementById('tournamentEnd').value);
+            formData.append('maxTeams', document.getElementById('maxTeams').value);
+            formData.append('maxPlayersPerTeam', document.getElementById('maxPlayersPerTeam').value || '4');
+            formData.append('entryFee', document.getElementById('entryFee').value || '0');
+            formData.append('prizePool', document.getElementById('prizePool').value || '0');
+            
+            const format = document.getElementById('tournamentFormat').value;
+            formData.append('format', format);
+            
+            // KP format settings
+            if (format === 'kp') {
+                const kpSettings = {
+                    qualifier1Date: document.getElementById('qualifier1Date').value,
+                    qualifier2Date: document.getElementById('qualifier2Date').value,
+                    qualifier3Date: document.getElementById('qualifier3Date').value,
+                    qualifier4Date: document.getElementById('qualifier4Date').value,
+                    finalMatchDate: document.getElementById('finalMatchDate').value
+                };
+                formData.append('kpSettings', JSON.stringify(kpSettings));
+            }
+            
+            // Venue details
             const venueType = document.getElementById('venueType').value;
-            let venueDetails = null;
+            formData.append('venueType', venueType);
             
             if (venueType === 'physical' || venueType === 'hybrid') {
-                venueDetails = {
+                const venueDetails = {
                     name: document.getElementById('venueName').value,
                     address: document.getElementById('venueAddress').value,
                     capacity: parseInt(document.getElementById('venueCapacity').value) || 0,
@@ -1813,23 +1938,16 @@
                     zones: [],
                     amenities: []
                 };
+                formData.append('venueDetails', JSON.stringify(venueDetails));
             }
             
-            return {
-                title: document.getElementById('tournamentTitle').value,
-                game: document.getElementById('tournamentGame').value,
-                description: document.getElementById('tournamentDescription').value,
-                registrationStart: document.getElementById('registrationStart').value,
-                registrationEnd: document.getElementById('registrationEnd').value,
-                tournamentStart: document.getElementById('tournamentStart').value,
-                tournamentEnd: document.getElementById('tournamentEnd').value,
-                maxTeams: parseInt(document.getElementById('maxTeams').value),
-                entryFee: parseFloat(document.getElementById('entryFee').value) || 0,
-                prizePool: parseFloat(document.getElementById('prizePool').value) || 0,
-                format: document.getElementById('tournamentFormat').value,
-                venueType: venueType,
-                venueDetails: venueDetails
-            };
+            // Poster image
+            const posterFile = document.getElementById('tournamentPoster').files[0];
+            if (posterFile) {
+                formData.append('posterImage', posterFile);
+            }
+            
+            return formData;
         }
 
         async function loadDashboardData() {
