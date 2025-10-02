@@ -294,34 +294,7 @@
       transform: rotate(90deg);
     }
 
-    /* Button container for side-by-side layout */
-    .mobile-nav .guest-view .button-container {
-      display: flex;
-      gap: 0.8rem;
-      width: 100%;
-      justify-content: center;
-      align-items: center;
-    }
 
-    .mobile-nav .guest-view {
-      padding: 2rem;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-
-    .mobile-nav .guest-view i {
-      font-size: 3rem;
-      color: var(--accent);
-    }
-
-    .mobile-nav .guest-view p {
-      color: var(--muted);
-      line-height: 1.6;
-    }
 
     /* Mobile Navigation Links Styling */
     .mobile-nav-links {
@@ -352,40 +325,51 @@
       color: var(--accent-2, #0AFAD9);
     }
 
+    /* Mobile Navigation Bottom Actions */
+    .mobile-nav-bottom-actions {
+      margin-top: auto;
+      padding: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
     /* Mobile Navigation Buttons - Standardized */
-    .mobile-nav .mobile-host-btn,
-    .guest-view .mobile-host-btn,
-    a.mobile-host-btn,
-    .mobile-join-btn {
+    .mobile-host-btn,
+    .mobile-join-btn,
+    .mobile-logout-btn {
       display: inline-flex !important;
       align-items: center !important;
       justify-content: center !important;
-      gap: 0.4rem !important;
-      padding: 0.5rem 0.8rem !important;
+      gap: 0.5rem !important;
+      padding: 0.75rem 1.5rem !important;
       border: none !important;
-      border-radius: 5px !important;
+      border-radius: 6px !important;
       text-decoration: none !important;
       font-weight: 600 !important;
-      font-size: 0.85rem !important;
+      font-size: 0.9rem !important;
       line-height: 1 !important;
       transition: all 0.3s ease !important;
-      margin: 0 !important;
-      width: auto !important;
-      box-sizing: border-box !important;
-      flex: 1 !important;
-      max-width: 120px !important;
-      min-height: 36px !important;
       cursor: pointer !important;
+      font-family: inherit !important;
+      flex: 1 !important;
+      min-height: 44px !important;
     }
 
     /* Host button specific styling */
-    .mobile-nav .mobile-host-btn,
-    .guest-view .mobile-host-btn,
-    a.mobile-host-btn {
+    .mobile-host-btn {
       background: #ffffff !important;
-      background-color: #ffffff !important;
-      background-image: none !important;
       color: #000000 !important;
+    }
+
+    .mobile-host-btn i {
+      color: #000000 !important;
+    }
+
+    .mobile-host-btn:hover {
+      opacity: 0.8 !important;
+      filter: brightness(0.9) !important;
     }
 
     /* Join Us button specific styling */
@@ -394,43 +378,21 @@
       color: #ffffff !important;
     }
 
-    /* Icon sizing for mobile host button */
-    .mobile-nav .mobile-host-btn i,
-    .guest-view .mobile-host-btn i,
-    a.mobile-host-btn i {
-      font-size: 0.85rem !important;
-      color: #000000 !important;
-      line-height: 1 !important;
-    }
-
-    .mobile-nav .mobile-host-btn:hover,
-    .guest-view .mobile-host-btn:hover,
-    a.mobile-host-btn:hover {
-      opacity: 0.8 !important;
-      filter: brightness(0.9) !important;
-    }
-
     .mobile-join-btn:hover {
-      opacity: 0.8;
-      filter: brightness(0.9);
-    }
-
-    /* Force override any inherited button styles */
-    .mobile-host-btn * {
-      color: inherit !important;
-    }
-
-    /* Additional specificity for mobile host button */
-    #mobile-nav .guest-view a[href="user-dashboard.html"] {
-      background: #ffffff !important;
-      background-color: #ffffff !important;
-      background-image: none !important;
-      color: #000000 !important;
-    }
-
-    #mobile-nav .guest-view a[href="user-dashboard.html"]:hover {
       opacity: 0.8 !important;
       filter: brightness(0.9) !important;
+    }
+
+    /* Logout button specific styling */
+    .mobile-logout-btn {
+      background: rgba(255, 0, 0, 0.1) !important;
+      color: #ff6b6b !important;
+      border: 1px solid rgba(255, 107, 107, 0.3) !important;
+    }
+
+    .mobile-logout-btn:hover {
+      background: rgba(255, 0, 0, 0.2) !important;
+      color: #ff5252 !important;
     }
 
     /* Responsive Media Queries */
@@ -2062,17 +2024,21 @@
 
       const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
 
-      // Contextual navigation links based on current page
+      // Unified navigation links - merging page navigation with dashboard functionality
       let navLinksHTML = '';
       const currentPage = window.location.pathname.split('/').pop();
 
       if (currentPage === 'index.html' || currentPage === '') {
-        // Homepage navigation
+        // Homepage navigation - merged with dashboard links
         navLinksHTML = `
           <div class="mobile-nav-links">
             <a href="tournaments.html">
               <i class="fas fa-trophy"></i>
               Tournaments
+            </a>
+            <a href="user-dashboard.html">
+              <i class="fas fa-tachometer-alt"></i>
+              Dashboard
             </a>
             <a href="#why-us">
               <i class="fas fa-star"></i>
@@ -2088,26 +2054,54 @@
         // Tournament-related pages
         navLinksHTML = `
           <div class="mobile-nav-links">
-            <a href="tournaments.html">Browse Tournaments</a>
-            <a href="user-dashboard.html">My Tournaments</a>
+            <a href="tournaments.html">
+              <i class="fas fa-trophy"></i>
+              Browse Tournaments
+            </a>
+            <a href="user-dashboard.html">
+              <i class="fas fa-tachometer-alt"></i>
+              Dashboard
+            </a>
+            <a href="index.html">
+              <i class="fas fa-home"></i>
+              Home
+            </a>
           </div>
         `;
       } else if (currentPage.includes('dashboard') || currentPage.includes('team-registration')) {
         // Dashboard and registration pages
         navLinksHTML = `
           <div class="mobile-nav-links">
-            <a href="tournaments.html">Browse Tournaments</a>
-            <a href="user-dashboard.html">My Dashboard</a>
-            <a href="index.html">Home</a>
+            <a href="tournaments.html">
+              <i class="fas fa-trophy"></i>
+              Browse Tournaments
+            </a>
+            <a href="user-dashboard.html">
+              <i class="fas fa-tachometer-alt"></i>
+              Dashboard
+            </a>
+            <a href="index.html">
+              <i class="fas fa-home"></i>
+              Home
+            </a>
           </div>
         `;
       } else if (currentPage.includes('admin')) {
         // Admin pages
         navLinksHTML = `
           <div class="mobile-nav-links">
-            <a href="admin-dashboard.html">Dashboard</a>
-            <a href="tournaments.html">Browse Tournaments</a>
-            <a href="index.html">Home</a>
+            <a href="admin-dashboard.html">
+              <i class="fas fa-tachometer-alt"></i>
+              Admin Dashboard
+            </a>
+            <a href="tournaments.html">
+              <i class="fas fa-trophy"></i>
+              Browse Tournaments
+            </a>
+            <a href="index.html">
+              <i class="fas fa-home"></i>
+              Home
+            </a>
           </div>
         `;
       } else {
@@ -2119,60 +2113,39 @@
               Tournaments
             </a>
             <a href="user-dashboard.html">
-              <i class="fas fa-plus-circle"></i>
-              Host Tournament
+              <i class="fas fa-tachometer-alt"></i>
+              Dashboard
             </a>
             <a href="index.html">
               <i class="fas fa-home"></i>
               Home
             </a>
-            <a href="auth.html">
-              <i class="fas fa-sign-in-alt"></i>
-              Sign In
-            </a>
           </div>
         `;
       }
 
-      let userSectionHTML = '';
-
+      // Bottom action buttons based on user authentication
+      let bottomActionsHTML = '';
+      
       if (user) {
-        // Logged-in user view
-        const username = user.username || user.email.split('@')[0];
-        userSectionHTML = `
-          <div class="profile-header">
-            <div class="profile-photo"><i class="fas fa-user"></i></div>
-            <div class="profile-info">
-              <div class="profile-username">${username}</div>
-            </div>
-          </div>
-          <div class="profile-actions">
-            <a href="user-dashboard.html" class="profile-action">
-              <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+        // Logged-in user: Show Host and Logout buttons at bottom
+        bottomActionsHTML = `
+          <div class="mobile-nav-bottom-actions">
+            <a href="user-dashboard.html" class="mobile-host-btn">
+              <i class="fas fa-plus-circle"></i> Host
             </a>
-            <a href="user-dashboard.html?tab=create" class="profile-action">
-              <i class="fas fa-plus"></i> <span>Create Tournament</span>
-            </a>
-            <a href="tournaments.html" class="profile-action">
-              <i class="fas fa-trophy"></i> <span>Browse Tournaments</span>
-            </a>
-            <button class="profile-action" onclick="logout()">
-              <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+            <button class="mobile-logout-btn" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i> Logout
             </button>
           </div>
         `;
       } else {
-        // Guest view with clean white Host button
-        userSectionHTML = `
-          <div class="guest-view">
-            <i class="fas fa-gamepad"></i>
-            <p>Join the arena to compete, win prizes, and track your stats!</p>
-            <div class="button-container">
-              <a href="user-dashboard.html" class="mobile-host-btn">
-                <i class="fas fa-plus-circle"></i> Host
-              </a>
-              <button class="mobile-join-btn" onclick="redirectToAuth()">Join Us</button>
-            </div>
+        // Guest user: Show Join Us button at bottom
+        bottomActionsHTML = `
+          <div class="mobile-nav-bottom-actions">
+            <button class="mobile-join-btn" onclick="redirectToAuth()">
+              <i class="fas fa-user-plus"></i> Join Us
+            </button>
           </div>
         `;
       }
@@ -2180,33 +2153,42 @@
       // Combine the parts into the final HTML for the panel
       mobileNavContainer.innerHTML = `
         ${closeButtonHTML}
-        ${userSectionHTML}
         ${navLinksHTML}
+        ${bottomActionsHTML}
       `;
 
-      // Add click handlers for navigation links to close mobile menu
+      // Add click handlers for navigation links and buttons to close mobile menu
       setTimeout(() => {
         const hostBtn = mobileNavContainer.querySelector('.mobile-host-btn');
+        const logoutBtn = mobileNavContainer.querySelector('.mobile-logout-btn');
+        const joinBtn = mobileNavContainer.querySelector('.mobile-join-btn');
         const navLinks = mobileNavContainer.querySelectorAll('.mobile-nav-links a');
 
+        function closeMobileNav() {
+          const mobileNav = document.getElementById('mobile-nav');
+          if (mobileNav) {
+            mobileNav.classList.remove('is-open');
+          }
+        }
+
+        // Close mobile nav when host button is clicked
         if (hostBtn) {
-          hostBtn.addEventListener('click', () => {
-            // Close mobile nav when host button is clicked
-            const mobileNav = document.getElementById('mobile-nav');
-            if (mobileNav) {
-              mobileNav.classList.remove('is-open');
-            }
-          });
+          hostBtn.addEventListener('click', closeMobileNav);
+        }
+
+        // Close mobile nav when logout button is clicked
+        if (logoutBtn) {
+          logoutBtn.addEventListener('click', closeMobileNav);
+        }
+
+        // Close mobile nav when join button is clicked
+        if (joinBtn) {
+          joinBtn.addEventListener('click', closeMobileNav);
         }
 
         // Close mobile nav when any navigation link is clicked
         navLinks.forEach(link => {
-          link.addEventListener('click', () => {
-            const mobileNav = document.getElementById('mobile-nav');
-            if (mobileNav) {
-              mobileNav.classList.remove('is-open');
-            }
-          });
+          link.addEventListener('click', closeMobileNav);
         });
       }, 100);
     }
