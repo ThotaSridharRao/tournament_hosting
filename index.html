@@ -215,6 +215,12 @@
       font-size: 1.1rem;
     }
 
+    .profile-userid {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      opacity: 0.8;
+    }
+
     .profile-actions {
       padding: 0.5rem;
     }
@@ -2124,11 +2130,26 @@
         `;
       }
 
-      // Bottom action buttons based on user authentication
+      // User profile section and bottom action buttons based on user authentication
+      let userProfileHTML = '';
       let bottomActionsHTML = '';
-      
+
       if (user) {
-        // Logged-in user: Show Host and Logout buttons at bottom
+        // Logged-in user: Show profile header with picture, username, and user ID
+        const username = user.username || user.email.split('@')[0];
+        const userId = user.id || user._id || 'N/A';
+
+        userProfileHTML = `
+          <div class="profile-header">
+            <div class="profile-photo"><i class="fas fa-user"></i></div>
+            <div class="profile-info">
+              <div class="profile-username">${username}</div>
+              <div class="profile-userid">ID: ${userId}</div>
+            </div>
+          </div>
+        `;
+
+        // Show Host and Logout buttons at bottom
         bottomActionsHTML = `
           <div class="mobile-nav-bottom-actions">
             <a href="user-dashboard.html" class="mobile-host-btn">
@@ -2153,6 +2174,7 @@
       // Combine the parts into the final HTML for the panel
       mobileNavContainer.innerHTML = `
         ${closeButtonHTML}
+        ${userProfileHTML}
         ${navLinksHTML}
         ${bottomActionsHTML}
       `;
@@ -2246,7 +2268,7 @@
 
     // Ping backend every 10 minutes (600,000 ms)
     setInterval(keepBackendAlive, 600000);
-    
+
     // Initial ping after 30 seconds
     setTimeout(keepBackendAlive, 30000);
 
