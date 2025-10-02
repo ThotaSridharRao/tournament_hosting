@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard - GamingNexus</title>
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,11 +18,16 @@
            Theme variables (Cyberpunk) - Matching index.html
            ========================= */
         :root {
-            --primary-color: #0AFAD9;      /* Electric Cyan */
-            --bg-dark: #0D0A1A;            /* Dark Matter Black */
-            --accent-secondary: #5D3FD3;   /* Deep Indigo */
-            --panel: #161329;              /* Dark Indigo Panel */
-            --text-primary: #F0F0F0;       /* Starlight White */
+            --primary-color: #0AFAD9;
+            /* Electric Cyan */
+            --bg-dark: #0D0A1A;
+            /* Dark Matter Black */
+            --accent-secondary: #5D3FD3;
+            /* Deep Indigo */
+            --panel: #161329;
+            /* Dark Indigo Panel */
+            --text-primary: #F0F0F0;
+            /* Starlight White */
             --text-secondary: rgba(240, 240, 240, 0.7);
             --border-color: rgba(10, 250, 217, 0.2);
             --ease: 0.3s ease;
@@ -29,11 +35,13 @@
             /* Legacy variables for compatibility */
             --copy: var(--text-primary);
             --muted: var(--text-secondary);
-            --accent: var(--accent-secondary); /* Using Indigo as main accent */
-            --accent-2: var(--primary-color); /* Using Cyan as secondary accent */
+            --accent: var(--accent-secondary);
+            /* Using Indigo as main accent */
+            --accent-2: var(--primary-color);
+            /* Using Cyan as secondary accent */
             --radius: 12px;
             --container: 1400px;
-            
+
             /* Additional colors for dashboard */
             --success-color: #28a745;
             --warning-color: #ffc107;
@@ -54,6 +62,7 @@
             :root {
                 --ease: 0ms;
             }
+
             * {
                 transition-duration: 0ms !important;
                 animation-duration: 0ms !important;
@@ -109,8 +118,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; }
+
+            0%,
+            100% {
+                opacity: 0.7;
+            }
+
+            50% {
+                opacity: 1;
+            }
         }
 
         /* =========================
@@ -537,7 +553,8 @@
             background: var(--panel);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            margin: 6rem auto 2rem auto; /* Added top margin for fixed navbar */
+            margin: 6rem auto 2rem auto;
+            /* Added top margin for fixed navbar */
             max-width: 1200px;
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
@@ -584,7 +601,8 @@
         /* =========================
            Cards & Components
            ========================= */
-        .tournament-card, .card {
+        .tournament-card,
+        .card {
             background: rgba(0, 0, 0, 0.2);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
@@ -593,7 +611,8 @@
             overflow: hidden;
         }
 
-        .tournament-card:hover, .card:hover {
+        .tournament-card:hover,
+        .card:hover {
             border-color: var(--primary-color);
             box-shadow: 0 8px 30px rgba(10, 250, 217, 0.1);
             transform: translateY(-2px);
@@ -645,7 +664,8 @@
         /* =========================
            Forms & Inputs
            ========================= */
-        .form-control, .form-select {
+        .form-control,
+        .form-select {
             background: rgba(0, 0, 0, 0.2);
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -654,7 +674,8 @@
             transition: all 0.3s var(--ease);
         }
 
-        .form-control:focus, .form-select:focus {
+        .form-control:focus,
+        .form-select:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(10, 250, 217, 0.2);
@@ -736,29 +757,33 @@
             font-weight: 600;
         }
 
-        .status-draft { 
-            background: rgba(108, 117, 125, 0.2); 
-            color: #6c757d; 
+        .status-draft {
+            background: rgba(108, 117, 125, 0.2);
+            color: #6c757d;
             border: 1px solid #6c757d;
         }
-        .status-pending-payment { 
-            background: rgba(255, 193, 7, 0.2); 
-            color: #ffc107; 
+
+        .status-pending-payment {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
             border: 1px solid #ffc107;
         }
-        .status-active { 
-            background: rgba(40, 167, 69, 0.2); 
-            color: #28a745; 
+
+        .status-active {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
             border: 1px solid #28a745;
         }
-        .status-completed { 
-            background: rgba(23, 162, 184, 0.2); 
-            color: #17a2b8; 
+
+        .status-completed {
+            background: rgba(23, 162, 184, 0.2);
+            color: #17a2b8;
             border: 1px solid #17a2b8;
         }
-        .status-cancelled { 
-            background: rgba(220, 53, 69, 0.2); 
-            color: #dc3545; 
+
+        .status-cancelled {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
             border: 1px solid #dc3545;
         }
 
@@ -820,8 +845,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* =========================
@@ -829,18 +859,19 @@
            ========================= */
         @media (max-width: 768px) {
             .dashboard-container {
-                margin: 4rem 1rem 1rem 1rem; /* Added 4rem top margin for navbar (60px + padding) */
+                margin: 4rem 1rem 1rem 1rem;
+                /* Added 4rem top margin for navbar (60px + padding) */
                 border-radius: 8px;
             }
-            
+
             .dashboard-header {
                 padding: 1.5rem 1rem;
             }
-            
+
             .dashboard-header h1 {
                 font-size: 1.5rem;
             }
-            
+
             .tab-content {
                 padding: 1rem;
             }
@@ -866,7 +897,8 @@
 
         @media (max-width: 480px) {
             .dashboard-container {
-                margin: 4rem 0.5rem 0.5rem 0.5rem; /* Added 4rem top margin for navbar */
+                margin: 4rem 0.5rem 0.5rem 0.5rem;
+                /* Added 4rem top margin for navbar */
             }
 
             .dashboard-header h1 {
@@ -883,8 +915,10 @@
                 margin-bottom: 0.25rem;
             }
 
-            .form-control, .form-select {
-                font-size: 16px; /* Prevents zoom on iOS */
+            .form-control,
+            .form-select {
+                font-size: 16px;
+                /* Prevents zoom on iOS */
             }
 
             /* Tournament cards responsive */
@@ -1002,11 +1036,12 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Loading Screen -->
     <div id="loader-wrapper">
-        <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie" 
-                       style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+        <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie"
+            style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
     </div>
 
     <!-- Navigation -->
@@ -1138,7 +1173,7 @@
                             </button>
                         </div>
                     </div>
-                    
+
                     <div id="tournamentsContainer">
                         <div class="text-center text-muted py-5">
                             <i class="fas fa-trophy fa-3x mb-3"></i>
@@ -1156,7 +1191,7 @@
                     <div class="row">
                         <div class="col-lg-8">
                             <h4 class="mb-4">Create New Tournament</h4>
-                            
+
                             <form id="createTournamentForm">
                                 <!-- Basic Information -->
                                 <div class="card tournament-card">
@@ -1166,9 +1201,12 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
-                                                <label for="tournamentTitle" class="form-label">Tournament Title *</label>
-                                                <input type="text" class="form-control" id="tournamentTitle" required maxlength="100">
-                                                <div class="form-text">Choose an engaging title for your tournament</div>
+                                                <label for="tournamentTitle" class="form-label">Tournament Title
+                                                    *</label>
+                                                <input type="text" class="form-control" id="tournamentTitle" required
+                                                    maxlength="100">
+                                                <div class="form-text">Choose an engaging title for your tournament
+                                                </div>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="tournamentGame" class="form-label">Game *</label>
@@ -1184,16 +1222,20 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="mb-3">
                                             <label for="tournamentDescription" class="form-label">Description *</label>
-                                            <textarea class="form-control" id="tournamentDescription" rows="4" required maxlength="2000" placeholder="Describe your tournament, rules, and any special instructions..."></textarea>
-                                            <div class="form-text">Provide clear information about rules, format, and requirements</div>
+                                            <textarea class="form-control" id="tournamentDescription" rows="4" required
+                                                maxlength="2000"
+                                                placeholder="Describe your tournament, rules, and any special instructions..."></textarea>
+                                            <div class="form-text">Provide clear information about rules, format, and
+                                                requirements</div>
                                         </div>
 
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
-                                                <label for="tournamentFormat" class="form-label">Tournament Format *</label>
+                                                <label for="tournamentFormat" class="form-label">Tournament Format
+                                                    *</label>
                                                 <select class="form-select" id="tournamentFormat" required>
                                                     <option value="">Select Format</option>
                                                     <option value="single-elimination">Single Elimination</option>
@@ -1205,7 +1247,8 @@
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="maxTeams" class="form-label">Maximum Teams *</label>
-                                                <input type="number" class="form-control" id="maxTeams" required min="2" max="500" value="16">
+                                                <input type="number" class="form-control" id="maxTeams" required min="2"
+                                                    max="500" value="16">
                                                 <div class="form-text">Between 2 and 500 teams</div>
                                             </div>
                                         </div>
@@ -1220,23 +1263,30 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
-                                                <label for="registrationStart" class="form-label">Registration Start *</label>
-                                                <input type="datetime-local" class="form-control" id="registrationStart" required>
+                                                <label for="registrationStart" class="form-label">Registration Start
+                                                    *</label>
+                                                <input type="datetime-local" class="form-control" id="registrationStart"
+                                                    required>
                                             </div>
                                             <div class="col-md-6 mb-3">
-                                                <label for="registrationEnd" class="form-label">Registration End *</label>
-                                                <input type="datetime-local" class="form-control" id="registrationEnd" required>
+                                                <label for="registrationEnd" class="form-label">Registration End
+                                                    *</label>
+                                                <input type="datetime-local" class="form-control" id="registrationEnd"
+                                                    required>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
-                                                <label for="tournamentStart" class="form-label">Tournament Start *</label>
-                                                <input type="datetime-local" class="form-control" id="tournamentStart" required>
+                                                <label for="tournamentStart" class="form-label">Tournament Start
+                                                    *</label>
+                                                <input type="datetime-local" class="form-control" id="tournamentStart"
+                                                    required>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="tournamentEnd" class="form-label">Tournament End *</label>
-                                                <input type="datetime-local" class="form-control" id="tournamentEnd" required>
+                                                <input type="datetime-local" class="form-control" id="tournamentEnd"
+                                                    required>
                                             </div>
                                         </div>
                                     </div>
@@ -1251,26 +1301,33 @@
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="entryFee" class="form-label">Entry Fee (₹)</label>
-                                                <input type="number" class="form-control" id="entryFee" min="0" max="10000" value="0" required>
+                                                <input type="number" class="form-control" id="entryFee" min="0"
+                                                    max="10000" value="0" required>
                                                 <div class="form-text">Set to 0 for free tournaments</div>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="prizePool" class="form-label">Prize Pool (₹)</label>
-                                                <input type="number" class="form-control" id="prizePool" min="0" max="100000" value="0" required>
+                                                <input type="number" class="form-control" id="prizePool" min="0"
+                                                    max="100000" value="0" required>
                                                 <div class="form-text">Total prize money for winners</div>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
-                                                <label for="maxPlayersPerTeam" class="form-label">Max Players per Team *</label>
-                                                <input type="number" class="form-control" id="maxPlayersPerTeam" min="1" max="10" value="4" required>
+                                                <label for="maxPlayersPerTeam" class="form-label">Max Players per Team
+                                                    *</label>
+                                                <input type="number" class="form-control" id="maxPlayersPerTeam" min="1"
+                                                    max="10" value="4" required>
                                                 <div class="form-text">Maximum number of players allowed per team</div>
                                             </div>
                                             <div class="col-md-6 mb-3">
-                                                <label for="tournamentPoster" class="form-label">Tournament Poster</label>
-                                                <input type="file" class="form-control" id="tournamentPoster" accept="image/*">
-                                                <div class="form-text">Upload a poster image for your tournament (optional)</div>
+                                                <label for="tournamentPoster" class="form-label">Tournament
+                                                    Poster</label>
+                                                <input type="file" class="form-control" id="tournamentPoster"
+                                                    accept="image/*">
+                                                <div class="form-text">Upload a poster image for your tournament
+                                                    (optional)</div>
                                             </div>
                                         </div>
                                     </div>
@@ -1290,7 +1347,7 @@
                                                 <option value="hybrid">Hybrid (Online + Physical)</option>
                                             </select>
                                         </div>
-                                        
+
                                         <div id="physicalVenueDetails" style="display: none;">
                                             <div class="row">
                                                 <div class="col-md-6 mb-3">
@@ -1299,10 +1356,11 @@
                                                 </div>
                                                 <div class="col-md-6 mb-3">
                                                     <label for="venueCapacity" class="form-label">Venue Capacity</label>
-                                                    <input type="number" class="form-control" id="venueCapacity" min="1">
+                                                    <input type="number" class="form-control" id="venueCapacity"
+                                                        min="1">
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="mb-3">
                                                 <label for="venueAddress" class="form-label">Address</label>
                                                 <textarea class="form-control" id="venueAddress" rows="3"></textarea>
@@ -1327,7 +1385,7 @@
                                                 <input type="datetime-local" class="form-control" id="qualifier2Date">
                                             </div>
                                         </div>
-                                        
+
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="qualifier3Date" class="form-label">Qualifier 3 Date</label>
@@ -1338,17 +1396,18 @@
                                                 <input type="datetime-local" class="form-control" id="qualifier4Date">
                                             </div>
                                         </div>
-                                        
+
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="finalMatchDate" class="form-label">Final Match Date</label>
                                                 <input type="datetime-local" class="form-control" id="finalMatchDate">
                                             </div>
                                         </div>
-                                        
+
                                         <div class="alert alert-info">
                                             <i class="fas fa-info-circle me-2"></i>
-                                            <strong>KP Format:</strong> Teams compete in multiple qualifier rounds to accumulate kill points. Top teams advance to the final match.
+                                            <strong>KP Format:</strong> Teams compete in multiple qualifier rounds to
+                                            accumulate kill points. Top teams advance to the final match.
                                         </div>
                                     </div>
                                 </div>
@@ -1359,7 +1418,8 @@
                                     </button>
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-plus me-2"></i>Create Tournament
-                                        <span class="loading-spinner spinner-border spinner-border-sm ms-2" role="status"></span>
+                                        <span class="loading-spinner spinner-border spinner-border-sm ms-2"
+                                            role="status"></span>
                                     </button>
                                 </div>
                             </form>
@@ -1370,14 +1430,14 @@
                             <div class="sticky-top" style="top: 20px;">
                                 <div class="pricing-display">
                                     <h5><i class="fas fa-calculator me-2"></i>Hosting Fee Calculator</h5>
-                                    
+
                                     <div id="pricingInfo">
                                         <div class="text-center text-muted py-4">
                                             <i class="fas fa-info-circle fa-2x mb-3"></i>
                                             <p>Select registration dates to calculate hosting fee</p>
                                         </div>
                                     </div>
-                                    
+
                                     <div id="pricingBreakdown" style="display: none;">
                                         <div class="pricing-breakdown mb-3">
                                             <div class="d-flex justify-content-between">
@@ -1398,12 +1458,12 @@
                                             </div>
                                             <hr>
                                         </div>
-                                        
+
                                         <div class="text-center">
                                             <div class="total-fee" id="totalFee">₹0</div>
                                             <small class="text-muted">Total Hosting Fee</small>
                                         </div>
-                                        
+
                                         <div class="mt-3">
                                             <small class="text-muted">
                                                 <i class="fas fa-info-circle me-1"></i>
@@ -1457,7 +1517,7 @@
                             </button>
                         </div>
                     </div>
-                    
+
                     <div id="joinedTournamentsContainer">
                         <div class="text-center text-muted py-5">
                             <i class="fas fa-gamepad fa-3x mb-3"></i>
@@ -1478,14 +1538,15 @@
                                 <h4><i class="fas fa-headset me-3"></i>Support & Dispute Resolution</h4>
                                 <p class="text-muted">Get help with tournament issues or submit support requests</p>
                             </div>
-                            
+
                             <div class="row">
                                 <div class="col-md-6 mb-4">
                                     <div class="card h-100">
                                         <div class="card-body text-center">
                                             <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
                                             <h5>Dispute Resolution</h5>
-                                            <p class="text-muted">Report issues with tournaments, organizers, or request refunds</p>
+                                            <p class="text-muted">Report issues with tournaments, organizers, or request
+                                                refunds</p>
                                             <a href="dispute-support.html" class="btn btn-warning">
                                                 <i class="fas fa-exclamation-triangle me-2"></i>Access Disputes
                                             </a>
@@ -1497,7 +1558,8 @@
                                         <div class="card-body text-center">
                                             <i class="fas fa-question-circle fa-3x text-info mb-3"></i>
                                             <h5>General Support</h5>
-                                            <p class="text-muted">Get help with technical issues, account problems, or general questions</p>
+                                            <p class="text-muted">Get help with technical issues, account problems, or
+                                                general questions</p>
                                             <a href="dispute-support.html" class="btn btn-info">
                                                 <i class="fas fa-question-circle me-2"></i>Get Support
                                             </a>
@@ -1505,7 +1567,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card">
@@ -1515,21 +1577,33 @@
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <h6 class="text-warning"><i class="fas fa-exclamation-triangle me-2"></i>Dispute Resolution</h6>
+                                                    <h6 class="text-warning"><i
+                                                            class="fas fa-exclamation-triangle me-2"></i>Dispute
+                                                        Resolution</h6>
                                                     <ul class="list-unstyled">
-                                                        <li><i class="fas fa-check text-success me-2"></i>Report tournament issues</li>
-                                                        <li><i class="fas fa-check text-success me-2"></i>Request refunds for cancelled tournaments</li>
-                                                        <li><i class="fas fa-check text-success me-2"></i>Report organizer misconduct</li>
-                                                        <li><i class="fas fa-check text-success me-2"></i>Get automated refund processing</li>
+                                                        <li><i class="fas fa-check text-success me-2"></i>Report
+                                                            tournament issues</li>
+                                                        <li><i class="fas fa-check text-success me-2"></i>Request
+                                                            refunds for cancelled tournaments</li>
+                                                        <li><i class="fas fa-check text-success me-2"></i>Report
+                                                            organizer misconduct</li>
+                                                        <li><i class="fas fa-check text-success me-2"></i>Get automated
+                                                            refund processing</li>
                                                     </ul>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <h6 class="text-info"><i class="fas fa-question-circle me-2"></i>General Support</h6>
+                                                    <h6 class="text-info"><i
+                                                            class="fas fa-question-circle me-2"></i>General Support</h6>
                                                     <ul class="list-unstyled">
-                                                        <li><i class="fas fa-check text-success me-2"></i>Technical assistance</li>
-                                                        <li><i class="fas fa-check text-success me-2"></i>Account-related help</li>
-                                                        <li><i class="fas fa-check text-success me-2"></i>Payment issues</li>
-                                                        <li><i class="fas fa-check text-success me-2"></i>General questions</li>
+                                                        <li><i class="fas fa-check text-success me-2"></i>Technical
+                                                            assistance</li>
+                                                        <li><i
+                                                                class="fas fa-check text-success me-2"></i>Account-related
+                                                            help</li>
+                                                        <li><i class="fas fa-check text-success me-2"></i>Payment issues
+                                                        </li>
+                                                        <li><i class="fas fa-check text-success me-2"></i>General
+                                                            questions</li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -1575,6 +1649,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // API Configuration (Production)
+        const API_BASE_URL = 'https://t2-237c.onrender.com';
+
         let currentUser = null;
         let createdTournamentId = null;
 
@@ -1623,7 +1700,7 @@
                 hasLocalStorage: !!localStorage.getItem('nexus_session'),
                 hasSessionStorage: !!sessionStorage.getItem('nexus_session')
             });
-            
+
             localStorage.removeItem('nexus_session');
             sessionStorage.removeItem('nexus_session');
             const returnUrl = encodeURIComponent(window.location.href);
@@ -1636,7 +1713,7 @@
             statsElements.forEach(el => {
                 el.innerHTML = '<i class="fas fa-spinner fa-spin text-primary"></i>';
             });
-            
+
             // Hide any previous error messages
             const errorContainer = document.getElementById('error-container');
             if (errorContainer) {
@@ -1663,7 +1740,7 @@
                     </div>
                 `;
                 errorContainer.style.display = 'block';
-                
+
                 if (autoHide) {
                     setTimeout(() => {
                         errorContainer.style.display = 'none';
@@ -1707,42 +1784,42 @@
                 url: response.url,
                 headers: Object.fromEntries(response.headers.entries())
             };
-            
+
             if (response.status === 401) {
                 logWarning('AUTH_FAILURE', `Authentication failed for ${context}`, responseContext);
                 handleAuthenticationError();
                 return null;
             }
-            
+
             if (response.status === 404) {
                 logWarning('API_NOT_FOUND', `${context}: Endpoint not found`, responseContext);
                 throw new Error(`${context} feature is not available`);
             }
-            
+
             if (response.status === 500) {
                 logError('SERVER_ERROR', `${context}: Server error`, responseContext);
                 throw new Error('Server error - please try again later');
             }
-            
+
             if (!response.ok) {
                 logError('HTTP_ERROR', `${context}: HTTP error ${response.status}`, responseContext);
                 throw new Error(`${context} failed`);
             }
-            
+
             try {
                 const result = await response.json();
                 if (!result.success) {
-                    logError('API_ERROR', `${context}: API returned error`, { 
-                        ...responseContext, 
-                        apiMessage: result.message 
+                    logError('API_ERROR', `${context}: API returned error`, {
+                        ...responseContext,
+                        apiMessage: result.message
                     });
                     throw new Error(result.message || `${context} failed`);
                 }
-                
+
                 logInfo('API_SUCCESS', `${context} completed successfully`, {
                     dataLength: result.data ? (Array.isArray(result.data) ? result.data.length : 'object') : 'none'
                 });
-                
+
                 return result;
             } catch (error) {
                 if (error.name === 'SyntaxError') {
@@ -1758,19 +1835,22 @@
             if (!isAuthenticated()) {
                 throw new Error('User not authenticated');
             }
-            
+
             const sessionData = getSessionData();
             const headers = {
                 'Authorization': `Bearer ${sessionData.token}`,
                 ...options.headers
             };
-            
+
+            // Ensure URL is absolute - if it starts with /api/, prepend API_BASE_URL
+            const fullUrl = url.startsWith('/api/') ? `${API_BASE_URL}${url}` : url;
+
             try {
-                const response = await fetch(url, {
+                const response = await fetch(fullUrl, {
                     ...options,
                     headers
                 });
-                
+
                 return response;
             } catch (error) {
                 if (error.message.includes('fetch') || error.name === 'TypeError') {
@@ -1787,16 +1867,16 @@
                     return await apiCall();
                 } catch (error) {
                     logError('API_RETRY', `Attempt ${attempt} failed`, { error: error.message, attempt, maxRetries });
-                    
+
                     if (attempt === maxRetries) {
                         throw error;
                     }
-                    
+
                     // Don't retry authentication errors
                     if (error.message.includes('Authentication') || error.message.includes('401')) {
                         throw error;
                     }
-                    
+
                     // Wait before retrying
                     await new Promise(resolve => setTimeout(resolve, delay * attempt));
                 }
@@ -1808,7 +1888,7 @@
             const timestamp = new Date().toISOString();
             const sessionData = getSessionData();
             const userId = sessionData?.user?.id || 'anonymous';
-            
+
             const logEntry = {
                 timestamp,
                 category,
@@ -1818,9 +1898,9 @@
                 url: window.location.href,
                 context
             };
-            
+
             console.error(`[${category}] ${message}`, logEntry);
-            
+
             // In production, you might want to send this to a logging service
             // sendToLoggingService(logEntry);
         }
@@ -1829,7 +1909,7 @@
             const timestamp = new Date().toISOString();
             const sessionData = getSessionData();
             const userId = sessionData?.user?.id || 'anonymous';
-            
+
             const logEntry = {
                 timestamp,
                 category,
@@ -1837,7 +1917,7 @@
                 userId,
                 context
             };
-            
+
             console.warn(`[${category}] ${message}`, logEntry);
         }
 
@@ -1845,7 +1925,7 @@
             const timestamp = new Date().toISOString();
             const sessionData = getSessionData();
             const userId = sessionData?.user?.id || 'anonymous';
-            
+
             const logEntry = {
                 timestamp,
                 category,
@@ -1853,7 +1933,7 @@
                 userId,
                 context
             };
-            
+
             console.log(`[${category}] ${message}`, logEntry);
         }
 
@@ -1900,7 +1980,7 @@
             }
 
             const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
-            
+
             // Dashboard-specific navigation links
             const navLinksHTML = `
                 <div class="mobile-nav-links">
@@ -1912,7 +1992,7 @@
                     <a href="index.html"><i class="fas fa-home"></i> Home</a>
                 </div>
             `;
-            
+
             let userSectionHTML = '';
 
             if (user) {
@@ -1967,7 +2047,7 @@
                 console.error("Navbar elements not found.", { hamburger, mobileNav });
                 return;
             }
-            
+
             function closeMobileNav() {
                 console.log('Closing mobile nav');
                 mobileNav.classList.remove('is-open');
@@ -1985,17 +2065,17 @@
 
             document.addEventListener('click', (event) => {
                 if (!mobileNav.classList.contains('is-open')) return;
-                
+
                 const closeButton = event.target.closest('.mobile-nav-close');
                 if (closeButton) {
                     console.log('Close button clicked');
                     closeMobileNav();
                     return;
                 }
-                
+
                 const isClickInsideNav = event.target.closest('#mobile-nav');
                 const isClickOnHamburger = event.target.closest('.hamburger');
-                
+
                 if (!isClickInsideNav && !isClickOnHamburger) {
                     console.log('Clicked outside nav, closing');
                     closeMobileNav();
@@ -2009,10 +2089,10 @@
                     closeMobileNav();
                 }
             });
-            
+
             checkUserAuthentication();
             setupMobileNav();
-            
+
             // Test mobile nav content
             console.log('Mobile nav content:', mobileNav.innerHTML);
         }
@@ -2024,12 +2104,12 @@
             allPanes.forEach(pane => {
                 pane.classList.remove('show', 'active');
             });
-            
+
             // Show the selected tab pane
             const targetPane = document.getElementById(tabName);
             if (targetPane) {
                 targetPane.classList.add('show', 'active');
-                
+
                 // Load data for specific tabs
                 if (tabName === 'tournaments') {
                     loadUserTournaments();
@@ -2039,7 +2119,7 @@
                     loadJoinedTournaments();
                 }
             }
-            
+
             // Close mobile nav if open
             const mobileNav = document.getElementById('mobile-nav');
             if (mobileNav && mobileNav.classList.contains('is-open')) {
@@ -2050,7 +2130,7 @@
         // Check if backend is available
         async function checkBackendStatus() {
             try {
-                const response = await fetch('/api/content/highlights', {
+                const response = await fetch(`${API_BASE_URL}/api/content/highlights`, {
                     method: 'GET',
                     timeout: 5000
                 });
@@ -2062,15 +2142,15 @@
         }
 
         // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', async function() {
+        document.addEventListener('DOMContentLoaded', async function () {
             // Check authentication first
             if (!requireAuthentication()) {
                 return; // Exit if not authenticated (user will be redirected)
             }
-            
+
             setupEventListeners();
             setDefaultDates();
-            
+
             // Check backend availability
             const backendAvailable = await checkBackendStatus();
             if (!backendAvailable) {
@@ -2090,12 +2170,12 @@
             } else {
                 loadDashboardData();
             }
-            
+
             initializeNavbar();
-            
+
             // Show overview tab by default
             switchToTab('overview');
-            
+
             // Hide loading screen after initialization
             setTimeout(() => {
                 const loader = document.getElementById('loader-wrapper');
@@ -2111,29 +2191,29 @@
             if (createForm) {
                 createForm.addEventListener('submit', handleFormSubmit);
             }
-            
+
             // Date change listeners for pricing calculation
             const regStart = document.getElementById('registrationStart');
             const regEnd = document.getElementById('registrationEnd');
             if (regStart) regStart.addEventListener('change', calculateHostingFee);
             if (regEnd) regEnd.addEventListener('change', calculateHostingFee);
-            
+
             // Venue type change
             const venueType = document.getElementById('venueType');
             if (venueType) venueType.addEventListener('change', toggleVenueDetails);
-            
+
             // Tournament format change
             const tournamentFormat = document.getElementById('tournamentFormat');
             if (tournamentFormat) tournamentFormat.addEventListener('change', toggleKpFormatFields);
-            
+
             // Status filter
             const statusFilter = document.getElementById('statusFilter');
             if (statusFilter) statusFilter.addEventListener('change', loadUserTournaments);
-            
+
             // Joined tournaments status filter
             const joinedStatusFilter = document.getElementById('joinedStatusFilter');
             if (joinedStatusFilter) joinedStatusFilter.addEventListener('change', loadJoinedTournaments);
-            
+
             // Note: Tab listeners removed since we moved navigation to navbar
         }
 
@@ -2141,12 +2221,12 @@
             const now = new Date();
             const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
             const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-            
+
             document.getElementById('registrationStart').value = formatDateForInput(tomorrow);
             document.getElementById('registrationEnd').value = formatDateForInput(new Date(tomorrow.getTime() + 3 * 24 * 60 * 60 * 1000));
             document.getElementById('tournamentStart').value = formatDateForInput(nextWeek);
             document.getElementById('tournamentEnd').value = formatDateForInput(new Date(nextWeek.getTime() + 24 * 60 * 60 * 1000));
-            
+
             // Pricing will be calculated when user selects dates
         }
 
@@ -2157,18 +2237,18 @@
         async function calculateHostingFee() {
             const regStart = document.getElementById('registrationStart').value;
             const regEnd = document.getElementById('registrationEnd').value;
-            
+
             // Show default message if dates are not selected
             if (!regStart || !regEnd) {
                 document.getElementById('pricingInfo').style.display = 'block';
                 document.getElementById('pricingBreakdown').style.display = 'none';
                 return;
             }
-            
+
             // Validate date order
             const startDate = new Date(regStart);
             const endDate = new Date(regEnd);
-            
+
             if (startDate >= endDate) {
                 document.getElementById('pricingInfo').innerHTML = `
                     <div class="text-center text-muted py-4">
@@ -2180,9 +2260,9 @@
                 document.getElementById('pricingBreakdown').style.display = 'none';
                 return;
             }
-            
+
             try {
-                const response = await fetch('/api/user-tournaments/calculate-fee', {
+                const response = await fetch(`${API_BASE_URL}/api/user-tournaments/calculate-fee`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -2192,9 +2272,9 @@
                         registrationEnd: regEnd
                     })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     displayPricingBreakdown(result.data);
                 } else {
@@ -2225,7 +2305,7 @@
         function displayPricingBreakdown(feeData) {
             document.getElementById('pricingInfo').style.display = 'none';
             document.getElementById('pricingBreakdown').style.display = 'block';
-            
+
             document.getElementById('durationDays').textContent = `${feeData.registrationDurationDays} days`;
             document.getElementById('baseFee').textContent = `₹${feeData.breakdown.baseFeeAmount}`;
             document.getElementById('additionalFee').textContent = `₹${feeData.breakdown.additionalDaysTotal}`;
@@ -2236,7 +2316,7 @@
         function toggleVenueDetails() {
             const venueType = document.getElementById('venueType').value;
             const physicalDetails = document.getElementById('physicalVenueDetails');
-            
+
             if (venueType === 'physical' || venueType === 'hybrid') {
                 physicalDetails.style.display = 'block';
             } else {
@@ -2247,7 +2327,7 @@
         function toggleKpFormatFields() {
             const tournamentFormat = document.getElementById('tournamentFormat').value;
             const kpFields = document.getElementById('kpFormatFields');
-            
+
             if (tournamentFormat === 'kp') {
                 kpFields.style.display = 'block';
             } else {
@@ -2257,39 +2337,39 @@
 
         async function handleFormSubmit(e) {
             e.preventDefault();
-            
+
             const submitBtn = e.target.querySelector('button[type="submit"]');
             const spinner = submitBtn.querySelector('.loading-spinner');
-            
+
             submitBtn.disabled = true;
             spinner.style.display = 'inline-block';
-            
+
             try {
                 const formData = collectFormData();
-                
+
                 const sessionData = getSessionData();
-                const response = await fetch('/api/user-tournaments', {
+                const response = await fetch(`${API_BASE_URL}/api/user-tournaments`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${sessionData.token}`
                     },
                     body: formData
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     createdTournamentId = result.data._id;
                     document.getElementById('createdTournamentTitle').textContent = result.data.title;
-                    
+
                     // Show success modal
                     const modal = new bootstrap.Modal(document.getElementById('successModal'));
                     modal.show();
-                    
+
                     // Reset form
                     document.getElementById('createTournamentForm').reset();
                     setDefaultDates();
-                    
+
                     // Refresh tournaments list
                     loadUserTournaments();
                     loadDashboardStats();
@@ -2307,7 +2387,7 @@
 
         function collectFormData() {
             const formData = new FormData();
-            
+
             // Basic tournament info
             formData.append('title', document.getElementById('tournamentTitle').value);
             formData.append('game', document.getElementById('tournamentGame').value);
@@ -2320,10 +2400,10 @@
             formData.append('maxPlayersPerTeam', document.getElementById('maxPlayersPerTeam').value || '4');
             formData.append('entryFee', document.getElementById('entryFee').value || '0');
             formData.append('prizePool', document.getElementById('prizePool').value || '0');
-            
+
             const format = document.getElementById('tournamentFormat').value;
             formData.append('format', format);
-            
+
             // KP format settings
             if (format === 'kp') {
                 const kpSettings = {
@@ -2335,11 +2415,11 @@
                 };
                 formData.append('kpSettings', JSON.stringify(kpSettings));
             }
-            
+
             // Venue details
             const venueType = document.getElementById('venueType').value;
             formData.append('venueType', venueType);
-            
+
             if (venueType === 'physical' || venueType === 'hybrid') {
                 const venueDetails = {
                     name: document.getElementById('venueName').value,
@@ -2354,13 +2434,13 @@
                 };
                 formData.append('venueDetails', JSON.stringify(venueDetails));
             }
-            
+
             // Poster image
             const posterFile = document.getElementById('tournamentPoster').files[0];
             if (posterFile) {
                 formData.append('posterImage', posterFile);
             }
-            
+
             return formData;
         }
 
@@ -2382,20 +2462,20 @@
 
                 const sessionData = getSessionData();
                 const user = sessionData.user;
-                
+
                 let hostedCount = 0;
                 let joinedTournaments = [];
-                
+
                 // Show loading state
                 showLoadingState();
-                
+
                 // Get hosted tournaments
                 try {
                     const hostedResult = await retryApiCall(async () => {
-                        const response = await authenticatedFetch('/api/user-tournaments');
+                        const response = await authenticatedFetch(`${API_BASE_URL}/api/user-tournaments`);
                         return await handleApiResponse(response, 'Load hosted tournaments');
                     });
-                    
+
                     if (hostedResult) {
                         hostedCount = hostedResult.data ? hostedResult.data.length : 0;
                         console.log(`Loaded ${hostedCount} hosted tournaments`);
@@ -2408,10 +2488,10 @@
                 // Get joined tournaments
                 try {
                     const joinedResult = await retryApiCall(async () => {
-                        const response = await authenticatedFetch('/api/users/me/tournaments');
+                        const response = await authenticatedFetch(`${API_BASE_URL}/api/users/me/tournaments`);
                         return await handleApiResponse(response, 'Load joined tournaments');
                     });
-                    
+
                     if (joinedResult) {
                         joinedTournaments = joinedResult.data || [];
                         console.log(`Loaded ${joinedTournaments.length} joined tournaments`);
@@ -2435,20 +2515,20 @@
                 const activeTournamentsEl = document.getElementById('activeTournaments');
                 const totalParticipantsEl = document.getElementById('totalParticipants');
                 const totalRevenueEl = document.getElementById('totalRevenue');
-                
+
                 if (totalTournamentsEl) totalTournamentsEl.textContent = hostedCount.toString();
                 if (activeTournamentsEl) activeTournamentsEl.textContent = joinedCount.toString();
                 if (totalParticipantsEl) totalParticipantsEl.textContent = totalParticipants.toString();
                 if (totalRevenueEl) totalRevenueEl.textContent = `₹${totalPrizePools.toLocaleString()}`;
-                
+
                 // Hide loading state
                 hideLoadingState();
-                
+
                 // Show success message if data was loaded successfully
                 if (hostedCount > 0 || joinedCount > 0) {
                     console.log('Dashboard data loaded successfully');
                 }
-                
+
             } catch (error) {
                 console.error('Error loading dashboard stats:', error);
                 // Fallback to default values with null checks
@@ -2456,12 +2536,12 @@
                 const activeTournamentsEl = document.getElementById('activeTournaments');
                 const totalParticipantsEl = document.getElementById('totalParticipants');
                 const totalRevenueEl = document.getElementById('totalRevenue');
-                
+
                 if (totalTournamentsEl) totalTournamentsEl.textContent = '0';
                 if (activeTournamentsEl) activeTournamentsEl.textContent = '0';
                 if (totalParticipantsEl) totalParticipantsEl.textContent = '0';
                 if (totalRevenueEl) totalRevenueEl.textContent = '₹0';
-                
+
                 // Hide loading state even on error
                 hideLoadingState();
             }
@@ -2483,7 +2563,7 @@
 
                 const sessionData = getSessionData();
                 const user = sessionData.user;
-                
+
                 // Show loading state
                 const container = document.getElementById('joinedTournamentsContainer');
                 if (container) {
@@ -2495,7 +2575,7 @@
                     `;
                 }
 
-                const response = await fetch('/api/users/me/tournaments', {
+                const response = await fetch(`${API_BASE_URL}/api/users/me/tournaments`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${sessionData.token}`
@@ -2513,7 +2593,7 @@
                     if (result.success) {
                         let tournaments = result.data || [];
                         console.log(`Successfully loaded ${tournaments.length} joined tournaments`);
-                        
+
                         // Apply status filter if selected
                         const statusFilter = document.getElementById('joinedStatusFilter');
                         if (statusFilter && statusFilter.value) {
@@ -2530,7 +2610,7 @@
                                 return true;
                             });
                         }
-                        
+
                         displayJoinedTournaments(tournaments);
                     } else {
                         console.error('Failed to load joined tournaments:', result.message);
@@ -2574,12 +2654,12 @@
 
         function displayJoinedTournaments(tournaments) {
             const container = document.getElementById('joinedTournamentsContainer');
-            
+
             if (!container) {
                 console.error('joinedTournamentsContainer element not found');
                 return;
             }
-            
+
             if (tournaments.length === 0) {
                 container.innerHTML = `
                     <div class="text-center text-muted py-5">
@@ -2599,17 +2679,17 @@
                 const status = tournament.status || 'upcoming';
                 const statusClass = getStatusClass(status);
                 const statusDisplay = status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' ');
-                
+
                 // Get participant count
                 const participantCount = tournament.participants ? tournament.participants.length : 0;
-                
+
                 // Format dates
                 const tournamentStart = tournament.tournamentStart || tournament.startDate;
                 const startDate = tournamentStart ? new Date(tournamentStart).toLocaleDateString() : 'TBD';
-                
+
                 // Get user's team name
                 const myTeam = tournament.user_team_name || 'Team';
-                
+
                 return `
                     <div class="card tournament-card">
                         <div class="card-body">
@@ -2657,10 +2737,10 @@
                                     <a href="tournament-details.html?slug=${tournament.slug}" class="btn btn-outline-primary btn-sm mb-1 mb-sm-0 me-sm-1">
                                         <i class="fas fa-eye"></i> <span class="d-none d-sm-inline">View </span>Details
                                     </a>
-                                    ${status === 'live' || status === 'ongoing' ? 
-                                        `<a href="tournament-details.html?slug=${tournament.slug}#brackets" class="btn btn-primary btn-sm"><i class="fas fa-play"></i> <span class="d-none d-sm-inline">View </span>Brackets</a>` : 
-                                        ''
-                                    }
+                                    ${status === 'live' || status === 'ongoing' ?
+                        `<a href="tournament-details.html?slug=${tournament.slug}#brackets" class="btn btn-primary btn-sm"><i class="fas fa-play"></i> <span class="d-none d-sm-inline">View </span>Brackets</a>` :
+                        ''
+                    }
                                 </div>
                             </div>
                         </div>
@@ -2672,7 +2752,7 @@
         }
 
         function getStatusClass(status) {
-            switch(status) {
+            switch (status) {
                 case 'upcoming':
                 case 'registration_open':
                     return 'status-active';
@@ -2691,12 +2771,12 @@
 
         function displayTournaments(tournaments) {
             const container = document.getElementById('tournamentsContainer');
-            
+
             if (!container) {
                 console.error('tournamentsContainer element not found');
                 return;
             }
-            
+
             if (tournaments.length === 0) {
                 container.innerHTML = `
                     <div class="text-center text-muted py-5">
@@ -2710,7 +2790,7 @@
                 `;
                 return;
             }
-            
+
             container.innerHTML = tournaments.map(tournament => `
                 <div class="card tournament-card">
                     <div class="card-body">
@@ -2755,11 +2835,11 @@
                                 <button class="btn btn-outline-secondary btn-sm" onclick="editTournament('${tournament._id}')">
                                     <i class="fas fa-edit"></i> Edit
                                 </button>
-                                ${tournament.status === 'draft' || tournament.status === 'pending_payment' ? 
-                                    `<button class="btn btn-outline-danger btn-sm" onclick="deleteTournament('${tournament._id}')">
+                                ${tournament.status === 'draft' || tournament.status === 'pending_payment' ?
+                    `<button class="btn btn-outline-danger btn-sm" onclick="deleteTournament('${tournament._id}')">
                                         <i class="fas fa-trash"></i>
                                     </button>` : ''
-                                }
+                }
                             </div>
                         </div>
                     </div>
@@ -2793,17 +2873,17 @@
             if (!confirm('Are you sure you want to delete this tournament?')) {
                 return;
             }
-            
+
             try {
-                const response = await fetch(`/api/user-tournaments/${tournamentId}`, {
+                const response = await fetch(`${API_BASE_URL}/api/user-tournaments/${tournamentId}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${currentUser.token}`
                     }
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     showAlert('Tournament deleted successfully', 'success');
                     loadUserTournaments();
@@ -2818,7 +2898,7 @@
         }
 
         // Proceed to payment button handler
-        document.getElementById('proceedToPayment').addEventListener('click', function() {
+        document.getElementById('proceedToPayment').addEventListener('click', function () {
             if (createdTournamentId) {
                 // TODO: Implement payment flow
                 window.location.href = `tournament-payment.html?id=${createdTournamentId}`;
@@ -2832,9 +2912,9 @@
                 ${message}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             `;
-            
+
             document.querySelector('.tab-content').insertBefore(alertDiv, document.querySelector('.tab-content').firstChild);
-            
+
             setTimeout(() => {
                 alertDiv.remove();
             }, 5000);
@@ -2843,10 +2923,10 @@
         // Unit Tests for Authentication Functions
         function runAuthenticationTests() {
             console.log('🧪 Running authentication unit tests...');
-            
+
             let testsPassed = 0;
             let testsTotal = 0;
-            
+
             function test(name, testFn) {
                 testsTotal++;
                 try {
@@ -2857,7 +2937,7 @@
                     console.error(`❌ ${name}: ${error.message}`);
                 }
             }
-            
+
             // Test getSessionData function
             test('getSessionData returns null when no session exists', () => {
                 localStorage.removeItem('nexus_session');
@@ -2865,7 +2945,7 @@
                 const result = getSessionData();
                 if (result !== null) throw new Error('Expected null, got ' + result);
             });
-            
+
             test('getSessionData returns parsed session data', () => {
                 const testSession = { token: 'test-token', user: { id: '123', email: 'test@example.com' } };
                 localStorage.setItem('nexus_session', JSON.stringify(testSession));
@@ -2873,14 +2953,14 @@
                 if (!result || result.token !== 'test-token') throw new Error('Session data not parsed correctly');
                 localStorage.removeItem('nexus_session');
             });
-            
+
             test('getSessionData handles invalid JSON gracefully', () => {
                 localStorage.setItem('nexus_session', 'invalid-json');
                 const result = getSessionData();
                 if (result !== null) throw new Error('Expected null for invalid JSON');
                 localStorage.removeItem('nexus_session');
             });
-            
+
             // Test isAuthenticated function
             test('isAuthenticated returns false when no session', () => {
                 localStorage.removeItem('nexus_session');
@@ -2888,7 +2968,7 @@
                 const result = isAuthenticated();
                 if (result !== false) throw new Error('Expected false when no session');
             });
-            
+
             test('isAuthenticated returns false when session missing token', () => {
                 const testSession = { user: { id: '123' } }; // Missing token
                 localStorage.setItem('nexus_session', JSON.stringify(testSession));
@@ -2896,7 +2976,7 @@
                 if (result !== false) throw new Error('Expected false when token missing');
                 localStorage.removeItem('nexus_session');
             });
-            
+
             test('isAuthenticated returns false when session missing user', () => {
                 const testSession = { token: 'test-token' }; // Missing user
                 localStorage.setItem('nexus_session', JSON.stringify(testSession));
@@ -2904,7 +2984,7 @@
                 if (result !== false) throw new Error('Expected false when user missing');
                 localStorage.removeItem('nexus_session');
             });
-            
+
             test('isAuthenticated returns true when valid session', () => {
                 const testSession = { token: 'test-token', user: { id: '123', email: 'test@example.com' } };
                 localStorage.setItem('nexus_session', JSON.stringify(testSession));
@@ -2912,7 +2992,7 @@
                 if (result !== true) throw new Error('Expected true for valid session');
                 localStorage.removeItem('nexus_session');
             });
-            
+
             // Test getAuthToken function
             test('getAuthToken returns null when no session', () => {
                 localStorage.removeItem('nexus_session');
@@ -2920,7 +3000,7 @@
                 const result = getAuthToken();
                 if (result !== null) throw new Error('Expected null when no session');
             });
-            
+
             test('getAuthToken returns token from session', () => {
                 const testSession = { token: 'test-token-123', user: { id: '123' } };
                 localStorage.setItem('nexus_session', JSON.stringify(testSession));
@@ -2928,7 +3008,7 @@
                 if (result !== 'test-token-123') throw new Error('Expected test-token-123, got ' + result);
                 localStorage.removeItem('nexus_session');
             });
-            
+
             // Test authenticatedFetch function
             test('authenticatedFetch throws error when not authenticated', async () => {
                 localStorage.removeItem('nexus_session');
@@ -2942,7 +3022,7 @@
                     }
                 }
             });
-            
+
             // Test handleApiResponse function
             test('handleApiResponse handles 401 status correctly', async () => {
                 const mockResponse = {
@@ -2952,11 +3032,11 @@
                     headers: new Map(),
                     ok: false
                 };
-                
+
                 const result = await handleApiResponse(mockResponse, 'Test API');
                 if (result !== null) throw new Error('Expected null for 401 response');
             });
-            
+
             test('handleApiResponse throws error for 404 status', async () => {
                 const mockResponse = {
                     status: 404,
@@ -2965,7 +3045,7 @@
                     headers: new Map(),
                     ok: false
                 };
-                
+
                 try {
                     await handleApiResponse(mockResponse, 'Test API');
                     throw new Error('Expected function to throw error for 404');
@@ -2975,15 +3055,15 @@
                     }
                 }
             });
-            
+
             console.log(`🧪 Tests completed: ${testsPassed}/${testsTotal} passed`);
-            
+
             if (testsPassed === testsTotal) {
                 console.log('🎉 All authentication tests passed!');
             } else {
                 console.warn(`⚠️ ${testsTotal - testsPassed} tests failed`);
             }
-            
+
             return { passed: testsPassed, total: testsTotal };
         }
 
@@ -3002,4 +3082,5 @@
 
     </script>
 </body>
+
 </html>
