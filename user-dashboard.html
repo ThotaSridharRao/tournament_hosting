@@ -1780,11 +1780,45 @@
             }
         }
 
+        // Check if backend is available
+        async function checkBackendStatus() {
+            try {
+                const response = await fetch('/api/content/highlights', {
+                    method: 'GET',
+                    timeout: 5000
+                });
+                return response.ok;
+            } catch (error) {
+                console.warn('Backend server is not available:', error.message);
+                return false;
+            }
+        }
+
         // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             setupEventListeners();
             setDefaultDates();
-            loadDashboardData();
+            
+            // Check backend availability
+            const backendAvailable = await checkBackendStatus();
+            if (!backendAvailable) {
+                console.warn('Backend server is not running. Some features may not work.');
+                // Show a user-friendly message
+                const container = document.getElementById('joinedTournamentsContainer');
+                if (container) {
+                    container.innerHTML = `
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-server fa-3x mb-3 text-warning"></i>
+                            <h5>Backend Server Unavailable</h5>
+                            <p>The server is currently not running. Tournament data cannot be loaded.</p>
+                            <small class="text-muted">This is normal in development mode when the backend server is not started.</small>
+                        </div>
+                    `;
+                }
+            } else {
+                loadDashboardData();
+            }
+            
             initializeNavbar();
             
             // Show overview tab by default
@@ -2087,6 +2121,9 @@
                         }
                     } catch (error) {
                         console.error('Error loading hosted tournaments:', error);
+                        if (error.message.includes('fetch')) {
+                            console.warn('Backend server might not be running');
+                        }
                     }
 
                     // Get joined tournaments
@@ -2114,19 +2151,29 @@
                     return sum + (t.prizePool || t.prize_pool || 0);
                 }, 0);
 
-                // Update display
-                document.getElementById('totalTournaments').textContent = hostedCount.toString();
-                document.getElementById('activeTournaments').textContent = joinedCount.toString();
-                document.getElementById('totalParticipants').textContent = totalParticipants.toString();
-                document.getElementById('totalRevenue').textContent = `₹${totalPrizePools.toLocaleString()}`;
+                // Update display with null checks
+                const totalTournamentsEl = document.getElementById('totalTournaments');
+                const activeTournamentsEl = document.getElementById('activeTournaments');
+                const totalParticipantsEl = document.getElementById('totalParticipants');
+                const totalRevenueEl = document.getElementById('totalRevenue');
+                
+                if (totalTournamentsEl) totalTournamentsEl.textContent = hostedCount.toString();
+                if (activeTournamentsEl) activeTournamentsEl.textContent = joinedCount.toString();
+                if (totalParticipantsEl) totalParticipantsEl.textContent = totalParticipants.toString();
+                if (totalRevenueEl) totalRevenueEl.textContent = `₹${totalPrizePools.toLocaleString()}`;
                 
             } catch (error) {
                 console.error('Error loading dashboard stats:', error);
-                // Fallback to default values
-                document.getElementById('totalTournaments').textContent = '0';
-                document.getElementById('activeTournaments').textContent = '0';
-                document.getElementById('totalParticipants').textContent = '0';
-                document.getElementById('totalRevenue').textContent = '₹0';
+                // Fallback to default values with null checks
+                const totalTournamentsEl = document.getElementById('totalTournaments');
+                const activeTournamentsEl = document.getElementById('activeTournaments');
+                const totalParticipantsEl = document.getElementById('totalParticipants');
+                const totalRevenueEl = document.getElementById('totalRevenue');
+                
+                if (totalTournamentsEl) totalTournamentsEl.textContent = '0';
+                if (activeTournamentsEl) activeTournamentsEl.textContent = '0';
+                if (totalParticipantsEl) totalParticipantsEl.textContent = '0';
+                if (totalRevenueEl) totalRevenueEl.textContent = '₹0';
             }
         }
 
@@ -2183,6 +2230,9 @@
                     }
                 } else {
                     console.error('Failed to fetch joined tournaments:', response.status);
+                    if (response.status === 404) {
+                        console.warn('API endpoint not found - this might be expected if backend is not running');
+                    }
                     displayJoinedTournaments([]);
                 }
             } catch (error) {
@@ -2193,6 +2243,11 @@
 
         function displayJoinedTournaments(tournaments) {
             const container = document.getElementById('joinedTournamentsContainer');
+            
+            if (!container) {
+                console.error('joinedTournamentsContainer element not found');
+                return;
+            }
             
             if (tournaments.length === 0) {
                 container.innerHTML = `
@@ -2305,6 +2360,11 @@
 
         function displayTournaments(tournaments) {
             const container = document.getElementById('tournamentsContainer');
+            
+            if (!container) {
+                console.error('tournamentsContainer element not found');
+                return;
+            }
             
             if (tournaments.length === 0) {
                 container.innerHTML = `
