@@ -2250,6 +2250,24 @@
       setupMobileNav();
     });
 
+    // Keep-alive functionality to prevent backend from sleeping
+    function keepBackendAlive() {
+      fetch('https://t2-237c.onrender.com/health')
+        .then(response => response.json())
+        .then(data => {
+          console.log('Backend keep-alive ping successful:', data.timestamp);
+        })
+        .catch(error => {
+          console.log('Backend keep-alive ping failed:', error);
+        });
+    }
+
+    // Ping backend every 10 minutes (600,000 ms)
+    setInterval(keepBackendAlive, 600000);
+    
+    // Initial ping after 30 seconds
+    setTimeout(keepBackendAlive, 30000);
+
   </script>
 </body>
 
