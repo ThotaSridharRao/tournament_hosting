@@ -90,7 +90,7 @@
         header.site-header {
             position: fixed;
             inset: 0 0 auto 0;
-            background: rgba(26, 26, 26, 0.5); 
+            background: rgba(26, 26, 26, 0.5);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             z-index: 1200;
@@ -177,184 +177,184 @@
         }
 
         /* Profile Dropdown (Desktop) */
-        .profile-dropdown { 
-            position: relative; 
-            display: flex; 
-            align-items: center; 
+        .profile-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
         }
-        
-        .profile-icon { 
-            width: 40px; 
-            height: 40px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: var(--copy); 
-            cursor: pointer; 
-            border-radius: 50%; 
-            transition: all 0.3s ease; 
-            font-size: 1.5rem; 
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--copy);
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
         }
-        
-        .profile-icon:hover { 
-            color: var(--accent); 
-            background: rgba(255, 69, 0, 0.1); 
-            transform: scale(1.1); 
+
+        .profile-icon:hover {
+            color: var(--accent);
+            background: rgba(255, 69, 0, 0.1);
+            transform: scale(1.1);
         }
-        
-        .profile-modal { 
-            position: absolute; 
-            top: 100%; 
-            right: 0; 
-            background: var(--panel); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            border-radius: 12px; 
-            min-width: 280px; 
-            opacity: 0; 
-            visibility: hidden; 
-            transform: translateY(-10px); 
-            transition: all 0.3s ease; 
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); 
-            z-index: 1000; 
-            margin-top: 10px; 
+
+        .profile-modal {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            min-width: 280px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            margin-top: 10px;
         }
-        
-        .profile-dropdown:hover .profile-modal { 
-            opacity: 1; 
-            visibility: visible; 
-            transform: translateY(0); 
+
+        .profile-dropdown:hover .profile-modal {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
-        
-        .profile-header { 
-            display: flex; 
-            align-items: center; 
-            gap: 1rem; 
-            padding: 1rem; 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
-        .profile-photo { 
-            width: 50px; 
-            height: 50px; 
-            background: linear-gradient(135deg, var(--accent), var(--accent-2)); 
-            border-radius: 50%; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: #000; 
-            font-size: 1.5rem; 
-            flex-shrink: 0; 
+
+        .profile-photo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 1.5rem;
+            flex-shrink: 0;
         }
-        
-        .profile-username { 
-            font-weight: 700; 
-            font-size: 1.1rem; 
+
+        .profile-username {
+            font-weight: 700;
+            font-size: 1.1rem;
         }
-        
-        .profile-actions { 
-            padding: 0.5rem; 
+
+        .profile-actions {
+            padding: 0.5rem;
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
         }
-        
-        .profile-action { 
-            display: flex; 
-            align-items: center; 
-            gap: 0.75rem; 
-            padding: 0.5rem 1rem; 
-            color: var(--muted); 
-            text-decoration: none; 
-            border-radius: 8px; 
-            transition: all 0.3s ease; 
-            font-weight: 600; 
-            width: 100%; 
-            border: none; 
-            background: none; 
-            cursor: pointer; 
-            font-family: inherit; 
+
+        .profile-action {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            color: var(--muted);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            width: 100%;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-family: inherit;
         }
-        
-        .profile-action:hover { 
-            background: rgba(255, 255, 255, 0.05); 
-            color: var(--accent); 
-            transform: translateX(4px); 
+
+        .profile-action:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent);
+            transform: translateX(4px);
         }
-        
-        .logout-action:hover { 
-            background: rgba(255, 0, 0, 0.1); 
-            color: #ff6b6b; 
+
+        .logout-action:hover {
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff6b6b;
         }
 
         /* Hamburger & Mobile Nav Panel */
-        .hamburger { 
-            display: none; 
-            background: none; 
-            border: none; 
-            color: var(--copy); 
-            font-size: 1.5rem; 
-            cursor: pointer; 
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--copy);
+            font-size: 1.5rem;
+            cursor: pointer;
         }
-        
-        .mobile-nav { 
-            position: fixed; 
-            top: 0; 
-            right: -100%; 
-            width: 300px; 
-            height: 100vh; 
-            background: var(--panel); 
-            z-index: 2000; 
-            transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5); 
-            padding-top: 60px; 
+
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 300px;
+            height: 100vh;
+            background: var(--panel);
+            z-index: 2000;
+            transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+            padding-top: 60px;
             padding-bottom: 20px;
-            display: flex; 
-            flex-direction: column; 
+            display: flex;
+            flex-direction: column;
             border-radius: 0 0 0 15px;
             overflow-y: auto;
             box-sizing: border-box;
         }
-        
-        .mobile-nav.is-open { 
-            right: 0; 
-        }
-        
-        .mobile-nav-close { 
-            position: absolute; 
-            top: 0.75rem; 
-            right: 1rem; 
-            background: none; 
-            border: none; 
-            color: var(--muted); 
-            font-size: 1.5rem; 
-            cursor: pointer; 
-            line-height: 1; 
-            transition: color 0.2s ease, transform 0.3s ease; 
-        }
-        
-        .mobile-nav-close:hover { 
-            color: var(--copy); 
-            transform: rotate(90deg); 
+
+        .mobile-nav.is-open {
+            right: 0;
         }
 
-        .mobile-nav .guest-view { 
-            padding: 1rem; 
-            text-align: center; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 0.75rem; 
-            margin-top: 0.5rem; 
+        .mobile-nav-close {
+            position: absolute;
+            top: 0.75rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s ease, transform 0.3s ease;
         }
-        
-        .mobile-nav .guest-view i { 
-            font-size: 2rem; 
-            color: var(--accent); 
+
+        .mobile-nav-close:hover {
+            color: var(--copy);
+            transform: rotate(90deg);
         }
-        
-        .mobile-nav .guest-view p { 
-            color: var(--muted); 
-            line-height: 1.6; 
+
+        .mobile-nav .guest-view {
+            padding: 1rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .mobile-nav .guest-view i {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .mobile-nav .guest-view p {
+            color: var(--muted);
+            line-height: 1.6;
         }
 
         /* Mobile Navigation Links Styling */
@@ -540,21 +540,221 @@
             margin-top: 1rem;
         }
 
+        /* Payment Status Modal Styles */
+        .payment-status-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--panel);
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            text-align: center;
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .failure-icon {
+            font-size: 4rem;
+            color: #ef4444;
+            margin-bottom: 1rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .success-modal .modal-header h2 {
+            color: #10b981;
+        }
+
+        .failure-modal .modal-header h2 {
+            color: #ef4444;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .success-message,
+        .failure-message {
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .registration-details {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .detail-value {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .transaction-id {
+            font-family: 'Courier New', monospace;
+            background: rgba(10, 250, 217, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .status-paid {
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .status-failed {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .next-steps,
+        .failure-reasons {
+            margin-top: 1.5rem;
+        }
+
+        .next-steps h4,
+        .failure-reasons h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .next-steps ul,
+        .failure-reasons ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .next-steps li,
+        .failure-reasons li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .next-steps li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .failure-reasons li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .modal-actions {
+            padding: 1.5rem 2rem 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .modal-actions .btn {
+            flex: 1;
+            max-width: 200px;
+        }
+
+        /* Responsive modal */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                margin: 1rem;
+            }
+
+            .modal-header,
+            .modal-body {
+                padding: 1.5rem;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+                padding: 1rem 1.5rem 1.5rem;
+            }
+
+            .modal-actions .btn {
+                max-width: none;
+            }
+        }
+
         /* Responsive Media Queries */
         @media (max-width: 768px) {
             .header-container {
                 padding: 0 1rem;
             }
-            
+
             .primary {
                 display: none;
             }
-            
-            .nav-actions { 
-                display: none; 
+
+            .nav-actions {
+                display: none;
             }
-            
-            .hamburger { 
+
+            .hamburger {
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
@@ -562,17 +762,17 @@
         }
 
         @media (min-width: 1600px) {
-            header.site-header { 
-                height: 80px; 
-                padding: 0 3rem; 
+            header.site-header {
+                height: 80px;
+                padding: 0 3rem;
             }
-            
-            .header-cta { 
-                padding: 0.7rem 1.25rem; 
+
+            .header-cta {
+                padding: 0.7rem 1.25rem;
             }
-            
-            .profile-icon { 
-                font-size: 1.75rem; 
+
+            .profile-icon {
+                font-size: 1.75rem;
             }
         }
 
@@ -1112,56 +1312,56 @@
             style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
     </div>
 
-  <header class="site-header" role="banner">
-    <div class="header-container">
-      <a href="index.html" class="brand" aria-hidden="false">GamingNexus</a>
-      <div class="header-right">
-        <nav class="primary" role="navigation" aria-label="Primary">
-          <div class="nav-links" role="menubar">
-            <a href="tournaments.html" role="menuitem">Tournaments</a>
-            <a href="user-dashboard.html" role="menuitem">My Dashboard</a>
-            <a href="index.html" role="menuitem">Home</a>
-          </div>
-        </nav>
-        <div class="nav-actions">
-          <div id="guest-menu">
-            <button class="header-cta" onclick="redirectToAuth('register')">Join Us</button>
-          </div>
-          <div id="user-menu" style="display: none;">
-            <div class="profile-dropdown">
-              <div class="profile-icon" id="profile-icon">
-                <i class="fas fa-user-circle"></i>
-              </div>
-              <div class="profile-modal" id="profile-modal">
-                <div class="profile-header">
-                  <div class="profile-photo"><i class="fas fa-user"></i></div>
-                  <div class="profile-info">
-                    <div class="profile-username" id="modal-username">User</div>
-                  </div>
+    <header class="site-header" role="banner">
+        <div class="header-container">
+            <a href="index.html" class="brand" aria-hidden="false">GamingNexus</a>
+            <div class="header-right">
+                <nav class="primary" role="navigation" aria-label="Primary">
+                    <div class="nav-links" role="menubar">
+                        <a href="tournaments.html" role="menuitem">Tournaments</a>
+                        <a href="user-dashboard.html" role="menuitem">My Dashboard</a>
+                        <a href="index.html" role="menuitem">Home</a>
+                    </div>
+                </nav>
+                <div class="nav-actions">
+                    <div id="guest-menu">
+                        <button class="header-cta" onclick="redirectToAuth('register')">Join Us</button>
+                    </div>
+                    <div id="user-menu" style="display: none;">
+                        <div class="profile-dropdown">
+                            <div class="profile-icon" id="profile-icon">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="profile-modal" id="profile-modal">
+                                <div class="profile-header">
+                                    <div class="profile-photo"><i class="fas fa-user"></i></div>
+                                    <div class="profile-info">
+                                        <div class="profile-username" id="modal-username">User</div>
+                                    </div>
+                                </div>
+                                <div class="profile-actions">
+                                    <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
+                                        <i class="fas fa-user"></i>
+                                        <span>My Account</span>
+                                    </a>
+                                    <button class="profile-action logout-action" onclick="logout()">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        <span>Logout</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="profile-actions">
-                  <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
-                    <i class="fas fa-user"></i>
-                    <span>My Account</span>
-                  </a>
-                  <button class="profile-action logout-action" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Logout</span>
-                  </button>
-                </div>
-              </div>
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
-          </div>
         </div>
-        <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
-          <i class="fas fa-bars"></i>
-        </button>
-      </div>
-    </div>
-  </header>
+    </header>
 
-  <div id="mobile-nav" class="mobile-nav" hidden>
-  </div>
+    <div id="mobile-nav" class="mobile-nav" hidden>
+    </div>
 
     <main class="main-content">
 
@@ -1431,7 +1631,7 @@
             } else {
                 // Dates are valid, now check tournament status
                 const restrictedStatuses = ['ended', 'registration_closed'];
-                
+
                 if (restrictedStatuses.includes(normalizedStatus)) {
                     showError('Registration has been closed by the organizer.');
                     registerBtn.disabled = true;
@@ -1643,6 +1843,155 @@
             }
         }
 
+        function handlePaymentStatus() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const txnid = urlParams.get('txnid');
+            const teamName = urlParams.get('teamName');
+
+            if (status === 'success') {
+                showPaymentSuccess(txnid, teamName);
+                // Clean URL parameters
+                cleanUrlParameters();
+            } else if (status === 'failed') {
+                showPaymentFailure(txnid);
+                // Clean URL parameters
+                cleanUrlParameters();
+            }
+        }
+
+        function showPaymentSuccess(transactionId, teamName) {
+            const successModal = createSuccessModal(transactionId, teamName);
+            document.body.appendChild(successModal);
+            successModal.style.display = 'flex';
+        }
+
+        function showPaymentFailure(transactionId) {
+            const failureModal = createFailureModal(transactionId);
+            document.body.appendChild(failureModal);
+            failureModal.style.display = 'flex';
+        }
+
+        function createSuccessModal(transactionId, teamName) {
+            const modal = document.createElement('div');
+            modal.className = 'payment-status-modal';
+            modal.innerHTML = `
+                <div class="modal-content success-modal">
+                    <div class="modal-header">
+                        <i class="fas fa-check-circle success-icon"></i>
+                        <h2>Registration Successful!</h2>
+                    </div>
+                    <div class="modal-body">
+                        <p class="success-message">Your team has been successfully registered for the tournament.</p>
+                        <div class="registration-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Team Name:</span>
+                                <span class="detail-value">${teamName || 'Your Team'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Transaction ID:</span>
+                                <span class="detail-value transaction-id">${transactionId}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Registration Date:</span>
+                                <span class="detail-value">${new Date().toLocaleDateString()}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Status:</span>
+                                <span class="detail-value status-paid">Paid & Confirmed</span>
+                            </div>
+                        </div>
+                        <div class="next-steps">
+                            <h4>What's Next?</h4>
+                            <ul>
+                                <li>Check your email for confirmation details</li>
+                                <li>Join the tournament Discord/WhatsApp group</li>
+                                <li>Keep your transaction ID for future reference</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-primary" onclick="goToDashboard()">
+                            <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                        </button>
+                        <button class="btn btn-secondary" onclick="closeModal(this)">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
+                </div>
+            `;
+            return modal;
+        }
+
+        function createFailureModal(transactionId) {
+            const modal = document.createElement('div');
+            modal.className = 'payment-status-modal';
+            modal.innerHTML = `
+                <div class="modal-content failure-modal">
+                    <div class="modal-header">
+                        <i class="fas fa-times-circle failure-icon"></i>
+                        <h2>Registration Failed</h2>
+                    </div>
+                    <div class="modal-body">
+                        <p class="failure-message">Unfortunately, your payment could not be processed.</p>
+                        <div class="registration-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Transaction ID:</span>
+                                <span class="detail-value transaction-id">${transactionId || 'N/A'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Status:</span>
+                                <span class="detail-value status-failed">Payment Failed</span>
+                            </div>
+                        </div>
+                        <div class="failure-reasons">
+                            <h4>Possible Reasons:</h4>
+                            <ul>
+                                <li>Insufficient funds in your account</li>
+                                <li>Payment gateway timeout</li>
+                                <li>Bank declined the transaction</li>
+                                <li>Network connectivity issues</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-primary" onclick="retryRegistration()">
+                            <i class="fas fa-redo"></i> Try Again
+                        </button>
+                        <button class="btn btn-secondary" onclick="closeModal(this)">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
+                </div>
+            `;
+            return modal;
+        }
+
+        function goToDashboard() {
+            window.location.href = 'user-dashboard.html';
+        }
+
+        function retryRegistration() {
+            closeModal();
+            // Scroll to registration form
+            document.getElementById('registration-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function closeModal(button) {
+            const modal = button ? button.closest('.payment-status-modal') : document.querySelector('.payment-status-modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function cleanUrlParameters() {
+            const url = new URL(window.location);
+            url.searchParams.delete('status');
+            url.searchParams.delete('txnid');
+            url.searchParams.delete('teamName');
+            window.history.replaceState({}, document.title, url.toString());
+        }
+
         function showAlreadyRegistered(data) {
             document.querySelector('.registration-form').innerHTML = `
                 <div class="already-registered">
@@ -1700,7 +2049,7 @@
             const user = sessionData?.data?.user || sessionData?.user;
 
             const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
-            
+
             let userSectionHTML = '';
             let navLinksHTML = '';
             let bottomActionsHTML = '';
@@ -1709,7 +2058,7 @@
                 // Logged-in user view - matches tournaments page design
                 const username = user.username || user.email.split('@')[0];
                 const userId = user.id || 'demo-user';
-                
+
                 userSectionHTML = `
                     <div class="mobile-user-profile">
                         <div class="profile-photo"><i class="fas fa-user"></i></div>
@@ -1793,11 +2142,15 @@
             await testApiConnection();
             await loadTournamentData();
             await checkUserRegistrationStatus();
+
+            // Check for payment status in URL parameters
+            handlePaymentStatus();
+
             document.getElementById('registration-form').addEventListener('submit', (e) => {
                 e.preventDefault();
                 submitRegistrationAndInitiatePayment(new FormData(e.target));
             });
-            
+
             // Setup navbar functionality
             const hamburger = document.querySelector('.hamburger');
             const mobileNav = document.getElementById('mobile-nav');
@@ -1827,7 +2180,7 @@
                     }
                 });
             }
-            
+
             // Initialize navbar
             checkUserAuthentication();
             setupMobileNav();
