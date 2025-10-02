@@ -697,6 +697,8 @@
             color: var(--text-primary);
             padding: 0.75rem 1rem;
             transition: all 0.3s var(--ease);
+            text-align: center;
+            text-align-last: center;
         }
 
         .form-control:focus,
@@ -705,6 +707,102 @@
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(10, 250, 217, 0.2);
             background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Enhanced dropdown styling */
+        .form-select option {
+            background: rgba(0, 0, 0, 0.95);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border: none;
+        }
+
+        .form-select option:hover,
+        .form-select option:focus {
+            background: rgba(10, 250, 217, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(10, 250, 217, 0.2);
+        }
+
+        .form-select option:checked {
+            background: rgba(10, 250, 217, 0.2);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        /* Glassmorphism effect for dropdown */
+        .form-select:hover {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-color: rgba(10, 250, 217, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        /* Date input styling with calendar icon */
+        input[type="datetime-local"] {
+            position: relative;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            transition: all 0.3s var(--ease);
+        }
+
+        input[type="datetime-local"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(10, 250, 217, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Style the calendar icon */
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            background: transparent;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+            background: rgba(10, 250, 217, 0.1);
+            transform: scale(1.1);
+        }
+
+        /* Custom calendar icon styling */
+        .calendar-icon {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-left: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+
+
+        .calendar-icon i {
+            font-size: 1.1em;
+        }
+
+        /* Input group styling for date fields */
+        .input-group .form-control {
+            border-right: none;
+        }
+
+        .input-group .form-control:focus {
+            border-right: none;
+            box-shadow: none;
+        }
+
+        .input-group .form-control:focus+.calendar-icon {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(10, 250, 217, 0.2);
         }
 
         .form-control::placeholder {
@@ -1084,7 +1182,7 @@
                 <nav class="primary" role="navigation" aria-label="Primary">
                     <div class="nav-links" role="menubar">
                         <a href="#" role="menuitem" onclick="switchToTab('overview')">Overview</a>
-                        <a href="#" role="menuitem" onclick="switchToTab('tournaments')">My Tournaments</a>
+                        <a href="#" role="menuitem" onclick="switchToTab('tournaments')">Hosted Tournaments</a>
                         <a href="#" role="menuitem" onclick="switchToTab('joined')">Joined Tournaments</a>
                         <a href="#" role="menuitem" onclick="switchToTab('create')">Create Tournament</a>
                         <a href="dispute-support.html" role="menuitem">Support & Disputes</a>
@@ -1182,24 +1280,22 @@
                     </div>
                 </div>
 
-                <!-- My Tournaments Tab -->
+                <!-- Hosted Tournaments Tab -->
                 <div class="tab-pane fade" id="tournaments" role="tabpanel">
+                    <h4 class="mb-4 text-center fw-bold">Hosted Tournaments</h4>
                     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-                        <h4 class="mb-0">My Tournaments</h4>
-                        <div class="d-flex gap-2 flex-wrap">
-                            <select class="form-select" id="statusFilter" style="min-width: 140px;">
-                                <option value="">All Status</option>
-                                <option value="draft">Draft</option>
-                                <option value="pending_payment">Pending Payment</option>
-                                <option value="active">Active</option>
-                                <option value="completed">Completed</option>
-                                <option value="cancelled">Cancelled</option>
-                            </select>
-                            <button class="btn btn-outline-primary" onclick="loadUserTournaments()" title="Refresh">
-                                <i class="fas fa-refresh"></i>
-                                <span class="d-none d-sm-inline ms-1">Refresh</span>
-                            </button>
-                        </div>
+                        <button class="btn btn-outline-primary" onclick="loadUserTournaments()" title="Refresh">
+                            <i class="fas fa-refresh"></i>
+                            <span class="ms-1">Refresh</span>
+                        </button>
+                        <select class="form-select" id="statusFilter" style="max-width: 200px;">
+                            <option value="">All Status</option>
+                            <option value="draft">Draft</option>
+                            <option value="pending_payment">Pending Payment</option>
+                            <option value="active">Active</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
                     </div>
 
                     <div id="tournamentsContainer">
@@ -1293,14 +1389,24 @@
                                             <div class="col-md-6 mb-3">
                                                 <label for="registrationStart" class="form-label">Registration Start
                                                     *</label>
-                                                <input type="datetime-local" class="form-control" id="registrationStart"
-                                                    required>
+                                                <div class="input-group">
+                                                    <input type="datetime-local" class="form-control"
+                                                        id="registrationStart" required>
+                                                    <span class="input-group-text calendar-icon">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                    </span>
+                                                </div>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="registrationEnd" class="form-label">Registration End
                                                     *</label>
-                                                <input type="datetime-local" class="form-control" id="registrationEnd"
-                                                    required>
+                                                <div class="input-group">
+                                                    <input type="datetime-local" class="form-control"
+                                                        id="registrationEnd" required>
+                                                    <span class="input-group-text calendar-icon">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -1308,13 +1414,23 @@
                                             <div class="col-md-6 mb-3">
                                                 <label for="tournamentStart" class="form-label">Tournament Start
                                                     *</label>
-                                                <input type="datetime-local" class="form-control" id="tournamentStart"
-                                                    required>
+                                                <div class="input-group">
+                                                    <input type="datetime-local" class="form-control"
+                                                        id="tournamentStart" required>
+                                                    <span class="input-group-text calendar-icon">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                    </span>
+                                                </div>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="tournamentEnd" class="form-label">Tournament End *</label>
-                                                <input type="datetime-local" class="form-control" id="tournamentEnd"
-                                                    required>
+                                                <div class="input-group">
+                                                    <input type="datetime-local" class="form-control" id="tournamentEnd"
+                                                        required>
+                                                    <span class="input-group-text calendar-icon">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1530,20 +1646,18 @@
 
                 <!-- Joined Tournaments Tab -->
                 <div class="tab-pane fade" id="joined" role="tabpanel">
+                    <h4 class="mb-4 text-center fw-bold">Tournaments Joined</h4>
                     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-                        <h4 class="mb-0">Tournaments I've Joined</h4>
-                        <div class="d-flex gap-2 flex-wrap">
-                            <select class="form-select" id="joinedStatusFilter" style="min-width: 140px;">
-                                <option value="">All Status</option>
-                                <option value="registered">Registered</option>
-                                <option value="active">Active</option>
-                                <option value="completed">Completed</option>
-                            </select>
-                            <button class="btn btn-outline-primary" onclick="loadJoinedTournaments()" title="Refresh">
-                                <i class="fas fa-refresh"></i>
-                                <span class="d-none d-sm-inline ms-1">Refresh</span>
-                            </button>
-                        </div>
+                        <button class="btn btn-outline-primary" onclick="loadJoinedTournaments()" title="Refresh">
+                            <i class="fas fa-refresh"></i>
+                            <span class="ms-1">Refresh</span>
+                        </button>
+                        <select class="form-select" id="joinedStatusFilter" style="max-width: 200px;">
+                            <option value="">All Status</option>
+                            <option value="registered">Registered</option>
+                            <option value="active">Active</option>
+                            <option value="completed">Completed</option>
+                        </select>
                     </div>
 
                     <div id="joinedTournamentsContainer">
@@ -2029,7 +2143,7 @@
             const navLinksHTML = `
                 <div class="mobile-nav-links">
                     <a href="#" onclick="switchToTab('overview')"><i class="fas fa-chart-line"></i> Overview</a>
-                    <a href="#" onclick="switchToTab('tournaments')"><i class="fas fa-list"></i> My Tournaments</a>
+                    <a href="#" onclick="switchToTab('tournaments')"><i class="fas fa-list"></i> Hosted Tournaments</a>
                     <a href="#" onclick="switchToTab('joined')"><i class="fas fa-users"></i> Joined Tournaments</a>
                     <a href="#" onclick="switchToTab('create')"><i class="fas fa-plus"></i> Create Tournament</a>
                     <a href="dispute-support.html"><i class="fas fa-headset"></i> Support & Disputes</a>
@@ -2194,6 +2308,7 @@
 
             setupEventListeners();
             setDefaultDates();
+            setupCalendarIcons();
 
             // Check backend availability
             const backendAvailable = await checkBackendStatus();
@@ -2229,6 +2344,49 @@
             }, 1500);
         });
 
+        function setupCalendarIcons() {
+            // Setup calendar icon click handlers
+            document.querySelectorAll('.calendar-icon').forEach(icon => {
+                icon.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Find the input field in the same input-group
+                    const inputGroup = this.parentElement;
+                    const input = inputGroup.querySelector('input[type="datetime-local"]');
+
+                    if (input) {
+                        console.log('Opening calendar for:', input.id);
+
+                        // Focus the input first
+                        input.focus();
+
+                        // Try multiple methods to open the picker
+                        setTimeout(() => {
+                            // Method 1: Try showPicker if available
+                            if (typeof input.showPicker === 'function') {
+                                try {
+                                    input.showPicker();
+                                    return;
+                                } catch (error) {
+                                    console.log('showPicker failed:', error);
+                                }
+                            }
+
+                            // Method 2: Simulate click on the input
+                            const clickEvent = new MouseEvent('click', {
+                                bubbles: true,
+                                cancelable: true,
+                                view: window
+                            });
+                            input.dispatchEvent(clickEvent);
+
+                        }, 10);
+                    }
+                });
+            });
+        }
+
         function setupEventListeners() {
             // Form submission
             const createForm = document.getElementById('createTournamentForm');
@@ -2241,6 +2399,8 @@
             const regEnd = document.getElementById('registrationEnd');
             if (regStart) regStart.addEventListener('change', calculateHostingFee);
             if (regEnd) regEnd.addEventListener('change', calculateHostingFee);
+
+
 
             // Venue type change
             const venueType = document.getElementById('venueType');
@@ -2266,10 +2426,11 @@
             const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
             const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-            document.getElementById('registrationStart').value = formatDateForInput(tomorrow);
-            document.getElementById('registrationEnd').value = formatDateForInput(new Date(tomorrow.getTime() + 3 * 24 * 60 * 60 * 1000));
-            document.getElementById('tournamentStart').value = formatDateForInput(nextWeek);
-            document.getElementById('tournamentEnd').value = formatDateForInput(new Date(nextWeek.getTime() + 24 * 60 * 60 * 1000));
+            // Keep date fields empty for user to select
+            document.getElementById('registrationStart').value = '';
+            document.getElementById('registrationEnd').value = '';
+            document.getElementById('tournamentStart').value = '';
+            document.getElementById('tournamentEnd').value = '';
 
             // Pricing will be calculated when user selects dates
         }
@@ -2528,7 +2689,7 @@
                     }
                 } catch (error) {
                     console.error('Error loading hosted tournaments:', error);
-                    showErrorMessage(error.message);
+                    // Don't show error message to user - they might not have created any tournaments yet
                 }
 
                 // Get joined tournaments
@@ -2786,9 +2947,53 @@
                         </div>
                     </div>
                 `;
-            }).join('');
+            });
 
-            container.innerHTML = tournamentsHTML;
+            // Create simplified table layout
+            let tableHTML = `
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Tournament Name</th>
+                                <th>Team Name</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            // Add tournament rows
+            tournaments.forEach(tournament => {
+                const status = tournament.status || 'upcoming';
+                const statusDisplay = status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' ');
+                const statusClass = getStatusClass(status);
+                const myTeam = tournament.user_team_name || 'Team';
+                const tournamentName = tournament.title || tournament.name || 'Tournament';
+                const slug = tournament.slug || '';
+
+                tableHTML += `
+                    <tr>
+                        <td>
+                            <a href="tournament-details.html?slug=${slug}" class="text-decoration-none text-primary">
+                                ${tournamentName}
+                            </a>
+                        </td>
+                        <td>${myTeam}</td>
+                        <td>
+                            <span class="status-badge ${statusClass}">${statusDisplay}</span>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = tableHTML;
         }
 
         function getStatusClass(status) {
@@ -2831,60 +3036,48 @@
                 return;
             }
 
-            container.innerHTML = tournaments.map(tournament => `
-                <div class="card tournament-card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div>
-                                <h5 class="card-title">${tournament.title}</h5>
-                                <p class="text-muted mb-1">
-                                    <i class="fas fa-gamepad me-2"></i>${tournament.game}
-                                </p>
-                                <p class="text-muted mb-0">
-                                    <i class="fas fa-users me-2"></i>${tournament.participant_count || 0}/${tournament.maxTeams} teams
-                                </p>
-                            </div>
-                            <span class="status-badge status-${tournament.status}">${tournament.status.replace('_', ' ').toUpperCase()}</span>
-                        </div>
-                        
-                        <p class="card-text">${tournament.description.substring(0, 100)}${tournament.description.length > 100 ? '...' : ''}</p>
-                        
-                        <div class="row text-center mb-3">
-                            <div class="col-4">
-                                <small class="text-muted">Entry Fee</small>
-                                <div class="fw-bold">₹${tournament.entryFee || 0}</div>
-                            </div>
-                            <div class="col-4">
-                                <small class="text-muted">Prize Pool</small>
-                                <div class="fw-bold">₹${tournament.prizePool || 0}</div>
-                            </div>
-                            <div class="col-4">
-                                <small class="text-muted">Format</small>
-                                <div class="fw-bold">${tournament.format}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">
-                                Created: ${new Date(tournament.createdAt).toLocaleDateString()}
-                            </small>
-                            <div class="btn-group">
-                                <button class="btn btn-outline-primary btn-sm" onclick="viewTournament('${tournament._id}')">
+            // Create simplified table layout
+            let tableHTML = `
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Tournament Name</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            // Add tournament rows
+            tournaments.forEach(tournament => {
+                const tournamentName = tournament.title || 'Tournament';
+                const tournamentId = tournament._id || tournament.id || '';
+
+                tableHTML += `
+                    <tr>
+                        <td>${tournamentName}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-primary" onclick="viewTournament('${tournamentId}')" title="View Details">
                                     <i class="fas fa-eye"></i> View
                                 </button>
-                                <button class="btn btn-outline-secondary btn-sm" onclick="editTournament('${tournament._id}')">
+                                <button class="btn btn-outline-secondary" onclick="editTournament('${tournamentId}')" title="Edit Tournament">
                                     <i class="fas fa-edit"></i> Edit
                                 </button>
-                                ${tournament.status === 'draft' || tournament.status === 'pending_payment' ?
-                    `<button class="btn btn-outline-danger btn-sm" onclick="deleteTournament('${tournament._id}')">
-                                        <i class="fas fa-trash"></i>
-                                    </button>` : ''
-                }
                             </div>
-                        </div>
-                    </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                        </tbody>
+                    </table>
                 </div>
-            `).join('');
+            `;
+
+            container.innerHTML = tableHTML;
         }
 
         function switchToCreateTab() {
