@@ -1662,6 +1662,10 @@
                             <div class="sticky-top" style="top: 20px;">
                                 <div class="pricing-display">
                                     <h5><i class="fas fa-calculator me-2"></i>Hosting Fee Calculator</h5>
+                                    <div class="alert alert-success mb-3">
+                                        <i class="fas fa-gift me-2"></i>
+                                        <strong>Development Mode:</strong> Tournament hosting is currently FREE for testing!
+                                    </div>
 
                                     <div id="pricingInfo">
                                         <div class="text-center text-muted py-4">
@@ -1685,7 +1689,7 @@
                                                 <span id="additionalFee">₹0</span>
                                             </div>
                                             <div class="d-flex justify-content-between">
-                                                <span>Platform Fee (5%):</span>
+                                                <span>Platform Fee (0%):</span>
                                                 <span id="platformFee">₹0</span>
                                             </div>
                                             <hr>
@@ -1714,15 +1718,15 @@
                                         <div class="small">
                                             <div class="d-flex justify-content-between mb-2">
                                                 <span>Base (up to 2 days):</span>
-                                                <strong>₹10</strong>
+                                                <strong>₹0 (FREE)</strong>
                                             </div>
                                             <div class="d-flex justify-content-between mb-2">
                                                 <span>Additional days:</span>
-                                                <strong>₹2.50/day</strong>
+                                                <strong>₹0/day (FREE)</strong>
                                             </div>
                                             <div class="d-flex justify-content-between">
                                                 <span>Platform fee:</span>
-                                                <strong>5%</strong>
+                                                <strong>0% (FREE)</strong>
                                             </div>
                                         </div>
                                     </div>
@@ -2678,6 +2682,29 @@
                     createdTournamentId = result.data._id;
                     document.getElementById('createdTournamentTitle').textContent = result.data.title;
 
+                    // Check if tournament is free (hosting fee is 0)
+                    const isFree = result.data.hostingFee === 0;
+                    
+                    // Update modal content based on whether tournament is free
+                    const modalAlert = document.querySelector('#successModal .alert');
+                    const paymentButton = document.getElementById('proceedToPayment');
+                    
+                    if (isFree) {
+                        modalAlert.className = 'alert alert-success';
+                        modalAlert.innerHTML = `
+                            <i class="fas fa-check-circle me-2"></i>
+                            Your tournament is now live and accepting registrations!
+                        `;
+                        paymentButton.style.display = 'none';
+                    } else {
+                        modalAlert.className = 'alert alert-info';
+                        modalAlert.innerHTML = `
+                            <i class="fas fa-credit-card me-2"></i>
+                            Complete payment to publish your tournament and start accepting registrations.
+                        `;
+                        paymentButton.style.display = 'inline-block';
+                    }
+
                     // Show success modal
                     const modal = new bootstrap.Modal(document.getElementById('successModal'));
                     modal.show();
@@ -3192,8 +3219,7 @@
         }
 
         function switchToCreateTab() {
-            const createTab = new bootstrap.Tab(document.getElementById('create-tab'));
-            createTab.show();
+            switchToTab('create');
         }
 
         function resetForm() {
