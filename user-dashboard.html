@@ -813,14 +813,14 @@
            ========================= */
         .form-control,
         .form-select {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            color: var(--text-primary);
+            color: var(--text-primary) !important;
             padding: 0.75rem 1rem;
             transition: all 0.3s var(--ease);
-            text-align: center;
-            text-align-last: center;
+            text-align: left;
+            text-align-last: left;
         }
 
         .form-control:focus,
@@ -828,7 +828,8 @@
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(10, 250, 217, 0.2);
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--text-primary) !important;
         }
 
         /* Table styling for better readability */
@@ -966,6 +967,35 @@
 
         .form-control::placeholder {
             color: var(--text-secondary);
+            opacity: 0.8;
+        }
+
+        .form-control::-webkit-input-placeholder {
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+
+        .form-control::-moz-placeholder {
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+
+        /* Ensure text is always visible */
+        .form-control,
+        .form-select,
+        textarea.form-control {
+            -webkit-text-fill-color: var(--text-primary) !important;
+            -webkit-opacity: 1 !important;
+            opacity: 1 !important;
+        }
+
+        /* Fix for autofill styles */
+        .form-control:-webkit-autofill,
+        .form-control:-webkit-autofill:hover,
+        .form-control:-webkit-autofill:focus {
+            -webkit-text-fill-color: var(--text-primary) !important;
+            -webkit-box-shadow: 0 0 0px 1000px rgba(0, 0, 0, 0.3) inset !important;
+            transition: background-color 5000s ease-in-out 0s;
         }
 
         .form-label {
@@ -1793,16 +1823,10 @@
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label for="tournamentGame" class="form-label">Game *</label>
-                                                <select class="form-select" id="tournamentGame" required>
-                                                    <option value="">Select Game</option>
-                                                    <option value="BGMI">BGMI</option>
-                                                    <option value="Free Fire">Free Fire</option>
-                                                    <option value="Call of Duty Mobile">Call of Duty Mobile</option>
-                                                    <option value="Valorant">Valorant</option>
-                                                    <option value="CS:GO">CS:GO</option>
-                                                    <option value="Clash Royale">Clash Royale</option>
-                                                    <option value="Other">Other</option>
-                                                </select>
+                                                <input type="text" class="form-control" id="tournamentGame" required
+                                                    placeholder="Enter game name (e.g., BGMI, Free Fire, Valorant, CS:GO)"
+                                                    maxlength="50">
+                                                <div class="form-text">Enter the name of the game for this tournament</div>
                                             </div>
                                         </div>
 
