@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Tournament - GamingNexus</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* =========================
+           Theme variables (Cyberpunk) - Matching index.html
+           ========================= */
+        :root {
+            --primary-color: #0AFAD9;
+            /* Electric Cyan */
+            --bg-dark: #0D0A1A;
+            /* Dark Matter Black */
+            --accent-secondary: #5D3FD3;
+            /* Deep Indigo */
+            --panel: #161329;
+            /* Dark Indigo Panel */
+            --text-primary: #F0F0F0;
+            /* Starlight White */
+            --text-secondary: rgba(240, 240, 240, 0.7);
+            --border-color: rgba(10, 250, 217, 0.2);
+            --ease: 0.3s ease;
+
+            /* Legacy variables for compatibility */
+            --copy: var(--text-primary);
+            --muted: var(--text-secondary);
+            --accent: var(--accent-secondary);
+            /* Using Indigo as main accent */
+            --accent-2: var(--primary-color);
+            /* Using Cyan as secondary accent */
+            --radius: 12px;
+            --container: 1400px;
+
+            /* Additional colors for dashboard */
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+        }
+
+        /* Enhanced easing curves for smoother animations */
+        :root {
+            --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+            --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* Respect reduced motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+            :root {
+                --ease: 0ms;
+            }
+
+            * {
+                transition-duration: 0ms !important;
+                animation-duration: 0ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
+
+        /* =========================
+           Base resets & accessibility - Matching index.html
+           ========================= */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.6;
+            -webkit-text-size-adjust: 100%;
+            overflow-x: hidden;
+            font-size: 16px;
+            position: relative;
+        }
+
+        /* Background gradient effect like index.html */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 15% 85%, rgba(10, 250, 217, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 85% 25%, rgba(93, 63, 211, 0.1) 0%, transparent 40%);
+            z-index: -1;
+            animation: pulse 15s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 0.7;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* =========================
+           NAVBAR STYLES (From index.html)
+           ========================= */
+
+        /* General Header Styles */
+        header.site-header {
+            position: fixed;
+            inset: 0 0 auto 0;
+            background: rgba(26, 26, 26, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 1200;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            height: 60px;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            height: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--copy);
+            text-decoration: none;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Navigation Styles */
+        .primary {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--copy, #F0F0F0);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            position: relative;
+            overflow: hidden;
+            margin: 0 0.25rem;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-secondary));
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-2, #0AFAD9);
+        }
+
+        .nav-links a:hover::after {
+            transform: translateX(0);
+        }
+
+        .nav-links a.active {
+            color: var(--accent-2, #0AFAD9);
+            font-weight: 600;
+        }
+
+        .nav-links a.active::after {
+            transform: translateX(0);
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-secondary));
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: 2rem;
+            padding-left: 2rem;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-cta {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .header-cta:hover {
+            opacity: 0.8;
+            filter: brightness(0.9);
+        }
+
+        /* Profile Dropdown (Desktop) */
+        .profile-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--copy);
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+        }
+
+        .profile-icon:hover {
+            color: var(--accent);
+            background: rgba(255, 69, 0, 0.1);
+            transform: scale(1.1);
+        }
+
+        .profile-modal {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            min-width: 280px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            margin-top: 10px;
+        }
+
+        .profile-dropdown:hover .profile-modal {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-photo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .profile-username {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .profile-userid {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .profile-actions {
+            padding: 0.5rem;
+        }
+
+        .profile-action {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: var(--muted);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            width: 100%;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .profile-action:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .logout-action:hover {
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff6b6b;
+        }
+
+        /* Hamburger & Mobile Nav Panel */
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--copy);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 300px;
+            height: 100vh;
+            background: var(--panel);
+            z-index: 2000;
+            transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+            padding-top: 60px;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .mobile-nav.is-open {
+            right: 0;
+        }
+
+        .mobile-nav-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 1.75rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s ease, transform 0.3s ease;
+        }
+
+        .mobile-nav-close:hover {
+            color: var(--copy);
+            transform: rotate(90deg);
+        }
+
+        .mobile-nav-links {
+            padding: 1rem;
+            margin-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .mobile-nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mobile-nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-secondary));
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-nav-links a:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--copy);
+        }
+
+        .mobile-nav-links a:hover::after {
+            transform: translateX(0);
+        }
+
+        .mobile-nav-links a.active {
+            color: var(--accent-2, #0AFAD9);
+            background: rgba(10, 250, 217, 0.1);
+        }
+
+        .mobile-nav-links a.active::after {
+            transform: translateX(0);
+        }
+
+        .mobile-nav-links a i {
+            margin-right: 0.5rem;
+            color: var(--accent-2, #0AFAD9);
+        }
+
+        .guest-view {
+            padding: 2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .guest-view i {
+            font-size: 3rem;
+            color: var(--accent);
+        }
+
+        .guest-view p {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .mobile-nav-logout {
+            margin-top: auto;
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logout-btn {
+            width: 100%;
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .logout-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .desktop-logout {
+            margin: 0.5rem 1rem;
+            padding: 0.75rem 1rem;
+        }
+
+        /* Show primary nav on desktop */
+        .primary {
+            display: flex;
+            align-items: center;
+        }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--copy);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .nav-actions {
+                display: none !important;
+            }
+
+            /* Hide primary navigation on mobile */
+            .primary {
+                display: none !important;
+            }
+
+            /* Show hamburger menu only on mobile */
+            .hamburger {
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: center;
+                z-index: 2001;
+            }
+        }
+
+        /* =========================
+           Custom Scrollbar Styles - Matching index.html
+           ========================= */
+        ::-webkit-scrollbar-track {
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            background-color: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--panel);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: var(--accent-secondary);
+        }
+
+        /* Firefox scrollbar */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--panel) var(--bg-dark);
+        }
+
+        /* =========================
+           Tournament Creation Styles
+           ========================= */
+        .main-content {
+            margin-top: 80px;
+            padding: 2rem;
+            min-height: calc(100vh - 80px);
+        }
+
+        .tournament-card,
+        .card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            transition: all 0.3s var(--ease-out-quart);
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .tournament-card:hover,
+        .card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 8px 30px rgba(10, 250, 217, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Forms & Inputs */
+        .form-control,
+        .form-select {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary) !important;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s var(--ease);
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(10, 250, 217, 0.2);
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--text-primary) !important;
+        }
+
+        .form-control::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+
+        .form-label {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-text {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            color: var(--bg-dark);
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s var(--ease-out-quart);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-color);
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(10, 250, 217, 0.3);
+        }
+
+        .btn-outline-secondary {
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            background: transparent;
+        }
+
+        .btn-outline-secondary:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        /* Calendar icon styling */
+        .calendar-icon {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-left: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calendar-icon i {
+            font-size: 1.1em;
+        }
+
+        /* Input group styling for date fields */
+        .input-group .form-control {
+            border-right: none;
+        }
+
+        .input-group .form-control:focus {
+            border-right: none;
+            box-shadow: none;
+        }
+
+        .input-group .form-control:focus+.calendar-icon {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(10, 250, 217, 0.2);
+        }
+
+        /* Date input styling */
+        input[type="datetime-local"] {
+            position: relative;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            transition: all 0.3s var(--ease);
+        }
+
+        input[type="datetime-local"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(10, 250, 217, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Style the calendar icon */
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+            background: transparent;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+            background: rgba(10, 250, 217, 0.1);
+            transform: scale(1.1);
+        }
+
+        /* Pricing display */
+        .pricing-display {
+            background: var(--panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            position: sticky;
+            top: 20px;
+        }
+
+        .pricing-display h5 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            display: none;
+        }
+
+        /* Alert styles */
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .alert-info {
+            background: rgba(23, 162, 184, 0.1);
+            color: var(--info-color);
+            border: 1px solid rgba(23, 162, 184, 0.3);
+        }
+
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        /* Page header */
+        .page-header {
+            text-align: center;
+            padding: 3rem 0 2rem 0;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <header class="site-header" role="banner">
+        <div class="header-container">
+            <a href="index.html" class="brand" aria-hidden="false">GamingNexus</a>
+            <div class="header-right">
+                <div class="nav-actions">
+                    <div id="guest-menu">
+                        <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
+                    </div>
+                    <div id="user-menu" style="display: none;">
+                        <div class="profile-dropdown">
+                            <div class="profile-icon" id="profile-icon">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="profile-modal" id="profile-modal">
+                                <div class="profile-header">
+                                    <div class="profile-photo"><i class="fas fa-user"></i></div>
+                                    <div class="profile-info">
+                                        <div class="profile-username" id="modal-username">User</div>
+                                        <div class="profile-userid" id="modal-userid">ID: N/A</div>
+                                    </div>
+                                </div>
+                                <div class="profile-actions">
+                                    <a href="userdashboard.html" class="profile-action" id="modal-dashboard-link">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                        <span>Dashboard</span>
+                                    </a>
+                                    <button class="logout-btn desktop-logout" onclick="logout()">
+                                        Logout
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="mobile-nav" class="mobile-nav"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1><i class="fas fa-plus-circle me-3"></i>Create Tournament</h1>
+                <p>Set up your gaming tournament and start building your community</p>
+            </div>
+
+            <!-- Alert Container -->
+            <div id="alert-container"></div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <form id="createTournamentForm">
+                        <!-- Basic Information -->
+                        <div class="card tournament-card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-info-circle me-2"></i>Basic Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="tournamentTitle" class="form-label">Tournament Title *</label>
+                                        <input type="text" class="form-control" id="tournamentTitle" required
+                                            maxlength="100" placeholder="Enter tournament title">
+                                        <div class="form-text">Choose an engaging title for your tournament</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="tournamentGame" class="form-label">Game *</label>
+                                        <input type="text" class="form-control" id="tournamentGame" required
+                                            placeholder="e.g., BGMI, Free Fire, Valorant, CS:GO" maxlength="50">
+                                        <div class="form-text">Enter the name of the game for this tournament</div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="tournamentDescription" class="form-label">Description *</label>
+                                    <textarea class="form-control" id="tournamentDescription" rows="4" required
+                                        maxlength="2000"
+                                        placeholder="Describe your tournament, rules, and any special instructions..."></textarea>
+                                    <div class="form-text">Provide clear information about rules, format, and
+                                        requirements</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="tournamentFormat" class="form-label">Tournament Format *</label>
+                                        <select class="form-select" id="tournamentFormat" required>
+                                            <option value="">Select Format</option>
+                                            <option value="single-elimination">Single Elimination</option>
+                                            <option value="double_elimination">Double Elimination</option>
+                                            <option value="round_robin">Round Robin</option>
+                                            <option value="swiss">Swiss System</option>
+                                            <option value="kp">Kill Points (KP)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="maxTeams" class="form-label">Maximum Teams *</label>
+                                        <input type="number" class="form-control" id="maxTeams" required min="2"
+                                            max="500" value="16">
+                                        <div class="form-text">Between 2 and 500 teams</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Schedule & Dates -->
+                        <div class="card tournament-card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-calendar me-2"></i>Schedule & Dates</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="registrationStart" class="form-label">Registration Start *</label>
+                                        <div class="input-group">
+                                            <input type="datetime-local" class="form-control" id="registrationStart"
+                                                required>
+                                            <span class="input-group-text calendar-icon">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="registrationEnd" class="form-label">Registration End *</label>
+                                        <div class="input-group">
+                                            <input type="datetime-local" class="form-control" id="registrationEnd"
+                                                required>
+                                            <span class="input-group-text calendar-icon">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="tournamentStart" class="form-label">Tournament Start *</label>
+                                        <div class="input-group">
+                                            <input type="datetime-local" class="form-control" id="tournamentStart"
+                                                required>
+                                            <span class="input-group-text calendar-icon">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="tournamentEnd" class="form-label">Tournament End *</label>
+                                        <div class="input-group">
+                                            <input type="datetime-local" class="form-control" id="tournamentEnd"
+                                                required>
+                                            <span class="input-group-text calendar-icon">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prize & Entry -->
+                        <div class="card tournament-card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-money-bill me-2"></i>Prize & Entry</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="entryFee" class="form-label">Entry Fee (₹)</label>
+                                        <input type="number" class="form-control" id="entryFee" min="0" max="10000"
+                                            value="0" required>
+                                        <div class="form-text">Set to 0 for free tournaments</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="prizePool" class="form-label">Prize Pool (₹)</label>
+                                        <input type="number" class="form-control" id="prizePool" min="0" max="100000"
+                                            value="0" required>
+                                        <div class="form-text">Total prize money for winners</div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="maxPlayersPerTeam" class="form-label">Max Players per Team *</label>
+                                        <input type="number" class="form-control" id="maxPlayersPerTeam" min="1"
+                                            max="10" value="4" required>
+                                        <div class="form-text">Maximum number of players allowed per team</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="tournamentPoster" class="form-label">Tournament Poster</label>
+                                        <input type="file" class="form-control" id="tournamentPoster" accept="image/*">
+                                        <div class="form-text">Upload a poster image for your tournament (optional)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Venue Information -->
+                        <div class="card tournament-card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-map-marker-alt me-2"></i>Venue Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="venueType" class="form-label">Venue Type *</label>
+                                    <select class="form-select" id="venueType" required>
+                                        <option value="online">Online</option>
+                                        <option value="physical">Physical Venue</option>
+                                        <option value="hybrid">Hybrid (Online + Physical)</option>
+                                    </select>
+                                </div>
+
+                                <div id="physicalVenueDetails" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="venueName" class="form-label">Venue Name</label>
+                                            <input type="text" class="form-control" id="venueName">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="venueCapacity" class="form-label">Venue Capacity</label>
+                                            <input type="number" class="form-control" id="venueCapacity" min="1">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="venueAddress" class="form-label">Address</label>
+                                        <textarea class="form-control" id="venueAddress" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- KP Format Schedule (Hidden by default) -->
+                        <div class="card tournament-card" id="kpFormatFields" style="display: none;">
+                            <div class="card-header">
+                                <h5><i class="fas fa-calendar-alt me-2"></i>KP Format Schedule</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="qualifier1Date" class="form-label">Qualifier 1 Date</label>
+                                        <input type="datetime-local" class="form-control" id="qualifier1Date">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="qualifier2Date" class="form-label">Qualifier 2 Date</label>
+                                        <input type="datetime-local" class="form-control" id="qualifier2Date">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="qualifier3Date" class="form-label">Qualifier 3 Date</label>
+                                        <input type="datetime-local" class="form-control" id="qualifier3Date">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="qualifier4Date" class="form-label">Qualifier 4 Date</label>
+                                        <input type="datetime-local" class="form-control" id="qualifier4Date">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="finalMatchDate" class="form-label">Final Match Date</label>
+                                        <input type="datetime-local" class="form-control" id="finalMatchDate">
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>KP Format:</strong> Teams compete in multiple qualifier rounds to
+                                    accumulate kill points. Top teams advance to the final match.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary" onclick="resetForm()">
+                                <i class="fas fa-undo me-2"></i>Reset Form
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Create Tournament
+                                <span class="loading-spinner spinner-border spinner-border-sm ms-2"
+                                    role="status"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Pricing Display -->
+                <div class="col-lg-4">
+                    <div class="pricing-display">
+                        <h5><i class="fas fa-calculator me-2"></i>Hosting Fee Calculator</h5>
+                        <div class="alert alert-success mb-3">
+                            <i class="fas fa-gift me-2"></i>
+                            <strong>Development Mode:</strong> Tournament hosting is currently FREE for testing!
+                        </div>
+
+                        <div id="pricingInfo">
+                            <div class="text-center text-muted py-4">
+                                <i class="fas fa-calendar-alt fa-2x mb-3"></i>
+                                <p>Select registration dates to calculate hosting fee</p>
+                            </div>
+                        </div>
+
+                        <div id="pricingBreakdown" style="display: none;">
+                            <!-- Pricing breakdown will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background: var(--panel); border: 1px solid var(--border-color);">
+                <div class="modal-header" style="border-bottom: 1px solid var(--border-color);">
+                    <h5 class="modal-title" id="successModalLabel">Tournament Created!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <i class="fas fa-trophy fa-3x text-success mb-3"></i>
+                        <h5 id="createdTournamentTitle">Tournament Title</h5>
+                        <p class="text-muted">Your tournament has been created successfully!</p>
+                        <div class="alert alert-info">
+                            <i class="fas fa-credit-card me-2"></i>
+                            Complete payment to publish your tournament and start accepting registrations.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="proceedToPayment">
+                        <i class="fas fa-credit-card me-2"></i>Proceed to Payment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'https://t2-237c.onrender.com';
+        let createdTournamentId = null;
+
+        // --- NAVBAR HELPER FUNCTIONS ---
+        function redirectToAuth(tab = 'register') {
+            const returnUrl = encodeURIComponent(window.location.href);
+            window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
+        }
+
+        function getSessionData() {
+            const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+            try {
+                return session ? JSON.parse(session) : null;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function isAuthenticated() {
+            const sessionData = getSessionData();
+            return sessionData && sessionData.token && sessionData.user;
+        }
+
+        function requireAuthentication() {
+            if (!isAuthenticated()) {
+                const returnUrl = encodeURIComponent(window.location.href);
+                window.location.href = `auth.html?returnUrl=${returnUrl}`;
+                return false;
+            }
+            return true;
+        }
+
+        function logout() {
+            localStorage.removeItem('nexus_session');
+            sessionStorage.removeItem('nexus_session');
+            window.location.reload();
+        }
+
+        function checkUserAuthentication() {
+            const sessionData = getSessionData();
+            const guestMenu = document.getElementById('guest-menu');
+            const userMenu = document.getElementById('user-menu');
+            const user = sessionData?.user;
+
+            if (user) {
+                const username = user.username || user.email.split('@')[0];
+
+                // Update navbar elements
+                const usernameElement = document.getElementById('modal-username');
+                const useridElement = document.getElementById('modal-userid');
+                if (usernameElement) {
+                    usernameElement.textContent = username;
+                }
+                if (useridElement) {
+                    const userId = user.id || user.user_id || user._id || 'N/A';
+                    useridElement.textContent = `ID: ${userId}`;
+                }
+
+                // Show user menu, hide guest menu
+                if (guestMenu) guestMenu.style.display = 'none';
+                if (userMenu) userMenu.style.display = 'block';
+            } else {
+                // Show guest menu, hide user menu
+                if (guestMenu) guestMenu.style.display = 'block';
+                if (userMenu) userMenu.style.display = 'none';
+                
+                // Redirect to auth if not authenticated
+                requireAuthentication();
+            }
+        }
+
+        function setupMobileNav() {
+            const sessionData = getSessionData();
+            const mobileNavContainer = document.getElementById('mobile-nav');
+            const user = sessionData?.user;
+
+            if (!mobileNavContainer) {
+                console.error('Mobile nav container not found');
+                return;
+            }
+
+            const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
+
+            // Basic navigation links
+            const navLinksHTML = `
+                <div class="mobile-nav-links">
+                    <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                    <a href="userdashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a href="tournaments.html"><i class="fas fa-trophy"></i> Browse Tournaments</a>
+                    <a href="create-tournament.html" class="active"><i class="fas fa-plus-circle"></i> Create Tournament</a>
+                    <a href="dispute-support.html"><i class="fas fa-headset"></i> Support & Disputes</a>
+                </div>
+            `;
+
+            let userSectionHTML = '';
+
+            if (user) {
+                const username = user.username || user.email.split('@')[0];
+                const userId = user.id || user.user_id || user._id || 'N/A';
+                userSectionHTML = `
+                    <div class="profile-header">
+                        <div class="profile-photo"><i class="fas fa-user"></i></div>
+                        <div class="profile-info">
+                            <div class="profile-username">${username}</div>
+                            <div class="profile-userid">ID: ${userId}</div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                userSectionHTML = `
+                    <div class="guest-view">
+                        <i class="fas fa-gamepad"></i>
+                        <p>Join the arena to compete, win prizes, and track your stats!</p>
+                        <button class="header-cta" style="width: 100%; margin-top: 1rem;" onclick="redirectToAuth()">Join Us Now</button>
+                    </div>
+                `;
+            }
+
+            // Add logout section at the bottom for logged-in users
+            const logoutSectionHTML = user ? `
+                <div class="mobile-nav-logout">
+                    <button class="logout-btn" onclick="logout()">
+                        Logout
+                    </button>
+                </div>
+            ` : '';
+
+            const finalHTML = `
+                ${closeButtonHTML}
+                ${userSectionHTML}
+                ${navLinksHTML}
+                ${logoutSectionHTML}
+            `;
+
+            mobileNavContainer.innerHTML = finalHTML;
+        }
+
+        function initializeNavbar() {
+            const hamburger = document.querySelector('.hamburger');
+            const mobileNav = document.getElementById('mobile-nav');
+
+            if (!hamburger || !mobileNav) {
+                console.error("Navbar elements not found.", { hamburger, mobileNav });
+                return;
+            }
+
+            function closeMobileNav() {
+                mobileNav.classList.remove('is-open');
+                hamburger.setAttribute('aria-expanded', 'false');
+            }
+
+            hamburger.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const isOpen = mobileNav.classList.toggle('is-open');
+                hamburger.setAttribute('aria-expanded', isOpen);
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!mobileNav.classList.contains('is-open')) return;
+
+                const closeButton = event.target.closest('.mobile-nav-close');
+                if (closeButton) {
+                    closeMobileNav();
+                    return;
+                }
+
+                const isClickInsideNav = event.target.closest('#mobile-nav');
+                const isClickOnHamburger = event.target.closest('.hamburger');
+
+                if (!isClickInsideNav && !isClickOnHamburger) {
+                    closeMobileNav();
+                }
+            });
+
+            // Add event listener for dynamically added close button
+            mobileNav.addEventListener('click', (event) => {
+                if (event.target.closest('.mobile-nav-close')) {
+                    closeMobileNav();
+                }
+            });
+
+            checkUserAuthentication();
+            setupMobileNav();
+        }
+
+        // --- TOURNAMENT CREATION FUNCTIONS ---
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alert-container');
+            const alertId = 'alert-' + Date.now();
+            
+            const alertHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert" id="${alertId}">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            
+            alertContainer.innerHTML = alertHTML;
+            
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => {
+                const alert = document.getElementById(alertId);
+                if (alert) {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }
+            }, 5000);
+        }
+
+        function setDefaultDates() {
+            const now = new Date();
+            const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+            const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+            // Keep date fields empty for user to select
+            document.getElementById('registrationStart').value = '';
+            document.getElementById('registrationEnd').value = '';
+            document.getElementById('tournamentStart').value = '';
+            document.getElementById('tournamentEnd').value = '';
+
+            // Pricing will be calculated when user selects dates
+        }
+
+        function toggleVenueDetails() {
+            const venueType = document.getElementById('venueType').value;
+            const physicalDetails = document.getElementById('physicalVenueDetails');
+
+            if (venueType === 'physical' || venueType === 'hybrid') {
+                physicalDetails.style.display = 'block';
+            } else {
+                physicalDetails.style.display = 'none';
+            }
+        }
+
+        function toggleKpFormatFields() {
+            const tournamentFormat = document.getElementById('tournamentFormat').value;
+            const kpFields = document.getElementById('kpFormatFields');
+
+            if (tournamentFormat === 'kp') {
+                kpFields.style.display = 'block';
+            } else {
+                kpFields.style.display = 'none';
+            }
+        }
+
+        function collectFormData() {
+            const formData = new FormData();
+
+            // Basic tournament info
+            formData.append('title', document.getElementById('tournamentTitle').value);
+            formData.append('game', document.getElementById('tournamentGame').value);
+            formData.append('description', document.getElementById('tournamentDescription').value);
+            formData.append('registrationStart', document.getElementById('registrationStart').value);
+            formData.append('registrationEnd', document.getElementById('registrationEnd').value);
+            formData.append('tournamentStart', document.getElementById('tournamentStart').value);
+            formData.append('tournamentEnd', document.getElementById('tournamentEnd').value);
+            formData.append('maxTeams', document.getElementById('maxTeams').value);
+            formData.append('maxPlayersPerTeam', document.getElementById('maxPlayersPerTeam').value || '4');
+            formData.append('entryFee', document.getElementById('entryFee').value || '0');
+            formData.append('prizePool', document.getElementById('prizePool').value || '0');
+
+            const format = document.getElementById('tournamentFormat').value;
+            formData.append('format', format);
+
+            // KP format settings
+            if (format === 'kp') {
+                const kpSettings = {
+                    qualifier1Date: document.getElementById('qualifier1Date').value,
+                    qualifier2Date: document.getElementById('qualifier2Date').value,
+                    qualifier3Date: document.getElementById('qualifier3Date').value,
+                    qualifier4Date: document.getElementById('qualifier4Date').value,
+                    finalMatchDate: document.getElementById('finalMatchDate').value
+                };
+                formData.append('kpSettings', JSON.stringify(kpSettings));
+            }
+
+            // Venue information
+            formData.append('venueType', document.getElementById('venueType').value);
+            if (document.getElementById('venueType').value !== 'online') {
+                formData.append('venueName', document.getElementById('venueName').value || '');
+                formData.append('venueCapacity', document.getElementById('venueCapacity').value || '');
+                formData.append('venueAddress', document.getElementById('venueAddress').value || '');
+            }
+
+            // Tournament poster
+            const posterFile = document.getElementById('tournamentPoster').files[0];
+            if (posterFile) {
+                formData.append('poster', posterFile);
+            }
+
+            return formData;
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const spinner = submitBtn.querySelector('.loading-spinner');
+
+            submitBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+
+            // Show loading message
+            showAlert('Creating tournament...', 'info');
+
+            try {
+                const formData = collectFormData();
+
+                const sessionData = getSessionData();
+                const response = await fetch(`${API_BASE_URL}/api/user-tournaments`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${sessionData.token}`
+                    },
+                    body: formData
+                });
+
+                // Handle HTTP errors
+                if (!response.ok) {
+                    console.error(`❌ HTTP Error: ${response.status} ${response.statusText}`);
+                    let errorMessage = 'Failed to create tournament. ';
+
+                    if (response.status === 429) {
+                        errorMessage += 'Too many requests. Please wait a moment and try again.';
+                    } else if (response.status === 401) {
+                        errorMessage += 'Please log in again.';
+                    } else if (response.status === 403) {
+                        errorMessage += 'You do not have permission to create tournaments.';
+                    } else if (response.status >= 500) {
+                        errorMessage += 'Server error. Please try again later.';
+                    } else {
+                        errorMessage += `Error ${response.status}. Please try again.`;
+                    }
+
+                    showAlert(errorMessage, 'danger');
+                    return;
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    createdTournamentId = result.data._id;
+                    document.getElementById('createdTournamentTitle').textContent = result.data.title;
+
+                    // Check if tournament is free (hosting fee is 0)
+                    const isFree = result.data.hostingFee === 0;
+
+                    // Update modal content based on whether tournament is free
+                    const modalAlert = document.querySelector('#successModal .alert');
+                    const paymentButton = document.getElementById('proceedToPayment');
+
+                    if (isFree) {
+                        modalAlert.className = 'alert alert-success';
+                        modalAlert.innerHTML = `
+                            <i class="fas fa-check-circle me-2"></i>
+                            Your tournament is now live and accepting registrations!
+                        `;
+                        paymentButton.style.display = 'none';
+                    } else {
+                        modalAlert.className = 'alert alert-info';
+                        modalAlert.innerHTML = `
+                            <i class="fas fa-credit-card me-2"></i>
+                            Complete payment to publish your tournament and start accepting registrations.
+                        `;
+                        paymentButton.style.display = 'inline-block';
+                    }
+
+                    // Show success alert immediately
+                    showAlert('🎉 Tournament created successfully!', 'success');
+
+                    // Show success modal
+                    const modal = new bootstrap.Modal(document.getElementById('successModal'));
+                    modal.show();
+
+                    // Reset form
+                    document.getElementById('createTournamentForm').reset();
+                    setDefaultDates();
+                } else {
+                    console.error('❌ Tournament creation failed:', result);
+                    showAlert('Error creating tournament: ' + (result.message || 'Unknown error'), 'danger');
+                }
+            } catch (error) {
+                console.error('Error creating tournament:', error);
+
+                let errorMessage = 'Failed to create tournament. ';
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    errorMessage += 'Network error. Please check your connection and try again.';
+                } else if (error.message) {
+                    errorMessage += error.message;
+                } else {
+                    errorMessage += 'Please try again.';
+                }
+
+                showAlert(errorMessage, 'danger');
+            } finally {
+                submitBtn.disabled = false;
+                spinner.style.display = 'none';
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('createTournamentForm').reset();
+            setDefaultDates();
+            document.getElementById('pricingInfo').style.display = 'block';
+            document.getElementById('pricingBreakdown').style.display = 'none';
+            document.getElementById('physicalVenueDetails').style.display = 'none';
+            document.getElementById('kpFormatFields').style.display = 'none';
+        }
+
+        function setupEventListeners() {
+            // Form submission
+            const createForm = document.getElementById('createTournamentForm');
+            if (createForm) {
+                createForm.addEventListener('submit', handleFormSubmit);
+            }
+
+            // Venue type change
+            const venueType = document.getElementById('venueType');
+            if (venueType) venueType.addEventListener('change', toggleVenueDetails);
+
+            // Tournament format change
+            const tournamentFormat = document.getElementById('tournamentFormat');
+            if (tournamentFormat) tournamentFormat.addEventListener('change', toggleKpFormatFields);
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNavbar();
+            setupEventListeners();
+            setDefaultDates();
+        });
+    </script>
+</body>
+
+</html>
