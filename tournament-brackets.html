@@ -437,6 +437,42 @@
             font-weight: 600;
         }
 
+        .match-header-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .add-schedule-btn {
+            background: var(--accent-secondary);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: var(--ease);
+        }
+
+        .add-schedule-btn:hover {
+            background: #7c5fd3;
+            transform: scale(1.1);
+        }
+
+        .match-schedule {
+            background: rgba(93, 63, 211, 0.2);
+            color: var(--accent-secondary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+        }
+
         .match-table {
             width: 100%;
             border-collapse: collapse;
@@ -1020,11 +1056,28 @@
             const endIndex = Math.min(startIndex + groupSize, participants.length);
             const qualifierTeams = participants.slice(startIndex, endIndex);
 
+            html += `<div class="match-header-controls">`;
+            
             if (tableConfig.type === 'qualifier') {
                 html += `<span class="match-count">${qualifierTeams.length}/${groupSize} Teams</span>`;
             } else {
                 html += `<span class="match-count">${tableConfig.totalMatches} ${tableConfig.totalMatches === 1 ? 'Match' : 'Matches'}</span>`;
             }
+            
+            // Add plus icon for admin to set schedule
+            html += `<button class="add-schedule-btn" onclick="setMatchSchedule('${tableId}', '${tableConfig.name}')" title="Set Match Schedule">
+                        <i class="fas fa-plus"></i>
+                     </button>`;
+            
+            // Display existing schedule if available
+            const existingSchedule = getMatchSchedule(tableId);
+            if (existingSchedule) {
+                html += `<span class="match-schedule" id="schedule-${tableId}">${existingSchedule}</span>`;
+            } else {
+                html += `<span class="match-schedule" id="schedule-${tableId}" style="display: none;"></span>`;
+            }
+            
+            html += `</div>`;
             html += `</div>`;
 
             // Start Table
@@ -1494,7 +1547,18 @@
                         doc.setFontSize(14);
                         doc.setTextColor(15, 133, 211);
                         doc.text(table.name, 20, currentY);
-                        currentY += 15;
+                        
+                        // Add schedule information if available
+                        const tableId = `stage-${stageIndex}-table-${tableIndex}`;
+                        const schedule = getMatchSchedule(tableId);
+                        if (schedule) {
+                            doc.setFontSize(10);
+                            doc.setTextColor(93, 63, 211);
+                            doc.text(`Schedule: ${schedule}`, 20, currentY + 10);
+                            currentY += 25;
+                        } else {
+                            currentY += 15;
+                        }
 
                         if (table.type === 'qualifier') {
                             // Generate qualifier table data
@@ -1635,6 +1699,139 @@
             const fileName = `${tournamentData.slug || 'tournament'}-brackets-${new Date().toISOString().split('T')[0]}.pdf`;
             doc.save(fileName);
         }
+
+        // Match schedule management functions
+        function setMatchSchedule(tableId, tableName) {
+            // Create a modal-like prompt for date and time
+            const currentSchedule = getMatchSchedule(tableId);
+            const defaultDateTime = currentSchedule ? currentSchedule.replace(' at ', 'T').replace(/(\d{1,2}):(\d{2}) (AM|PM)/, (match, hour, minute, period) => {
+                let hour24 = parseInt(hour);
+                if (period === 'PM' && hour24 !== 12) hour24 += 12;
+                if (period === 'AM' && hour24 === 12) hour24 = 0;
+                return String(hour24).padStart(2, '0') + ':' + minute;
+            }) : '';
+
+            const dateTimeInput = prompt(
+                `Set schedule for "${tableName}"\n\nEnter date and time (YYYY-MM-DD HH:MM format):\nExample: 2024-12-25 14:30`,
+                defaultDateTime
+            );
+
+            if (dateTimeInput === null) return; // User cancelled
+
+            if (!dateTimeInput.trim()) {
+                alert('Please enter a valid date and time.');
+                return;
+            }
+
+            // Validate the input format
+            const dateTimeRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/;
+            if (!dateTimeRegex.test(dateTimeInput.trim())) {
+                alert('Invalid format. Please use YYYY-MM-DD HH:MM format (e.g., 2024-12-25 14:30)');
+                return;
+            }
+
+            const [datePart, timePart] = dateTimeInput.trim().split(' ');
+            const [year, month, day] = datePart.split('-');
+            const [hour, minute] = timePart.split(':');
+
+            // Create a proper date object to validate
+            const scheduleDate = new Date(year, month - 1, day, hour, minute);
+            if (isNaN(scheduleDate.getTime())) {
+                alert('Invalid date or time. Please check your input.');
+                return;
+            }
+
+            // Format for display
+            const displayDate = scheduleDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            const displayTime = scheduleDate.toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+            const displaySchedule = `${displayDate} at ${displayTime}`;
+
+            // Confirmation
+            const confirmed = confirm(`Confirm schedule for "${tableName}":\n\n${displaySchedule}\n\nThis will be saved and visible in the tournament brackets.`);
+            
+            if (confirmed) {
+                saveMatchSchedule(tableId, displaySchedule);
+                updateScheduleDisplay(tableId, displaySchedule);
+            }
+        }
+
+        function getMatchSchedule(tableId) {
+            // Get from localStorage first (for immediate display)
+            const localSchedule = localStorage.getItem(`schedule_${tableId}`);
+            if (localSchedule) return localSchedule;
+
+            // Get from tournament data if available
+            if (tournamentData && tournamentData.matchSchedules && tournamentData.matchSchedules[tableId]) {
+                return tournamentData.matchSchedules[tableId];
+            }
+
+            return null;
+        }
+
+        function saveMatchSchedule(tableId, schedule) {
+            // Save to localStorage for immediate persistence
+            localStorage.setItem(`schedule_${tableId}`, schedule);
+
+            // Save to backend
+            saveScheduleToBackend(tableId, schedule);
+        }
+
+        function updateScheduleDisplay(tableId, schedule) {
+            const scheduleElement = document.getElementById(`schedule-${tableId}`);
+            if (scheduleElement) {
+                scheduleElement.textContent = schedule;
+                scheduleElement.style.display = 'inline-block';
+            }
+        }
+
+        async function saveScheduleToBackend(tableId, schedule) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${tournamentSlug}/schedule`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        tableId: tableId,
+                        schedule: schedule
+                    })
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to save schedule to backend');
+                    // Keep the localStorage version as fallback
+                }
+            } catch (error) {
+                console.error('Error saving schedule to backend:', error);
+                // Keep the localStorage version as fallback
+            }
+        }
+
+        // Load schedules from backend when tournament data is loaded
+        function loadMatchSchedules() {
+            if (tournamentData && tournamentData.matchSchedules) {
+                Object.keys(tournamentData.matchSchedules).forEach(tableId => {
+                    const schedule = tournamentData.matchSchedules[tableId];
+                    updateScheduleDisplay(tableId, schedule);
+                });
+            }
+        }
+
+        // Call loadMatchSchedules after tournament data is loaded
+        const originalLoadTournamentBrackets = loadTournamentBrackets;
+        loadTournamentBrackets = async function() {
+            await originalLoadTournamentBrackets();
+            // Small delay to ensure DOM is updated
+            setTimeout(loadMatchSchedules, 100);
+        };
     </script>
 </body>
 
