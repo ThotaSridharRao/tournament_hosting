@@ -1021,6 +1021,240 @@
         }
 
         /* =========================
+           Tournament Management Operations
+           ========================= */
+        .operation-tabs {
+            display: flex;
+            background-color: var(--panel);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .operation-tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .operation-tab-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .operation-tab-btn.active {
+            background-color: var(--primary-color);
+            color: var(--bg-dark);
+            font-weight: 700;
+        }
+
+        #management-operation-content {
+            background-color: var(--panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+            min-height: 400px;
+        }
+
+        .operation-title {
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .operation-title-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .close-operation-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close-operation-btn:hover {
+            color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .tournament-management-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .tournament-management-item {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .tournament-management-item:hover {
+            background: rgba(10, 250, 217, 0.05);
+            border-color: var(--primary-color);
+        }
+
+        .tournament-management-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .tournament-management-info h5 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .tournament-management-meta {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .tournament-management-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .management-action-btn {
+            background: var(--primary-color);
+            color: var(--bg-dark);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .management-action-btn:hover {
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
+
+        .management-action-btn.secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .management-action-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        /* Schedule Management Styles */
+        .schedule-event {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            cursor: grab;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .schedule-event:hover {
+            background: rgba(10, 250, 217, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .schedule-event.dragging {
+            opacity: 0.5;
+            background: rgba(10, 250, 217, 0.1);
+        }
+
+        /* Leaderboard Management Styles */
+        .leaderboard-entry {
+            display: grid;
+            grid-template-columns: 60px 1fr 120px auto;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .leaderboard-position {
+            font-weight: 700;
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .leaderboard-team-input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            padding: 0.5rem;
+            width: 100%;
+        }
+
+        .leaderboard-team-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(10, 250, 217, 0.2);
+        }
+
+        .leaderboard-points {
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Analytics Styles */
+        .analytics-chart-container {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .analytics-metric {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .analytics-metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .analytics-metric-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* =========================
            Alerts
            ========================= */
         .alert {
@@ -1273,6 +1507,7 @@
                         <a href="#" role="menuitem" onclick="switchToTab('tournaments')">Hosted Tournaments</a>
                         <a href="#" role="menuitem" onclick="switchToTab('joined')">Joined Tournaments</a>
                         <a href="#" role="menuitem" onclick="switchToTab('create')">Create Tournament</a>
+                        <a href="#" role="menuitem" onclick="switchToTab('manage')">Manage Tournaments</a>
                         <a href="dispute-support.html" role="menuitem">Support & Disputes</a>
                     </div>
                 </nav>
@@ -1733,6 +1968,25 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Manage Tournaments Tab -->
+                <div class="tab-pane fade" id="manage" role="tabpanel">
+                    <h4 class="mb-4 text-center fw-bold">Manage Your Tournaments</h4>
+                    
+                    <!-- Management Operations Tabs -->
+                    <div class="operation-tabs mb-4">
+                        <button class="operation-tab-btn active" data-operation="update">Update Tournament</button>
+                        <button class="operation-tab-btn" data-operation="delete">Delete Tournament</button>
+                        <button class="operation-tab-btn" data-operation="download">Download Data</button>
+                        <button class="operation-tab-btn" data-operation="finalists">Update Finalists</button>
+                        <button class="operation-tab-btn" data-operation="schedule">Update Schedule</button>
+                    </div>
+
+                    <!-- Operation Content Area -->
+                    <div id="management-operation-content">
+                        <!-- Content will be dynamically loaded here -->
                     </div>
                 </div>
 
@@ -2238,6 +2492,7 @@
                     <a href="#" onclick="switchToTab('tournaments')"><i class="fas fa-list"></i> Hosted Tournaments</a>
                     <a href="#" onclick="switchToTab('joined')"><i class="fas fa-users"></i> Joined Tournaments</a>
                     <a href="#" onclick="switchToTab('create')"><i class="fas fa-plus"></i> Create Tournament</a>
+                    <a href="#" onclick="switchToTab('manage')"><i class="fas fa-cogs"></i> Manage Tournaments</a>
                     <a href="dispute-support.html"><i class="fas fa-headset"></i> Support & Disputes</a>
                     <a href="index.html"><i class="fas fa-home"></i> Home</a>
                 </div>
@@ -2381,6 +2636,13 @@
                 const activeMobileNavLink = document.querySelector(`.mobile-nav-links a[onclick*="switchToTab('${tabName}')"]`);
                 if (activeMobileNavLink) {
                     activeMobileNavLink.classList.add('active');
+                }
+
+                // Initialize specific tab functionality
+                if (tabName === 'manage') {
+                    setTimeout(() => {
+                        initializeManagementTab();
+                    }, 100);
                 }
 
                 // Load data for specific tabs
@@ -3220,6 +3482,661 @@
 
         function switchToCreateTab() {
             switchToTab('create');
+        }
+
+        // =========================
+        // TOURNAMENT MANAGEMENT FUNCTIONS
+        // =========================
+
+        let managementTournaments = [];
+        let currentManagementOperation = 'update';
+
+        function initializeManagementTab() {
+            // Set up operation tab listeners
+            document.querySelectorAll('.operation-tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const operation = this.dataset.operation;
+                    switchManagementOperation(operation);
+                });
+            });
+
+            // Load tournaments for management
+            loadManagementTournaments();
+        }
+
+        function switchManagementOperation(operation) {
+            // Update active tab
+            document.querySelectorAll('.operation-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-operation="${operation}"]`).classList.add('active');
+
+            currentManagementOperation = operation;
+            renderManagementOperation(operation);
+        }
+
+        async function loadManagementTournaments() {
+            try {
+                const response = await authenticatedFetch(`${API_BASE_URL}/api/user-tournaments`);
+                const result = await handleApiResponse(response, 'Load management tournaments');
+                
+                if (result) {
+                    managementTournaments = result.data || [];
+                    renderManagementOperation(currentManagementOperation);
+                }
+            } catch (error) {
+                console.error('Error loading management tournaments:', error);
+                showAlert('Failed to load tournaments for management', 'danger');
+            }
+        }
+
+        function renderManagementOperation(operation) {
+            const container = document.getElementById('management-operation-content');
+            if (!container) return;
+
+            let contentHtml = '';
+
+            switch (operation) {
+                case 'update':
+                    contentHtml = getUpdateTournamentsHTML();
+                    break;
+                case 'delete':
+                    contentHtml = getDeleteTournamentsHTML();
+                    break;
+                case 'download':
+                    contentHtml = getDownloadDataHTML();
+                    break;
+                case 'finalists':
+                    contentHtml = getFinalistsManagementHTML();
+                    break;
+                case 'schedule':
+                    contentHtml = getScheduleManagementHTML();
+                    break;
+                default:
+                    contentHtml = '<p>Select an operation to manage your tournaments.</p>';
+            }
+
+            container.innerHTML = contentHtml;
+            
+            // Initialize operation-specific functionality
+            initializeOperationHandlers(operation);
+        }
+
+        function getUpdateTournamentsHTML() {
+            if (managementTournaments.length === 0) {
+                return `
+                    <div class="text-center py-5">
+                        <i class="fas fa-tournament fa-3x mb-3 text-muted"></i>
+                        <h5>No Tournaments to Update</h5>
+                        <p class="text-muted">Create your first tournament to start managing it here.</p>
+                        <button class="btn btn-primary" onclick="switchToTab('create')">
+                            <i class="fas fa-plus me-2"></i>Create Tournament
+                        </button>
+                    </div>
+                `;
+            }
+
+            return `
+                <h3 class="operation-title">Update Tournament</h3>
+                <p class="text-muted mb-4">Select a tournament to edit its details, update status, or manage schedule.</p>
+                
+                <div class="tournament-management-list">
+                    ${managementTournaments.map(tournament => `
+                        <div class="tournament-management-item">
+                            <div class="tournament-management-header">
+                                <div class="tournament-management-info">
+                                    <h5>${tournament.title}</h5>
+                                    <div class="tournament-management-meta">
+                                        <span><i class="fas fa-gamepad me-1"></i>${tournament.game}</span>
+                                        <span class="ms-3"><i class="fas fa-calendar me-1"></i>${new Date(tournament.registrationStart).toLocaleDateString()}</span>
+                                        <span class="ms-3"><i class="fas fa-users me-1"></i>${tournament.participants?.length || 0}/${tournament.maxTeams} teams</span>
+                                        <span class="ms-3 badge ${getStatusBadgeClass(tournament.status)}">${tournament.status}</span>
+                                    </div>
+                                </div>
+                                <div class="tournament-management-actions">
+                                    <button class="management-action-btn" onclick="editTournamentDetails('${tournament._id}')">
+                                        <i class="fas fa-edit me-1"></i>Edit Details
+                                    </button>
+                                    <button class="management-action-btn secondary" onclick="updateTournamentStatus('${tournament._id}')">
+                                        <i class="fas fa-toggle-on me-1"></i>Update Status
+                                    </button>
+                                    <button class="management-action-btn secondary" onclick="updateTournamentSchedule('${tournament._id}')">
+                                        <i class="fas fa-calendar-plus me-1"></i>Update Schedule
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function getDeleteTournamentsHTML() {
+            if (managementTournaments.length === 0) {
+                return `
+                    <div class="text-center py-5">
+                        <i class="fas fa-trash fa-3x mb-3 text-muted"></i>
+                        <h5>No Tournaments to Delete</h5>
+                        <p class="text-muted">You don't have any tournaments to delete.</p>
+                    </div>
+                `;
+            }
+
+            return `
+                <h3 class="operation-title">Delete Tournament</h3>
+                <div class="alert alert-warning mb-4">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Warning:</strong> Deleting a tournament is permanent and cannot be undone. Tournaments with registered participants cannot be deleted.
+                </div>
+                
+                <div class="tournament-management-list">
+                    ${managementTournaments.map(tournament => {
+                        const hasParticipants = tournament.participants && tournament.participants.length > 0;
+                        return `
+                            <div class="tournament-management-item">
+                                <div class="tournament-management-header">
+                                    <div class="tournament-management-info">
+                                        <h5>${tournament.title}</h5>
+                                        <div class="tournament-management-meta">
+                                            <span><i class="fas fa-gamepad me-1"></i>${tournament.game}</span>
+                                            <span class="ms-3"><i class="fas fa-users me-1"></i>${tournament.participants?.length || 0} participants</span>
+                                            <span class="ms-3 badge ${getStatusBadgeClass(tournament.status)}">${tournament.status}</span>
+                                            ${hasParticipants ? '<span class="ms-3 badge bg-warning">Has Participants</span>' : ''}
+                                        </div>
+                                    </div>
+                                    <div class="tournament-management-actions">
+                                        <button class="management-action-btn ${hasParticipants ? 'secondary' : ''}" 
+                                                onclick="deleteTournament('${tournament._id}')" 
+                                                ${hasParticipants ? 'disabled title="Cannot delete tournament with participants"' : ''}>
+                                            <i class="fas fa-trash me-1"></i>Delete Tournament
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function getDownloadDataHTML() {
+            if (managementTournaments.length === 0) {
+                return `
+                    <div class="text-center py-5">
+                        <i class="fas fa-download fa-3x mb-3 text-muted"></i>
+                        <h5>No Tournament Data to Download</h5>
+                        <p class="text-muted">Create tournaments to download their data and reports.</p>
+                    </div>
+                `;
+            }
+
+            return `
+                <h3 class="operation-title">Download Tournament Data</h3>
+                <p class="text-muted mb-4">Download tournament data, participant lists, and reports in various formats.</p>
+                
+                <div class="tournament-management-list">
+                    ${managementTournaments.map(tournament => `
+                        <div class="tournament-management-item">
+                            <div class="tournament-management-header">
+                                <div class="tournament-management-info">
+                                    <h5>${tournament.title}</h5>
+                                    <div class="tournament-management-meta">
+                                        <span><i class="fas fa-gamepad me-1"></i>${tournament.game}</span>
+                                        <span class="ms-3"><i class="fas fa-users me-1"></i>${tournament.participants?.length || 0} participants</span>
+                                        <span class="ms-3"><i class="fas fa-calendar me-1"></i>${new Date(tournament.registrationStart).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                                <div class="tournament-management-actions">
+                                    <button class="management-action-btn" onclick="downloadTournamentData('${tournament._id}', 'excel')">
+                                        <i class="fas fa-file-excel me-1"></i>Excel
+                                    </button>
+                                    <button class="management-action-btn secondary" onclick="downloadTournamentData('${tournament._id}', 'pdf')">
+                                        <i class="fas fa-file-pdf me-1"></i>PDF
+                                    </button>
+                                    <button class="management-action-btn secondary" onclick="downloadTournamentData('${tournament._id}', 'csv')">
+                                        <i class="fas fa-file-csv me-1"></i>CSV
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function getFinalistsManagementHTML() {
+            if (managementTournaments.length === 0) {
+                return `
+                    <div class="text-center py-5">
+                        <i class="fas fa-trophy fa-3x mb-3 text-muted"></i>
+                        <h5>No Tournaments for Finalists Management</h5>
+                        <p class="text-muted">Create tournaments to manage their finalists and leaderboards.</p>
+                    </div>
+                `;
+            }
+
+            return `
+                <h3 class="operation-title">Update Finalists Leaderboard</h3>
+                <p class="text-muted mb-4">Select a tournament to manage its finalists leaderboard (Top 16 teams).</p>
+                
+                <div class="tournament-management-list">
+                    ${managementTournaments.map(tournament => `
+                        <div class="tournament-management-item">
+                            <div class="tournament-management-header">
+                                <div class="tournament-management-info">
+                                    <h5>${tournament.title}</h5>
+                                    <div class="tournament-management-meta">
+                                        <span><i class="fas fa-users me-1"></i>${tournament.participants?.length || 0} teams registered</span>
+                                        <span class="ms-3"><i class="fas fa-medal me-1"></i>Format: ${tournament.format.toUpperCase()}</span>
+                                        <span class="ms-3 badge ${getStatusBadgeClass(tournament.status)}">${tournament.status}</span>
+                                    </div>
+                                </div>
+                                <div class="tournament-management-actions">
+                                    <button class="management-action-btn" onclick="manageFinalists('${tournament._id}')">
+                                        <i class="fas fa-trophy me-1"></i>Manage Finalists
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function getScheduleManagementHTML() {
+            if (managementTournaments.length === 0) {
+                return `
+                    <div class="text-center py-5">
+                        <i class="fas fa-calendar-alt fa-3x mb-3 text-muted"></i>
+                        <h5>No Tournaments to Schedule</h5>
+                        <p class="text-muted">Create tournaments to manage their schedules and events.</p>
+                    </div>
+                `;
+            }
+
+            return `
+                <h3 class="operation-title">Tournament Schedule Management</h3>
+                <p class="text-muted mb-4">Update tournament schedules, add events, and manage timelines.</p>
+                
+                <div class="tournament-management-list">
+                    ${managementTournaments.map(tournament => `
+                        <div class="tournament-management-item">
+                            <div class="tournament-management-header">
+                                <div class="tournament-management-info">
+                                    <h5>${tournament.title}</h5>
+                                    <div class="tournament-management-meta">
+                                        <span><i class="fas fa-calendar-check me-1"></i>Registration: ${new Date(tournament.registrationStart).toLocaleDateString()} - ${new Date(tournament.registrationEnd).toLocaleDateString()}</span>
+                                        <span class="ms-3"><i class="fas fa-trophy me-1"></i>Tournament: ${new Date(tournament.tournamentStart).toLocaleDateString()} - ${new Date(tournament.tournamentEnd).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                                <div class="tournament-management-actions">
+                                    <button class="management-action-btn" onclick="updateTournamentSchedule('${tournament._id}')">
+                                        <i class="fas fa-calendar-plus me-1"></i>Update Schedule
+                                    </button>
+                                    <button class="management-action-btn secondary" onclick="viewSchedule('${tournament._id}')">
+                                        <i class="fas fa-calendar me-1"></i>View Schedule
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function getLeaderboardManagementHTML() {
+            if (managementTournaments.length === 0) {
+                return `
+                    <div class="text-center py-5">
+                        <i class="fas fa-trophy fa-3x mb-3 text-muted"></i>
+                        <h5>No Tournaments for Leaderboard Management</h5>
+                        <p class="text-muted">Create tournaments to manage their leaderboards and standings.</p>
+                    </div>
+                `;
+            }
+
+            return `
+                <h3 class="operation-title">Leaderboard & Standings Management</h3>
+                <p class="text-muted mb-4">Update team standings, manage kill points, and set final rankings.</p>
+                
+                <div class="tournament-management-list">
+                    ${managementTournaments.map(tournament => `
+                        <div class="tournament-management-item">
+                            <div class="tournament-management-header">
+                                <div class="tournament-management-info">
+                                    <h5>${tournament.title}</h5>
+                                    <div class="tournament-management-meta">
+                                        <span><i class="fas fa-users me-1"></i>${tournament.participants?.length || 0} teams registered</span>
+                                        <span class="ms-3"><i class="fas fa-medal me-1"></i>Format: ${tournament.format.toUpperCase()}</span>
+                                        <span class="ms-3 badge ${getStatusBadgeClass(tournament.status)}">${tournament.status}</span>
+                                    </div>
+                                </div>
+                                <div class="tournament-management-actions">
+                                    <button class="management-action-btn" onclick="manageLeaderboard('${tournament._id}')">
+                                        <i class="fas fa-list-ol me-1"></i>Manage Standings
+                                    </button>
+                                    <button class="management-action-btn secondary" onclick="viewBrackets('${tournament._id}')">
+                                        <i class="fas fa-sitemap me-1"></i>View Brackets
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function getAnalyticsHTML() {
+            return `
+                <h3 class="operation-title">Tournament Analytics</h3>
+                <p class="text-muted mb-4">View detailed analytics and insights for your tournaments.</p>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="stats-card">
+                            <div class="stats-number">${managementTournaments.length}</div>
+                            <div class="text-muted">Total Tournaments</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stats-card">
+                            <div class="stats-number">${managementTournaments.filter(t => t.status === 'active').length}</div>
+                            <div class="text-muted">Active Tournaments</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stats-card">
+                            <div class="stats-number">${managementTournaments.reduce((sum, t) => sum + (t.participants?.length || 0), 0)}</div>
+                            <div class="text-muted">Total Participants</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tournament-management-list mt-4">
+                    ${managementTournaments.map(tournament => `
+                        <div class="tournament-management-item">
+                            <div class="tournament-management-header">
+                                <div class="tournament-management-info">
+                                    <h5>${tournament.title}</h5>
+                                    <div class="tournament-management-meta">
+                                        <span><i class="fas fa-eye me-1"></i>Views: ${tournament.viewCount || 0}</span>
+                                        <span class="ms-3"><i class="fas fa-users me-1"></i>Participants: ${tournament.participants?.length || 0}</span>
+                                        <span class="ms-3"><i class="fas fa-percentage me-1"></i>Conversion: ${((tournament.participants?.length || 0) / Math.max(tournament.viewCount || 1, 1) * 100).toFixed(1)}%</span>
+                                    </div>
+                                </div>
+                                <div class="tournament-management-actions">
+                                    <button class="management-action-btn" onclick="viewDetailedAnalytics('${tournament._id}')">
+                                        <i class="fas fa-chart-line me-1"></i>View Analytics
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function getSettingsHTML() {
+            return `
+                <h3 class="operation-title">Tournament Settings</h3>
+                <p class="text-muted mb-4">Manage tournament settings, permissions, and advanced configurations.</p>
+                
+                <div class="tournament-management-list">
+                    ${managementTournaments.map(tournament => `
+                        <div class="tournament-management-item">
+                            <div class="tournament-management-header">
+                                <div class="tournament-management-info">
+                                    <h5>${tournament.title}</h5>
+                                    <div class="tournament-management-meta">
+                                        <span><i class="fas fa-cog me-1"></i>Status: ${tournament.status}</span>
+                                        <span class="ms-3"><i class="fas fa-shield-alt me-1"></i>Moderation: ${tournament.moderationStatus || 'pending'}</span>
+                                        <span class="ms-3"><i class="fas fa-credit-card me-1"></i>Payment: ${tournament.paymentStatus}</span>
+                                    </div>
+                                </div>
+                                <div class="tournament-management-actions">
+                                    <button class="management-action-btn" onclick="manageTournamentSettings('${tournament._id}')">
+                                        <i class="fas fa-cogs me-1"></i>Settings
+                                    </button>
+                                    <button class="management-action-btn secondary" onclick="deleteTournament('${tournament._id}')">
+                                        <i class="fas fa-trash me-1"></i>Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function initializeOperationHandlers(operation) {
+            // Initialize any specific handlers for the current operation
+            switch (operation) {
+                case 'update':
+                    // Initialize update handlers
+                    break;
+                case 'delete':
+                    // Initialize delete handlers
+                    break;
+                case 'download':
+                    // Initialize download handlers
+                    break;
+                case 'finalists':
+                    // Initialize finalists handlers
+                    break;
+                case 'schedule':
+                    // Initialize schedule handlers
+                    break;
+            }
+        }
+
+        function getStatusBadgeClass(status) {
+            switch (status) {
+                case 'active': return 'bg-success';
+                case 'draft': return 'bg-warning';
+                case 'completed': return 'bg-info';
+                case 'cancelled': return 'bg-danger';
+                default: return 'bg-secondary';
+            }
+        }
+
+        // Tournament Management Action Functions
+        function editTournamentDetails(tournamentId) {
+            showAlert('Tournament editing interface coming soon!', 'info');
+            // TODO: Implement tournament editing modal/form
+        }
+
+        function updateTournamentStatus(tournamentId) {
+            const tournament = managementTournaments.find(t => t._id === tournamentId);
+            if (!tournament) return;
+
+            const newStatus = prompt(`Update status for "${tournament.title}"\nCurrent status: ${tournament.status}\n\nEnter new status (active, draft, completed, cancelled):`, tournament.status);
+            
+            if (newStatus && ['active', 'draft', 'completed', 'cancelled'].includes(newStatus.toLowerCase())) {
+                updateTournamentStatusAPI(tournamentId, newStatus.toLowerCase());
+            } else if (newStatus) {
+                showAlert('Invalid status. Please use: active, draft, completed, or cancelled', 'warning');
+            }
+        }
+
+        async function updateTournamentStatusAPI(tournamentId, newStatus) {
+            try {
+                const response = await authenticatedFetch(`${API_BASE_URL}/api/user-tournaments/${tournamentId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                const result = await handleApiResponse(response, 'Update tournament status');
+                
+                if (result) {
+                    showAlert('Tournament status updated successfully!', 'success');
+                    loadManagementTournaments(); // Refresh the list
+                }
+            } catch (error) {
+                console.error('Error updating tournament status:', error);
+                showAlert('Failed to update tournament status', 'danger');
+            }
+        }
+
+        function updateTournamentSchedule(tournamentId) {
+            showAlert('Schedule management interface coming soon!', 'info');
+            // TODO: Implement schedule management interface
+        }
+
+        function downloadTournamentData(tournamentId, format) {
+            const tournament = managementTournaments.find(t => t._id === tournamentId);
+            if (!tournament) return;
+
+            showAlert(`Downloading ${tournament.title} data as ${format.toUpperCase()}...`, 'info');
+            
+            // Create download URL
+            const downloadUrl = `${API_BASE_URL}/api/user-tournaments/${tournamentId}/export?format=${format}`;
+            
+            // Create temporary link and trigger download
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = `${tournament.title.replace(/[^a-zA-Z0-9]/g, '_')}_data.${format}`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // TODO: Implement actual download API endpoint
+        }
+
+        function manageFinalists(tournamentId) {
+            const tournament = managementTournaments.find(t => t._id === tournamentId);
+            if (!tournament) return;
+
+            // Create finalists management modal
+            const finalistsModal = createFinalistsModal(tournament);
+            document.body.appendChild(finalistsModal);
+            
+            // Show modal
+            const modal = new bootstrap.Modal(finalistsModal);
+            modal.show();
+            
+            // Clean up modal when closed
+            finalistsModal.addEventListener('hidden.bs.modal', () => {
+                document.body.removeChild(finalistsModal);
+            });
+        }
+
+        function createFinalistsModal(tournament) {
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content" style="background: var(--panel); border: 1px solid var(--border-color);">
+                        <div class="modal-header" style="border-bottom: 1px solid var(--border-color);">
+                            <h5 class="modal-title">Manage Finalists - ${tournament.title}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="text-muted mb-4">Enter the top 16 teams in order of their final ranking. Leave entries blank if fewer than 16 teams made it to finals.</p>
+                            
+                            <form id="finalists-form">
+                                <div class="finalists-list">
+                                    ${Array.from({length: 16}, (_, i) => `
+                                        <div class="leaderboard-entry">
+                                            <div class="leaderboard-position">#${i + 1}</div>
+                                            <input type="text" class="leaderboard-team-input" 
+                                                   name="finalist_${i}" 
+                                                   placeholder="Enter team name" 
+                                                   value="${tournament.finalists && tournament.finalists[i] ? tournament.finalists[i].teamName || '' : ''}">
+                                            <input type="number" class="leaderboard-team-input" 
+                                                   name="points_${i}" 
+                                                   placeholder="Points" 
+                                                   value="${tournament.finalists && tournament.finalists[i] ? tournament.finalists[i].totalPoints || 0 : 0}">
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="saveFinalists('${tournament._id}')">Save Finalists</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return modal;
+        }
+
+        async function saveFinalists(tournamentId) {
+            const form = document.getElementById('finalists-form');
+            const formData = new FormData(form);
+            
+            const finalists = [];
+            for (let i = 0; i < 16; i++) {
+                const teamName = formData.get(`finalist_${i}`);
+                const points = formData.get(`points_${i}`);
+                
+                if (teamName && teamName.trim()) {
+                    finalists.push({
+                        position: i + 1,
+                        teamName: teamName.trim(),
+                        totalPoints: parseInt(points) || 0
+                    });
+                }
+            }
+
+            try {
+                const response = await authenticatedFetch(`${API_BASE_URL}/api/user-tournaments/${tournamentId}/leaderboard`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ standings: finalists })
+                });
+
+                const result = await handleApiResponse(response, 'Update finalists');
+                
+                if (result) {
+                    showAlert('Finalists updated successfully!', 'success');
+                    loadManagementTournaments(); // Refresh the list
+                    
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.querySelector('.modal.show'));
+                    if (modal) modal.hide();
+                }
+            } catch (error) {
+                console.error('Error updating finalists:', error);
+                showAlert('Failed to update finalists', 'danger');
+            }
+        }
+
+        async function deleteTournament(tournamentId) {
+            const tournament = managementTournaments.find(t => t._id === tournamentId);
+            if (!tournament) return;
+
+            const hasParticipants = tournament.participants && tournament.participants.length > 0;
+            
+            if (hasParticipants) {
+                showAlert('Cannot delete tournament with registered participants', 'warning');
+                return;
+            }
+
+            if (confirm(`Are you sure you want to delete "${tournament.title}"?\n\nThis action cannot be undone and will permanently remove all tournament data.`)) {
+                try {
+                    const response = await authenticatedFetch(`${API_BASE_URL}/api/user-tournaments/${tournamentId}`, {
+                        method: 'DELETE'
+                    });
+
+                    const result = await handleApiResponse(response, 'Delete tournament');
+                    
+                    if (result) {
+                        showAlert('Tournament deleted successfully!', 'success');
+                        loadManagementTournaments(); // Refresh the list
+                        loadUserTournaments(); // Refresh main tournaments list
+                        loadDashboardStats(); // Refresh stats
+                    }
+                } catch (error) {
+                    console.error('Error deleting tournament:', error);
+                    showAlert('Failed to delete tournament', 'danger');
+                }
+            }
         }
 
         function resetForm() {
