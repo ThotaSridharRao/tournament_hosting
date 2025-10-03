@@ -686,30 +686,21 @@
             `;
             formatInfo.style.display = 'block';
 
-            // Show download section if registration is closed
+            // Show download section based on admin access only
             const downloadSection = document.getElementById('download-section');
             const downloadBtn = document.getElementById('download-pdf-btn');
 
-            if (status === 'registration_closed' || status === 'active' || status === 'completed') {
-                // Check if user is admin to show/hide download functionality
-                checkAdminAccess().then(isAdmin => {
-                    if (isAdmin) {
-                        downloadSection.style.display = 'block';
-                        downloadBtn.disabled = false;
-                        downloadBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Download Brackets PDF (Admin)';
-                        downloadBtn.classList.remove('admin-only');
-                    } else {
-                        downloadSection.style.display = 'block';
-                        downloadBtn.disabled = true;
-                        downloadBtn.innerHTML = '<i class="fas fa-lock"></i> Download Restricted (Admin Only)';
-                        downloadBtn.classList.add('admin-only');
-                    }
-                });
-            } else {
-                downloadSection.style.display = 'block';
-                downloadBtn.disabled = true;
-                downloadBtn.innerHTML = '<i class="fas fa-lock"></i> Available after registration closes';
-            }
+            // Check if user is admin to show/hide download functionality
+            checkAdminAccess().then(isAdmin => {
+                if (isAdmin) {
+                    downloadSection.style.display = 'block';
+                    downloadBtn.disabled = false;
+                    downloadBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Download Brackets PDF (Admin)';
+                    downloadBtn.classList.remove('admin-only');
+                } else {
+                    downloadSection.style.display = 'none';
+                }
+            });
         }
 
         function displayTournamentStats() {
