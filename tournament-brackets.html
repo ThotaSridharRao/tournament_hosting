@@ -661,7 +661,7 @@
                     <strong>Format:</strong> ${tournamentData.format || 'Single Elimination'}
                 </div>
                 <div class="info-item">
-                    <strong>Teams:</strong> ${participants.length}/${getMaxTeamsForDisplay()}
+                    <strong>Teams:</strong> ${participants.length}/${tournamentData.maxTeams || 'Unlimited'}
                 </div>
                 <div class="info-item">
                     <strong>Status:</strong> ${statusBadge}
