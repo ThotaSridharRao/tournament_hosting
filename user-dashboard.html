@@ -2982,11 +2982,8 @@
 
         // Test rate limiting scenarios
         async function testRateLimiting() {
-            console.log('🧪 Testing rate limiting scenarios...');
-
             try {
                 // Test 1: Rapid concurrent requests (should be deduplicated)
-                console.log('Test 1: Concurrent request deduplication');
                 const concurrentPromises = Array(5).fill().map(() =>
                     apiManager.request(`${API_BASE_URL}/api/user-tournaments`, {
                         context: 'Concurrent test'
@@ -2995,10 +2992,8 @@
 
                 const concurrentResults = await Promise.allSettled(concurrentPromises);
                 const successfulConcurrent = concurrentResults.filter(r => r.status === 'fulfilled').length;
-                console.log(`✅ Concurrent requests: ${successfulConcurrent}/5 successful`);
 
                 // Test 2: Cache behavior
-                console.log('Test 2: Cache behavior');
                 const cacheTest1 = await apiManager.request(`${API_BASE_URL}/api/user-tournaments`, {
                     context: 'Cache test 1',
                     cacheTTL: 30000
@@ -3009,10 +3004,7 @@
                     cacheTTL: 30000
                 });
 
-                console.log('✅ Cache test completed');
-
                 // Test 3: Batch requests
-                console.log('Test 3: Batch request handling');
                 const batchRequests = [
                     { url: `${API_BASE_URL}/api/user-tournaments`, options: { context: 'Batch 1' } },
                     { url: `${API_BASE_URL}/api/users/me/tournaments`, options: { context: 'Batch 2' } }
@@ -3020,11 +3012,9 @@
 
                 const batchResults = await apiManager.batchRequests(batchRequests);
                 const successfulBatch = batchResults.filter(r => r.status === 'fulfilled').length;
-                console.log(`✅ Batch requests: ${successfulBatch}/${batchRequests.length} successful`);
 
                 // Generate monitoring report
                 const report = rateLimitMonitor.generateReport();
-                console.log('📊 Rate limiting test report:', report);
 
                 return {
                     concurrentTest: { successful: successfulConcurrent, total: 5 },
@@ -3517,7 +3507,7 @@
             const mobileNavContainer = document.getElementById('mobile-nav');
             const user = sessionData?.user;
 
-            console.log('Setting up mobile nav...', { mobileNavContainer, user });
+
 
             if (!mobileNavContainer) {
                 console.error('Mobile nav container not found');
@@ -3576,14 +3566,13 @@
             `;
 
             mobileNavContainer.innerHTML = finalHTML;
-            console.log('Mobile nav setup complete, content:', finalHTML.substring(0, 100) + '...');
         }
 
         function initializeNavbar() {
             const hamburger = document.querySelector('.hamburger');
             const mobileNav = document.getElementById('mobile-nav');
 
-            console.log('Initializing navbar...', { hamburger, mobileNav });
+
 
             if (!hamburger || !mobileNav) {
                 console.error("Navbar elements not found.", { hamburger, mobileNav });
@@ -3591,7 +3580,6 @@
             }
 
             function closeMobileNav() {
-                console.log('Closing mobile nav');
                 mobileNav.classList.remove('is-open');
                 hamburger.setAttribute('aria-expanded', 'false');
             }
@@ -3599,10 +3587,8 @@
             hamburger.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('Hamburger clicked');
                 const isOpen = mobileNav.classList.toggle('is-open');
                 hamburger.setAttribute('aria-expanded', isOpen);
-                console.log('Mobile nav is now:', isOpen ? 'open' : 'closed');
             });
 
             document.addEventListener('click', (event) => {
@@ -3610,7 +3596,6 @@
 
                 const closeButton = event.target.closest('.mobile-nav-close');
                 if (closeButton) {
-                    console.log('Close button clicked');
                     closeMobileNav();
                     return;
                 }
@@ -3619,7 +3604,6 @@
                 const isClickOnHamburger = event.target.closest('.hamburger');
 
                 if (!isClickInsideNav && !isClickOnHamburger) {
-                    console.log('Clicked outside nav, closing');
                     closeMobileNav();
                 }
             });
@@ -3627,7 +3611,6 @@
             // Add event listener for dynamically added close button
             mobileNav.addEventListener('click', (event) => {
                 if (event.target.closest('.mobile-nav-close')) {
-                    console.log('Mobile nav close button clicked');
                     closeMobileNav();
                 }
             });
@@ -3635,8 +3618,7 @@
             checkUserAuthentication();
             setupMobileNav();
 
-            // Test mobile nav content
-            console.log('Mobile nav content:', mobileNav.innerHTML);
+
         }
 
         // Tab switching function
@@ -3766,8 +3748,6 @@
                     const input = inputGroup.querySelector('input[type="datetime-local"]');
 
                     if (input) {
-                        console.log('Opening calendar for:', input.id);
-
                         // Focus the input first
                         input.focus();
 
@@ -3779,7 +3759,7 @@
                                     input.showPicker();
                                     return;
                                 } catch (error) {
-                                    console.log('showPicker failed:', error);
+                                    // showPicker not supported, fallback to normal input
                                 }
                             }
 
@@ -3952,7 +3932,6 @@
 
         async function handleFormSubmit(e) {
             e.preventDefault();
-            console.log('🚀 Tournament creation started...');
 
             const submitBtn = e.target.querySelector('button[type="submit"]');
             const spinner = submitBtn.querySelector('.loading-spinner');
@@ -3999,7 +3978,6 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    console.log('✅ Tournament created successfully:', result.data);
                     createdTournamentId = result.data._id;
                     document.getElementById('createdTournamentTitle').textContent = result.data.title;
 
@@ -4175,7 +4153,6 @@
                 if (hostedResult.success && hostedResult.data) {
                     hostedTournaments = hostedResult.data.data || [];
                     hostedCount = hostedTournaments.length;
-                    console.log(`Loaded ${hostedCount} hosted tournaments`);
                 } else if (hostedResult.error) {
                     console.error('Error loading hosted tournaments:', hostedResult.error.message);
                     // Don't show error message to user - they might not have created any tournaments yet
@@ -4185,7 +4162,6 @@
                 const joinedResult = results[1];
                 if (joinedResult.success && joinedResult.data) {
                     joinedTournaments = joinedResult.data.data || [];
-                    console.log(`Loaded ${joinedTournaments.length} joined tournaments`);
                 } else if (joinedResult.error) {
                     console.error('Error loading joined tournaments:', joinedResult.error.message);
                     // Only show error for joined tournaments if it's not a rate limiting issue
@@ -4214,7 +4190,7 @@
 
                 // Show success message if data was loaded successfully
                 if (hostedCount > 0 || joinedCount > 0) {
-                    console.log('Dashboard data loaded successfully');
+                    // Data loaded successfully
                 }
 
                 // Log cache stats for monitoring
@@ -4273,7 +4249,6 @@
 
                 if (result) {
                     let tournaments = result.data || [];
-                    console.log(`Successfully loaded ${tournaments.length} joined tournaments`);
 
                     // Apply status filter if selected
                     const statusFilter = document.getElementById('joinedStatusFilter');
@@ -5304,7 +5279,6 @@
 
         // Unit Tests for Authentication Functions
         function runAuthenticationTests() {
-            console.log('🧪 Running authentication unit tests...');
 
             let testsPassed = 0;
             let testsTotal = 0;
@@ -5313,7 +5287,6 @@
                 testsTotal++;
                 try {
                     testFn();
-                    console.log(`✅ ${name}`);
                     testsPassed++;
                 } catch (error) {
                     console.error(`❌ ${name}: ${error.message}`);
@@ -5438,12 +5411,8 @@
                 }
             });
 
-            console.log(`🧪 Tests completed: ${testsPassed}/${testsTotal} passed`);
-
-            if (testsPassed === testsTotal) {
-                console.log('🎉 All authentication tests passed!');
-            } else {
-                console.warn(`⚠️ ${testsTotal - testsPassed} tests failed`);
+            if (testsPassed !== testsTotal) {
+                console.warn(`⚠️ ${testsTotal - testsPassed} authentication tests failed`);
             }
 
             return { passed: testsPassed, total: testsTotal };
