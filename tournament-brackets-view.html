@@ -34,6 +34,8 @@
       margin: 0;
       padding: 0;
       min-height: 100vh;
+      padding-top: 60px;
+      /* Account for fixed navbar */
     }
 
     .container {
@@ -42,34 +44,57 @@
       padding: 2rem;
     }
 
-    .header {
-      text-align: center;
-      margin-bottom: 2rem;
+    @media (max-width: 768px) {
+      .hero-section {
+        padding: 3rem 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .hero-title {
+        font-size: clamp(2rem, 8vw, 3rem);
+      }
+
+      .hero-subtitle {
+        font-size: 1.1rem;
+      }
+
+      .container {
+        padding: 1rem;
+      }
     }
 
-    .tournament-title {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
+    .hero-section {
+      text-align: center;
+      padding: 4rem 0;
+      margin-bottom: 3rem;
+      background: linear-gradient(135deg, rgba(15, 133, 211, 0.1), rgba(93, 63, 211, 0.1));
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+    }
+
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
       background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
     }
 
-    .tournament-info {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-    }
-
-    .info-item {
-      background: var(--panel);
-      padding: 1rem 1.5rem;
-      border-radius: var(--radius);
-      border: 1px solid var(--border-color);
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin: 0;
+      opacity: 0.9;
     }
 
     .brackets-container {
@@ -353,33 +378,7 @@
       font-size: 1.2rem;
     }
 
-    .tournament-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
 
-    .stat-card {
-      background: var(--panel);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      text-align: center;
-    }
-
-    .stat-number {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--primary-color);
-      display: block;
-    }
-
-    .stat-label {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
-    }
 
     /* Tournament Brackets Styling */
     .stage-section {
@@ -556,35 +555,73 @@
       font-weight: 600;
       color: var(--accent-secondary);
     }
-
-    .format-description {
-      color: var(--text-secondary);
-      margin-bottom: 2rem;
-      font-style: italic;
-    }
   </style>
 </head>
 
 <body>
+  <header class="site-header" role="banner">
+    <div class="header-container">
+      <a href="index.html" class="brand" aria-hidden="false">GamingNexus</a>
+      <div class="header-right">
+        <nav class="primary" role="navigation" aria-label="Primary">
+          <div class="nav-links" role="menubar">
+            <a href="tournaments.html" role="menuitem">Tournaments</a>
+            <a href="index.html#why-us" role="menuitem">Why Us</a>
+            <a href="index.html#faq" role="menuitem">FAQ</a>
+          </div>
+        </nav>
+        <div class="nav-actions">
+          <div id="guest-menu">
+            <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
+          </div>
+          <div id="user-menu" style="display: none;">
+            <div class="profile-dropdown">
+              <div class="profile-icon" id="profile-icon">
+                <i class="fas fa-user-circle"></i>
+              </div>
+              <div class="profile-modal" id="profile-modal">
+                <div class="profile-header">
+                  <div class="profile-photo"><i class="fas fa-user"></i></div>
+                  <div class="profile-info">
+                    <div class="profile-username" id="modal-username">User</div>
+                    <div class="profile-userid" id="modal-userid">ID: Loading...</div>
+                  </div>
+                </div>
+                <div class="profile-actions">
+                  <a href="userdashboard.html" class="profile-action" id="modal-dashboard-link">
+                    <i class="fas fa-user"></i>
+                    <span>My Account</span>
+                  </a>
+                  <button class="profile-action logout-action" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div id="mobile-nav" class="mobile-nav" hidden>
+  </div>
+
   <div class="container">
     <a href="javascript:history.back()" class="back-button">
       <i class="fas fa-arrow-left"></i>
       Back to Tournament Details
     </a>
 
-    <div class="header">
-      <h1 class="tournament-title" id="tournament-title">Loading Tournament...</h1>
-      <div class="tournament-info" id="tournament-info">
-        <!-- Tournament info will be loaded here -->
+    <div class="hero-section">
+      <div class="hero-content">
+        <h1 class="hero-title" id="tournament-title">Loading Tournament...</h1>
+        <p class="hero-subtitle">Tournament Brackets & Match Schedule</p>
       </div>
-    </div>
-
-    <div class="format-info" id="format-info" style="display: none;">
-      <!-- Format information will be loaded here -->
-    </div>
-
-    <div class="tournament-stats" id="tournament-stats" style="display: none;">
-      <!-- Tournament statistics will be loaded here -->
     </div>
 
     <div class="brackets-container" id="brackets-container">
@@ -669,140 +706,11 @@
     }
 
     function displayTournamentInfo() {
-      const participants = tournamentData.participants || [];
-      const status = tournamentData.status || 'unknown';
-
-      // Create status badge
-      const statusBadge = `<span class="status-badge status-${status.replace('_', '-')}">${status.replace('_', ' ')}</span>`;
-
-      const infoHtml = `
-                <div class="info-item">
-                    <strong>Format:</strong> ${tournamentData.format || 'Single Elimination'}
-                </div>
-                <div class="info-item">
-                    <strong>Status:</strong> ${statusBadge}
-                </div>
-                <div class="info-item">
-                    <strong>Game:</strong> ${tournamentData.game || 'Not specified'}
-                </div>
-            `;
-      document.getElementById('tournament-info').innerHTML = infoHtml;
-
-      // Display tournament statistics
-      displayTournamentStats();
-
-      // Show format information
-      const formatInfo = document.getElementById('format-info');
-      const format = tournamentData.format || 'single_elimination';
-      let formatDescription = '';
-
-      // Get format description from format configuration
-      const formatConfig = getTournamentFormatConfig(format, participants.length);
-      formatDescription = formatConfig ? formatConfig.description : `Tournament Format: ${format}`;
-
-      formatInfo.innerHTML = `
-                <h3><i class="fas fa-info-circle"></i> Tournament Format</h3>
-                <p>${formatDescription}</p>
-            `;
-      formatInfo.style.display = 'block';
-
-      // Show download section
-      const downloadSection = document.getElementById('download-section');
-      const downloadBtn = document.getElementById('download-pdf-btn');
-
-      downloadSection.style.display = 'block';
-      downloadBtn.disabled = false;
-      downloadBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Download Brackets PDF';
-      downloadBtn.classList.remove('admin-only');
+      // Only update the tournament title - all other info cards are removed
+      // The title is already updated in loadTournamentBrackets function
     }
 
-    function displayTournamentStats() {
-      const participants = tournamentData.participants || [];
-      const format = (tournamentData.format || 'single_elimination').toLowerCase();
 
-      // Get format configuration to calculate accurate stats
-      const formatConfig = getTournamentFormatConfig(format, participants.length);
-
-      let totalMatches = 0;
-      let rounds = 0;
-      let maxTeams = tournamentData.maxTeams; // Start with the value from the data
-
-      console.log('Initial Tournament Data:', tournamentData);
-      console.log('Format:', format);
-      console.log('Max Teams from Backend:', maxTeams);
-      console.log('Participants:', participants.length);
-
-      // For KP format, calculate maxTeams from kpSettings if not already set correctly
-      if (format === 'kp' && tournamentData.kpSettings) {
-        const kpSettings = tournamentData.kpSettings;
-        console.log('KP Settings:', kpSettings);
-        // This line was the source of the error. It should use tournamentData.
-        maxTeams = (kpSettings.groupSize || 25) * (kpSettings.numberOfGroups || 4);
-      }
-
-      // Fallback to participants length or unlimited if maxTeams is still not set
-      if (!maxTeams) {
-        maxTeams = participants.length || 'Unlimited';
-      }
-
-      console.log('Final Max Teams:', maxTeams);
-
-      if (formatConfig) {
-        // Calculate total matches from format configuration
-        formatConfig.stages.forEach(stage => {
-          stage.tables.forEach(table => {
-            totalMatches += table.totalMatches;
-          });
-        });
-        rounds = formatConfig.stages.length;
-      } else {
-        // Fallback to basic calculations
-        switch (format) {
-          case 'single_elimination':
-            totalMatches = Math.max(0, participants.length - 1);
-            rounds = Math.ceil(Math.log2(participants.length));
-            break;
-          case 'double_elimination':
-            totalMatches = Math.max(0, (participants.length * 2) - 2);
-            rounds = Math.ceil(Math.log2(participants.length)) + 1;
-            break;
-          case 'round_robin':
-            totalMatches = (participants.length * (participants.length - 1)) / 2;
-            rounds = participants.length - 1;
-            break;
-          case 'swiss':
-            rounds = Math.ceil(Math.log2(participants.length));
-            totalMatches = (participants.length / 2) * rounds;
-            break;
-          case 'kp':
-            totalMatches = 5; // 4 qualifiers + 1 final
-            rounds = 2; // Qualifiers + Finals
-            break;
-        }
-      }
-
-      const statsHtml = `
-                <div class="stat-card">
-                    <span class="stat-number">${participants.length}/${maxTeams}</span>
-                    <div class="stat-label">Registered Teams</div>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number">${totalMatches}</span>
-                    <div class="stat-label">Total Matches</div>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number">${rounds}</span>
-                    <div class="stat-label">Tournament Stages</div>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number">₹${tournamentData.entryFee || 0}</span>
-                    <div class="stat-label">Entry Fee</div>
-                </div>
-            `;
-
-      document.getElementById('tournament-stats').innerHTML = statsHtml;
-      document.getElementById('tournament-stats').style.display = 'grid';
-    }
 
     function displayBrackets() {
       const participants = tournamentData.participants || [];
@@ -833,8 +741,7 @@
         return;
       }
 
-      let html = `<h3>${formatConfig.title}</h3>`;
-      html += `<p class="format-description">${formatConfig.description}</p>`;
+      let html = ``;
 
       // Create match tables for each stage
       formatConfig.stages.forEach((stage, stageIndex) => {
@@ -1792,6 +1699,130 @@
       // Small delay to ensure DOM is updated
       setTimeout(loadMatchSchedules, 100);
     };
+
+    // Navbar functionality
+    function redirectToAuth() {
+      window.location.href = 'auth.html';
+    }
+
+    function logout() {
+      // Clear session data
+      localStorage.removeItem('sessionData');
+      sessionStorage.removeItem('sessionData');
+
+      // Redirect to home page
+      window.location.href = 'index.html';
+    }
+
+    // Session management for navbar
+    function getSessionData() {
+      try {
+        return JSON.parse(localStorage.getItem('sessionData')) ||
+          JSON.parse(sessionStorage.getItem('sessionData'));
+      } catch (error) {
+        return null;
+      }
+    }
+
+    // Initialize navbar on page load
+    document.addEventListener('DOMContentLoaded', function () {
+      const sessionData = getSessionData();
+      const guestMenu = document.getElementById('guest-menu');
+      const userMenu = document.getElementById('user-menu');
+
+      if (sessionData && sessionData.user) {
+        // User is logged in
+        guestMenu.style.display = 'none';
+        userMenu.style.display = 'block';
+
+        // Update user info
+        const username = document.getElementById('modal-username');
+        const userid = document.getElementById('modal-userid');
+
+        if (username) username.textContent = sessionData.user.username || 'User';
+        if (userid) userid.textContent = `ID: ${sessionData.user.id || 'Unknown'}`;
+      } else {
+        // User is not logged in
+        guestMenu.style.display = 'block';
+        userMenu.style.display = 'none';
+      }
+
+      // Mobile nav functionality
+      const hamburger = document.querySelector('.hamburger');
+      const mobileNav = document.getElementById('mobile-nav');
+
+      if (hamburger && mobileNav) {
+        // Populate mobile nav content
+        if (sessionData && sessionData.user) {
+          // Logged in user mobile nav
+          mobileNav.innerHTML = `
+            <button class="mobile-nav-close" aria-label="Close menu">
+              <i class="fas fa-times"></i>
+            </button>
+            <div class="profile-header">
+              <div class="profile-photo"><i class="fas fa-user"></i></div>
+              <div class="profile-info">
+                <div class="profile-username">${sessionData.user.username || 'User'}</div>
+                <div class="profile-userid">ID: ${sessionData.user.id || 'Unknown'}</div>
+              </div>
+            </div>
+            <div class="mobile-nav-links">
+              <a href="tournaments.html"><i class="fas fa-trophy"></i> Tournaments</a>
+              <a href="index.html#why-us"><i class="fas fa-star"></i> Why Us</a>
+              <a href="index.html#faq"><i class="fas fa-question-circle"></i> FAQ</a>
+            </div>
+            <div class="mobile-nav-bottom-actions">
+              <a href="userdashboard.html" class="mobile-host-btn">
+                <i class="fas fa-user"></i> My Account
+              </a>
+              <button class="mobile-logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </button>
+            </div>
+          `;
+        } else {
+          // Guest mobile nav
+          mobileNav.innerHTML = `
+            <button class="mobile-nav-close" aria-label="Close menu">
+              <i class="fas fa-times"></i>
+            </button>
+            <div class="guest-view">
+              <i class="fas fa-user-circle"></i>
+              <p>Join GamingNexus to compete in tournaments and track your progress.</p>
+              <div class="button-container">
+                <button class="mobile-join-btn" onclick="redirectToAuth()">
+                  <i class="fas fa-user-plus"></i> Join Us
+                </button>
+              </div>
+            </div>
+            <div class="mobile-nav-links">
+              <a href="tournaments.html"><i class="fas fa-trophy"></i> Tournaments</a>
+              <a href="index.html#why-us"><i class="fas fa-star"></i> Why Us</a>
+              <a href="index.html#faq"><i class="fas fa-question-circle"></i> FAQ</a>
+            </div>
+          `;
+        }
+
+        hamburger.addEventListener('click', () => {
+          const isOpen = mobileNav.classList.toggle('is-open');
+          hamburger.setAttribute('aria-expanded', isOpen);
+          if (!isOpen) {
+            mobileNav.setAttribute('hidden', '');
+          } else {
+            mobileNav.removeAttribute('hidden');
+          }
+        });
+
+        // Close mobile nav when clicking close button
+        mobileNav.addEventListener('click', (e) => {
+          if (e.target.closest('.mobile-nav-close')) {
+            mobileNav.classList.remove('is-open');
+            hamburger.setAttribute('aria-expanded', 'false');
+            mobileNav.setAttribute('hidden', '');
+          }
+        });
+      }
+    });
   </script>
 </body>
 
