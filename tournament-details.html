@@ -2183,6 +2183,12 @@
           primaryActionBtn.innerHTML = '<i class="fas fa-check-circle"></i> Registered';
           primaryActionBtn.className = 'btn-primary btn-success';
           primaryActionBtn.disabled = true;
+          
+          // Show brackets button for registered users regardless of tournament status
+          bracketsActionBtn.style.display = 'inline-flex';
+          bracketsActionBtn.onclick = () => {
+            window.location.href = `tournament-brackets-view.html?slug=${tournament.slug}`;
+          };
           return;
         }
 
@@ -2210,20 +2216,20 @@
             primaryActionBtn.innerHTML = '<i class="fas fa-lock"></i> Registration Closed';
             primaryActionBtn.disabled = true;
 
-            // Show brackets button when registration is closed
+            // Show brackets button when registration is closed (for non-registered users)
             bracketsActionBtn.style.display = 'inline-flex';
             bracketsActionBtn.onclick = () => {
-              window.location.href = `tournament-brackets.html?slug=${tournament.slug}`;
+              window.location.href = `tournament-brackets-view.html?slug=${tournament.slug}`;
             };
             break;
           case 'ongoing':
           case 'ended':
             primaryActionBtn.style.display = 'none';
 
-            // Show brackets button for ongoing and ended tournaments
+            // Show brackets button for ongoing and ended tournaments (for non-registered users)
             bracketsActionBtn.style.display = 'inline-flex';
             bracketsActionBtn.onclick = () => {
-              window.location.href = `tournament-brackets.html?slug=${tournament.slug}`;
+              window.location.href = `tournament-brackets-view.html?slug=${tournament.slug}`;
             };
             break;
           default:
