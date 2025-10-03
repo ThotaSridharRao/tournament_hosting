@@ -599,6 +599,132 @@
       color: var(--text-primary);
       font-size: 1rem;
     }
+
+    @media (max-width: 768px) {
+      /* ... your existing mobile styles ... */
+
+      /* Carousel mobile adjustments */
+      .carousel-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+
+      .carousel-btn i {
+        font-size: 0.75rem;
+      }
+
+      .carousel-indicator {
+        font-size: 0.85rem;
+      }
+
+      .carousel-controls {
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      /* Stage header mobile adjustments */
+      .stage-header {
+        padding: 1rem;
+      }
+
+      .stage-header h4 {
+        font-size: 1.1rem;
+      }
+
+      .stage-header p {
+        font-size: 0.85rem;
+      }
+
+      /* Match table header mobile adjustments */
+      .match-table-header {
+        padding: 0.75rem 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      .match-table-header h5 {
+        font-size: 0.95rem;
+      }
+
+      .match-header-controls {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .match-count {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.5rem;
+      }
+
+      .match-schedule {
+        font-size: 0.65rem;
+        padding: 0.15rem 0.4rem;
+      }
+
+      /* Brackets container mobile */
+      .brackets-container {
+        padding: 1rem;
+      }
+
+      /* Team names truncation on mobile */
+      .match-teams {
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    /* Extra small devices (phones < 480px) */
+    @media (max-width: 480px) {
+      .carousel-btn {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.75rem;
+      }
+
+      .carousel-btn span {
+        display: none; /* Hide "Previous" and "Next" text */
+      }
+
+      .carousel-indicator {
+        font-size: 0.75rem;
+      }
+
+      .match-table th,
+      .match-table td {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.8rem;
+      }
+
+      .match-number {
+        font-size: 0.75rem;
+      }
+
+      .match-teams strong {
+        font-size: 0.85rem;
+      }
+
+      /* Reduce column widths further */
+      .match-table th:nth-child(1),
+      .match-table td:nth-child(1),
+      .match-table th:nth-child(3),
+      .match-table td:nth-child(3) {
+        width: 40px;
+      }
+
+      .hero-section {
+        padding: 2rem 0.5rem;
+      }
+
+      .container {
+        padding: 0.5rem;
+      }
+
+      .brackets-container {
+        padding: 0.5rem;
+      }
+    }
   </style>
 </head>
 
