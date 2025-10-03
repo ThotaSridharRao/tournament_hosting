@@ -53,6 +53,7 @@
             font-weight: 700;
             margin-bottom: 0.5rem;
             background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -294,6 +295,16 @@
         .download-btn:disabled {
             background: #6c757d;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .download-btn.admin-only {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            border: 1px solid #6c757d;
+        }
+
+        .download-btn.admin-only:hover {
             transform: none;
             box-shadow: none;
         }
@@ -684,8 +695,20 @@
             const downloadBtn = document.getElementById('download-pdf-btn');
 
             if (status === 'registration_closed' || status === 'active' || status === 'completed') {
-                downloadSection.style.display = 'block';
-                downloadBtn.disabled = false;
+                // Check if user is admin to show/hide download functionality
+                checkAdminAccess().then(isAdmin => {
+                    if (isAdmin) {
+                        downloadSection.style.display = 'block';
+                        downloadBtn.disabled = false;
+                        downloadBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Download Brackets PDF (Admin)';
+                        downloadBtn.classList.remove('admin-only');
+                    } else {
+                        downloadSection.style.display = 'block';
+                        downloadBtn.disabled = true;
+                        downloadBtn.innerHTML = '<i class="fas fa-lock"></i> Download Restricted (Admin Only)';
+                        downloadBtn.classList.add('admin-only');
+                    }
+                });
             } else {
                 downloadSection.style.display = 'block';
                 downloadBtn.disabled = true;
@@ -702,24 +725,27 @@
 
             let totalMatches = 0;
             let rounds = 0;
-            // Calculate maxTeams based on format
-            let maxTeams = tournamentData.maxTeams;
+            let maxTeams = tournamentData.maxTeams; // Start with the value from the data
 
-            // For KP format, calculate maxTeams from kpSettings if not set
-            if (format === 'kp' && tournamentData.kpSettings && !maxTeams) {
+            console.log('Initial Tournament Data:', tournamentData);
+            console.log('Format:', format);
+            console.log('Max Teams from Backend:', maxTeams);
+            console.log('Participants:', participants.length);
+
+            // For KP format, calculate maxTeams from kpSettings if not already set correctly
+            if (format === 'kp' && tournamentData.kpSettings) {
                 const kpSettings = tournamentData.kpSettings;
+                console.log('KP Settings:', kpSettings);
+                // This line was the source of the error. It should use tournamentData.
                 maxTeams = (kpSettings.groupSize || 25) * (kpSettings.numberOfGroups || 4);
             }
 
-            // Fallback to participants length or unlimited
+            // Fallback to participants length or unlimited if maxTeams is still not set
             if (!maxTeams) {
                 maxTeams = participants.length || 'Unlimited';
             }
 
-            console.log('Tournament Data:', tournamentData);
-            console.log('Format:', format);
-            console.log('Max Teams:', maxTeams);
-            console.log('Participants:', participants.length);
+            console.log('Final Max Teams:', maxTeams);
 
             if (formatConfig) {
                 // Calculate total matches from format configuration
@@ -1409,7 +1435,50 @@
             `;
         }
 
-        function downloadBracketsPDF() {
+        async function checkAdminAccess() {
+            try {
+                // Get auth token from cookies
+                const authToken = getCookie('auth_token');
+                if (!authToken) {
+                    return false;
+                }
+
+                // Check user role with the backend
+                const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    return false;
+                }
+
+                const userData = await response.json();
+                return userData.role === 'admin';
+            } catch (error) {
+                console.error('Error checking admin access:', error);
+                return false;
+            }
+        }
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        async function downloadBracketsPDF() {
+            // Check if user is admin
+            const isAdmin = await checkAdminAccess();
+            if (!isAdmin) {
+                alert('Access denied. Only administrators can download tournament brackets.');
+                return;
+            }
+
             if (!tournamentData || !matchesData.length) {
                 alert('No tournament data available for download.');
                 return;
