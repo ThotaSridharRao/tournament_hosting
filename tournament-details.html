@@ -939,41 +939,111 @@
       background: var(--panel);
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
-      padding: 2rem;
+      overflow: hidden;
+      margin-top: 2rem;
     }
 
-    .finalists-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
+    .finalists-table table {
+      width: 100%;
+      border-collapse: collapse;
     }
 
-    .finalist-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: var(--radius-sm);
+    .finalists-table th {
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
+      color: white;
+      padding: 1.5rem 2rem;
+      text-align: left;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border: none;
+    }
+
+    .finalists-table th:first-child {
+      width: 80px;
+      text-align: center;
+    }
+
+    .finalists-table td {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-primary);
+      font-size: 1rem;
       transition: all 0.3s ease;
     }
 
-    .finalist-item:hover {
-      background: rgba(10, 250, 217, 0.1);
-      transform: translateX(5px);
+    .finalists-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .finalists-table tbody tr:hover {
+      background: rgba(15, 133, 211, 0.1);
+      transform: scale(1.01);
     }
 
     .finalist-rank {
       font-weight: 700;
       color: var(--primary-color);
-      min-width: 30px;
+      font-size: 1.2rem;
+      text-align: center;
+      min-width: 40px;
+    }
+
+    .finalist-team {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Trophy icons for top 3 */
+    .finalist-rank.rank-1::before {
+      content: "🏆 ";
+      margin-right: 0.5rem;
+    }
+
+    .finalist-rank.rank-2::before {
+      content: "🥈 ";
+      margin-right: 0.5rem;
+    }
+
+    .finalist-rank.rank-3::before {
+      content: "🥉 ";
+      margin-right: 0.5rem;
     }
 
     .empty-finalists {
       text-align: center;
       padding: 3rem;
       color: var(--text-secondary);
-      grid-column: span 2;
+    }
+
+    /* Responsive design for finalists table */
+    @media (max-width: 768px) {
+
+      .finalists-table th,
+      .finalists-table td {
+        padding: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .finalists-table th:first-child {
+        width: 60px;
+      }
+
+      .finalist-rank {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+
+      .finalists-table th,
+      .finalists-table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+      }
+
+      .finalists-table th:first-child {
+        width: 50px;
+      }
     }
 
     /* Schedule Section (Custom styles for table structure) */
@@ -1242,9 +1312,7 @@
         margin-top: 0.5rem;
       }
 
-      .finalists-grid {
-        grid-template-columns: 1fr;
-      }
+      /* Finalists table is already responsive with CSS above */
 
       .schedule-table-container {
         margin: 1rem 0;
@@ -1311,10 +1379,7 @@
         padding: 5rem 0;
       }
 
-      .finalists-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 2rem;
-      }
+      /* Finalists table responsive design handled above */
 
       .faq-grid {
         max-width: 1200px;
@@ -1349,9 +1414,7 @@
         font-size: clamp(4rem, 7vw, 5.5rem);
       }
 
-      .finalists-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
+      /* Finalists table responsive design handled above */
     }
   </style>
 
@@ -1953,28 +2016,39 @@
         return;
       }
 
-      const leftColumn = finalists.slice(0, Math.ceil(finalists.length / 2));
-      const rightColumn = finalists.slice(Math.ceil(finalists.length / 2));
+      // Ensure we have exactly 8 rows, pad with empty if needed
+      const paddedFinalists = [...finalists];
+      while (paddedFinalists.length < 8) {
+        paddedFinalists.push({ teamName: '', isEmpty: true });
+      }
+
+      // Take only first 8 entries
+      const displayFinalists = paddedFinalists.slice(0, 8);
 
       finalistsContent.innerHTML = `
-          <div class="finalists-grid">
-              <div class="finalists-column">
-                  ${leftColumn.map((team, index) => `
-                      <div class="finalist-item">
-                          <div class="finalist-rank">${index + 1}.</div>
-                          <div class="finalist-team">${team.teamName || team.name || `Team ${index + 1}`}</div>
-                      </div>
-                  `).join('')}
-              </div>
-              <div class="finalists-column">
-                  ${rightColumn.map((team, index) => `
-                      <div class="finalist-item">
-                          <div class="finalist-rank">${index + 1 + leftColumn.length}.</div>
-                          <div class="finalist-team">${team.teamName || team.name || `Team ${index + 1 + leftColumn.length}`}</div>
-                      </div>
-                  `).join('')}
-              </div>
-          </div>
+          <table>
+              <thead>
+                  <tr>
+                      <th>Rank</th>
+                      <th>Team Name</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  ${displayFinalists.map((team, index) => {
+        const rank = index + 1;
+        const rankClass = rank <= 3 ? `rank-${rank}` : '';
+        const teamName = team.isEmpty ? '-' : (team.teamName || team.name || `Team ${rank}`);
+        const rowClass = team.isEmpty ? 'style="opacity: 0.3;"' : '';
+
+        return `
+                          <tr ${rowClass}>
+                              <td class="finalist-rank ${rankClass}">${rank}</td>
+                              <td class="finalist-team">${teamName}</td>
+                          </tr>
+                      `;
+      }).join('')}
+              </tbody>
+          </table>
       `;
     }
 
