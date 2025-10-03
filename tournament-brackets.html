@@ -1063,17 +1063,17 @@
                 // Create rows with 2 teams per row (4 columns total)
                 for (let i = 0; i < totalFinalists; i += 2) {
                     html += `<tr>`;
-                    
+
                     // First team (left side)
                     const team1 = finalists[i];
                     html += `<td class="match-number">${i + 1}</td>`;
                     html += `<td class="match-teams">${team1 ? (team1.teamName || team1.name || 'Unnamed Team') : '<em>TBD</em>'}</td>`;
-                    
+
                     // Second team (right side)
                     const team2 = finalists[i + 1];
                     html += `<td class="match-number">${i + 2}</td>`;
                     html += `<td class="match-teams">${team2 ? (team2.teamName || team2.name || 'Unnamed Team') : '<em>TBD</em>'}</td>`;
-                    
+
                     html += `</tr>`;
                 }
                 html += `</tbody>`;
@@ -1542,7 +1542,7 @@
                             for (let i = 0; i < totalFinalists; i += 2) {
                                 const team1 = finalists[i];
                                 const team2 = finalists[i + 1];
-                                
+
                                 tableData.push([
                                     (i + 1).toString(),
                                     team1 ? (team1.teamName || team1.name || 'Unnamed Team') : 'TBD',
