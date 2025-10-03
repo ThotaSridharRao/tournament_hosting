@@ -1815,15 +1815,22 @@
 
         const formatDateWithTime = (dateString) => {
             // Parse the date string manually to avoid timezone conversion
-            // Assuming format like "2025-01-15T15:00:00Z" or "2025-01-15T15:00:00"
             const dateStr = dateString.replace('Z', '').replace('T', ' ');
             const [datePart, timePart] = dateStr.split(' ');
             const [year, month, day] = datePart.split('-');
             const [hours, minutes] = timePart ? timePart.split(':') : ['00', '00'];
             
-            // Create date display without timezone conversion
-            const displayDate = new Date(year, month - 1, day).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-            const displayTime = `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+            // Manually format the date
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const displayDate = `${parseInt(day)} ${monthNames[parseInt(month) - 1]}, ${year}`;
+            
+            // Convert 24-hour time to 12-hour AM/PM format
+            const hour = parseInt(hours);
+            const minute = parseInt(minutes);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const formattedHour = hour % 12 || 12; // Convert 0 to 12 for 12 AM
+            const formattedMinutes = minute < 10 ? '0' + minute : minute;
+            const displayTime = `${formattedHour}:${formattedMinutes} ${ampm}`;
             
             return `${displayDate} at ${displayTime}`;
         };
