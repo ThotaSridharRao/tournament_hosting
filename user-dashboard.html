@@ -3657,13 +3657,14 @@
                 if (tabName === 'tournaments') {
                     loadUserTournaments();
                 } else if (tabName === 'overview') {
-                    // Check if we have recent cached data before making new requests
-                    const cacheStats = apiManager.getCacheStats();
-                    if (cacheStats.size > 0) {
-                        // Try to load from cache first, then refresh in background if needed
+                    // Only load dashboard stats if not already loaded recently
+                    const lastLoad = sessionStorage.getItem('dashboardStatsLastLoad');
+                    const now = Date.now();
+                    const fiveMinutes = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+                    if (!lastLoad || (now - parseInt(lastLoad)) > fiveMinutes) {
                         loadDashboardStats();
-                    } else {
-                        loadDashboardStats();
+                        sessionStorage.setItem('dashboardStatsLastLoad', now.toString());
                     }
                 } else if (tabName === 'joined') {
                     loadJoinedTournaments();
@@ -4100,14 +4101,33 @@
             return formData;
         }
 
+        let dashboardDataLoading = false;
         async function loadDashboardData() {
-            // Load dashboard with mock data since no authentication is required
-            loadDashboardStats();
-            loadUserTournaments();
-            loadJoinedTournaments();
+            // Prevent multiple simultaneous loads
+            if (dashboardDataLoading) {
+                console.log('Dashboard data already loading, skipping...');
+                return;
+            }
+
+            dashboardDataLoading = true;
+            try {
+                await loadDashboardStats();
+                loadUserTournaments();
+                loadJoinedTournaments();
+            } finally {
+                dashboardDataLoading = false;
+            }
         }
 
+        let dashboardStatsLoading = false;
         async function loadDashboardStats() {
+            // Prevent multiple simultaneous stats loads
+            if (dashboardStatsLoading) {
+                console.log('Dashboard stats already loading, skipping...');
+                return;
+            }
+
+            dashboardStatsLoading = true;
             try {
                 // Check authentication first
                 if (!isAuthenticated()) {
@@ -4150,9 +4170,11 @@
 
                 // Process hosted tournaments result
                 const hostedResult = results[0];
+                console.log('Hosted result:', hostedResult);
                 if (hostedResult.success && hostedResult.data) {
                     hostedTournaments = hostedResult.data.data || [];
                     hostedCount = hostedTournaments.length;
+                    console.log('Hosted tournaments processed:', hostedCount, hostedTournaments);
                 } else if (hostedResult.error) {
                     console.error('Error loading hosted tournaments:', hostedResult.error.message);
                     // Don't show error message to user - they might not have created any tournaments yet
@@ -4160,8 +4182,10 @@
 
                 // Process joined tournaments result
                 const joinedResult = results[1];
+                console.log('Joined result:', joinedResult);
                 if (joinedResult.success && joinedResult.data) {
                     joinedTournaments = joinedResult.data.data || [];
+                    console.log('Joined tournaments processed:', joinedTournaments.length, joinedTournaments);
                 } else if (joinedResult.error) {
                     console.error('Error loading joined tournaments:', joinedResult.error.message);
                     // Only show error for joined tournaments if it's not a rate limiting issue
@@ -4176,14 +4200,35 @@
                     return sum + (t.participants ? t.participants.length : 0);
                 }, 0);
 
+                console.log('📊 Stats calculated:', {
+                    hostedCount,
+                    joinedCount,
+                    totalParticipants
+                });
+
                 // Update display with null checks
                 const totalTournamentsEl = document.getElementById('totalTournaments');
                 const joinedTournamentsEl = document.getElementById('joinedTournaments');
                 const totalParticipantsEl = document.getElementById('totalParticipants');
 
-                if (totalTournamentsEl) totalTournamentsEl.textContent = hostedCount.toString();
-                if (joinedTournamentsEl) joinedTournamentsEl.textContent = joinedCount.toString();
-                if (totalParticipantsEl) totalParticipantsEl.textContent = totalParticipants.toString();
+                console.log('🎯 DOM elements found:', {
+                    totalTournamentsEl: !!totalTournamentsEl,
+                    joinedTournamentsEl: !!joinedTournamentsEl,
+                    totalParticipantsEl: !!totalParticipantsEl
+                });
+
+                if (totalTournamentsEl) {
+                    totalTournamentsEl.textContent = hostedCount.toString();
+                    console.log('✅ Updated hosted tournaments display to:', hostedCount);
+                }
+                if (joinedTournamentsEl) {
+                    joinedTournamentsEl.textContent = joinedCount.toString();
+                    console.log('✅ Updated joined tournaments display to:', joinedCount);
+                }
+                if (totalParticipantsEl) {
+                    totalParticipantsEl.textContent = totalParticipants.toString();
+                    console.log('✅ Updated participants display to:', totalParticipants);
+                }
 
                 // Hide loading state
                 hideLoadingState();
@@ -4210,6 +4255,8 @@
 
                 // Hide loading state even on error
                 hideLoadingState();
+            } finally {
+                dashboardStatsLoading = false;
             }
         }
 
