@@ -1749,6 +1749,10 @@
                     <i class="fas fa-cogs"></i>
                     <span>Manage</span>
                 </button>
+                <button class="tab-btn" onclick="refreshDashboard()" title="Refresh tournament data">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Refresh</span>
+                </button>
                 <button class="tab-btn" data-tab="support" onclick="window.location.href='dispute-support.html'">
                     <i class="fas fa-headset"></i>
                     <span>Support</span>
@@ -2332,6 +2336,7 @@
     <script>
         // API Configuration (Production)
         const API_BASE_URL = 'https://t2-237c.onrender.com';
+        const DEBUG_MODE = false; // Verbose logging disabled - backend handles monitoring
 
         let currentUser = null;
         let createdTournamentId = null;
@@ -2488,10 +2493,7 @@
 
             if (response.status === 429) {
                 const retryAfter = response.headers.get('Retry-After');
-                logError('RATE_LIMIT_ERROR', `${context}: Rate limited`, {
-                    ...responseContext,
-                    retryAfter: retryAfter
-                });
+                // Rate limit error logging removed - backend handles monitoring
                 const error = new Error(`${context}: Too Many Requests`);
                 error.retryAfter = retryAfter;
                 error.isRateLimited = true;
@@ -2518,9 +2520,7 @@
                     throw new Error(result.message || `${context} failed`);
                 }
 
-                logInfo('API_SUCCESS', `${context} completed successfully`, {
-                    dataLength: result.data ? (Array.isArray(result.data) ? result.data.length : 'object') : 'none'
-                });
+                // API success logging removed - backend handles monitoring
 
                 return result;
             } catch (error) {
@@ -2757,93 +2757,7 @@
             }
         }
 
-        // RateLimitHandler with exponential backoff and jitter
-        class RateLimitHandler {
-            constructor() {
-                this.retryDelays = [1000, 2000, 4000, 8000]; // Exponential backoff in ms
-                this.jitterFactor = 0.1; // 10% jitter
-                this.maxRetries = 3;
-            }
 
-            async handleRequest(requestFn, context = 'API request') {
-                let lastError;
-
-                for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
-                    try {
-                        const result = await requestFn();
-
-                        if (attempt > 0) {
-                            logWarning('RATE_LIMIT_RECOVERY', `${context} succeeded after ${attempt} retries`);
-                        }
-
-                        return result;
-                    } catch (error) {
-                        lastError = error;
-
-                        // Don't retry authentication errors
-                        if (error.message.includes('Authentication') ||
-                            error.message.includes('401') ||
-                            error.message.includes('403')) {
-                            throw error;
-                        }
-
-                        // Check if this is a rate limiting error
-                        const isRateLimited = error.isRateLimited ||
-                            error.message.includes('429') ||
-                            error.message.includes('Too Many Requests');
-
-                        if (attempt === this.maxRetries) {
-                            logError('RATE_LIMIT_EXHAUSTED', `${context} failed after ${this.maxRetries} retries`, {
-                                error: error.message,
-                                attempts: attempt + 1,
-                                isRateLimited
-                            });
-                            throw error;
-                        }
-
-                        // Calculate delay - use Retry-After header if available for rate limiting
-                        let delay;
-                        if (isRateLimited && error.retryAfter) {
-                            const retryAfterMs = parseInt(error.retryAfter, 10) * 1000;
-                            delay = Math.min(retryAfterMs, 30000); // Cap at 30 seconds
-                        } else {
-                            const baseDelay = this.retryDelays[Math.min(attempt, this.retryDelays.length - 1)];
-                            delay = this.calculateDelay(attempt, baseDelay);
-                        }
-
-                        logWarning('RATE_LIMIT_RETRY', `${context} attempt ${attempt + 1} failed, retrying in ${delay}ms`, {
-                            error: error.message,
-                            attempt: attempt + 1,
-                            delay,
-                            isRateLimited
-                        });
-
-                        await this.sleep(delay);
-                    }
-                }
-
-                throw lastError;
-            }
-
-            calculateDelay(attempt, baseDelay) {
-                // Add jitter to prevent thundering herd problem
-                const jitter = Math.random() * this.jitterFactor * baseDelay;
-                return Math.floor(baseDelay + jitter);
-            }
-
-            parseRetryAfter(response) {
-                const retryAfter = response.headers.get('Retry-After');
-                if (retryAfter) {
-                    const seconds = parseInt(retryAfter, 10);
-                    return isNaN(seconds) ? null : seconds * 1000; // Convert to milliseconds
-                }
-                return null;
-            }
-
-            sleep(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
-        }
 
         // =========================
         // API REQUEST MANAGER COORDINATION LAYER
@@ -2853,9 +2767,9 @@
             constructor() {
                 this.cache = new RequestCache();
                 this.deduplicator = new RequestDeduplicator();
-                this.rateLimitHandler = new RateLimitHandler();
+                // Rate limit handler removed - backend handles rate limiting
                 this.loadingManager = new LoadingStateManager();
-                this.requestSpacing = 100; // Minimum ms between requests
+                this.requestSpacing = 400; // Minimum ms between requests (300-500ms as per rules)
                 this.lastRequestTime = 0;
             }
 
@@ -2864,14 +2778,13 @@
                 const method = options.method || 'GET';
                 const cacheKey = this.generateCacheKey(url, options);
                 const dedupeKey = this.deduplicator.generateKey(url, options);
-                let retryCount = 0;
-                let rateLimited = false;
+                // Rate limiting variables removed - backend handles this
 
                 // Check cache first
                 const cachedData = this.cache.get(cacheKey);
                 if (cachedData && !options.skipCache) {
                     rateLimitMonitor.recordCacheEvent(true, cacheKey);
-                    logInfo('CACHE_HIT', `Using cached data for ${url}`);
+                    // Cache hit logging removed - backend handles monitoring
                     return cachedData;
                 }
 
@@ -2886,18 +2799,9 @@
                         // Apply request spacing
                         await this.enforceRequestSpacing();
 
-                        // Handle rate limiting with retries
-                        result = await this.rateLimitHandler.handleRequest(async () => {
-                            const response = await authenticatedFetch(url, options);
-                            return await handleApiResponse(response, options.context || 'API request');
-                        }, 3, (attempt, error) => {
-                            retryCount = attempt;
-                            if (error.isRateLimited || error.status === 429) {
-                                rateLimited = true;
-                                const waitTime = this.rateLimitHandler.calculateDelay(attempt, error.retryAfter);
-                                rateLimitMonitor.recordRateLimitEvent(url, waitTime, error.retryAfter, attempt);
-                            }
-                        });
+                        // Simple request - backend handles rate limiting
+                        const response = await authenticatedFetch(url, options);
+                        result = await handleApiResponse(response, options.context || 'API request');
 
                         success = true;
 
@@ -2909,7 +2813,7 @@
                         return result;
                     } finally {
                         const endTime = Date.now();
-                        rateLimitMonitor.recordRequest(url, method, startTime, endTime, success, rateLimited, retryCount);
+                        rateLimitMonitor.recordRequest(url, method, startTime, endTime, success);
                     }
                 });
             }
@@ -2980,164 +2884,11 @@
         // INTEGRATION TESTING AND MONITORING
         // =========================
 
-        // Test rate limiting scenarios
-        async function testRateLimiting() {
-            try {
-                // Test 1: Rapid concurrent requests (should be deduplicated)
-                const concurrentPromises = Array(5).fill().map(() =>
-                    apiManager.request(`${API_BASE_URL}/api/user-tournaments`, {
-                        context: 'Concurrent test'
-                    })
-                );
+        // Rate limiting test function removed - backend handles rate limiting
 
-                const concurrentResults = await Promise.allSettled(concurrentPromises);
-                const successfulConcurrent = concurrentResults.filter(r => r.status === 'fulfilled').length;
+        // Monitoring dashboard removed - backend handles monitoring
 
-                // Test 2: Cache behavior
-                const cacheTest1 = await apiManager.request(`${API_BASE_URL}/api/user-tournaments`, {
-                    context: 'Cache test 1',
-                    cacheTTL: 30000
-                });
-
-                const cacheTest2 = await apiManager.request(`${API_BASE_URL}/api/user-tournaments`, {
-                    context: 'Cache test 2',
-                    cacheTTL: 30000
-                });
-
-                // Test 3: Batch requests
-                const batchRequests = [
-                    { url: `${API_BASE_URL}/api/user-tournaments`, options: { context: 'Batch 1' } },
-                    { url: `${API_BASE_URL}/api/users/me/tournaments`, options: { context: 'Batch 2' } }
-                ];
-
-                const batchResults = await apiManager.batchRequests(batchRequests);
-                const successfulBatch = batchResults.filter(r => r.status === 'fulfilled').length;
-
-                // Generate monitoring report
-                const report = rateLimitMonitor.generateReport();
-
-                return {
-                    concurrentTest: { successful: successfulConcurrent, total: 5 },
-                    batchTest: { successful: successfulBatch, total: batchRequests.length },
-                    cacheStats: apiManager.getCacheStats(),
-                    monitoringReport: report
-                };
-
-            } catch (error) {
-                console.error('❌ Rate limiting test failed:', error);
-                return { error: error.message };
-            }
-        }
-
-        // Add monitoring dashboard
-        function showMonitoringDashboard() {
-            const analytics = rateLimitMonitor.getAnalytics();
-            const cacheStats = apiManager.getCacheStats();
-
-            const modal = document.createElement('div');
-            modal.className = 'modal fade';
-            modal.innerHTML = `
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content" style="background: var(--panel); border: 1px solid var(--border-color);">
-                        <div class="modal-header" style="border-bottom: 1px solid var(--border-color);">
-                            <h5 class="modal-title">Rate Limiting Monitoring Dashboard</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h6>Request Statistics</h6>
-                                    <ul class="list-unstyled">
-                                        <li>Total Requests: <strong>${analytics.requests.total}</strong></li>
-                                        <li>Successful: <strong>${analytics.requests.successful}</strong></li>
-                                        <li>Failed: <strong>${analytics.requests.failed}</strong></li>
-                                        <li>Rate Limited: <strong>${analytics.requests.rateLimited}</strong></li>
-                                        <li>Success Rate: <strong>${((analytics.requests.successful / Math.max(analytics.requests.total, 1)) * 100).toFixed(2)}%</strong></li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <h6>Performance Metrics</h6>
-                                    <ul class="list-unstyled">
-                                        <li>Average Response Time: <strong>${analytics.timing.averageTime.toFixed(2)}ms</strong></li>
-                                        <li>Max Response Time: <strong>${analytics.timing.maxTime}ms</strong></li>
-                                        <li>Min Response Time: <strong>${analytics.timing.minTime === Infinity ? 'N/A' : analytics.timing.minTime + 'ms'}</strong></li>
-                                        <li>Requests/Minute: <strong>${analytics.requestsPerMinute}</strong></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-md-6">
-                                    <h6>Cache Statistics</h6>
-                                    <ul class="list-unstyled">
-                                        <li>Cache Hits: <strong>${analytics.cache.hits}</strong></li>
-                                        <li>Cache Misses: <strong>${analytics.cache.misses}</strong></li>
-                                        <li>Hit Rate: <strong>${analytics.cache.hitRate.toFixed(2)}%</strong></li>
-                                        <li>Cache Size: <strong>${cacheStats.size}</strong></li>
-                                        <li>Pending Requests: <strong>${cacheStats.pendingRequests}</strong></li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <h6>Rate Limiting Events</h6>
-                                    <ul class="list-unstyled">
-                                        <li>Total Events: <strong>${analytics.rateLimiting.events.length}</strong></li>
-                                        <li>Total Wait Time: <strong>${analytics.rateLimiting.totalWaitTime}ms</strong></li>
-                                        <li>Average Wait: <strong>${analytics.rateLimiting.averageWaitTime.toFixed(2)}ms</strong></li>
-                                        <li>Retry Attempts: <strong>${analytics.retries.totalAttempts}</strong></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            ${analytics.rateLimitingPatterns.length > 0 ? `
-                                <div class="mt-3">
-                                    <h6>Rate Limiting Patterns</h6>
-                                    <div class="table-responsive">
-                                        <table class="table table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Endpoint</th>
-                                                    <th>Events</th>
-                                                    <th>Avg Wait (ms)</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                ${analytics.rateLimitingPatterns.map(pattern => `
-                                                    <tr>
-                                                        <td><code>${pattern.endpoint}</code></td>
-                                                        <td>${pattern.count}</td>
-                                                        <td>${pattern.averageWait}</td>
-                                                    </tr>
-                                                `).join('')}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            ` : ''}
-                        </div>
-                        <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
-                            <button type="button" class="btn btn-secondary" onclick="testRateLimiting().then(console.log)">Run Tests</button>
-                            <button type="button" class="btn btn-info" onclick="exportLogs()">Export Logs</button>
-                            <button type="button" class="btn btn-warning" onclick="clearStoredLogs()">Clear Logs</button>
-                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            document.body.appendChild(modal);
-            const bootstrapModal = new bootstrap.Modal(modal);
-            bootstrapModal.show();
-
-            modal.addEventListener('hidden.bs.modal', () => {
-                document.body.removeChild(modal);
-            });
-        }
-
-        // Add keyboard shortcut for monitoring dashboard (Ctrl+Shift+M)
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.shiftKey && e.key === 'M') {
-                e.preventDefault();
-                showMonitoringDashboard();
-            }
-        });
+        // Monitoring dashboard keyboard shortcut removed
 
         // Enhanced logging utility
         function logError(category, message, context = {}) {
@@ -3210,7 +2961,7 @@
                         total: 0,
                         successful: 0,
                         failed: 0,
-                        rateLimited: 0
+                        // rateLimited metric removed
                     },
                     timing: {
                         totalTime: 0,
@@ -3238,7 +2989,7 @@
                 this.startTime = Date.now();
             }
 
-            recordRequest(url, method, startTime, endTime, success, rateLimited = false, retryCount = 0) {
+            recordRequest(url, method, startTime, endTime, success) {
                 const duration = endTime - startTime;
 
                 // Update request metrics
@@ -3249,9 +3000,7 @@
                     this.metrics.requests.failed++;
                 }
 
-                if (rateLimited) {
-                    this.metrics.requests.rateLimited++;
-                }
+                // Rate limited tracking removed - backend handles this
 
                 // Update timing metrics
                 this.metrics.timing.totalTime += duration;
@@ -3259,24 +3008,9 @@
                 this.metrics.timing.maxTime = Math.max(this.metrics.timing.maxTime, duration);
                 this.metrics.timing.minTime = Math.min(this.metrics.timing.minTime, duration);
 
-                // Update retry metrics
-                if (retryCount > 0) {
-                    this.metrics.retries.totalAttempts += retryCount;
-                    if (success) {
-                        this.metrics.retries.successfulRetries++;
-                    } else {
-                        this.metrics.retries.failedRetries++;
-                    }
-                }
+                // Retry metrics removed - backend handles this
 
-                // Log detailed request information
-                logInfo('REQUEST_METRICS', `Request completed: ${method} ${url}`, {
-                    duration,
-                    success,
-                    rateLimited,
-                    retryCount,
-                    endpoint: this.extractEndpoint(url)
-                });
+                // Request metrics logging removed - backend handles monitoring
             }
 
             recordCacheEvent(hit, key) {
@@ -3289,11 +3023,7 @@
                 const total = this.metrics.cache.hits + this.metrics.cache.misses;
                 this.metrics.cache.hitRate = total > 0 ? (this.metrics.cache.hits / total) * 100 : 0;
 
-                logInfo('CACHE_METRICS', `Cache ${hit ? 'hit' : 'miss'} for key: ${key}`, {
-                    hitRate: this.metrics.cache.hitRate.toFixed(2) + '%',
-                    totalHits: this.metrics.cache.hits,
-                    totalMisses: this.metrics.cache.misses
-                });
+                // Cache metrics logging removed - backend handles monitoring
             }
 
             recordRateLimitEvent(url, waitTime, retryAfter, attempt) {
@@ -3319,13 +3049,7 @@
                 pattern.totalWait += waitTime;
                 this.metrics.rateLimiting.patterns.set(endpoint, pattern);
 
-                logWarning('RATE_LIMIT_EVENT', `Rate limiting detected for ${endpoint}`, {
-                    waitTime,
-                    retryAfter,
-                    attempt,
-                    totalEvents: eventCount,
-                    averageWaitTime: this.metrics.rateLimiting.averageWaitTime.toFixed(2)
-                });
+                // Rate limiting logging removed - backend handles monitoring
             }
 
             extractEndpoint(url) {
@@ -3356,22 +3080,7 @@
             generateReport() {
                 const analytics = this.getAnalytics();
 
-                logInfo('RATE_LIMITING_REPORT', 'Rate limiting analytics report', {
-                    summary: {
-                        totalRequests: analytics.requests.total,
-                        successRate: ((analytics.requests.successful / analytics.requests.total) * 100).toFixed(2) + '%',
-                        rateLimitedRequests: analytics.requests.rateLimited,
-                        cacheHitRate: analytics.cache.hitRate.toFixed(2) + '%',
-                        averageResponseTime: analytics.timing.averageTime.toFixed(2) + 'ms',
-                        requestsPerMinute: analytics.requestsPerMinute
-                    },
-                    rateLimiting: {
-                        totalEvents: analytics.rateLimiting.events.length,
-                        totalWaitTime: analytics.rateLimiting.totalWaitTime + 'ms',
-                        averageWaitTime: analytics.rateLimiting.averageWaitTime.toFixed(2) + 'ms',
-                        topPatterns: analytics.rateLimitingPatterns.slice(0, 5)
-                    }
-                });
+                // Rate limiting report logging removed - backend handles monitoring
 
                 return analytics;
             }
@@ -3414,30 +3123,7 @@
             logInfo('LOGS_CLEARED', 'Local logs cleared');
         }
 
-        function exportLogs() {
-            const logs = getStoredLogs();
-            const analytics = rateLimitMonitor.generateReport();
-
-            const exportData = {
-                timestamp: new Date().toISOString(),
-                logs,
-                analytics,
-                userAgent: navigator.userAgent,
-                url: window.location.href
-            };
-
-            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `nexus-logs-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-            logInfo('LOGS_EXPORTED', 'Logs and analytics exported');
-        }
+        // Export logs function removed - backend handles monitoring
 
 
 
@@ -3654,20 +3340,16 @@
                 }
 
                 // Load data for specific tabs with smart caching
-                if (tabName === 'tournaments') {
-                    loadUserTournaments();
-                } else if (tabName === 'overview') {
-                    // Only load dashboard stats if not already loaded recently
-                    const lastLoad = sessionStorage.getItem('dashboardStatsLastLoad');
-                    const now = Date.now();
-                    const fiveMinutes = 5 * 60 * 1000; // 5 minutes in milliseconds
-
-                    if (!lastLoad || (now - parseInt(lastLoad)) > fiveMinutes) {
-                        loadDashboardStats();
-                        sessionStorage.setItem('dashboardStatsLastLoad', now.toString());
-                    }
+                // Load data for specific tabs using cached data
+                if (tabName === 'overview') {
+                    // Always show cached data immediately, no additional API calls
+                    updateDashboardStats(tournamentData);
+                } else if (tabName === 'tournaments') {
+                    // Show cached hosted tournaments
+                    updateHostedTournaments(tournamentData.hosted);
                 } else if (tabName === 'joined') {
-                    loadJoinedTournaments();
+                    // Show cached joined tournaments
+                    updateJoinedTournaments(tournamentData.joined);
                 }
             }
 
@@ -4101,22 +3783,117 @@
             return formData;
         }
 
-        let dashboardDataLoading = false;
-        async function loadDashboardData() {
-            // Prevent multiple simultaneous loads
-            if (dashboardDataLoading) {
-                console.log('Dashboard data already loading, skipping...');
-                return;
+        // =========================
+        // SIMPLIFIED TOURNAMENT DATA MANAGEMENT
+        // =========================
+
+        // Global state for tournament data
+        let tournamentData = {
+            hosted: null,
+            joined: null,
+            lastFetch: null,
+            loading: false
+        };
+
+        // Simple API call function
+        async function apiCall(url, options = {}) {
+            try {
+                const response = await authenticatedFetch(url, options);
+                const result = await handleApiResponse(response, options.context || 'API request');
+                return { success: true, data: result };
+            } catch (error) {
+                console.error(`API call failed: ${url}`, error.message);
+                return { success: false, error: error.message };
+            }
+        }
+
+        // Fetch tournament data once and cache it using the new combined endpoint
+        async function fetchTournamentData(forceRefresh = false) {
+            // Return cached data if available and not forcing refresh
+            if (!forceRefresh && tournamentData.hosted && tournamentData.joined) {
+                return tournamentData;
             }
 
-            dashboardDataLoading = true;
-            try {
-                await loadDashboardStats();
-                loadUserTournaments();
-                loadJoinedTournaments();
-            } finally {
-                dashboardDataLoading = false;
+            // Prevent multiple simultaneous fetches
+            if (tournamentData.loading) {
+                return tournamentData;
             }
+
+            tournamentData.loading = true;
+            showLoadingState();
+
+            try {
+                // Use the new combined endpoint - single API call instead of two
+                const result = await apiCall(`${API_BASE_URL}/api/users/me/tournaments/all`, {
+                    context: 'Load all tournaments (hosted and joined)'
+                });
+
+                if (result.success && result.data) {
+                    // Update global state with data from combined endpoint
+                    tournamentData.hosted = result.data.hosted || [];
+                    tournamentData.joined = result.data.joined || [];
+                    tournamentData.lastFetch = Date.now();
+                } else {
+                    // Fallback to empty arrays if request fails
+                    tournamentData.hosted = [];
+                    tournamentData.joined = [];
+                }
+
+                return tournamentData;
+            } catch (error) {
+                console.error('Failed to fetch tournament data:', error);
+                // Fallback to empty arrays on error
+                tournamentData.hosted = [];
+                tournamentData.joined = [];
+                return tournamentData;
+            } finally {
+                tournamentData.loading = false;
+                hideLoadingState();
+            }
+        }
+
+        // Load dashboard data (simplified)
+        async function loadDashboardData() {
+            const data = await fetchTournamentData();
+            updateDashboardStats(data);
+            updateHostedTournaments(data.hosted);
+            updateJoinedTournaments(data.joined);
+        }
+
+        // Update dashboard stats display
+        function updateDashboardStats(data) {
+            const hostedCount = data.hosted ? data.hosted.length : 0;
+            const joinedCount = data.joined ? data.joined.length : 0;
+            const totalParticipants = data.hosted ? data.hosted.reduce((sum, t) => {
+                return sum + (t.participants ? t.participants.length : 0);
+            }, 0) : 0;
+
+            // Update display elements
+            const totalTournamentsEl = document.getElementById('totalTournaments');
+            const joinedTournamentsEl = document.getElementById('joinedTournaments');
+            const totalParticipantsEl = document.getElementById('totalParticipants');
+
+            if (totalTournamentsEl) totalTournamentsEl.textContent = hostedCount.toString();
+            if (joinedTournamentsEl) joinedTournamentsEl.textContent = joinedCount.toString();
+            if (totalParticipantsEl) totalParticipantsEl.textContent = totalParticipants.toString();
+        }
+
+        // Update hosted tournaments display
+        function updateHostedTournaments(tournaments) {
+            displayTournaments(tournaments || []);
+        }
+
+        // Update joined tournaments display  
+        function updateJoinedTournaments(tournaments) {
+            displayJoinedTournaments(tournaments || []);
+        }
+
+        // Refresh button handler
+        async function refreshDashboard() {
+            await fetchTournamentData(true); // Force refresh
+            updateDashboardStats(tournamentData);
+            updateHostedTournaments(tournamentData.hosted);
+            updateJoinedTournaments(tournamentData.joined);
         }
 
         let dashboardStatsLoading = false;
@@ -4136,6 +3913,17 @@
                     return;
                 }
 
+                // Rule 5: Always display something - try to load from cache first
+                const cachedAllTournaments = apiManager.cache.get('all_tournaments');
+
+                if (cachedAllTournaments && cachedAllTournaments.data) {
+                    // Display cached data immediately
+                    updateDashboardStatsDisplay(
+                        cachedAllTournaments.data.hosted || [],
+                        cachedAllTournaments.data.joined || []
+                    );
+                }
+
                 const sessionData = getSessionData();
                 const user = sessionData.user;
 
@@ -4146,89 +3934,37 @@
                 // Show loading state
                 showLoadingState();
 
-                // Use batched requests to prevent rate limiting
-                const batchRequests = [
-                    {
-                        url: `${API_BASE_URL}/api/user-tournaments`,
-                        cacheOptions: {
-                            context: 'Load hosted tournaments',
-                            useCache: true,
-                            cacheTTL: 180000 // 3 minutes cache for hosted tournaments
-                        }
-                    },
-                    {
-                        url: `${API_BASE_URL}/api/users/me/tournaments`,
-                        cacheOptions: {
-                            context: 'Load joined tournaments',
-                            useCache: true,
-                            cacheTTL: 180000 // 3 minutes cache for joined tournaments
-                        }
-                    }
-                ];
+                // Use the new combined endpoint - single API call instead of multiple requests
+                const result = await apiManager.request(`${API_BASE_URL}/api/users/me/tournaments/all`, {
+                    context: 'Load all tournaments for dashboard stats',
+                    useCache: true,
+                    cacheTTL: 180000 // 3 minutes cache for all tournaments
+                });
 
-                const results = await apiManager.batchRequests(batchRequests);
-
-                // Process hosted tournaments result
-                const hostedResult = results[0];
-                console.log('Hosted result:', hostedResult);
-                if (hostedResult.success && hostedResult.data) {
-                    hostedTournaments = hostedResult.data.data || [];
+                if (result && result.data) {
+                    hostedTournaments = result.data.hosted || [];
+                    joinedTournaments = result.data.joined || [];
                     hostedCount = hostedTournaments.length;
-                    console.log('Hosted tournaments processed:', hostedCount, hostedTournaments);
-                } else if (hostedResult.error) {
-                    console.error('Error loading hosted tournaments:', hostedResult.error.message);
-                    // Don't show error message to user - they might not have created any tournaments yet
+
+                    console.log('All tournaments loaded:', {
+                        hosted: hostedTournaments.length,
+                        joined: joinedTournaments.length
+                    });
+                } else {
+                    console.error('Error loading tournaments:', result?.error?.message || 'Unknown error');
+                    // Don't show error message to user - they might not have any tournaments yet
                 }
 
-                // Process joined tournaments result
-                const joinedResult = results[1];
-                console.log('Joined result:', joinedResult);
-                if (joinedResult.success && joinedResult.data) {
-                    joinedTournaments = joinedResult.data.data || [];
-                    console.log('Joined tournaments processed:', joinedTournaments.length, joinedTournaments);
-                } else if (joinedResult.error) {
-                    console.error('Error loading joined tournaments:', joinedResult.error.message);
-                    // Only show error for joined tournaments if it's not a rate limiting issue
-                    if (!joinedResult.error.message.includes('429')) {
-                        showErrorMessage(joinedResult.error.message);
+                // Update dashboard stats display
+                updateDashboardStatsDisplay(hostedTournaments, joinedTournaments);
+
+                // Cache the results for future use
+                apiManager.cache.set('all_tournaments', {
+                    data: {
+                        hosted: hostedTournaments,
+                        joined: joinedTournaments
                     }
-                }
-
-                // Calculate stats
-                const joinedCount = joinedTournaments.length;
-                const totalParticipants = hostedTournaments.reduce((sum, t) => {
-                    return sum + (t.participants ? t.participants.length : 0);
-                }, 0);
-
-                console.log('📊 Stats calculated:', {
-                    hostedCount,
-                    joinedCount,
-                    totalParticipants
                 });
-
-                // Update display with null checks
-                const totalTournamentsEl = document.getElementById('totalTournaments');
-                const joinedTournamentsEl = document.getElementById('joinedTournaments');
-                const totalParticipantsEl = document.getElementById('totalParticipants');
-
-                console.log('🎯 DOM elements found:', {
-                    totalTournamentsEl: !!totalTournamentsEl,
-                    joinedTournamentsEl: !!joinedTournamentsEl,
-                    totalParticipantsEl: !!totalParticipantsEl
-                });
-
-                if (totalTournamentsEl) {
-                    totalTournamentsEl.textContent = hostedCount.toString();
-                    console.log('✅ Updated hosted tournaments display to:', hostedCount);
-                }
-                if (joinedTournamentsEl) {
-                    joinedTournamentsEl.textContent = joinedCount.toString();
-                    console.log('✅ Updated joined tournaments display to:', joinedCount);
-                }
-                if (totalParticipantsEl) {
-                    totalParticipantsEl.textContent = totalParticipants.toString();
-                    console.log('✅ Updated participants display to:', totalParticipants);
-                }
 
                 // Hide loading state
                 hideLoadingState();
@@ -4238,9 +3974,7 @@
                     // Data loaded successfully
                 }
 
-                // Log cache stats for monitoring
-                const cacheStats = apiManager.getCacheStats();
-                logWarning('CACHE_STATS', 'Dashboard stats loaded', cacheStats);
+                // Cache stats logging removed - backend handles monitoring
 
             } catch (error) {
                 console.error('Error loading dashboard stats:', error);
@@ -4288,14 +4022,14 @@
                     `;
                 }
 
-                const result = await apiManager.request(`${API_BASE_URL}/api/users/me/tournaments`, {
+                const result = await apiManager.request(`${API_BASE_URL}/api/users/me/tournaments/all`, {
                     method: 'GET',
-                    context: 'Load joined tournaments',
+                    context: 'Load all tournaments for joined view',
                     cacheTTL: 120000 // Cache for 2 minutes
                 });
 
-                if (result) {
-                    let tournaments = result.data || [];
+                if (result && result.data) {
+                    let tournaments = result.data.joined || [];
 
                     // Apply status filter if selected
                     const statusFilter = document.getElementById('joinedStatusFilter');
@@ -4606,13 +4340,14 @@
 
         async function loadManagementTournaments() {
             try {
-                const result = await apiManager.request(`${API_BASE_URL}/api/user-tournaments`, {
+                const result = await apiManager.request(`${API_BASE_URL}/api/users/me/tournaments/all`, {
                     context: 'Load management tournaments',
                     cacheTTL: 60000 // Cache for 1 minute
                 });
 
-                if (result) {
-                    managementTournaments = result.data || [];
+                if (result && result.data) {
+                    // For management, we only need hosted tournaments
+                    managementTournaments = result.data.hosted || [];
                     renderManagementOperation(currentManagementOperation);
                 }
             } catch (error) {
@@ -5064,7 +4799,7 @@
                 if (result) {
                     showAlert('Tournament status updated successfully!', 'success');
                     // Invalidate cache for tournament lists
-                    apiManager.invalidateCache('/api/user-tournaments');
+                    apiManager.invalidateCache('/api/users/me/tournaments/all');
                     loadManagementTournaments(); // Refresh the list
                 }
             } catch (error) {
@@ -5189,7 +4924,7 @@
                 if (result) {
                     showAlert('Finalists updated successfully!', 'success');
                     // Invalidate cache for tournament lists
-                    apiManager.invalidateCache('/api/user-tournaments');
+                    apiManager.invalidateCache('/api/users/me/tournaments/all');
                     loadManagementTournaments(); // Refresh the list
 
                     // Close modal
@@ -5224,7 +4959,7 @@
                     if (result) {
                         showAlert('Tournament deleted successfully!', 'success');
                         // Invalidate cache for tournament lists
-                        apiManager.invalidateCache('/api/user-tournaments');
+                        apiManager.invalidateCache('/api/users/me/tournaments/all');
                         loadManagementTournaments(); // Refresh the list
                         loadUserTournaments(); // Refresh main tournaments list
                         loadDashboardStats(); // Refresh stats
