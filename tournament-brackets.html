@@ -656,22 +656,9 @@
             const format = tournamentData.format || 'single_elimination';
             let formatDescription = '';
 
-            switch (format.toLowerCase()) {
-                case 'single_elimination':
-                    formatDescription = 'Single Elimination: Teams are eliminated after one loss. Winner advances through each round until the final.';
-                    break;
-                case 'double_elimination':
-                    formatDescription = 'Double Elimination: Teams must lose twice to be eliminated. Includes winners and losers brackets.';
-                    break;
-                case 'round_robin':
-                    formatDescription = 'Round Robin: Every team plays every other team. Winner determined by overall record.';
-                    break;
-                case 'swiss':
-                    formatDescription = 'Swiss System: Teams play a set number of rounds, matched against opponents with similar records.';
-                    break;
-                default:
-                    formatDescription = `Tournament Format: ${format}`;
-            }
+            // Get format description from format configuration
+            const formatConfig = getTournamentFormatConfig(format, participants.length);
+            formatDescription = formatConfig ? formatConfig.description : `Tournament Format: ${format}`;
 
             formatInfo.innerHTML = `
                 <h3><i class="fas fa-info-circle"></i> Tournament Format</h3>
@@ -697,31 +684,50 @@
             const participants = tournamentData.participants || [];
             const format = (tournamentData.format || 'single_elimination').toLowerCase();
 
+            // Get format configuration to calculate accurate stats
+            const formatConfig = getTournamentFormatConfig(format, participants.length);
+
             let totalMatches = 0;
             let rounds = 0;
+            let maxTeams = tournamentData.maxTeams || participants.length;
 
-            switch (format) {
-                case 'single_elimination':
-                    totalMatches = Math.max(0, participants.length - 1);
-                    rounds = Math.ceil(Math.log2(participants.length));
-                    break;
-                case 'double_elimination':
-                    totalMatches = Math.max(0, (participants.length * 2) - 2);
-                    rounds = Math.ceil(Math.log2(participants.length)) + 1;
-                    break;
-                case 'round_robin':
-                    totalMatches = (participants.length * (participants.length - 1)) / 2;
-                    rounds = participants.length - 1;
-                    break;
-                case 'swiss':
-                    rounds = Math.ceil(Math.log2(participants.length));
-                    totalMatches = (participants.length / 2) * rounds;
-                    break;
+            if (formatConfig) {
+                // Calculate total matches from format configuration
+                formatConfig.stages.forEach(stage => {
+                    stage.tables.forEach(table => {
+                        totalMatches += table.totalMatches;
+                    });
+                });
+                rounds = formatConfig.stages.length;
+            } else {
+                // Fallback to basic calculations
+                switch (format) {
+                    case 'single_elimination':
+                        totalMatches = Math.max(0, participants.length - 1);
+                        rounds = Math.ceil(Math.log2(participants.length));
+                        break;
+                    case 'double_elimination':
+                        totalMatches = Math.max(0, (participants.length * 2) - 2);
+                        rounds = Math.ceil(Math.log2(participants.length)) + 1;
+                        break;
+                    case 'round_robin':
+                        totalMatches = (participants.length * (participants.length - 1)) / 2;
+                        rounds = participants.length - 1;
+                        break;
+                    case 'swiss':
+                        rounds = Math.ceil(Math.log2(participants.length));
+                        totalMatches = (participants.length / 2) * rounds;
+                        break;
+                    case 'kp':
+                        totalMatches = 5; // 4 qualifiers + 1 final
+                        rounds = 2; // Qualifiers + Finals
+                        break;
+                }
             }
 
             const statsHtml = `
                 <div class="stat-card">
-                    <span class="stat-number">${participants.length}</span>
+                    <span class="stat-number">${participants.length}/${maxTeams}</span>
                     <div class="stat-label">Registered Teams</div>
                 </div>
                 <div class="stat-card">
@@ -730,11 +736,11 @@
                 </div>
                 <div class="stat-card">
                     <span class="stat-number">${rounds}</span>
-                    <div class="stat-label">Tournament Rounds</div>
+                    <div class="stat-label">Tournament Stages</div>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-number">${tournamentData.entryFee || 0}</span>
-                    <div class="stat-label">Entry Fee (₹)</div>
+                    <span class="stat-number">₹${tournamentData.entryFee || 0}</span>
+                    <div class="stat-label">Entry Fee</div>
                 </div>
             `;
 
@@ -761,12 +767,11 @@
 
             // Handle all tournament formats dynamically
             displayTournamentBrackets(participants, container, format);
-            }
         }
 
         function displayTournamentBrackets(participants, container, format) {
             const formatConfig = getTournamentFormatConfig(format, participants.length);
-            
+
             if (!formatConfig) {
                 displayParticipantsList(participants, container);
                 return;
@@ -800,89 +805,166 @@
         }
 
         function getTournamentFormatConfig(format, participantCount) {
-            const configs = {
-                'single_elimination': {
-                    title: 'Single Elimination Tournament',
-                    description: 'Teams are eliminated after one loss. Winner advances through each round.',
-                    stages: [
-                        {
-                            name: 'Elimination Rounds',
-                            description: 'Single elimination bracket progression',
-                            tables: [
-                                {
-                                    name: 'Main Bracket',
-                                    type: 'elimination',
-                                    teamsPerMatch: 2,
-                                    totalMatches: Math.max(0, participantCount - 1)
-                                }
-                            ]
-                        }
-                    ]
-                },
-                'kp': {
-                    title: 'KP Format Tournament',
-                    description: '4 qualifier matches to determine top 16 teams, followed by finals.',
-                    stages: [
-                        {
-                            name: 'Qualifier Matches',
-                            description: '4 matches to select top teams for finals',
-                            tables: [
-                                { name: 'Qualifier Match 1', type: 'qualifier', teamsPerMatch: Math.ceil(participantCount / 4), totalMatches: 1 },
-                                { name: 'Qualifier Match 2', type: 'qualifier', teamsPerMatch: Math.ceil(participantCount / 4), totalMatches: 1 },
-                                { name: 'Qualifier Match 3', type: 'qualifier', teamsPerMatch: Math.ceil(participantCount / 4), totalMatches: 1 },
-                                { name: 'Qualifier Match 4', type: 'qualifier', teamsPerMatch: Math.ceil(participantCount / 4), totalMatches: 1 }
-                            ]
-                        },
-                        {
-                            name: 'Finals',
-                            description: 'Top 16 teams compete for the championship',
-                            tables: [
-                                { name: 'Final Match', type: 'final', teamsPerMatch: 16, totalMatches: 1 }
-                            ]
-                        }
-                    ]
-                },
-                'double_elimination': {
-                    title: 'Double Elimination Tournament',
-                    description: 'Teams must lose twice to be eliminated. Winners and losers brackets.',
-                    stages: [
-                        {
-                            name: 'Winners Bracket',
-                            description: 'Main elimination bracket for undefeated teams',
-                            tables: [
-                                { name: 'Winners Bracket', type: 'winners', teamsPerMatch: 2, totalMatches: Math.max(0, participantCount - 1) }
-                            ]
-                        },
-                        {
-                            name: 'Losers Bracket',
-                            description: 'Second chance bracket for eliminated teams',
-                            tables: [
-                                { name: 'Losers Bracket', type: 'losers', teamsPerMatch: 2, totalMatches: Math.max(0, participantCount - 2) }
-                            ]
-                        }
-                    ]
-                },
-                'round_robin': {
-                    title: 'Round Robin Tournament',
-                    description: 'Every team plays every other team once.',
-                    stages: [
-                        {
-                            name: 'Round Robin Matches',
-                            description: 'All teams play against each other',
-                            tables: [
-                                { name: 'Round Robin', type: 'round_robin', teamsPerMatch: 2, totalMatches: (participantCount * (participantCount - 1)) / 2 }
-                            ]
-                        }
-                    ]
+            // Use backend tournament data to generate format configuration
+            const formatSettings = tournamentData.kpSettings || {};
+            const matchSchedule = formatSettings.matchSchedule || [];
+
+            switch (format) {
+                case 'kp':
+                    return generateKPFormatConfig(formatSettings, matchSchedule, participantCount);
+                case 'single_elimination':
+                    return generateSingleEliminationConfig(participantCount);
+                case 'double_elimination':
+                    return generateDoubleEliminationConfig(participantCount);
+                case 'round_robin':
+                    return generateRoundRobinConfig(participantCount);
+                default:
+                    return generateGenericFormatConfig(format, participantCount);
+            }
+        }
+
+        function generateKPFormatConfig(kpSettings, matchSchedule, participantCount) {
+            const groupSize = kpSettings.groupSize || 25;
+            const numberOfGroups = kpSettings.numberOfGroups || 4;
+            const qualifiersPerGroup = kpSettings.qualifiersPerGroup || 4;
+
+            const qualifierTables = [];
+
+            // Generate qualifier tables based on match schedule from backend
+            if (matchSchedule.length > 0) {
+                matchSchedule.forEach((match, index) => {
+                    if (match.match && match.match.includes('Qualifier')) {
+                        qualifierTables.push({
+                            name: match.match,
+                            type: 'qualifier',
+                            teamsPerMatch: groupSize,
+                            totalMatches: 1,
+                            date: match.date,
+                            teams: match.teams || `${groupSize} teams competing`
+                        });
+                    }
+                });
+            } else {
+                // Fallback if no match schedule
+                for (let i = 1; i <= numberOfGroups; i++) {
+                    qualifierTables.push({
+                        name: `Qualifier Match ${i}`,
+                        type: 'qualifier',
+                        teamsPerMatch: groupSize,
+                        totalMatches: 1,
+                        teams: `${groupSize} teams competing`
+                    });
                 }
+            }
+
+            // Add final match
+            const finalMatch = matchSchedule.find(match => match.match && match.match.includes('Final'));
+            const finalTable = {
+                name: finalMatch ? finalMatch.match : 'Final Match',
+                type: 'final',
+                teamsPerMatch: numberOfGroups * qualifiersPerGroup,
+                totalMatches: 1,
+                date: finalMatch ? finalMatch.date : 'TBD',
+                teams: `Top ${numberOfGroups * qualifiersPerGroup} Qualifiers`
             };
 
-            return configs[format] || null;
+            return {
+                title: 'KP Format Tournament',
+                description: `${numberOfGroups} qualifier matches with ${groupSize} teams each, top ${qualifiersPerGroup} from each qualify for finals.`,
+                stages: [
+                    {
+                        name: 'Qualifier Matches',
+                        description: `${numberOfGroups} matches to select top ${qualifiersPerGroup} teams each`,
+                        tables: qualifierTables
+                    },
+                    {
+                        name: 'Finals',
+                        description: `Top ${numberOfGroups * qualifiersPerGroup} teams compete for championship`,
+                        tables: [finalTable]
+                    }
+                ]
+            };
+        }
+
+        function generateSingleEliminationConfig(participantCount) {
+            return {
+                title: 'Single Elimination Tournament',
+                description: 'Teams are eliminated after one loss. Winner advances through each round.',
+                stages: [
+                    {
+                        name: 'Elimination Rounds',
+                        description: 'Single elimination bracket progression',
+                        tables: [
+                            {
+                                name: 'Main Bracket',
+                                type: 'elimination',
+                                teamsPerMatch: 2,
+                                totalMatches: Math.max(0, participantCount - 1)
+                            }
+                        ]
+                    }
+                ]
+            };
+        }
+
+        function generateDoubleEliminationConfig(participantCount) {
+            return {
+                title: 'Double Elimination Tournament',
+                description: 'Teams must lose twice to be eliminated. Winners and losers brackets.',
+                stages: [
+                    {
+                        name: 'Winners Bracket',
+                        description: 'Main elimination bracket for undefeated teams',
+                        tables: [
+                            { name: 'Winners Bracket', type: 'winners', teamsPerMatch: 2, totalMatches: Math.max(0, participantCount - 1) }
+                        ]
+                    },
+                    {
+                        name: 'Losers Bracket',
+                        description: 'Second chance bracket for eliminated teams',
+                        tables: [
+                            { name: 'Losers Bracket', type: 'losers', teamsPerMatch: 2, totalMatches: Math.max(0, participantCount - 2) }
+                        ]
+                    }
+                ]
+            };
+        }
+
+        function generateRoundRobinConfig(participantCount) {
+            return {
+                title: 'Round Robin Tournament',
+                description: 'Every team plays every other team once.',
+                stages: [
+                    {
+                        name: 'Round Robin Matches',
+                        description: 'All teams play against each other',
+                        tables: [
+                            { name: 'Round Robin', type: 'round_robin', teamsPerMatch: 2, totalMatches: (participantCount * (participantCount - 1)) / 2 }
+                        ]
+                    }
+                ]
+            };
+        }
+
+        function generateGenericFormatConfig(format, participantCount) {
+            return {
+                title: `${format.charAt(0).toUpperCase() + format.slice(1)} Tournament`,
+                description: `Tournament using ${format} format.`,
+                stages: [
+                    {
+                        name: 'Tournament Matches',
+                        description: 'Tournament progression matches',
+                        tables: [
+                            { name: 'Main Tournament', type: 'generic', teamsPerMatch: participantCount, totalMatches: 1 }
+                        ]
+                    }
+                ]
+            };
         }
 
         function createMatchTable(tableConfig, participants, stageIndex, tableIndex) {
             const tableId = `stage-${stageIndex}-table-${tableIndex}`;
-            
+
             let html = `<div class="match-table-container">`;
             html += `<div class="match-table-header">`;
             html += `<h5><i class="fas fa-list"></i> ${tableConfig.name}</h5>`;
@@ -925,25 +1007,23 @@
             const matchIdBase = (stageIndex * 100) + (tableIndex * 10);
 
             if (tableConfig.type === 'qualifier') {
-                // For qualifier matches, divide teams among the 4 qualifiers
-                const teamsPerQualifier = Math.ceil(participants.length / 4);
-                const startIndex = tableIndex * teamsPerQualifier;
-                const endIndex = Math.min(startIndex + teamsPerQualifier, participants.length);
-                const qualifierTeams = participants.slice(startIndex, endIndex);
+                // Use backend data for qualifier matches
+                const kpSettings = tournamentData.kpSettings || {};
+                const groupSize = kpSettings.groupSize || 25;
 
                 matches.push({
                     id: matchIdBase + 1,
-                    teams: `${qualifierTeams.length} teams competing`,
+                    teams: tableConfig.teams || `${groupSize} teams competing`,
                     status: 'Scheduled',
-                    schedule: 'TBD',
+                    schedule: tableConfig.date || 'TBD',
                     result: 'Pending'
                 });
             } else if (tableConfig.type === 'final') {
                 matches.push({
                     id: matchIdBase + 1,
-                    teams: 'Top 16 Qualifiers',
+                    teams: tableConfig.teams || 'Top Qualifiers',
                     status: 'Awaiting Qualifiers',
-                    schedule: 'TBD',
+                    schedule: tableConfig.date || 'TBD',
                     result: 'Pending'
                 });
             } else {
@@ -983,7 +1063,7 @@
             finalists.forEach((finalist, index) => {
                 const rank = index + 1;
                 const prize = rank === 1 ? '🏆 Champion' : rank === 2 ? '🥈 Runner-up' : rank === 3 ? '🥉 3rd Place' : `${rank}th Place`;
-                
+
                 html += `<tr>`;
                 html += `<td class="finalist-rank">${rank}</td>`;
                 html += `<td class="finalist-team">${finalist.teamName || finalist.name || `Team ${rank}`}</td>`;
