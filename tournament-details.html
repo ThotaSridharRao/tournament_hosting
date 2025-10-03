@@ -1339,7 +1339,7 @@
                         <th>S.No.</th>
                         <th>Event Name</th>
                         <th>Date</th>
-                        <th>Time (UTC)</th>
+                        <th>Time</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1627,10 +1627,9 @@
         }
 
         timelineData.forEach((event, index) => {
-            // Split date and time for table columns
-            const dateParts = event.displayTime.split(',');
-            const date = dateParts[0].trim();
-            const time = dateParts.length > 1 ? dateParts[1].trim().replace(' UTC', '') : '';
+            // Use the simplified time data
+            const date = event.dateOnly || event.displayTime.split(',')[0].trim();
+            const time12hr = event.time12hr || '';
             
             // Apply simple status coloring for visibility
             let rowClass = '';
@@ -1645,13 +1644,15 @@
                 rowClass = 'current-row';
             }
 
+            // Show clean 12-hour time format
+            const timeDisplay = time12hr ? `<span style="font-weight: 600; color: var(--primary-color);">${time12hr}</span>` : 'TBD';
 
             const rowHtml = `
                 <tr class="${rowClass}">
                     <td>${index + 1}</td>
-                    <td>${event.title}</td>
+                    <td>${event.title}${event.description ? `<br><small style="color: var(--text-secondary);">${event.description}</small>` : ''}</td>
                     <td>${date}</td>
-                    <td>${time}</td>
+                    <td>${timeDisplay}</td>
                 </tr>
             `;
             tableBody.insertAdjacentHTML('beforeend', rowHtml);
@@ -1675,14 +1676,16 @@
         const formatEventData = (dateObj, title, description = '') => {
             if (!dateObj) return null;
             const day = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            const time = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'UTC' });
+            const time12hr = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
 
             return {
                 date: dateObj, 
                 isoDatetime: dateObj.toISOString(), 
                 title: title,
                 description: description,
-                displayTime: `${day}, ${time} UTC`
+                displayTime: `${day}, ${time12hr}`,
+                time12hr: time12hr,
+                dateOnly: day
             };
         };
 
@@ -1793,11 +1796,17 @@
         document.getElementById('entry-fee').textContent = tournament.entryFee ? `₹${tournament.entryFee.toLocaleString('en-IN')}` : 'Free';
         document.getElementById('max-teams').textContent = tournament.maxTeams || 'Unlimited';
 
-        const formatDate = (dateString) => new Date(dateString).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-        document.getElementById('reg-start-date').textContent = formatDate(tournament.registrationStart);
-        document.getElementById('reg-end-date').textContent = formatDate(tournament.registrationEnd);
-        document.getElementById('tournament-start-date').textContent = formatDate(tournament.tournamentStart);
-        document.getElementById('tournament-end-date').textContent = formatDate(tournament.tournamentEnd);
+        const formatDateWithTime = (dateString) => {
+            const date = new Date(dateString);
+            const dateStr = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+            const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            return `${dateStr} at ${timeStr}`;
+        };
+        
+        document.getElementById('reg-start-date').textContent = formatDateWithTime(tournament.registrationStart);
+        document.getElementById('reg-end-date').textContent = formatDateWithTime(tournament.registrationEnd);
+        document.getElementById('tournament-start-date').textContent = formatDateWithTime(tournament.tournamentStart);
+        document.getElementById('tournament-end-date').textContent = formatDateWithTime(tournament.tournamentEnd);
 
         const prizeList = document.getElementById('prize-list');
         prizeList.innerHTML = '';
