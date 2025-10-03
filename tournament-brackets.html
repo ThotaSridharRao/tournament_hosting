@@ -1051,38 +1051,30 @@
                 }
                 html += `</tbody>`;
             } else if (tableConfig.type === 'final') {
-                html += `<thead><tr><th>Rank</th><th>Team Name</th><th>Prize</th></tr></thead>`;
+                html += `<thead><tr><th>S.No</th><th>Team Name</th><th>S.No</th><th>Team Name</th></tr></thead>`;
                 html += `<tbody>`;
 
                 // Check if we have finalists data
                 const finalists = tournamentData.finalists || [];
+                const numberOfGroups = kpSettings.numberOfGroups || 4;
+                const qualifiersPerGroup = kpSettings.qualifiersPerGroup || 4;
+                const totalFinalists = numberOfGroups * qualifiersPerGroup; // 16 teams
 
-                if (finalists.length > 0) {
-                    // Show actual finalists data
-                    finalists.forEach((finalist, index) => {
-                        const rank = index + 1;
-                        const prize = rank === 1 ? '🏆 Champion' : rank === 2 ? '🥈 Runner-up' : rank === 3 ? '🥉 3rd Place' : `${rank}th Place`;
-
-                        html += `<tr>`;
-                        html += `<td class="finalist-rank">${rank}</td>`;
-                        html += `<td class="finalist-team">${finalist.teamName || finalist.name || `Team ${rank}`}</td>`;
-                        html += `<td class="finalist-prize">${prize}</td>`;
-                        html += `</tr>`;
-                    });
-                } else {
-                    // Show placeholder structure when no finalists data is available
-                    const numberOfGroups = kpSettings.numberOfGroups || 4;
-                    const qualifiersPerGroup = kpSettings.qualifiersPerGroup || 4;
-                    const totalFinalists = numberOfGroups * qualifiersPerGroup;
-
-                    for (let pos = 1; pos <= totalFinalists; pos++) {
-                        const prize = pos === 1 ? '🏆 Champion' : pos === 2 ? '🥈 Runner-up' : pos === 3 ? '🥉 3rd Place' : `${pos}th Place`;
-                        html += `<tr>`;
-                        html += `<td class="finalist-rank">${pos}</td>`;
-                        html += `<td class="finalist-team"><em>TBD</em></td>`;
-                        html += `<td class="finalist-prize">${prize}</td>`;
-                        html += `</tr>`;
-                    }
+                // Create rows with 2 teams per row (4 columns total)
+                for (let i = 0; i < totalFinalists; i += 2) {
+                    html += `<tr>`;
+                    
+                    // First team (left side)
+                    const team1 = finalists[i];
+                    html += `<td class="match-number">${i + 1}</td>`;
+                    html += `<td class="match-teams">${team1 ? (team1.teamName || team1.name || 'Unnamed Team') : '<em>TBD</em>'}</td>`;
+                    
+                    // Second team (right side)
+                    const team2 = finalists[i + 1];
+                    html += `<td class="match-number">${i + 2}</td>`;
+                    html += `<td class="match-teams">${team2 ? (team2.teamName || team2.name || 'Unnamed Team') : '<em>TBD</em>'}</td>`;
+                    
+                    html += `</tr>`;
                 }
                 html += `</tbody>`;
             }
@@ -1538,48 +1530,38 @@
                             currentY = doc.lastAutoTable.finalY + 20;
 
                         } else if (table.type === 'final') {
-                            // Generate finalists table data
+                            // Generate finalists table data (4-column layout)
                             const finalists = tournamentData.finalists || [];
+                            const kpSettings = tournamentData.kpSettings || {};
+                            const numberOfGroups = kpSettings.numberOfGroups || 4;
+                            const qualifiersPerGroup = kpSettings.qualifiersPerGroup || 4;
+                            const totalFinalists = numberOfGroups * qualifiersPerGroup; // 16 teams
                             const tableData = [];
 
-                            if (finalists.length > 0) {
-                                // Show actual finalists data
-                                finalists.forEach((finalist, index) => {
-                                    const rank = index + 1;
-                                    const prize = rank === 1 ? '🏆 Champion' : rank === 2 ? '🥈 Runner-up' : rank === 3 ? '🥉 3rd Place' : `${rank}th Place`;
-                                    tableData.push([
-                                        rank.toString(),
-                                        finalist.teamName || finalist.name || `Team ${rank}`,
-                                        prize
-                                    ]);
-                                });
-                            } else {
-                                // Show placeholder structure when no finalists data is available
-                                const kpSettings = tournamentData.kpSettings || {};
-                                const numberOfGroups = kpSettings.numberOfGroups || 4;
-                                const qualifiersPerGroup = kpSettings.qualifiersPerGroup || 4;
-                                const totalFinalists = numberOfGroups * qualifiersPerGroup;
-
-                                for (let pos = 1; pos <= totalFinalists; pos++) {
-                                    const prize = pos === 1 ? '🏆 Champion' : pos === 2 ? '🥈 Runner-up' : pos === 3 ? '🥉 3rd Place' : `${pos}th Place`;
-                                    tableData.push([
-                                        pos.toString(),
-                                        'TBD',
-                                        prize
-                                    ]);
-                                }
+                            // Create rows with 2 teams per row (4 columns total)
+                            for (let i = 0; i < totalFinalists; i += 2) {
+                                const team1 = finalists[i];
+                                const team2 = finalists[i + 1];
+                                
+                                tableData.push([
+                                    (i + 1).toString(),
+                                    team1 ? (team1.teamName || team1.name || 'Unnamed Team') : 'TBD',
+                                    (i + 2).toString(),
+                                    team2 ? (team2.teamName || team2.name || 'Unnamed Team') : 'TBD'
+                                ]);
                             }
 
                             doc.autoTable({
-                                head: [['Rank', 'Team Name', 'Prize']],
+                                head: [['S.No', 'Team Name', 'S.No', 'Team Name']],
                                 body: tableData,
                                 startY: currentY,
                                 styles: { fontSize: 8 },
                                 headStyles: { fillColor: [15, 133, 211] },
                                 columnStyles: {
-                                    0: { cellWidth: 25, halign: 'center' },
-                                    1: { cellWidth: 80 },
-                                    2: { cellWidth: 65 }
+                                    0: { cellWidth: 20, halign: 'center' },
+                                    1: { cellWidth: 65 },
+                                    2: { cellWidth: 20, halign: 'center' },
+                                    3: { cellWidth: 65 }
                                 }
                             });
 
