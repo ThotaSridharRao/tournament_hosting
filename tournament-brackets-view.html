@@ -10,9 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="navbar.css">
-  <!-- jsPDF for PDF generation -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
 
   <style>
     :root {
@@ -287,52 +285,6 @@
       margin: 0 0.5rem;
     }
 
-    .download-section {
-      background: var(--panel);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 2rem;
-      text-align: center;
-      margin-top: 3rem;
-    }
-
-    .download-btn {
-      background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
-      color: white;
-      padding: 1rem 2rem;
-      border: none;
-      border-radius: var(--radius);
-      font-weight: 600;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: var(--ease);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .download-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(15, 133, 211, 0.3);
-    }
-
-    .download-btn:disabled {
-      background: #6c757d;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .download-btn.admin-only {
-      background: linear-gradient(135deg, #6c757d, #495057);
-      border: 1px solid #6c757d;
-    }
-
-    .download-btn.admin-only:hover {
-      transform: none;
-      box-shadow: none;
-    }
-
     .status-badge {
       padding: 0.25rem 0.75rem;
       border-radius: 20px;
@@ -566,8 +518,7 @@
         <nav class="primary" role="navigation" aria-label="Primary">
           <div class="nav-links" role="menubar">
             <a href="tournaments.html" role="menuitem">Tournaments</a>
-            <a href="index.html#why-us" role="menuitem">Why Us</a>
-            <a href="index.html#faq" role="menuitem">FAQ</a>
+            <a href="javascript:history.back()" role="menuitem">Tournament Details</a>
           </div>
         </nav>
         <div class="nav-actions">
@@ -612,10 +563,7 @@
   </div>
 
   <div class="container">
-    <a href="javascript:history.back()" class="back-button">
-      <i class="fas fa-arrow-left"></i>
-      Back to Tournament Details
-    </a>
+
 
     <div class="hero-section">
       <div class="hero-content">
@@ -818,7 +766,7 @@
 
       // Build table based on type
       if (tableConfig.type === 'qualifier') {
-        html += `<thead><tr><th>S.No</th><th>Team Name</th><th>Captain</th></tr></thead>`;
+        html += `<thead><tr><th>S.No</th><th>Team Name</th></tr></thead>`;
         html += `<tbody>`;
 
         // Create slots for this qualifier and fill with teams
@@ -828,10 +776,8 @@
           html += `<td class="match-number">${slot}</td>`;
           if (team) {
             html += `<td class="match-teams"><strong>${team.teamName || 'Unnamed Team'}</strong></td>`;
-            html += `<td class="team-captain">${team.captainEmail || 'No Captain Email'}</td>`;
           } else {
             html += `<td class="match-teams"><em>Open Slot</em></td>`;
-            html += `<td class="team-captain">-</td>`;
           }
           html += `</tr>`;
         }
@@ -1435,235 +1381,7 @@
       return 'TBD';
     }
 
-    async function downloadBracketsPDF() {
-      if (!tournamentData) {
-        alert('No tournament data available for download.');
-        return;
-      }
 
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      const participants = tournamentData.participants || [];
-      const format = (tournamentData.format || 'single_elimination').toLowerCase();
-
-      // Page 1: Tournament Overview
-      doc.setFontSize(20);
-      doc.setTextColor(15, 133, 211);
-      doc.text(tournamentData.title, 20, 30);
-
-      doc.setFontSize(12);
-      doc.setTextColor(0, 0, 0);
-      doc.text(`Tournament Brackets & Team Slots`, 20, 45);
-      doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 55);
-
-      // Tournament Information
-      doc.setFontSize(14);
-      doc.text('Tournament Information', 20, 75);
-      doc.setFontSize(10);
-
-      const maxTeams = getMaxTeamsForDisplay();
-      const infoText = [
-        `Format: ${tournamentData.format || 'Single Elimination'}`,
-        `Game: ${tournamentData.game || 'Not specified'}`,
-        `Teams Registered: ${participants.length}`,
-        `Maximum Teams: ${maxTeams}`,
-        `Entry Fee: ₹${tournamentData.entryFee || 0}`,
-        `Prize Pool: ₹${tournamentData.prizePool || 0}`,
-        `Status: ${tournamentData.status || 'Unknown'}`,
-        `Registration Start: ${tournamentData.registrationStart ? new Date(tournamentData.registrationStart).toLocaleDateString() : 'TBD'}`,
-        `Registration End: ${tournamentData.registrationEnd ? new Date(tournamentData.registrationEnd).toLocaleDateString() : 'TBD'}`,
-        `Tournament Start: ${tournamentData.tournamentStart ? new Date(tournamentData.tournamentStart).toLocaleDateString() : 'TBD'}`,
-        `Tournament End: ${tournamentData.tournamentEnd ? new Date(tournamentData.tournamentEnd).toLocaleDateString() : 'TBD'}`
-      ];
-
-      let yPos = 85;
-      infoText.forEach(text => {
-        doc.text(text, 20, yPos);
-        yPos += 8;
-      });
-
-      // Generate tournament tables based on format
-      const formatConfig = getTournamentFormatConfig(format, participants.length);
-
-      if (formatConfig && formatConfig.stages) {
-        // Add tournament tables for each stage
-        formatConfig.stages.forEach((stage, stageIndex) => {
-          doc.addPage();
-
-          // Stage header
-          doc.setFontSize(18);
-          doc.setTextColor(15, 133, 211);
-          doc.text(stage.name, 20, 30);
-
-          doc.setFontSize(12);
-          doc.setTextColor(0, 0, 0);
-          doc.text(stage.description, 20, 45);
-
-          let currentY = 60;
-
-          stage.tables.forEach((table, tableIndex) => {
-            // Check if we need a new page
-            if (currentY > 200) {
-              doc.addPage();
-              currentY = 30;
-            }
-
-            // Table header
-            doc.setFontSize(14);
-            doc.setTextColor(15, 133, 211);
-            doc.text(table.name, 20, currentY);
-
-            // Add schedule information if available
-            const tableId = `stage-${stageIndex}-table-${tableIndex}`;
-            const schedule = getMatchSchedule(tableId);
-            if (schedule) {
-              doc.setFontSize(10);
-              doc.setTextColor(93, 63, 211);
-              doc.text(`Schedule: ${schedule}`, 20, currentY + 10);
-              currentY += 25;
-            } else {
-              currentY += 15;
-            }
-
-            if (table.type === 'qualifier') {
-              // Generate qualifier table data
-              const kpSettings = tournamentData.kpSettings || {};
-              const groupSize = kpSettings.groupSize || 25;
-              const startIndex = tableIndex * groupSize;
-              const endIndex = Math.min(startIndex + groupSize, participants.length);
-              const qualifierTeams = participants.slice(startIndex, endIndex);
-
-              const tableData = [];
-              for (let slot = 1; slot <= groupSize; slot++) {
-                const team = qualifierTeams[slot - 1];
-                tableData.push([
-                  slot.toString(),
-                  team ? (team.teamName || 'Unnamed Team') : 'Open Slot',
-                  team ? (team.captainEmail || 'No Captain Email') : '-'
-                ]);
-              }
-
-              doc.autoTable({
-                head: [['S.No', 'Team Name', 'Captain']],
-                body: tableData,
-                startY: currentY,
-                styles: { fontSize: 8 },
-                headStyles: { fillColor: [15, 133, 211] },
-                columnStyles: {
-                  0: { cellWidth: 20, halign: 'center' },
-                  1: { cellWidth: 80 },
-                  2: { cellWidth: 70 }
-                }
-              });
-
-              currentY = doc.lastAutoTable.finalY + 20;
-
-            } else if (table.type === 'final') {
-              // Generate finalists table data (4-column layout)
-              const finalists = tournamentData.finalists || [];
-              const kpSettings = tournamentData.kpSettings || {};
-              const numberOfGroups = kpSettings.numberOfGroups || 4;
-              const qualifiersPerGroup = kpSettings.qualifiersPerGroup || 4;
-              const totalFinalists = numberOfGroups * qualifiersPerGroup; // 16 teams
-              const tableData = [];
-
-              // Create rows with 2 teams per row (4 columns total)
-              for (let i = 0; i < totalFinalists; i += 2) {
-                const team1 = finalists[i];
-                const team2 = finalists[i + 1];
-
-                tableData.push([
-                  (i + 1).toString(),
-                  team1 ? (team1.teamName || team1.name || 'Unnamed Team') : 'TBD',
-                  (i + 2).toString(),
-                  team2 ? (team2.teamName || team2.name || 'Unnamed Team') : 'TBD'
-                ]);
-              }
-
-              doc.autoTable({
-                head: [['S.No', 'Team Name', 'S.No', 'Team Name']],
-                body: tableData,
-                startY: currentY,
-                styles: { fontSize: 8 },
-                headStyles: { fillColor: [15, 133, 211] },
-                columnStyles: {
-                  0: { cellWidth: 20, halign: 'center' },
-                  1: { cellWidth: 65 },
-                  2: { cellWidth: 20, halign: 'center' },
-                  3: { cellWidth: 65 }
-                }
-              });
-
-              currentY = doc.lastAutoTable.finalY + 20;
-            }
-          });
-        });
-      } else {
-        // Fallback: Simple participant list
-        doc.addPage();
-        doc.setFontSize(16);
-        doc.setTextColor(15, 133, 211);
-        doc.text('Registered Teams', 20, 30);
-
-        if (participants.length > 0) {
-          const teamData = participants.map((p, index) => [
-            (index + 1).toString(),
-            p.teamName || 'Unnamed Team',
-            p.captainEmail || 'No Captain Email'
-          ]);
-
-          doc.autoTable({
-            head: [['S.No', 'Team Name', 'Captain Email']],
-            body: teamData,
-            startY: 50,
-            styles: { fontSize: 10 },
-            headStyles: { fillColor: [15, 133, 211] },
-            columnStyles: {
-              0: { cellWidth: 20, halign: 'center' },
-              1: { cellWidth: 80 },
-              2: { cellWidth: 70 }
-            }
-          });
-        }
-      }
-
-      // Final page: Tournament Rules & Notes
-      doc.addPage();
-      doc.setFontSize(16);
-      doc.setTextColor(15, 133, 211);
-      doc.text('Tournament Rules & Information', 20, 30);
-
-      doc.setFontSize(10);
-      doc.setTextColor(0, 0, 0);
-      const rulesText = [
-        '• All matches must be played according to the scheduled time',
-        '• Teams must report match results to tournament organizers',
-        '• No-shows will result in automatic forfeit',
-        '• Disputes must be reported within 30 minutes of match completion',
-        '• Tournament organizers reserve the right to modify schedule if needed',
-        '• All participants must follow the game\'s terms of service',
-        '• Prize distribution will occur after tournament completion',
-        '',
-        'Contact Information:',
-        `• Tournament: ${tournamentData.title}`,
-        `• Format: ${tournamentData.format || 'Single Elimination'}`,
-        `• Total Prize Pool: ₹${tournamentData.prizePool || 0}`,
-        '',
-        'For support or questions, contact the tournament organizers.',
-        '',
-        `Document generated on: ${new Date().toLocaleString()}`
-      ];
-
-      let rulesY = 50;
-      rulesText.forEach(text => {
-        doc.text(text, 20, rulesY);
-        rulesY += 8;
-      });
-
-      // Save the PDF
-      const fileName = `${tournamentData.slug || 'tournament'}-brackets-${new Date().toISOString().split('T')[0]}.pdf`;
-      doc.save(fileName);
-    }
 
     // Read-only schedule functions for user view
 
@@ -1768,8 +1486,7 @@
             </div>
             <div class="mobile-nav-links">
               <a href="tournaments.html"><i class="fas fa-trophy"></i> Tournaments</a>
-              <a href="index.html#why-us"><i class="fas fa-star"></i> Why Us</a>
-              <a href="index.html#faq"><i class="fas fa-question-circle"></i> FAQ</a>
+              <a href="javascript:history.back()"><i class="fas fa-info-circle"></i> Tournament Details</a>
             </div>
             <div class="mobile-nav-bottom-actions">
               <a href="userdashboard.html" class="mobile-host-btn">
@@ -1797,8 +1514,7 @@
             </div>
             <div class="mobile-nav-links">
               <a href="tournaments.html"><i class="fas fa-trophy"></i> Tournaments</a>
-              <a href="index.html#why-us"><i class="fas fa-star"></i> Why Us</a>
-              <a href="index.html#faq"><i class="fas fa-question-circle"></i> FAQ</a>
+              <a href="javascript:history.back()"><i class="fas fa-info-circle"></i> Tournament Details</a>
             </div>
           `;
         }
