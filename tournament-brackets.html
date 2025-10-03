@@ -370,6 +370,162 @@
             font-size: 0.9rem;
             margin-top: 0.5rem;
         }
+
+        /* Tournament Brackets Styling */
+        .stage-section {
+            margin-bottom: 3rem;
+        }
+
+        .stage-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--radius) var(--radius) 0 0;
+            margin-bottom: 0;
+        }
+
+        .stage-header h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.3rem;
+        }
+
+        .stage-header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .match-table-container {
+            background: var(--panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .match-table-header {
+            background: rgba(15, 133, 211, 0.1);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .match-table-header h5 {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .match-count {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .match-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .match-table th,
+        .match-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .match-table th {
+            background: rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .match-table tr:hover {
+            background: rgba(15, 133, 211, 0.05);
+        }
+
+        .match-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .match-number {
+            font-weight: 700;
+            color: var(--accent-secondary);
+            text-align: center;
+        }
+
+        .match-teams {
+            font-weight: 500;
+        }
+
+        .match-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            background: rgba(108, 117, 125, 0.2);
+            color: #6c757d;
+        }
+
+        .match-schedule,
+        .match-result {
+            color: var(--text-secondary);
+        }
+
+        .finalists-section {
+            margin-top: 3rem;
+        }
+
+        .finalists-table-container {
+            background: var(--panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .finalists-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .finalists-table th,
+        .finalists-table td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .finalists-table th {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #000;
+            font-weight: 700;
+        }
+
+        .finalist-rank {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .finalist-team {
+            font-weight: 600;
+        }
+
+        .finalist-prize {
+            font-weight: 600;
+            color: var(--accent-secondary);
+        }
+
+        .format-description {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
     </style>
 </head>
 
@@ -603,22 +759,244 @@
 
             const format = (tournamentData.format || 'single_elimination').toLowerCase();
 
-            switch (format) {
-                case 'single_elimination':
-                    displaySingleEliminationBrackets(participants, container);
-                    break;
-                case 'double_elimination':
-                    displayDoubleEliminationBrackets(participants, container);
-                    break;
-                case 'round_robin':
-                    displayRoundRobinBrackets(participants, container);
-                    break;
-                case 'swiss':
-                    displaySwissBrackets(participants, container);
-                    break;
-                default:
-                    displayParticipantsList(participants, container);
+            // Handle all tournament formats dynamically
+            displayTournamentBrackets(participants, container, format);
             }
+        }
+
+        function displayTournamentBrackets(participants, container, format) {
+            const formatConfig = getTournamentFormatConfig(format, participants.length);
+            
+            if (!formatConfig) {
+                displayParticipantsList(participants, container);
+                return;
+            }
+
+            let html = `<h3>${formatConfig.title}</h3>`;
+            html += `<p class="format-description">${formatConfig.description}</p>`;
+
+            // Create match tables for each stage
+            formatConfig.stages.forEach((stage, stageIndex) => {
+                html += `<div class="stage-section">`;
+                html += `<div class="stage-header">`;
+                html += `<h4><i class="fas fa-trophy"></i> ${stage.name}</h4>`;
+                html += `<p>${stage.description}</p>`;
+                html += `</div>`;
+
+                // Create tables for this stage
+                stage.tables.forEach((table, tableIndex) => {
+                    html += createMatchTable(table, participants, stageIndex, tableIndex);
+                });
+
+                html += `</div>`;
+            });
+
+            // Add finalists table if tournament has finalists data
+            if (tournamentData.finalists && tournamentData.finalists.length > 0) {
+                html += createFinalistsTable(tournamentData.finalists);
+            }
+
+            container.innerHTML = html;
+        }
+
+        function getTournamentFormatConfig(format, participantCount) {
+            const configs = {
+                'single_elimination': {
+                    title: 'Single Elimination Tournament',
+                    description: 'Teams are eliminated after one loss. Winner advances through each round.',
+                    stages: [
+                        {
+                            name: 'Elimination Rounds',
+                            description: 'Single elimination bracket progression',
+                            tables: [
+                                {
+                                    name: 'Main Bracket',
+                                    type: 'elimination',
+                                    teamsPerMatch: 2,
+                                    totalMatches: Math.max(0, participantCount - 1)
+                                }
+                            ]
+                        }
+                    ]
+                },
+                'kp': {
+                    title: 'KP Format Tournament',
+                    description: '4 qualifier matches to determine top 16 teams, followed by finals.',
+                    stages: [
+                        {
+                            name: 'Qualifier Matches',
+                            description: '4 matches to select top teams for finals',
+                            tables: [
+                                { name: 'Qualifier Match 1', type: 'qualifier', teamsPerMatch: Math.ceil(participantCount / 4), totalMatches: 1 },
+                                { name: 'Qualifier Match 2', type: 'qualifier', teamsPerMatch: Math.ceil(participantCount / 4), totalMatches: 1 },
+                                { name: 'Qualifier Match 3', type: 'qualifier', teamsPerMatch: Math.ceil(participantCount / 4), totalMatches: 1 },
+                                { name: 'Qualifier Match 4', type: 'qualifier', teamsPerMatch: Math.ceil(participantCount / 4), totalMatches: 1 }
+                            ]
+                        },
+                        {
+                            name: 'Finals',
+                            description: 'Top 16 teams compete for the championship',
+                            tables: [
+                                { name: 'Final Match', type: 'final', teamsPerMatch: 16, totalMatches: 1 }
+                            ]
+                        }
+                    ]
+                },
+                'double_elimination': {
+                    title: 'Double Elimination Tournament',
+                    description: 'Teams must lose twice to be eliminated. Winners and losers brackets.',
+                    stages: [
+                        {
+                            name: 'Winners Bracket',
+                            description: 'Main elimination bracket for undefeated teams',
+                            tables: [
+                                { name: 'Winners Bracket', type: 'winners', teamsPerMatch: 2, totalMatches: Math.max(0, participantCount - 1) }
+                            ]
+                        },
+                        {
+                            name: 'Losers Bracket',
+                            description: 'Second chance bracket for eliminated teams',
+                            tables: [
+                                { name: 'Losers Bracket', type: 'losers', teamsPerMatch: 2, totalMatches: Math.max(0, participantCount - 2) }
+                            ]
+                        }
+                    ]
+                },
+                'round_robin': {
+                    title: 'Round Robin Tournament',
+                    description: 'Every team plays every other team once.',
+                    stages: [
+                        {
+                            name: 'Round Robin Matches',
+                            description: 'All teams play against each other',
+                            tables: [
+                                { name: 'Round Robin', type: 'round_robin', teamsPerMatch: 2, totalMatches: (participantCount * (participantCount - 1)) / 2 }
+                            ]
+                        }
+                    ]
+                }
+            };
+
+            return configs[format] || null;
+        }
+
+        function createMatchTable(tableConfig, participants, stageIndex, tableIndex) {
+            const tableId = `stage-${stageIndex}-table-${tableIndex}`;
+            
+            let html = `<div class="match-table-container">`;
+            html += `<div class="match-table-header">`;
+            html += `<h5><i class="fas fa-list"></i> ${tableConfig.name}</h5>`;
+            html += `<span class="match-count">${tableConfig.totalMatches} ${tableConfig.totalMatches === 1 ? 'Match' : 'Matches'}</span>`;
+            html += `</div>`;
+
+            html += `<table class="match-table" id="${tableId}">`;
+            html += `<thead>`;
+            html += `<tr>`;
+            html += `<th>Match #</th>`;
+            html += `<th>Teams</th>`;
+            html += `<th>Status</th>`;
+            html += `<th>Schedule</th>`;
+            html += `<th>Result</th>`;
+            html += `</tr>`;
+            html += `</thead>`;
+            html += `<tbody>`;
+
+            // Generate matches based on table type
+            const matches = generateMatches(tableConfig, participants, stageIndex, tableIndex);
+            matches.forEach((match, matchIndex) => {
+                html += `<tr>`;
+                html += `<td class="match-number">M${match.id}</td>`;
+                html += `<td class="match-teams">${match.teams}</td>`;
+                html += `<td class="match-status">${match.status}</td>`;
+                html += `<td class="match-schedule">${match.schedule}</td>`;
+                html += `<td class="match-result">${match.result}</td>`;
+                html += `</tr>`;
+            });
+
+            html += `</tbody>`;
+            html += `</table>`;
+            html += `</div>`;
+
+            return html;
+        }
+
+        function generateMatches(tableConfig, participants, stageIndex, tableIndex) {
+            const matches = [];
+            const matchIdBase = (stageIndex * 100) + (tableIndex * 10);
+
+            if (tableConfig.type === 'qualifier') {
+                // For qualifier matches, divide teams among the 4 qualifiers
+                const teamsPerQualifier = Math.ceil(participants.length / 4);
+                const startIndex = tableIndex * teamsPerQualifier;
+                const endIndex = Math.min(startIndex + teamsPerQualifier, participants.length);
+                const qualifierTeams = participants.slice(startIndex, endIndex);
+
+                matches.push({
+                    id: matchIdBase + 1,
+                    teams: `${qualifierTeams.length} teams competing`,
+                    status: 'Scheduled',
+                    schedule: 'TBD',
+                    result: 'Pending'
+                });
+            } else if (tableConfig.type === 'final') {
+                matches.push({
+                    id: matchIdBase + 1,
+                    teams: 'Top 16 Qualifiers',
+                    status: 'Awaiting Qualifiers',
+                    schedule: 'TBD',
+                    result: 'Pending'
+                });
+            } else {
+                // Generate standard matches
+                for (let i = 0; i < tableConfig.totalMatches; i++) {
+                    matches.push({
+                        id: matchIdBase + i + 1,
+                        teams: 'TBD vs TBD',
+                        status: 'Scheduled',
+                        schedule: 'TBD',
+                        result: 'Pending'
+                    });
+                }
+            }
+
+            return matches;
+        }
+
+        function createFinalistsTable(finalists) {
+            let html = `<div class="finalists-section">`;
+            html += `<div class="stage-header">`;
+            html += `<h4><i class="fas fa-crown"></i> Tournament Finalists</h4>`;
+            html += `<p>Final rankings updated by tournament admin</p>`;
+            html += `</div>`;
+
+            html += `<div class="finalists-table-container">`;
+            html += `<table class="finalists-table">`;
+            html += `<thead>`;
+            html += `<tr>`;
+            html += `<th>Rank</th>`;
+            html += `<th>Team Name</th>`;
+            html += `<th>Prize</th>`;
+            html += `</tr>`;
+            html += `</thead>`;
+            html += `<tbody>`;
+
+            finalists.forEach((finalist, index) => {
+                const rank = index + 1;
+                const prize = rank === 1 ? '🏆 Champion' : rank === 2 ? '🥈 Runner-up' : rank === 3 ? '🥉 3rd Place' : `${rank}th Place`;
+                
+                html += `<tr>`;
+                html += `<td class="finalist-rank">${rank}</td>`;
+                html += `<td class="finalist-team">${finalist.teamName || finalist.name || `Team ${rank}`}</td>`;
+                html += `<td class="finalist-prize">${prize}</td>`;
+                html += `</tr>`;
+            });
+
+            html += `</tbody>`;
+            html += `</table>`;
+            html += `</div>`;
+            html += `</div>`;
+
+            return html;
         }
 
         function displaySingleEliminationBrackets(participants, container) {
