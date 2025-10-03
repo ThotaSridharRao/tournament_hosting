@@ -1561,7 +1561,7 @@
     <section class="leaderboard-section" id="finalists-section" style="display: none;">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Final Standings</h2>
+          <h2 class="section-title">Finalists</h2>
           <p class="section-subtitle">The top teams who battled it out for glory.</p>
         </div>
         <div class="finalists-table-container" id="finalists-table">
@@ -2010,14 +2010,8 @@
         return;
       }
 
-      // Ensure we have exactly 8 rows, pad with empty if needed
-      const paddedFinalists = [...finalists];
-      while (paddedFinalists.length < 8) {
-        paddedFinalists.push({ teamName: '', isEmpty: true });
-      }
-
-      // Take only first 8 entries
-      const displayFinalists = paddedFinalists.slice(0, 8);
+      // Show all finalists that admin has added
+      const displayFinalists = finalists;
 
       finalistsContent.innerHTML = `
           <table class="finalists-table">
@@ -2030,11 +2024,10 @@
               <tbody>
                   ${displayFinalists.map((team, index) => {
         const rank = index + 1;
-        const teamName = team.isEmpty ? '-' : (team.teamName || team.name || `Team ${rank}`);
-        const rowClass = team.isEmpty ? 'style="opacity: 0.3;"' : '';
+        const teamName = team.teamName || team.name || `Team ${rank}`;
 
         return `
-                          <tr ${rowClass}>
+                          <tr>
                               <td>${rank}</td>
                               <td>${teamName}</td>
                           </tr>
