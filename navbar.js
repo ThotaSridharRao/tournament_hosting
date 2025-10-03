@@ -66,7 +66,7 @@ function setupMobileNav() {
     navLinksHTML = `
       <div class="mobile-nav-links">
         <a href="tournaments.html">Tournaments</a>
-        <a href="user-dashboard.html"><i class="fas fa-plus-circle"></i> Host Tournament</a>
+        <a href="userdashboard.html"><i class="fas fa-plus-circle"></i> Host Tournament</a>
         <a href="#why-us">Why Us</a>
         <a href="#faq">FAQ</a>
       </div>
@@ -76,7 +76,7 @@ function setupMobileNav() {
     navLinksHTML = `
       <div class="mobile-nav-links">
         <a href="tournaments.html">Browse Tournaments</a>
-        <a href="user-dashboard.html">My Tournaments</a>
+        <a href="userdashboard.html">My Tournaments</a>
         <a href="index.html#leaderboards">Leaderboards</a>
       </div>
     `;
@@ -85,7 +85,7 @@ function setupMobileNav() {
     navLinksHTML = `
       <div class="mobile-nav-links">
         <a href="tournaments.html">Browse Tournaments</a>
-        <a href="user-dashboard.html">My Dashboard</a>
+        <a href="userdashboard.html">My Dashboard</a>
         <a href="index.html">Home</a>
       </div>
     `;
@@ -103,7 +103,7 @@ function setupMobileNav() {
     navLinksHTML = `
       <div class="mobile-nav-links">
         <a href="tournaments.html">Tournaments</a>
-        <a href="user-dashboard.html"><i class="fas fa-plus-circle"></i> Host Tournament</a>
+        <a href="userdashboard.html"><i class="fas fa-plus-circle"></i> Host Tournament</a>
         <a href="index.html">Home</a>
         <a href="auth.html">Sign In</a>
       </div>
@@ -124,10 +124,10 @@ function setupMobileNav() {
         </div>
       </div>
       <div class="profile-actions">
-        <a href="user-dashboard.html" class="profile-action">
+        <a href="userdashboard.html" class="profile-action">
           <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
         </a>
-        <a href="user-dashboard.html?tab=create" class="profile-action">
+        <a href="userdashboard.html?tab=create" class="profile-action">
           <i class="fas fa-plus"></i> <span>Create Tournament</span>
         </a>
         <a href="tournaments.html" class="profile-action">
@@ -144,7 +144,7 @@ function setupMobileNav() {
       <div class="guest-view">
         <i class="fas fa-gamepad"></i>
         <p>Join the arena to compete, win prizes, and track your stats!</p>
-        <a href="user-dashboard.html" class="header-cta" style="width: 100%; margin-top: 1rem; display: inline-block; text-decoration: none; text-align: center;">
+        <a href="userdashboard.html" class="header-cta" style="width: 100%; margin-top: 1rem; display: inline-block; text-decoration: none; text-align: center;">
           <i class="fas fa-plus-circle"></i> Host Tournament
         </a>
         <button class="header-cta" style="width: 100%; margin-top: 0.5rem;" onclick="redirectToAuth()">Join Us Now</button>
