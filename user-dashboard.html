@@ -1377,6 +1377,35 @@
             color: #51cf66;
         }
 
+        .alert-info {
+            background: rgba(10, 250, 217, 0.1);
+            border-color: rgba(10, 250, 217, 0.3);
+            color: var(--primary-color);
+        }
+
+        /* Alert animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+        }
+
         /* =========================
            Loading Spinner
            ========================= */
@@ -3064,12 +3093,16 @@
 
         async function handleFormSubmit(e) {
             e.preventDefault();
+            console.log('🚀 Tournament creation started...');
 
             const submitBtn = e.target.querySelector('button[type="submit"]');
             const spinner = submitBtn.querySelector('.loading-spinner');
 
             submitBtn.disabled = true;
             spinner.style.display = 'inline-block';
+
+            // Show loading message
+            showAlert('Creating tournament...', 'info');
 
             try {
                 const formData = collectFormData();
@@ -3083,9 +3116,31 @@
                     body: formData
                 });
 
+                // Handle HTTP errors
+                if (!response.ok) {
+                    console.error(`❌ HTTP Error: ${response.status} ${response.statusText}`);
+                    let errorMessage = 'Failed to create tournament. ';
+                    
+                    if (response.status === 429) {
+                        errorMessage += 'Too many requests. Please wait a moment and try again.';
+                    } else if (response.status === 401) {
+                        errorMessage += 'Please log in again.';
+                    } else if (response.status === 403) {
+                        errorMessage += 'You do not have permission to create tournaments.';
+                    } else if (response.status >= 500) {
+                        errorMessage += 'Server error. Please try again later.';
+                    } else {
+                        errorMessage += `Error ${response.status}. Please try again.`;
+                    }
+                    
+                    showAlert(errorMessage, 'danger');
+                    return;
+                }
+
                 const result = await response.json();
 
                 if (result.success) {
+                    console.log('✅ Tournament created successfully:', result.data);
                     createdTournamentId = result.data._id;
                     document.getElementById('createdTournamentTitle').textContent = result.data.title;
 
@@ -3112,6 +3167,9 @@
                         paymentButton.style.display = 'inline-block';
                     }
 
+                    // Show success alert immediately
+                    showAlert('🎉 Tournament created successfully!', 'success');
+
                     // Show success modal
                     const modal = new bootstrap.Modal(document.getElementById('successModal'));
                     modal.show();
@@ -3124,11 +3182,22 @@
                     loadUserTournaments();
                     loadDashboardStats();
                 } else {
-                    showAlert('Error creating tournament: ' + result.message, 'danger');
+                    console.error('❌ Tournament creation failed:', result);
+                    showAlert('Error creating tournament: ' + (result.message || 'Unknown error'), 'danger');
                 }
             } catch (error) {
                 console.error('Error creating tournament:', error);
-                showAlert('Failed to create tournament. Please try again.', 'danger');
+                
+                let errorMessage = 'Failed to create tournament. ';
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    errorMessage += 'Network error. Please check your connection and try again.';
+                } else if (error.message) {
+                    errorMessage += error.message;
+                } else {
+                    errorMessage += 'Please try again.';
+                }
+                
+                showAlert(errorMessage, 'danger');
             } finally {
                 submitBtn.disabled = false;
                 spinner.style.display = 'none';
@@ -4338,17 +4407,37 @@
         });
 
         function showAlert(message, type) {
+            // Remove any existing alerts first
+            const existingAlerts = document.querySelectorAll('.alert');
+            existingAlerts.forEach(alert => alert.remove());
+
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.style.cssText = `
+                position: fixed;
+                top: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 9999;
+                min-width: 300px;
+                max-width: 500px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                animation: slideDown 0.3s ease-out;
+            `;
             alertDiv.innerHTML = `
+                <strong>${type === 'success' ? '✅' : type === 'danger' ? '❌' : type === 'info' ? 'ℹ️' : '⚠️'}</strong>
                 ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" onclick="this.parentElement.remove()"></button>
             `;
 
-            document.querySelector('.tab-content').insertBefore(alertDiv, document.querySelector('.tab-content').firstChild);
+            document.body.appendChild(alertDiv);
 
+            // Auto-remove after 5 seconds
             setTimeout(() => {
-                alertDiv.remove();
+                if (alertDiv.parentElement) {
+                    alertDiv.style.animation = 'slideUp 0.3s ease-in';
+                    setTimeout(() => alertDiv.remove(), 300);
+                }
             }, 5000);
         }
 
