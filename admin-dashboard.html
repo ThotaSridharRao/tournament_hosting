@@ -1103,6 +1103,53 @@
             renderOperation('edit', tournamentToEdit);
         }
 
+        function viewTournamentBrackets(slug) {
+            // Find the tournament to get its details
+            const tournament = adminTournaments.find(t => t.slug === slug);
+            if (!tournament) {
+                alert('Tournament not found!');
+                return;
+            }
+
+            // Check if tournament has participants
+            const participantCount = tournament.participants ? tournament.participants.length : 0;
+            if (participantCount === 0) {
+                alert('This tournament has no registered teams yet. Brackets will be available once teams register.');
+                return;
+            }
+
+            // Open brackets view in a new tab/window
+            // You can create a dedicated brackets.html page or add it to the existing tournament details page
+            const bracketsUrl = `tournament-brackets.html?slug=${slug}`;
+            window.open(bracketsUrl, '_blank');
+            
+            // Alternative: Show brackets in a modal (uncomment if you prefer modal view)
+            // showBracketsModal(tournament);
+        }
+
+        // Optional: Function to show brackets in a modal instead of new page
+        function showBracketsModal(tournament) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 90vw; max-height: 90vh; overflow: auto;">
+                    <div class="modal-header">
+                        <h3>Tournament Brackets - ${tournament.title}</h3>
+                        <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="brackets-container">
+                            <p>Loading brackets...</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // Load brackets data here
+            loadTournamentBrackets(tournament.slug, 'brackets-container');
+        }
+
         function renderTournamentList(containerId, tournaments, actionType) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -1119,6 +1166,7 @@
                     case 'manage':
                         actionsHtml = `
                             <a href="details.html?slug=${t.slug}" class="btn-icon" title="Manage"><i class="fas fa-arrow-right"></i></a>
+                            <button class="btn-icon" onclick="viewTournamentBrackets('${t.slug}')" title="View Brackets"><i class="fas fa-sitemap"></i></button>
                             <button class="btn-icon" onclick="editTournament('${t.slug}')" title="Edit"><i class="fas fa-pencil-alt"></i></button>
                             `;
                         break;
@@ -1127,6 +1175,7 @@
                             <button class="submit-btn" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="editTournament('${t.slug}')">Edit Details</button>
                             <button class="submit-btn btn-info" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="updateStatus('${t.slug}')">Update Status</button>
                             <button class="submit-btn btn-warning" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1;" onclick="updateSchedule('${t.slug}')">Update Schedule</button>
+                            <button class="submit-btn btn-success" style="padding: 0.5rem 1rem; margin-top:0; flex-grow: 1; background-color: #28a745;" onclick="viewTournamentBrackets('${t.slug}')">View Brackets</button>
                         `;
                         break;
                     case 'delete':

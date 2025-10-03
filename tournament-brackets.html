@@ -1,2092 +1,1069 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tournament Brackets | EArena Admin</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-crossorigin="anonymous" referrerpolicy="no-referrer" />
-<style>
-:root {
---bg: #0f0f10;
---panel: #1f1f20;
---muted: #9aa0a6;
---copy: #e6e6e6;
---accent: #FFD700;
---accent-2: #e0ac10;
---radius: 12px;
---border-color: rgba(255, 255, 255, 0.1);
---success: #10b981;
---warning: #f59e0b;
---danger: #ef4444;
-}
-
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-}
-
-body {
-margin: 0;
-font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-background: var(--bg);
-color: var(--copy);
-line-height: 1.5;
-min-height: 100vh;
-}
-
-/* Custom Scrollbar Styles */
-::-webkit-scrollbar-track {
-    border: 1px solid var(--border-color);
-    background-color: var(--bg);
-}
-
-::-webkit-scrollbar {
-    width: 10px;
-    background-color: var(--bg);
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: var(--panel);
-    border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background-color: #2f2f30;
-}
-
-/* Firefox scrollbar */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--panel) var(--bg);
-}
-
-.site-header {
-position: fixed;
-top: 0;
-left: 0;
-right: 0;
-z-index: 1000;
-background: rgba(15, 15, 16, 0.8);
-backdrop-filter: blur(20px);
-border-bottom: 1px solid var(--border-color);
-height: 64px;
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 0 24px;
-}
-
-.header-left {
-display: flex;
-align-items: center;
-gap: 24px;
-}
-
-.back-link {
-color: var(--muted);
-text-decoration: none;
-font-weight: 500;
-display: flex;
-align-items: center;
-gap: 8px;
-transition: color 0.2s ease;
-}
-
-.back-link:hover {
-color: var(--accent);
-}
-
-.user-menu {
-display: flex;
-align-items: center;
-gap: 1rem;
-}
-
-.user-info {
-display: flex;
-align-items: center;
-gap: 0.5rem;
-color: var(--copy);
-font-weight: 500;
-}
-
-.logout-btn {
-background: rgba(255, 255, 255, 0.1);
-border: 1px solid rgba(255, 255, 255, 0.2);
-color: var(--copy);
-padding: 8px 16px;
-border-radius: 6px;
-cursor: pointer;
-transition: all 0.2s ease;
-font-weight: 500;
-font-size: 14px;
-}
-
-.logout-btn:hover {
-background: rgba(255, 0, 0, 0.1);
-border-color: rgba(255, 0, 0, 0.3);
-color: #ff6b6b;
-}
-
-.main-content {
-margin-top: 64px;
-padding: 32px 24px;
-max-width: 1600px;
-margin-left: auto;
-margin-right: auto;
-}
-
-.page-header {
-margin-bottom: 2rem;
-}
-
-.page-title {
-font-size: 2rem;
-font-weight: 800;
-margin-bottom: 0.5rem;
-}
-
-.page-subtitle {
-color: var(--muted);
-font-size: 1.1rem;
-}
-
-.tournament-overview {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-gap: 1.5rem;
-margin-bottom: 2rem;
-}
-
-.overview-card {
-background: var(--panel);
-border: 1px solid var(--border-color);
-border-radius: var(--radius);
-padding: 1.5rem;
-}
-
-.overview-card h3 {
-font-size: 1.1rem;
-font-weight: 700;
-margin-bottom: 1rem;
-color: var(--accent);
-}
-
-.stat-grid {
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-gap: 1rem;
-}
-
-.stat-item {
-text-align: center;
-}
-
-.stat-value {
-font-size: 1.5rem;
-font-weight: 800;
-color: var(--copy);
-display: block;
-}
-
-.stat-label {
-font-size: 0.85rem;
-color: var(--muted);
-}
-
-.rounds-container {
-display: flex;
-flex-direction: column;
-gap: 2rem;
-}
-
-.round-section {
-background: var(--panel);
-border: 1px solid var(--border-color);
-border-radius: var(--radius);
-padding: 2rem;
-}
-
-.round-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 1.5rem;
-}
-
-.round-title {
-font-size: 1.5rem;
-font-weight: 700;
-color: var(--copy);
-}
-
-.round-status {
-padding: 0.5rem 1rem;
-border-radius: 20px;
-font-size: 0.85rem;
-font-weight: 600;
-}
-
-.status-pending {
-background: rgba(156, 163, 175, 0.2);
-color: #9ca3af;
-}
-
-.status-active {
-background: rgba(16, 185, 129, 0.2);
-color: var(--success);
-}
-
-.status-completed {
-background: rgba(245, 158, 11, 0.2);
-color: var(--warning);
-}
-
-.round-info {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-gap: 1rem;
-margin-bottom: 1.5rem;
-}
-
-.info-item {
-background: rgba(0, 0, 0, 0.2);
-padding: 1rem;
-border-radius: 8px;
-text-align: center;
-}
-
-.info-value {
-font-size: 1.2rem;
-font-weight: 700;
-color: var(--accent);
-display: block;
-}
-
-.info-label {
-font-size: 0.85rem;
-color: var(--muted);
-margin-top: 0.25rem;
-}
-
-.teams-grid {
-display: grid;
-grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-gap: 1rem;
-}
-
-.team-card {
-background: rgba(0, 0, 0, 0.2);
-border: 1px solid var(--border-color);
-border-radius: 8px;
-padding: 1rem;
-transition: all 0.3s ease;
-}
-
-.team-card:hover {
-border-color: var(--accent);
-transform: translateY(-2px);
-}
-
-.team-card.qualified {
-border-color: var(--success);
-background: rgba(16, 185, 129, 0.1);
-}
-
-.team-card.eliminated {
-border-color: var(--danger);
-background: rgba(239, 68, 68, 0.1);
-opacity: 0.7;
-}
-
-.team-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 0.75rem;
-}
-
-.team-name {
-font-weight: 600;
-color: var(--copy);
-}
-
-.team-status {
-padding: 0.25rem 0.5rem;
-border-radius: 12px;
-font-size: 0.75rem;
-font-weight: 600;
-}
-
-.status-registered {
-background: rgba(59, 130, 246, 0.2);
-color: #3b82f6;
-}
-
-.status-paid {
-background: rgba(16, 185, 129, 0.2);
-color: var(--success);
-}
-
-.status-qualified {
-background: rgba(245, 158, 11, 0.2);
-color: var(--warning);
-}
-
-.status-eliminated {
-background: rgba(239, 68, 68, 0.2);
-color: var(--danger);
-}
-
-.team-details {
-font-size: 0.85rem;
-color: var(--muted);
-}
-
-.team-actions {
-display: flex;
-gap: 0.5rem;
-margin-top: 0.75rem;
-}
-
-.btn {
-padding: 0.5rem 1rem;
-border-radius: 6px;
-font-weight: 600;
-cursor: pointer;
-transition: all 0.3s ease;
-border: none;
-text-decoration: none;
-display: inline-flex;
-align-items: center;
-justify-content: center;
-gap: 0.5rem;
-text-align: center;
-font-size: 0.85rem;
-}
-
-.btn:hover {
-transform: translateY(-1px);
-}
-
-.btn-primary {
-background: linear-gradient(135deg, var(--accent), var(--accent-2));
-color: #000;
-}
-
-.btn-primary:hover {
-background: linear-gradient(135deg, var(--accent-2), var(--accent));
-}
-
-.btn-success {
-background: var(--success);
-color: white;
-}
-
-.btn-success:hover {
-background: #059669;
-}
-
-.btn-danger {
-background: var(--danger);
-color: white;
-}
-
-.btn-danger:hover {
-background: #dc2626;
-}
-
-.btn-secondary {
-background: rgba(255, 255, 255, 0.1);
-color: var(--copy);
-border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.btn-secondary:hover {
-background: rgba(255, 255, 255, 0.2);
-}
-
-.btn:disabled {
-opacity: 0.5;
-cursor: not-allowed;
-transform: none;
-}
-
-.round-actions {
-display: flex;
-gap: 1rem;
-flex-wrap: wrap;
-}
-
-.payment-info {
-background: rgba(245, 158, 11, 0.1);
-border: 1px solid rgba(245, 158, 11, 0.3);
-border-radius: 8px;
-padding: 1rem;
-margin-bottom: 1.5rem;
-}
-
-.payment-info h4 {
-color: var(--warning);
-margin-bottom: 0.5rem;
-}
-
-.payment-info p {
-color: var(--muted);
-font-size: 0.9rem;
-}
-
-.loading-state {
-text-align: center;
-padding: 3rem;
-color: var(--muted);
-}
-
-.empty-state {
-text-align: center;
-padding: 3rem;
-color: var(--muted);
-}
-
-/* Modal Styles */
-.modal {
-display: none;
-position: fixed;
-z-index: 2000;
-left: 0;
-top: 0;
-width: 100%;
-height: 100%;
-background: rgba(0, 0, 0, 0.8);
-backdrop-filter: blur(5px);
-}
-
-.modal.active {
-display: flex;
-align-items: center;
-justify-content: center;
-}
-
-.modal-content {
-background: var(--panel);
-border-radius: var(--radius);
-padding: 2rem;
-max-width: 500px;
-width: 90%;
-border: 1px solid var(--border-color);
-max-height: 90vh;
-overflow-y: auto;
-}
-
-.modal-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 1.5rem;
-}
-
-.modal-title {
-font-size: 1.5rem;
-font-weight: 700;
-}
-
-.close-modal {
-background: none;
-border: none;
-color: var(--muted);
-font-size: 1.5rem;
-cursor: pointer;
-}
-
-.close-modal:hover {
-color: var(--copy);
-}
-
-.modal-buttons {
-display: flex;
-gap: 1rem;
-margin-top: 1.5rem;
-}
-
-.modal-buttons .btn {
-flex: 1;
-}
-
-/* Enhanced Team Display Styles */
-.round-teams-section {
-margin-top: 1.5rem;
-}
-
-.teams-summary {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 1rem;
-background: rgba(0, 0, 0, 0.2);
-border-radius: 8px;
-margin-bottom: 1rem;
-}
-
-.summary-stats {
-display: flex;
-gap: 2rem;
-}
-
-.summary-stats span {
-color: var(--muted);
-font-size: 0.9rem;
-}
-
-.teams-actions {
-display: flex;
-gap: 0.5rem;
-}
-
-.teams-preview h4 {
-color: var(--accent);
-margin-bottom: 1rem;
-}
-
-.teams-list {
-display: flex;
-flex-direction: column;
-gap: 0.5rem;
-}
-
-.team-item {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 1rem;
-background: rgba(255, 255, 255, 0.05);
-border-radius: 8px;
-cursor: pointer;
-transition: all 0.3s ease;
-border: 1px solid transparent;
-}
-
-.team-item:hover {
-background: rgba(255, 255, 255, 0.1);
-border-color: var(--accent);
-transform: translateX(4px);
-}
-
-.team-info {
-flex: 1;
-}
-
-.team-name {
-font-weight: 600;
-color: var(--copy);
-display: block;
-margin-bottom: 0.5rem;
-}
-
-.team-meta {
-display: flex;
-gap: 0.5rem;
-align-items: center;
-}
-
-.status-badge {
-padding: 0.25rem 0.5rem;
-border-radius: 12px;
-font-size: 0.75rem;
-font-weight: 600;
-text-transform: uppercase;
-}
-
-.status-badge.status-paid {
-background: rgba(16, 185, 129, 0.2);
-color: var(--success);
-}
-
-.status-badge.status-pending {
-background: rgba(245, 158, 11, 0.2);
-color: var(--warning);
-}
-
-.status-badge.status-qualified {
-background: rgba(16, 185, 129, 0.2);
-color: var(--success);
-}
-
-.status-badge.status-eliminated {
-background: rgba(239, 68, 68, 0.2);
-color: var(--danger);
-}
-
-.status-badge.status-registered {
-background: rgba(59, 130, 246, 0.2);
-color: #3b82f6;
-}
-
-.score {
-color: var(--accent);
-font-weight: 600;
-font-size: 0.85rem;
-}
-
-.show-more {
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 0.5rem;
-padding: 1rem;
-background: rgba(255, 215, 0, 0.1);
-border: 1px dashed rgba(255, 215, 0, 0.3);
-border-radius: 8px;
-cursor: pointer;
-color: var(--accent);
-font-weight: 600;
-transition: all 0.3s ease;
-}
-
-.show-more:hover {
-background: rgba(255, 215, 0, 0.2);
-border-color: var(--accent);
-}
-
-/* All Teams Modal Styles */
-.all-teams-modal .modal-content {
-max-width: 1000px;
-max-height: 80vh;
-}
-
-.teams-grid-modal {
-display: grid;
-grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-gap: 1rem;
-max-height: 60vh;
-overflow-y: auto;
-padding: 1rem 0;
-}
-
-.team-card-modal {
-background: rgba(0, 0, 0, 0.2);
-border: 1px solid var(--border-color);
-border-radius: 8px;
-padding: 1rem;
-cursor: pointer;
-transition: all 0.3s ease;
-}
-
-.team-card-modal:hover {
-border-color: var(--accent);
-transform: translateY(-2px);
-}
-
-.team-card-modal.qualified {
-border-color: var(--success);
-background: rgba(16, 185, 129, 0.1);
-}
-
-.team-card-modal.eliminated {
-border-color: var(--danger);
-background: rgba(239, 68, 68, 0.1);
-opacity: 0.7;
-}
-
-/* Team Detail Modal Styles */
-.team-detail-modal .modal-content {
-max-width: 600px;
-}
-
-.team-header-modal {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 1.5rem;
-padding-bottom: 1rem;
-border-bottom: 1px solid var(--border-color);
-}
-
-.team-name-modal {
-font-size: 1.5rem;
-font-weight: 700;
-color: var(--copy);
-}
-
-.team-status-modal {
-display: flex;
-gap: 0.5rem;
-}
-
-.team-stats {
-display: grid;
-grid-template-columns: repeat(3, 1fr);
-gap: 1rem;
-margin-bottom: 1.5rem;
-}
-
-.stat-card {
-background: rgba(0, 0, 0, 0.2);
-padding: 1rem;
-border-radius: 8px;
-text-align: center;
-}
-
-.stat-value {
-font-size: 1.2rem;
-font-weight: 700;
-color: var(--accent);
-display: block;
-}
-
-.stat-label {
-font-size: 0.8rem;
-color: var(--muted);
-margin-top: 0.25rem;
-}
-
-.players-section {
-margin-bottom: 1.5rem;
-}
-
-.players-section h4 {
-color: var(--accent);
-margin-bottom: 1rem;
-}
-
-.player-list {
-display: flex;
-flex-direction: column;
-gap: 0.5rem;
-}
-
-.player-card {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 0.75rem;
-background: rgba(255, 255, 255, 0.05);
-border-radius: 6px;
-}
-
-.player-info {
-flex: 1;
-}
-
-.player-name {
-font-weight: 600;
-color: var(--copy);
-}
-
-.player-details {
-font-size: 0.85rem;
-color: var(--muted);
-margin-top: 0.25rem;
-}
-
-.captain-badge {
-background: var(--accent);
-color: #000;
-padding: 0.25rem 0.5rem;
-border-radius: 12px;
-font-size: 0.75rem;
-font-weight: 700;
-}
-
-/* Export Options */
-.export-options {
-display: flex;
-gap: 1rem;
-margin-top: 1rem;
-}
-
-.export-btn {
-flex: 1;
-}
-
-@media (max-width: 768px) {
-.teams-grid {
-grid-template-columns: 1fr;
-}
-
-.round-info {
-grid-template-columns: 1fr;
-}
-
-.tournament-overview {
-grid-template-columns: 1fr;
-}
-
-.round-actions {
-flex-direction: column;
-}
-
-.teams-summary {
-flex-direction: column;
-gap: 1rem;
-}
-
-.summary-stats {
-flex-direction: column;
-gap: 0.5rem;
-text-align: center;
-}
-
-.teams-actions {
-width: 100%;
-}
-
-.teams-grid-modal {
-grid-template-columns: 1fr;
-}
-
-.team-stats {
-grid-template-columns: 1fr;
-}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tournament Brackets | GamingNexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="navbar.css">
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #0f85d3;
+            --bg-dark: #0D0A1A;
+            --accent-secondary: #5D3FD3;
+            --panel: #161329;
+            --text-primary: #F0F0F0;
+            --text-secondary: rgba(240, 240, 240, 0.7);
+            --border-color: rgba(10, 250, 217, 0.2);
+            --ease: 0.3s ease;
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .tournament-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tournament-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            background: var(--panel);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+        }
+
+        .brackets-container {
+            background: var(--panel);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            overflow-x: auto;
+        }
+
+        .bracket-round {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-width: 250px;
+            margin-right: 2rem;
+        }
+
+        .bracket-match {
+            background: rgba(15, 133, 211, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+            position: relative;
+        }
+
+        .match-teams {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .team {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            transition: var(--ease);
+        }
+
+        .team.winner {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid #28a745;
+        }
+
+        .team.loser {
+            opacity: 0.6;
+        }
+
+        .team-name {
+            font-weight: 600;
+        }
+
+        .team-score {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .match-status {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .rounds-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            padding: 1rem 0;
+        }
+
+        .round-title {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .no-brackets {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--ease);
+            margin-bottom: 2rem;
+        }
+
+        .back-button:hover {
+            background: var(--accent-secondary);
+            transform: translateY(-2px);
+        }
+
+        .format-info {
+            background: rgba(93, 63, 211, 0.1);
+            border: 1px solid var(--accent-secondary);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .participants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .participant-card {
+            background: var(--panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+        }
+
+        .participant-card h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--primary-color);
+        }
+
+        .seed-number {
+            background: var(--accent-secondary);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .matches-section {
+            margin-top: 3rem;
+        }
+
+        .match-table {
+            width: 100%;
+            background: var(--panel);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .match-table th,
+        .match-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .match-table th {
+            background: rgba(15, 133, 211, 0.1);
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .match-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .match-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .match-number {
+            font-weight: 700;
+            color: var(--accent-secondary);
+        }
+
+        .vs-separator {
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin: 0 0.5rem;
+        }
+
+        .download-section {
+            background: var(--panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--ease);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(15, 133, 211, 0.3);
+        }
+
+        .download-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-registration-open {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid #28a745;
+        }
+
+        .status-registration-closed {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid #ffc107;
+        }
+
+        .status-active {
+            background: rgba(15, 133, 211, 0.2);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .status-completed {
+            background: rgba(108, 117, 125, 0.2);
+            color: #6c757d;
+            border: 1px solid #6c757d;
+        }
+
+        .round-section {
+            margin-bottom: 3rem;
+        }
+
+        .round-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius) var(--radius) 0 0;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .tournament-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+    </style>
 </head>
+
 <body>
-<header class="site-header">
-<div class="header-left">
-<a href="td.html" class="back-link" id="back-to-tournament">
-<i class="fas fa-arrow-left"></i>
-<span>Back to Tournament</span>
-</a>
-</div>
-<div class="user-menu">
-<div class="user-info">
-<span id="admin-username">Admin</span>
-</div>
-<button class="logout-btn" onclick="logout()">
-<i class="fas fa-sign-out-alt"></i> Logout
-</button>
-</div>
-</header>
-
-<main class="main-content">
-<div class="page-header">
-<h1 class="page-title" id="tournament-title">Tournament Brackets</h1>
-<p class="page-subtitle" id="tournament-subtitle">Manage rounds, teams, and progression</p>
-</div>
-
-<div class="tournament-overview">
-<div class="overview-card">
-<h3><i class="fas fa-users"></i> Tournament Stats</h3>
-<div class="stat-grid">
-<div class="stat-item">
-<span class="stat-value" id="total-teams">0</span>
-<span class="stat-label">Total Teams</span>
-</div>
-<div class="stat-item">
-<span class="stat-value" id="active-teams">0</span>
-<span class="stat-label">Active Teams</span>
-</div>
-</div>
-</div>
-
-<div class="overview-card">
-<h3><i class="fas fa-trophy"></i> Prize Pool</h3>
-<div class="stat-grid">
-<div class="stat-item">
-<span class="stat-value" id="total-prize">₹0</span>
-<span class="stat-label">Total Prize</span>
-</div>
-<div class="stat-item">
-<span class="stat-value" id="collected-fees">₹0</span>
-<span class="stat-label">Collected Fees</span>
-</div>
-</div>
-</div>
-
-<div class="overview-card">
-<h3><i class="fas fa-calendar"></i> Current Round</h3>
-<div class="stat-grid">
-<div class="stat-item">
-<span class="stat-value" id="current-round">1</span>
-<span class="stat-label">Round</span>
-</div>
-<div class="stat-item">
-<span class="stat-value" id="round-status">Pending</span>
-<span class="stat-label">Status</span>
-</div>
-</div>
-</div>
-</div>
-
-<div class="rounds-container" id="rounds-container">
-<div class="loading-state">
-<i class="fas fa-spinner fa-spin"></i> Loading tournament brackets...
-</div>
-</div>
-</main>
-
-<!-- Round Management Modal -->
-<div id="round-modal" class="modal">
-<div class="modal-content">
-<div class="modal-header">
-<h3 class="modal-title" id="round-modal-title">Manage Round</h3>
-<button class="close-modal">&times;</button>
-</div>
-<div id="round-modal-content">
-<!-- Content will be populated by JavaScript -->
-</div>
-</div>
-</div>
-
-<!-- Team Management Modal -->
-<div id="team-modal" class="modal">
-<div class="modal-content">
-<div class="modal-header">
-<h3 class="modal-title" id="team-modal-title">Team Details</h3>
-<button class="close-modal">&times;</button>
-</div>
-<div id="team-modal-content">
-<!-- Content will be populated by JavaScript -->
-</div>
-</div>
-</div>
-
-<!-- All Teams Modal -->
-<div id="all-teams-modal" class="modal all-teams-modal">
-<div class="modal-content">
-<div class="modal-header">
-<h3 class="modal-title" id="all-teams-modal-title">All Teams</h3>
-<button class="close-modal">&times;</button>
-</div>
-<div id="all-teams-content">
-<!-- Content will be populated by JavaScript -->
-</div>
-</div>
-</div>
-
-<!-- Team Detail Modal -->
-<div id="team-detail-modal" class="modal team-detail-modal">
-<div class="modal-content">
-<div class="modal-header">
-<h3 class="modal-title" id="team-detail-modal-title">Team Details</h3>
-<button class="close-modal">&times;</button>
-</div>
-<div id="team-detail-content">
-<!-- Content will be populated by JavaScript -->
-</div>
-</div>
-</div>
-
-<script>
-// Auto-detect API URL based on environment
-const isLocal = window.location.hostname === 'localhost' || 
-               window.location.hostname === '127.0.0.1' || 
-               window.location.protocol === 'file:';
-
-const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
-let currentTournament = null;
-let tournamentBrackets = null;
-
-// Round configuration
-const ROUND_CONFIG = {
-1: { name: 'Round 1', teamsPerGroup: 25, qualifyingTeams: 4, entryFee: 100 },
-2: { name: 'Round 2', teamsPerGroup: 25, qualifyingTeams: 4, entryFee: 200 },
-3: { name: 'Round 3', teamsPerGroup: 25, qualifyingTeams: 4, entryFee: 300 },
-4: { name: 'Round 4', teamsPerGroup: 25, qualifyingTeams: 4, entryFee: 500 },
-final: { name: 'Finals', teamsPerGroup: 16, qualifyingTeams: 1, entryFee: 0 }
-};
-
-// --- AUTHENTICATION & USER INFO ---
-function getSessionData() {
-const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
-try {
-return JSON.parse(session);
-} catch (error) {
-return null;
-}
-}
-
-function logout() {
-localStorage.removeItem('earena_session');
-sessionStorage.removeItem('earena_session');
-window.location.href = 'auth.html';
-}
-
-// --- TOURNAMENT BRACKETS MANAGEMENT ---
-async function loadTournamentBrackets() {
-const urlParams = new URLSearchParams(window.location.search);
-const tournamentId = urlParams.get('id');
-const tournamentSlug = urlParams.get('slug');
-
-if (!tournamentId && !tournamentSlug) {
-document.getElementById('rounds-container').innerHTML = 
-'<div class="empty-state">No tournament specified. Please provide a tournament ID or slug.</div>';
-return;
-}
-
-const sessionData = getSessionData();
-if (!sessionData || !sessionData.token) {
-window.location.href = 'auth.html';
-return;
-}
-
-try {
-// Load tournament data
-const tournamentEndpoint = tournamentId ? 
-`${API_BASE_URL}/api/tournaments/${tournamentId}` : 
-`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}`;
-
-const tournamentResponse = await fetch(tournamentEndpoint, {
-headers: { 'Authorization': `Bearer ${sessionData.token}` }
-});
-
-if (!tournamentResponse.ok) {
-throw new Error('Failed to load tournament data');
-}
-
-const tournamentData = await tournamentResponse.json();
-currentTournament = tournamentData.data;
-
-// Update page header
-document.getElementById('tournament-title').textContent = `${currentTournament.title} - Brackets`;
-document.getElementById('tournament-subtitle').textContent = `Manage rounds and team progression for ${currentTournament.game}`;
-
-// Update back link
-const backLink = document.getElementById('back-to-tournament');
-backLink.href = `td.html?slug=${currentTournament.slug}`;
-
-// Load or initialize brackets
-await loadOrInitializeBrackets();
-
-} catch (error) {
-console.error('Error loading tournament brackets:', error);
-document.getElementById('rounds-container').innerHTML = 
-`<div class="empty-state">Error loading tournament: ${error.message}</div>`;
-}
-}
-
-async function loadOrInitializeBrackets() {
-const sessionData = getSessionData();
-
-try {
-// Try to load existing brackets
-const bracketsResponse = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament._id}/brackets`, {
-headers: { 'Authorization': `Bearer ${sessionData.token}` }
-});
-
-if (bracketsResponse.ok) {
-const bracketsData = await bracketsResponse.json();
-tournamentBrackets = bracketsData.data;
-} else if (bracketsResponse.status === 404) {
-// Initialize brackets if they don't exist
-await initializeBrackets();
-} else {
-throw new Error('Failed to load brackets');
-}
-
-updateBracketsDisplay();
-
-} catch (error) {
-console.error('Error loading brackets:', error);
-// Initialize brackets as fallback
-await initializeBrackets();
-}
-}
-
-async function initializeBrackets() {
-const sessionData = getSessionData();
-const teams = currentTournament.participants || [];
-
-// Create initial bracket structure
-const brackets = {
-tournamentId: currentTournament._id,
-totalTeams: teams.length,
-currentRound: 1,
-rounds: {
-1: { status: 'pending', teams: [], groups: [] },
-2: { status: 'pending', teams: [], groups: [] },
-3: { status: 'pending', teams: [], groups: [] },
-4: { status: 'pending', teams: [], groups: [] },
-final: { status: 'pending', teams: [], groups: [] }
-},
-payments: {},
-results: {}
-};
-
-// Assign teams to Round 1
-brackets.rounds[1].teams = teams.map(team => ({
-teamId: team._id,
-teamName: team.name,
-status: 'registered',
-paymentStatus: 'pending',
-score: 0,
-position: null
-}));
-
-// Create groups for Round 1 (4 groups of 25 teams each)
-const shuffledTeams = [...brackets.rounds[1].teams].sort(() => Math.random() - 0.5);
-for (let i = 0; i < 4; i++) {
-const groupTeams = shuffledTeams.slice(i * 25, (i + 1) * 25);
-brackets.rounds[1].groups.push({
-groupId: i + 1,
-teams: groupTeams,
-status: 'pending'
-});
-}
-
-try {
-// Save brackets to server
-const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament._id}/brackets`, {
-method: 'POST',
-headers: {
-'Authorization': `Bearer ${sessionData.token}`,
-'Content-Type': 'application/json'
-},
-body: JSON.stringify(brackets)
-});
-
-if (!response.ok) {
-throw new Error('Failed to initialize brackets');
-}
-
-const savedBrackets = await response.json();
-tournamentBrackets = savedBrackets.data;
-
-} catch (error) {
-console.error('Error initializing brackets:', error);
-// Use local brackets as fallback
-tournamentBrackets = brackets;
-}
-}
-
-function updateBracketsDisplay() {
-// Update overview stats
-document.getElementById('total-teams').textContent = tournamentBrackets.totalTeams;
-document.getElementById('current-round').textContent = tournamentBrackets.currentRound;
-document.getElementById('round-status').textContent = getCurrentRoundStatus();
-
-// Calculate active teams and fees
-const activeTeams = calculateActiveTeams();
-const collectedFees = calculateCollectedFees();
-
-document.getElementById('active-teams').textContent = activeTeams;
-document.getElementById('total-prize').textContent = `₹${(currentTournament.prizePool || 0).toLocaleString()}`;
-document.getElementById('collected-fees').textContent = `₹${collectedFees.toLocaleString()}`;
-
-// Render rounds
-renderRounds();
-}
-
-function getCurrentRoundStatus() {
-const currentRound = tournamentBrackets.currentRound;
-if (currentRound === 'final') {
-return tournamentBrackets.rounds.final.status.charAt(0).toUpperCase() + 
-tournamentBrackets.rounds.final.status.slice(1);
-}
-return tournamentBrackets.rounds[currentRound].status.charAt(0).toUpperCase() + 
-tournamentBrackets.rounds[currentRound].status.slice(1);
-}
-
-function calculateActiveTeams() {
-const currentRound = tournamentBrackets.currentRound;
-if (currentRound === 'final') {
-return tournamentBrackets.rounds.final.teams.length;
-}
-return tournamentBrackets.rounds[currentRound].teams.filter(team => 
-team.status !== 'eliminated'
-).length;
-}
-
-function calculateCollectedFees() {
-let total = 0;
-Object.keys(tournamentBrackets.rounds).forEach(roundKey => {
-const round = tournamentBrackets.rounds[roundKey];
-const config = ROUND_CONFIG[roundKey];
-if (config && round.teams) {
-const paidTeams = round.teams.filter(team => team.paymentStatus === 'paid');
-total += paidTeams.length * config.entryFee;
-}
-});
-return total;
-}
-
-function renderRounds() {
-const container = document.getElementById('rounds-container');
-const rounds = Object.keys(ROUND_CONFIG);
-
-container.innerHTML = rounds.map(roundKey => {
-const config = ROUND_CONFIG[roundKey];
-const roundData = tournamentBrackets.rounds[roundKey];
-const isActive = tournamentBrackets.currentRound === roundKey;
-
-return `
-<div class="round-section">
-<div class="round-header">
-<h2 class="round-title">${config.name}</h2>
-<span class="round-status status-${roundData.status}">
-${roundData.status.charAt(0).toUpperCase() + roundData.status.slice(1)}
-</span>
-</div>
-
-${roundKey !== 'final' ? `
-<div class="payment-info">
-<h4><i class="fas fa-credit-card"></i> Entry Fee: ₹${config.entryFee}</h4>
-<p>Teams must pay ₹${config.entryFee} to participate in this round. Top ${config.qualifyingTeams} teams from each group advance.</p>
-</div>
-` : ''}
-
-<div class="round-info">
-<div class="info-item">
-<span class="info-value">${roundData.teams.length}</span>
-<span class="info-label">Teams</span>
-</div>
-<div class="info-item">
-<span class="info-value">${roundData.groups ? roundData.groups.length : 1}</span>
-<span class="info-label">Groups</span>
-</div>
-<div class="info-item">
-<span class="info-value">${roundData.teams.filter(t => t.paymentStatus === 'paid').length}</span>
-<span class="info-label">Paid</span>
-</div>
-<div class="info-item">
-<span class="info-value">${roundData.teams.filter(t => t.status === 'qualified').length}</span>
-<span class="info-label">Qualified</span>
-</div>
-</div>
-
-<div class="round-actions">
-${isActive ? `
-<button class="btn btn-primary" onclick="startRound('${roundKey}')">
-<i class="fas fa-play"></i> Start Round
-</button>
-` : ''}
-${roundData.status === 'active' ? `
-<button class="btn btn-success" onclick="completeRound('${roundKey}')">
-<i class="fas fa-check"></i> Complete Round
-</button>
-` : ''}
-<button class="btn btn-secondary" onclick="viewRoundDetails('${roundKey}')">
-<i class="fas fa-eye"></i> View Details
-</button>
-<button class="btn btn-secondary" onclick="managePayments('${roundKey}')">
-<i class="fas fa-credit-card"></i> Manage Payments
-</button>
-</div>
-
-${renderRoundTeams(roundKey, roundData)}
-</div>
-`;
-}).join('');
-}
-
-function renderRoundTeams(roundKey, roundData) {
-if (!roundData.teams || roundData.teams.length === 0) {
-return '<div class="empty-state">No teams in this round yet.</div>';
-}
-
-return `
-<div class="round-teams-section">
-<div class="teams-summary">
-<div class="summary-stats">
-<span><strong>${roundData.teams.length}</strong> teams registered</span>
-<span><strong>${roundData.teams.filter(t => t.paymentStatus === 'paid').length}</strong> paid</span>
-<span><strong>${roundData.teams.filter(t => t.status === 'qualified').length}</strong> qualified</span>
-</div>
-<div class="teams-actions">
-<button class="btn btn-secondary" onclick="showAllTeams('${roundKey}')">
-<i class="fas fa-users"></i> View All Teams
-</button>
-<button class="btn btn-primary" onclick="exportRoundData('${roundKey}')">
-<i class="fas fa-download"></i> Export
-</button>
-</div>
-</div>
-
-<div class="teams-preview">
-<h4 style="margin-bottom: 1rem; color: var(--accent);">Teams in ${ROUND_CONFIG[roundKey].name}</h4>
-<div class="teams-list">
-${roundData.teams.slice(0, 8).map(team => `
-<div class="team-item" onclick="showTeamModal('${team.teamId}', '${roundKey}')">
-<div class="team-info">
-<span class="team-name">${team.teamName}</span>
-<div class="team-meta">
-<span class="status-badge status-${team.paymentStatus}">${team.paymentStatus}</span>
-<span class="status-badge status-${team.status}">${team.status}</span>
-${team.score ? `<span class="score">Score: ${team.score}</span>` : ''}
-</div>
-</div>
-<i class="fas fa-chevron-right"></i>
-</div>
-`).join('')}
-${roundData.teams.length > 8 ? `
-<div class="show-more" onclick="showAllTeams('${roundKey}')">
-<i class="fas fa-plus"></i> Show ${roundData.teams.length - 8} more teams
-</div>
-` : ''}
-</div>
-</div>
-</div>
-`;
-}
-
-// --- ROUND MANAGEMENT FUNCTIONS ---
-async function startRound(roundKey) {
-if (!confirm(`Are you sure you want to start ${ROUND_CONFIG[roundKey].name}?`)) return;
-
-const sessionData = getSessionData();
-try {
-const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament._id}/brackets/round/${roundKey}/start`, {
-method: 'POST',
-headers: {
-'Authorization': `Bearer ${sessionData.token}`,
-'Content-Type': 'application/json'
-}
-});
-
-if (!response.ok) throw new Error('Failed to start round');
-
-// Update local data
-tournamentBrackets.rounds[roundKey].status = 'active';
-updateBracketsDisplay();
-
-alert(`${ROUND_CONFIG[roundKey].name} has been started!`);
-
-} catch (error) {
-console.error('Error starting round:', error);
-alert(`Failed to start round: ${error.message}`);
-}
-}
-
-async function completeRound(roundKey) {
-if (!confirm(`Are you sure you want to complete ${ROUND_CONFIG[roundKey].name}? This will advance qualifying teams to the next round.`)) return;
-
-const sessionData = getSessionData();
-try {
-const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament._id}/brackets/round/${roundKey}/complete`, {
-method: 'POST',
-headers: {
-'Authorization': `Bearer ${sessionData.token}`,
-'Content-Type': 'application/json'
-}
-});
-
-if (!response.ok) throw new Error('Failed to complete round');
-
-const result = await response.json();
-tournamentBrackets = result.data;
-
-updateBracketsDisplay();
-alert(`${ROUND_CONFIG[roundKey].name} has been completed! Qualifying teams have been advanced.`);
-
-} catch (error) {
-console.error('Error completing round:', error);
-alert(`Failed to complete round: ${error.message}`);
-}
-}
-
-async function markPaid(teamId, roundKey) {
-const sessionData = getSessionData();
-try {
-const response = await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament._id}/brackets/payment`, {
-method: 'POST',
-headers: {
-'Authorization': `Bearer ${sessionData.token}`,
-'Content-Type': 'application/json'
-},
-body: JSON.stringify({
-teamId: teamId,
-roundKey: roundKey,
-amount: ROUND_CONFIG[roundKey].entryFee,
-status: 'paid'
-})
-});
-
-if (!response.ok) throw new Error('Failed to mark payment');
-
-// Update local data
-const team = tournamentBrackets.rounds[roundKey].teams.find(t => t.teamId === teamId);
-if (team) {
-team.paymentStatus = 'paid';
-}
-
-updateBracketsDisplay();
-alert('Payment marked as completed!');
-
-} catch (error) {
-console.error('Error marking payment:', error);
-alert(`Failed to mark payment: ${error.message}`);
-}
-}
-
-function viewRoundDetails(roundKey) {
-const roundData = tournamentBrackets.rounds[roundKey];
-const config = ROUND_CONFIG[roundKey];
-
-document.getElementById('round-modal-title').textContent = `${config.name} Details`;
-document.getElementById('round-modal-content').innerHTML = `
-<div style="margin-bottom: 1.5rem;">
-<h4>Round Information</h4>
-<p><strong>Status:</strong> ${roundData.status}</p>
-<p><strong>Total Teams:</strong> ${roundData.teams.length}</p>
-<p><strong>Entry Fee:</strong> ₹${config.entryFee}</p>
-<p><strong>Qualifying Teams:</strong> ${config.qualifyingTeams} per group</p>
-</div>
-
-<div style="margin-bottom: 1.5rem;">
-<h4>Payment Status</h4>
-<p><strong>Paid:</strong> ${roundData.teams.filter(t => t.paymentStatus === 'paid').length}</p>
-<p><strong>Pending:</strong> ${roundData.teams.filter(t => t.paymentStatus === 'pending').length}</p>
-<p><strong>Total Collected:</strong> ₹${(roundData.teams.filter(t => t.paymentStatus === 'paid').length * config.entryFee).toLocaleString()}</p>
-</div>
-
-<div class="teams-grid" style="max-height: 400px; overflow-y: auto;">
-${roundData.teams.map(team => `
-<div class="team-card ${team.status}" style="margin-bottom: 0.5rem;">
-<div class="team-header">
-<span class="team-name">${team.teamName}</span>
-<span class="team-status status-${team.paymentStatus}">${team.paymentStatus}</span>
-</div>
-<div class="team-details">
-Status: ${team.status} | Score: ${team.score || 0}
-${team.position ? `| Position: ${team.position}` : ''}
-</div>
-</div>
-`).join('')}
-</div>
-
-<div class="modal-buttons">
-<button class="btn btn-secondary close-modal">Close</button>
-</div>
-`;
-
-document.getElementById('round-modal').classList.add('active');
-}
-
-function managePayments(roundKey) {
-const roundData = tournamentBrackets.rounds[roundKey];
-const config = ROUND_CONFIG[roundKey];
-const pendingPayments = roundData.teams.filter(t => t.paymentStatus === 'pending');
-
-document.getElementById('round-modal-title').textContent = `Manage Payments - ${config.name}`;
-document.getElementById('round-modal-content').innerHTML = `
-<div style="margin-bottom: 1.5rem;">
-<h4>Payment Overview</h4>
-<p><strong>Entry Fee:</strong> ₹${config.entryFee} per team</p>
-<p><strong>Pending Payments:</strong> ${pendingPayments.length} teams</p>
-<p><strong>Potential Revenue:</strong> ₹${(pendingPayments.length * config.entryFee).toLocaleString()}</p>
-</div>
-
-${pendingPayments.length > 0 ? `
-<div style="margin-bottom: 1.5rem;">
-<h4>Pending Payments</h4>
-<div style="max-height: 300px; overflow-y: auto;">
-${pendingPayments.map(team => `
-<div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 6px; margin-bottom: 0.5rem;">
-<div>
-<strong>${team.teamName}</strong><br>
-<small style="color: var(--muted);">Amount: ₹${config.entryFee}</small>
-</div>
-<button class="btn btn-success" onclick="markPaid('${team.teamId}', '${roundKey}'); document.getElementById('round-modal').classList.remove('active');">
-<i class="fas fa-check"></i> Mark Paid
-</button>
-</div>
-`).join('')}
-</div>
-
-<div style="margin-top: 1rem;">
-<button class="btn btn-primary" onclick="markAllPaid('${roundKey}')">
-<i class="fas fa-check-double"></i> Mark All as Paid
-</button>
-</div>
-</div>
-` : '<p style="text-align: center; color: var(--muted);">All payments completed!</p>'}
-
-<div class="modal-buttons">
-<button class="btn btn-secondary close-modal">Close</button>
-</div>
-`;
-
-document.getElementById('round-modal').classList.add('active');
-}
-
-async function markAllPaid(roundKey) {
-if (!confirm('Are you sure you want to mark all pending payments as paid?')) return;
-
-const sessionData = getSessionData();
-const roundData = tournamentBrackets.rounds[roundKey];
-const pendingTeams = roundData.teams.filter(t => t.paymentStatus === 'pending');
-
-try {
-for (const team of pendingTeams) {
-await fetch(`${API_BASE_URL}/api/tournaments/${currentTournament._id}/brackets/payment`, {
-method: 'POST',
-headers: {
-'Authorization': `Bearer ${sessionData.token}`,
-'Content-Type': 'application/json'
-},
-body: JSON.stringify({
-teamId: team.teamId,
-roundKey: roundKey,
-amount: ROUND_CONFIG[roundKey].entryFee,
-status: 'paid'
-})
-});
-
-team.paymentStatus = 'paid';
-}
-
-updateBracketsDisplay();
-document.getElementById('round-modal').classList.remove('active');
-alert('All payments marked as completed!');
-
-} catch (error) {
-console.error('Error marking all payments:', error);
-alert(`Failed to mark all payments: ${error.message}`);
-}
-}
-
-function viewTeamDetails(teamId, roundKey) {
-const team = tournamentBrackets.rounds[roundKey].teams.find(t => t.teamId === teamId);
-if (!team) return;
-
-document.getElementById('team-modal-title').textContent = team.teamName;
-document.getElementById('team-modal-content').innerHTML = `
-<div style="margin-bottom: 1.5rem;">
-<h4>Team Information</h4>
-<p><strong>Status:</strong> ${team.status}</p>
-<p><strong>Payment Status:</strong> ${team.paymentStatus}</p>
-<p><strong>Current Score:</strong> ${team.score || 0}</p>
-${team.position ? `<p><strong>Position:</strong> ${team.position}</p>` : ''}
-</div>
-
-<div style="margin-bottom: 1.5rem;">
-<h4>Round History</h4>
-${Object.keys(tournamentBrackets.rounds).map(rKey => {
-const rTeam = tournamentBrackets.rounds[rKey].teams.find(t => t.teamId === teamId);
-return rTeam ? `
-<div style="padding: 0.5rem; background: rgba(0,0,0,0.2); border-radius: 6px; margin-bottom: 0.5rem;">
-<strong>${ROUND_CONFIG[rKey].name}:</strong> ${rTeam.status} 
-${rTeam.paymentStatus === 'paid' ? '✅' : '❌'} 
-${rTeam.score ? `(Score: ${rTeam.score})` : ''}
-</div>
-` : '';
-}).join('')}
-</div>
-
-<div class="modal-buttons">
-<button class="btn btn-secondary close-modal">Close</button>
-${team.paymentStatus === 'pending' ? `
-<button class="btn btn-success" onclick="markPaid('${teamId}', '${roundKey}'); document.getElementById('team-modal').classList.remove('active');">
-<i class="fas fa-check"></i> Mark Paid
-</button>
-` : ''}
-</div>
-`;
-
-document.getElementById('team-modal').classList.add('active');
-}
-
-// --- TEAM DISPLAY FUNCTIONS ---
-function showAllTeams(roundKey) {
-const roundData = tournamentBrackets.rounds[roundKey];
-const config = ROUND_CONFIG[roundKey];
-
-document.getElementById('all-teams-modal-title').textContent = `All Teams - ${config.name}`;
-document.getElementById('all-teams-content').innerHTML = `
-<div style="margin-bottom: 1.5rem;">
-<div class="teams-summary">
-<div class="summary-stats">
-<span><strong>${roundData.teams.length}</strong> total teams</span>
-<span><strong>${roundData.teams.filter(t => t.paymentStatus === 'paid').length}</strong> paid</span>
-<span><strong>${roundData.teams.filter(t => t.status === 'qualified').length}</strong> qualified</span>
-<span><strong>${roundData.teams.filter(t => t.status === 'eliminated').length}</strong> eliminated</span>
-</div>
-<div class="teams-actions">
-<button class="btn btn-primary" onclick="exportRoundData('${roundKey}')">
-<i class="fas fa-download"></i> Export Data
-</button>
-</div>
-</div>
-</div>
-
-<div class="teams-grid-modal">
-${roundData.teams.map(team => `
-<div class="team-card-modal ${team.status}" onclick="showTeamModal('${team.teamId}', '${roundKey}')">
-<div class="team-header">
-<span class="team-name">${team.teamName}</span>
-<div class="team-status-modal">
-<span class="status-badge status-${team.paymentStatus}">${team.paymentStatus}</span>
-<span class="status-badge status-${team.status}">${team.status}</span>
-</div>
-</div>
-<div class="team-details">
-<div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
-<span>Score: ${team.score || 0}</span>
-${team.position ? `<span>Position: #${team.position}</span>` : ''}
-</div>
-${team.groupId ? `<div style="margin-top: 0.25rem; color: var(--muted); font-size: 0.85rem;">Group ${team.groupId}</div>` : ''}
-</div>
-</div>
-`).join('')}
-</div>
-
-<div class="modal-buttons">
-<button class="btn btn-secondary close-modal">Close</button>
-</div>
-`;
-
-document.getElementById('all-teams-modal').classList.add('active');
-}
-
-async function showTeamModal(teamId, roundKey) {
-const team = tournamentBrackets.rounds[roundKey].teams.find(t => t.teamId === teamId);
-if (!team) return;
-
-// Load full team details from API
-const sessionData = getSessionData();
-try {
-const response = await fetch(`${API_BASE_URL}/api/teams/${teamId}`, {
-headers: { 'Authorization': `Bearer ${sessionData.token}` }
-});
-
-let fullTeamData = null;
-if (response.ok) {
-const data = await response.json();
-fullTeamData = data.data;
-}
-
-document.getElementById('team-detail-modal-title').textContent = team.teamName;
-document.getElementById('team-detail-content').innerHTML = `
-<div class="team-header-modal">
-<div class="team-name-modal">${team.teamName}</div>
-<div class="team-status-modal">
-<span class="status-badge status-${team.paymentStatus}">${team.paymentStatus}</span>
-<span class="status-badge status-${team.status}">${team.status}</span>
-</div>
-</div>
-
-<div class="team-stats">
-<div class="stat-card">
-<span class="stat-value">${team.score || 0}</span>
-<span class="stat-label">Score</span>
-</div>
-<div class="stat-card">
-<span class="stat-value">${team.position || '--'}</span>
-<span class="stat-label">Position</span>
-</div>
-<div class="stat-card">
-<span class="stat-value">₹${ROUND_CONFIG[roundKey].entryFee}</span>
-<span class="stat-label">Entry Fee</span>
-</div>
-</div>
-
-${fullTeamData && fullTeamData.players ? `
-<div class="players-section">
-<h4><i class="fas fa-users"></i> Team Members</h4>
-<div class="player-list">
-${fullTeamData.players.map(player => `
-<div class="player-card">
-<div class="player-info">
-<div class="player-name">${player.name}</div>
-<div class="player-details">
-In-Game ID: ${player.inGameId || 'N/A'} | Email: ${player.email || 'N/A'}
-</div>
-</div>
-${player.isCaptain ? '<span class="captain-badge">Captain</span>' : ''}
-</div>
-`).join('')}
-</div>
-</div>
-` : `
-<div class="players-section">
-<h4><i class="fas fa-users"></i> Team Members</h4>
-<p style="color: var(--muted); text-align: center; padding: 1rem;">
-Player details not available. Team ID: ${teamId}
-</p>
-</div>
-`}
-
-<div class="modal-buttons">
-<button class="btn btn-secondary close-modal">Close</button>
-${team.paymentStatus === 'pending' ? `
-<button class="btn btn-success" onclick="markPaid('${teamId}', '${roundKey}'); document.getElementById('team-detail-modal').classList.remove('active');">
-<i class="fas fa-check"></i> Mark Paid
-</button>
-` : ''}
-</div>
-`;
-
-document.getElementById('team-detail-modal').classList.add('active');
-
-} catch (error) {
-console.error('Error loading team details:', error);
-// Show basic team info even if API call fails
-document.getElementById('team-detail-modal-title').textContent = team.teamName;
-document.getElementById('team-detail-content').innerHTML = `
-<div class="team-header-modal">
-<div class="team-name-modal">${team.teamName}</div>
-<div class="team-status-modal">
-<span class="status-badge status-${team.paymentStatus}">${team.paymentStatus}</span>
-<span class="status-badge status-${team.status}">${team.status}</span>
-</div>
-</div>
-
-<div class="team-stats">
-<div class="stat-card">
-<span class="stat-value">${team.score || 0}</span>
-<span class="stat-label">Score</span>
-</div>
-<div class="stat-card">
-<span class="stat-value">${team.position || '--'}</span>
-<span class="stat-label">Position</span>
-</div>
-<div class="stat-card">
-<span class="stat-value">₹${ROUND_CONFIG[roundKey].entryFee}</span>
-<span class="stat-label">Entry Fee</span>
-</div>
-</div>
-
-<div class="players-section">
-<h4><i class="fas fa-users"></i> Team Members</h4>
-<p style="color: var(--muted); text-align: center; padding: 1rem;">
-Unable to load player details. Team ID: ${teamId}
-</p>
-</div>
-
-<div class="modal-buttons">
-<button class="btn btn-secondary close-modal">Close</button>
-${team.paymentStatus === 'pending' ? `
-<button class="btn btn-success" onclick="markPaid('${teamId}', '${roundKey}'); document.getElementById('team-detail-modal').classList.remove('active');">
-<i class="fas fa-check"></i> Mark Paid
-</button>
-` : ''}
-</div>
-`;
-
-document.getElementById('team-detail-modal').classList.add('active');
-}
-}
-
-// --- EXPORT FUNCTIONS ---
-async function exportRoundData(roundKey) {
-const roundData = tournamentBrackets.rounds[roundKey];
-const config = ROUND_CONFIG[roundKey];
-
-// Show export options modal
-document.getElementById('round-modal-title').textContent = `Export ${config.name} Data`;
-document.getElementById('round-modal-content').innerHTML = `
-<div style="margin-bottom: 1.5rem;">
-<h4>Export Options</h4>
-<p>Choose the format to export team and player data for ${config.name}.</p>
-</div>
-
-<div class="export-options">
-<button class="btn btn-primary export-btn" onclick="exportToExcel('${roundKey}')">
-<i class="fas fa-file-excel"></i> Export to Excel
-</button>
-<button class="btn btn-secondary export-btn" onclick="exportToPDF('${roundKey}')">
-<i class="fas fa-file-pdf"></i> Export to PDF
-</button>
-</div>
-
-<div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
-<h4>Export Preview</h4>
-<p><strong>Teams:</strong> ${roundData.teams.length}</p>
-<p><strong>Paid Teams:</strong> ${roundData.teams.filter(t => t.paymentStatus === 'paid').length}</p>
-<p><strong>Qualified Teams:</strong> ${roundData.teams.filter(t => t.status === 'qualified').length}</p>
-<p><strong>Total Revenue:</strong> ₹${(roundData.teams.filter(t => t.paymentStatus === 'paid').length * config.entryFee).toLocaleString()}</p>
-</div>
-
-<div class="modal-buttons">
-<button class="btn btn-secondary close-modal">Close</button>
-</div>
-`;
-
-document.getElementById('round-modal').classList.add('active');
-}
-
-async function exportToExcel(roundKey) {
-const roundData = tournamentBrackets.rounds[roundKey];
-const config = ROUND_CONFIG[roundKey];
-
-try {
-// Prepare data for export
-const exportData = [];
-
-for (const team of roundData.teams) {
-// Load full team details
-const sessionData = getSessionData();
-try {
-const response = await fetch(`${API_BASE_URL}/api/teams/${team.teamId}`, {
-headers: { 'Authorization': `Bearer ${sessionData.token}` }
-});
-
-if (response.ok) {
-const fullTeamData = await response.json();
-const teamData = fullTeamData.data;
-
-if (teamData.players && teamData.players.length > 0) {
-teamData.players.forEach((player, index) => {
-exportData.push({
-'Team Name': team.teamName,
-'Team ID': team.teamId,
-'Team Status': team.status,
-'Payment Status': team.paymentStatus,
-'Score': team.score || 0,
-'Position': team.position || '',
-'Entry Fee': config.entryFee,
-'Player Name': player.name,
-'Player Email': player.email || '',
-'In-Game ID': player.inGameId || '',
-'Is Captain': player.isCaptain ? 'Yes' : 'No',
-'Round': config.name
-});
-});
-} else {
-exportData.push({
-'Team Name': team.teamName,
-'Team ID': team.teamId,
-'Team Status': team.status,
-'Payment Status': team.paymentStatus,
-'Score': team.score || 0,
-'Position': team.position || '',
-'Entry Fee': config.entryFee,
-'Player Name': 'No players data',
-'Player Email': '',
-'In-Game ID': '',
-'Is Captain': '',
-'Round': config.name
-});
-}
-} else {
-exportData.push({
-'Team Name': team.teamName,
-'Team ID': team.teamId,
-'Team Status': team.status,
-'Payment Status': team.paymentStatus,
-'Score': team.score || 0,
-'Position': team.position || '',
-'Entry Fee': config.entryFee,
-'Player Name': 'Data not available',
-'Player Email': '',
-'In-Game ID': '',
-'Is Captain': '',
-'Round': config.name
-});
-}
-} catch (error) {
-console.error('Error loading team details for export:', error);
-exportData.push({
-'Team Name': team.teamName,
-'Team ID': team.teamId,
-'Team Status': team.status,
-'Payment Status': team.paymentStatus,
-'Score': team.score || 0,
-'Position': team.position || '',
-'Entry Fee': config.entryFee,
-'Player Name': 'Error loading data',
-'Player Email': '',
-'In-Game ID': '',
-'Is Captain': '',
-'Round': config.name
-});
-}
-}
-
-// Convert to CSV format
-const csvContent = convertToCSV(exportData);
-downloadFile(csvContent, `${currentTournament.title}_${config.name}_Teams.csv`, 'text/csv');
-
-document.getElementById('round-modal').classList.remove('active');
-alert('Excel file downloaded successfully!');
-
-} catch (error) {
-console.error('Export error:', error);
-alert('Failed to export data. Please try again.');
-}
-}
-
-async function exportToPDF(roundKey) {
-const roundData = tournamentBrackets.rounds[roundKey];
-const config = ROUND_CONFIG[roundKey];
-
-try {
-// Create HTML content for PDF
-let htmlContent = `
-<html>
-<head>
-<title>${currentTournament.title} - ${config.name}</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.header { text-align: center; margin-bottom: 30px; }
-.tournament-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
-.round-title { font-size: 18px; color: #666; }
-.summary { background: #f5f5f5; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
-.team-section { margin-bottom: 30px; page-break-inside: avoid; }
-.team-header { background: #333; color: white; padding: 10px; font-weight: bold; }
-.team-info { padding: 10px; border: 1px solid #ddd; }
-.players-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-.players-table th, .players-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-.players-table th { background: #f5f5f5; }
-.status-paid { color: green; font-weight: bold; }
-.status-pending { color: orange; font-weight: bold; }
-.status-qualified { color: blue; font-weight: bold; }
-</style>
-</head>
-<body>
-<div class="header">
-<div class="tournament-title">${currentTournament.title}</div>
-<div class="round-title">${config.name} - Teams Report</div>
-<div style="font-size: 14px; color: #666; margin-top: 10px;">
-Generated on ${new Date().toLocaleDateString('en-IN')}
-</div>
-</div>
-
-<div class="summary">
-<h3>Summary</h3>
-<p><strong>Total Teams:</strong> ${roundData.teams.length}</p>
-<p><strong>Paid Teams:</strong> ${roundData.teams.filter(t => t.paymentStatus === 'paid').length}</p>
-<p><strong>Qualified Teams:</strong> ${roundData.teams.filter(t => t.status === 'qualified').length}</p>
-<p><strong>Entry Fee:</strong> ₹${config.entryFee} per team</p>
-<p><strong>Total Revenue:</strong> ₹${(roundData.teams.filter(t => t.paymentStatus === 'paid').length * config.entryFee).toLocaleString()}</p>
-</div>
-`;
-
-// Add team details
-for (const team of roundData.teams) {
-htmlContent += `
-<div class="team-section">
-<div class="team-header">${team.teamName}</div>
-<div class="team-info">
-<p><strong>Status:</strong> <span class="status-${team.status}">${team.status}</span></p>
-<p><strong>Payment:</strong> <span class="status-${team.paymentStatus}">${team.paymentStatus}</span></p>
-<p><strong>Score:</strong> ${team.score || 0}</p>
-${team.position ? `<p><strong>Position:</strong> #${team.position}</p>` : ''}
-<p><strong>Team ID:</strong> ${team.teamId}</p>
-`;
-
-// Try to load player details
-const sessionData = getSessionData();
-try {
-const response = await fetch(`${API_BASE_URL}/api/teams/${team.teamId}`, {
-headers: { 'Authorization': `Bearer ${sessionData.token}` }
-});
-
-if (response.ok) {
-const fullTeamData = await response.json();
-const teamData = fullTeamData.data;
-
-if (teamData.players && teamData.players.length > 0) {
-htmlContent += `
-<table class="players-table">
-<thead>
-<tr>
-<th>Player Name</th>
-<th>In-Game ID</th>
-<th>Email</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-`;
-teamData.players.forEach(player => {
-htmlContent += `
-<tr>
-<td>${player.name}</td>
-<td>${player.inGameId || 'N/A'}</td>
-<td>${player.email || 'N/A'}</td>
-<td>${player.isCaptain ? 'Captain' : 'Player'}</td>
-</tr>
-`;
-});
-htmlContent += `</tbody></table>`;
-} else {
-htmlContent += `<p><em>No player data available</em></p>`;
-}
-} else {
-htmlContent += `<p><em>Unable to load player data</em></p>`;
-}
-} catch (error) {
-htmlContent += `<p><em>Error loading player data</em></p>`;
-}
-
-htmlContent += `</div></div>`;
-}
-
-htmlContent += `</body></html>`;
-
-// Create and download PDF (using browser's print functionality)
-const printWindow = window.open('', '_blank');
-printWindow.document.write(htmlContent);
-printWindow.document.close();
-printWindow.focus();
-printWindow.print();
-
-document.getElementById('round-modal').classList.remove('active');
-alert('PDF export initiated. Please use your browser\'s print dialog to save as PDF.');
-
-} catch (error) {
-console.error('PDF export error:', error);
-alert('Failed to export PDF. Please try again.');
-}
-}
-
-// Utility functions for export
-function convertToCSV(data) {
-if (data.length === 0) return '';
-
-const headers = Object.keys(data[0]);
-const csvRows = [];
-
-// Add headers
-csvRows.push(headers.join(','));
-
-// Add data rows
-for (const row of data) {
-const values = headers.map(header => {
-const value = row[header];
-// Escape commas and quotes in CSV
-return typeof value === 'string' && (value.includes(',') || value.includes('"')) 
-? `"${value.replace(/"/g, '""')}"` 
-: value;
-});
-csvRows.push(values.join(','));
-}
-
-return csvRows.join('\n');
-}
-
-function downloadFile(content, filename, contentType) {
-const blob = new Blob([content], { type: contentType });
-const url = window.URL.createObjectURL(blob);
-const link = document.createElement('a');
-link.href = url;
-link.download = filename;
-document.body.appendChild(link);
-link.click();
-document.body.removeChild(link);
-window.URL.revokeObjectURL(url);
-}
-
-// --- EVENT LISTENERS ---
-document.addEventListener('DOMContentLoaded', () => {
-const sessionData = getSessionData();
-if (!sessionData || !sessionData.token) {
-window.location.href = 'auth.html';
-return;
-}
-
-if (sessionData.user) {
-document.getElementById('admin-username').textContent = sessionData.user.username;
-}
-
-loadTournamentBrackets();
-
-// Modal close listeners
-document.querySelectorAll('.close-modal, .modal').forEach(el => {
-el.addEventListener('click', (e) => {
-if (e.target === el) {
-el.closest('.modal')?.classList.remove('active');
-}
-});
-});
-});
-</script>
+    <div class="container">
+        <a href="javascript:history.back()" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Back to Admin Dashboard
+        </a>
+
+        <div class="header">
+            <h1 class="tournament-title" id="tournament-title">Loading Tournament...</h1>
+            <div class="tournament-info" id="tournament-info">
+                <!-- Tournament info will be loaded here -->
+            </div>
+        </div>
+
+        <div class="format-info" id="format-info" style="display: none;">
+            <!-- Format information will be loaded here -->
+        </div>
+
+        <div class="tournament-stats" id="tournament-stats" style="display: none;">
+            <!-- Tournament statistics will be loaded here -->
+        </div>
+
+        <div class="brackets-container" id="brackets-container">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading tournament brackets...</p>
+            </div>
+        </div>
+
+        <div class="download-section" id="download-section" style="display: none;">
+            <h3><i class="fas fa-download"></i> Download Tournament Brackets</h3>
+            <p>Generate a comprehensive PDF with all match details, schedules, and bracket information.</p>
+            <button class="download-btn" id="download-pdf-btn" onclick="downloadBracketsPDF()">
+                <i class="fas fa-file-pdf"></i>
+                Download Brackets PDF
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://t2-237c.onrender.com';
+        let tournamentData = null;
+        let matchesData = [];
+
+        // Get tournament slug from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const tournamentSlug = urlParams.get('slug');
+
+        if (!tournamentSlug) {
+            document.getElementById('brackets-container').innerHTML = `
+                <div class="no-brackets">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem; color: #ffc107;"></i>
+                    <h3>No Tournament Specified</h3>
+                    <p>Please select a tournament from the admin dashboard.</p>
+                </div>
+            `;
+        } else {
+            loadTournamentBrackets();
+        }
+
+        async function loadTournamentBrackets() {
+            try {
+                // Load tournament data
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${tournamentSlug}`);
+                if (!response.ok) {
+                    throw new Error('Tournament not found');
+                }
+
+                tournamentData = await response.json();
+
+                // Update page title and info
+                document.getElementById('tournament-title').textContent = tournamentData.title;
+                document.title = `${tournamentData.title} - Brackets | GamingNexus`;
+
+                // Display tournament info
+                displayTournamentInfo();
+
+                // Display brackets based on format
+                displayBrackets();
+
+            } catch (error) {
+                console.error('Error loading tournament:', error);
+                document.getElementById('brackets-container').innerHTML = `
+                    <div class="no-brackets">
+                        <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 1rem; color: #dc3545;"></i>
+                        <h3>Error Loading Tournament</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function displayTournamentInfo() {
+            const participants = tournamentData.participants || [];
+            const status = tournamentData.status || 'unknown';
+
+            // Create status badge
+            const statusBadge = `<span class="status-badge status-${status.replace('_', '-')}">${status.replace('_', ' ')}</span>`;
+
+            const infoHtml = `
+                <div class="info-item">
+                    <strong>Format:</strong> ${tournamentData.format || 'Single Elimination'}
+                </div>
+                <div class="info-item">
+                    <strong>Teams:</strong> ${participants.length}/${tournamentData.maxTeams || 'Unlimited'}
+                </div>
+                <div class="info-item">
+                    <strong>Status:</strong> ${statusBadge}
+                </div>
+                <div class="info-item">
+                    <strong>Game:</strong> ${tournamentData.game || 'Not specified'}
+                </div>
+            `;
+            document.getElementById('tournament-info').innerHTML = infoHtml;
+
+            // Display tournament statistics
+            displayTournamentStats();
+
+            // Show format information
+            const formatInfo = document.getElementById('format-info');
+            const format = tournamentData.format || 'single_elimination';
+            let formatDescription = '';
+
+            switch (format.toLowerCase()) {
+                case 'single_elimination':
+                    formatDescription = 'Single Elimination: Teams are eliminated after one loss. Winner advances through each round until the final.';
+                    break;
+                case 'double_elimination':
+                    formatDescription = 'Double Elimination: Teams must lose twice to be eliminated. Includes winners and losers brackets.';
+                    break;
+                case 'round_robin':
+                    formatDescription = 'Round Robin: Every team plays every other team. Winner determined by overall record.';
+                    break;
+                case 'swiss':
+                    formatDescription = 'Swiss System: Teams play a set number of rounds, matched against opponents with similar records.';
+                    break;
+                default:
+                    formatDescription = `Tournament Format: ${format}`;
+            }
+
+            formatInfo.innerHTML = `
+                <h3><i class="fas fa-info-circle"></i> Tournament Format</h3>
+                <p>${formatDescription}</p>
+            `;
+            formatInfo.style.display = 'block';
+
+            // Show download section if registration is closed
+            const downloadSection = document.getElementById('download-section');
+            const downloadBtn = document.getElementById('download-pdf-btn');
+
+            if (status === 'registration_closed' || status === 'active' || status === 'completed') {
+                downloadSection.style.display = 'block';
+                downloadBtn.disabled = false;
+            } else {
+                downloadSection.style.display = 'block';
+                downloadBtn.disabled = true;
+                downloadBtn.innerHTML = '<i class="fas fa-lock"></i> Available after registration closes';
+            }
+        }
+
+        function displayTournamentStats() {
+            const participants = tournamentData.participants || [];
+            const format = (tournamentData.format || 'single_elimination').toLowerCase();
+
+            let totalMatches = 0;
+            let rounds = 0;
+
+            switch (format) {
+                case 'single_elimination':
+                    totalMatches = Math.max(0, participants.length - 1);
+                    rounds = Math.ceil(Math.log2(participants.length));
+                    break;
+                case 'double_elimination':
+                    totalMatches = Math.max(0, (participants.length * 2) - 2);
+                    rounds = Math.ceil(Math.log2(participants.length)) + 1;
+                    break;
+                case 'round_robin':
+                    totalMatches = (participants.length * (participants.length - 1)) / 2;
+                    rounds = participants.length - 1;
+                    break;
+                case 'swiss':
+                    rounds = Math.ceil(Math.log2(participants.length));
+                    totalMatches = (participants.length / 2) * rounds;
+                    break;
+            }
+
+            const statsHtml = `
+                <div class="stat-card">
+                    <span class="stat-number">${participants.length}</span>
+                    <div class="stat-label">Registered Teams</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">${totalMatches}</span>
+                    <div class="stat-label">Total Matches</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">${rounds}</span>
+                    <div class="stat-label">Tournament Rounds</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">${tournamentData.entryFee || 0}</span>
+                    <div class="stat-label">Entry Fee (₹)</div>
+                </div>
+            `;
+
+            document.getElementById('tournament-stats').innerHTML = statsHtml;
+            document.getElementById('tournament-stats').style.display = 'grid';
+        }
+
+        function displayBrackets() {
+            const participants = tournamentData.participants || [];
+            const container = document.getElementById('brackets-container');
+
+            if (participants.length === 0) {
+                container.innerHTML = `
+                    <div class="no-brackets">
+                        <i class="fas fa-users-slash" style="font-size: 3rem; margin-bottom: 1rem; color: #6c757d;"></i>
+                        <h3>No Teams Registered</h3>
+                        <p>Brackets will be generated once teams register for this tournament.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const format = (tournamentData.format || 'single_elimination').toLowerCase();
+
+            switch (format) {
+                case 'single_elimination':
+                    displaySingleEliminationBrackets(participants, container);
+                    break;
+                case 'double_elimination':
+                    displayDoubleEliminationBrackets(participants, container);
+                    break;
+                case 'round_robin':
+                    displayRoundRobinBrackets(participants, container);
+                    break;
+                case 'swiss':
+                    displaySwissBrackets(participants, container);
+                    break;
+                default:
+                    displayParticipantsList(participants, container);
+            }
+        }
+
+        function displaySingleEliminationBrackets(participants, container) {
+            const numTeams = participants.length;
+            const numRounds = Math.ceil(Math.log2(numTeams));
+
+            // Generate matches data for all rounds
+            matchesData = generateSingleEliminationMatches(participants, numRounds);
+
+            let html = `<h3>Single Elimination Tournament Structure</h3>`;
+
+            // Visual bracket overview
+            html += '<div class="rounds-container">';
+            for (let round = 1; round <= numRounds; round++) {
+                const matchesInRound = Math.pow(2, numRounds - round);
+                html += `<div class="bracket-round">`;
+                html += `<div class="round-title">`;
+
+                if (round === numRounds) {
+                    html += 'Final';
+                } else if (round === numRounds - 1) {
+                    html += 'Semi-Final';
+                } else if (round === numRounds - 2) {
+                    html += 'Quarter-Final';
+                } else {
+                    html += `Round ${round}`;
+                }
+
+                html += `</div>`;
+
+                for (let match = 0; match < matchesInRound; match++) {
+                    const matchData = matchesData.find(m => m.round === round && m.matchInRound === match + 1);
+                    html += `<div class="bracket-match">`;
+
+                    if (matchData) {
+                        html += `<div class="match-teams">`;
+                        html += `<div class="team">
+                            <span class="team-name">${matchData.team1 || 'TBD'}</span>
+                            ${matchData.team1 ? `<span class="seed-number">#${matchData.seed1}</span>` : ''}
+                        </div>`;
+                        html += `<div class="team">
+                            <span class="team-name">${matchData.team2 || 'TBD'}</span>
+                            ${matchData.team2 ? `<span class="seed-number">#${matchData.seed2}</span>` : ''}
+                        </div>`;
+                        html += `</div>`;
+                        html += `<div class="match-status">${matchData.status}</div>`;
+                    }
+
+                    html += `</div>`;
+                }
+
+                html += `</div>`;
+            }
+            html += '</div>';
+
+            // Detailed match tables for each round
+            html += '<div class="matches-section">';
+            html += '<h3>Detailed Match Schedule</h3>';
+
+            for (let round = 1; round <= numRounds; round++) {
+                const roundMatches = matchesData.filter(m => m.round === round);
+                if (roundMatches.length === 0) continue;
+
+                html += `<div class="round-section">`;
+                html += `<div class="round-header">`;
+
+                if (round === numRounds) {
+                    html += `<i class="fas fa-trophy"></i> Final Match`;
+                } else if (round === numRounds - 1) {
+                    html += `<i class="fas fa-medal"></i> Semi-Final Matches`;
+                } else if (round === numRounds - 2) {
+                    html += `<i class="fas fa-star"></i> Quarter-Final Matches`;
+                } else {
+                    html += `<i class="fas fa-play"></i> Round ${round} Matches`;
+                }
+
+                html += `</div>`;
+
+                html += `<table class="match-table">`;
+                html += `<thead>
+                    <tr>
+                        <th>Match #</th>
+                        <th>Team 1</th>
+                        <th>vs</th>
+                        <th>Team 2</th>
+                        <th>Scheduled Time</th>
+                        <th>Status</th>
+                        <th>Winner Advances To</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+                roundMatches.forEach(match => {
+                    html += `<tr>
+                        <td><span class="match-number">M${match.matchId}</span></td>
+                        <td>${match.team1 || 'TBD'} ${match.team1 ? `<span class="seed-number">#${match.seed1}</span>` : ''}</td>
+                        <td><span class="vs-separator">VS</span></td>
+                        <td>${match.team2 || 'TBD'} ${match.team2 ? `<span class="seed-number">#${match.seed2}</span>` : ''}</td>
+                        <td>${match.scheduledTime || 'TBD'}</td>
+                        <td>${match.status}</td>
+                        <td>${match.winnerAdvancesTo || 'Tournament Winner'}</td>
+                    </tr>`;
+                });
+
+                html += `</tbody></table>`;
+                html += `</div>`;
+            }
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function generateSingleEliminationMatches(participants, numRounds) {
+            const matches = [];
+            let matchId = 1;
+
+            for (let round = 1; round <= numRounds; round++) {
+                const matchesInRound = Math.pow(2, numRounds - round);
+
+                for (let matchInRound = 1; matchInRound <= matchesInRound; matchInRound++) {
+                    let team1 = null, team2 = null, seed1 = null, seed2 = null;
+                    let status = 'Scheduled';
+                    let winnerAdvancesTo = '';
+
+                    if (round === 1) {
+                        // First round - assign actual teams
+                        const team1Index = (matchInRound - 1) * 2;
+                        const team2Index = (matchInRound - 1) * 2 + 1;
+
+                        if (participants[team1Index]) {
+                            team1 = participants[team1Index].teamName;
+                            seed1 = team1Index + 1;
+                        }
+                        if (participants[team2Index]) {
+                            team2 = participants[team2Index].teamName;
+                            seed2 = team2Index + 1;
+                        }
+
+                        if (!team1 && !team2) {
+                            status = 'No Teams';
+                        } else if (!team1 || !team2) {
+                            status = 'Bye';
+                        }
+                    } else {
+                        status = 'Awaiting Previous Round';
+                    }
+
+                    // Determine where winner advances
+                    if (round === numRounds) {
+                        winnerAdvancesTo = 'Tournament Champion';
+                    } else if (round === numRounds - 1) {
+                        winnerAdvancesTo = 'Final';
+                    } else if (round === numRounds - 2) {
+                        winnerAdvancesTo = 'Semi-Final';
+                    } else {
+                        winnerAdvancesTo = `Round ${round + 1}`;
+                    }
+
+                    matches.push({
+                        matchId: matchId++,
+                        round: round,
+                        matchInRound: matchInRound,
+                        team1: team1,
+                        team2: team2,
+                        seed1: seed1,
+                        seed2: seed2,
+                        status: status,
+                        scheduledTime: 'TBD',
+                        winnerAdvancesTo: winnerAdvancesTo
+                    });
+                }
+            }
+
+            return matches;
+        }
+
+        function displayDoubleEliminationBrackets(participants, container) {
+            container.innerHTML = `
+                <div class="no-brackets">
+                    <i class="fas fa-construction" style="font-size: 3rem; margin-bottom: 1rem; color: #ffc107;"></i>
+                    <h3>Double Elimination Brackets</h3>
+                    <p>Double elimination bracket view is under development.</p>
+                    <div style="margin-top: 2rem;">
+                        <h4>Registered Teams (${participants.length}):</h4>
+                        <div class="participants-grid">
+                            ${participants.map((p, i) => `
+                                <div class="participant-card">
+                                    <h4>${p.teamName}</h4>
+                                    <p><strong>Captain:</strong> ${p.captainEmail}</p>
+                                    <p><strong>Players:</strong> ${p.players ? p.players.length : 0}</p>
+                                    <span class="seed-number">Seed #${i + 1}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayRoundRobinBrackets(participants, container) {
+            container.innerHTML = `
+                <div class="no-brackets">
+                    <i class="fas fa-table" style="font-size: 3rem; margin-bottom: 1rem; color: #17a2b8;"></i>
+                    <h3>Round Robin Format</h3>
+                    <p>In round robin, every team plays every other team once.</p>
+                    <p><strong>Total matches needed:</strong> ${(participants.length * (participants.length - 1)) / 2}</p>
+                    <div style="margin-top: 2rem;">
+                        <h4>Registered Teams (${participants.length}):</h4>
+                        <div class="participants-grid">
+                            ${participants.map((p, i) => `
+                                <div class="participant-card">
+                                    <h4>${p.teamName}</h4>
+                                    <p><strong>Captain:</strong> ${p.captainEmail}</p>
+                                    <p><strong>Players:</strong> ${p.players ? p.players.length : 0}</p>
+                                    <span class="seed-number">Team #${i + 1}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displaySwissBrackets(participants, container) {
+            container.innerHTML = `
+                <div class="no-brackets">
+                    <i class="fas fa-chess" style="font-size: 3rem; margin-bottom: 1rem; color: #6f42c1;"></i>
+                    <h3>Swiss System Format</h3>
+                    <p>Teams are paired based on their current standings each round.</p>
+                    <div style="margin-top: 2rem;">
+                        <h4>Registered Teams (${participants.length}):</h4>
+                        <div class="participants-grid">
+                            ${participants.map((p, i) => `
+                                <div class="participant-card">
+                                    <h4>${p.teamName}</h4>
+                                    <p><strong>Captain:</strong> ${p.captainEmail}</p>
+                                    <p><strong>Players:</strong> ${p.players ? p.players.length : 0}</p>
+                                    <span class="seed-number">Team #${i + 1}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayParticipantsList(participants, container) {
+            container.innerHTML = `
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <h3>Tournament Participants</h3>
+                    <p>Bracket structure will be determined based on tournament format.</p>
+                </div>
+                <div class="participants-grid">
+                    ${participants.map((p, i) => `
+                        <div class="participant-card">
+                            <h4>${p.teamName}</h4>
+                            <p><strong>Captain:</strong> ${p.captainEmail}</p>
+                            <p><strong>Players:</strong> ${p.players ? p.players.length : 0}</p>
+                            <p><strong>Registration:</strong> ${new Date(p.registrationDate).toLocaleDateString()}</p>
+                            <p><strong>Payment:</strong> ${p.paymentStatus || 'Pending'}</p>
+                            <span class="seed-number">Team #${i + 1}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function downloadBracketsPDF() {
+            if (!tournamentData || !matchesData.length) {
+                alert('No tournament data available for download.');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Page 1: Tournament Overview
+            doc.setFontSize(20);
+            doc.setTextColor(15, 133, 211);
+            doc.text(tournamentData.title, 20, 30);
+
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Tournament Brackets & Match Schedule`, 20, 45);
+            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 55);
+
+            // Tournament Information
+            doc.setFontSize(14);
+            doc.text('Tournament Information', 20, 75);
+            doc.setFontSize(10);
+
+            const participants = tournamentData.participants || [];
+            const infoText = [
+                `Format: ${tournamentData.format || 'Single Elimination'}`,
+                `Game: ${tournamentData.game || 'Not specified'}`,
+                `Teams Registered: ${participants.length}`,
+                `Maximum Teams: ${tournamentData.maxTeams || 'Unlimited'}`,
+                `Entry Fee: ₹${tournamentData.entryFee || 0}`,
+                `Prize Pool: ₹${tournamentData.prizePool || 0}`,
+                `Status: ${tournamentData.status || 'Unknown'}`,
+                `Registration Start: ${tournamentData.registrationStart ? new Date(tournamentData.registrationStart).toLocaleDateString() : 'TBD'}`,
+                `Registration End: ${tournamentData.registrationEnd ? new Date(tournamentData.registrationEnd).toLocaleDateString() : 'TBD'}`,
+                `Tournament Start: ${tournamentData.tournamentStart ? new Date(tournamentData.tournamentStart).toLocaleDateString() : 'TBD'}`,
+                `Tournament End: ${tournamentData.tournamentEnd ? new Date(tournamentData.tournamentEnd).toLocaleDateString() : 'TBD'}`
+            ];
+
+            let yPos = 85;
+            infoText.forEach(text => {
+                doc.text(text, 20, yPos);
+                yPos += 8;
+            });
+
+            // Registered Teams
+            if (participants.length > 0) {
+                doc.setFontSize(14);
+                doc.text('Registered Teams', 20, yPos + 10);
+                yPos += 20;
+
+                const teamData = participants.map((p, index) => [
+                    `#${index + 1}`,
+                    p.teamName,
+                    p.captainEmail,
+                    p.players ? p.players.length : 0,
+                    p.paymentStatus || 'Pending'
+                ]);
+
+                doc.autoTable({
+                    head: [['Seed', 'Team Name', 'Captain Email', 'Players', 'Payment Status']],
+                    body: teamData,
+                    startY: yPos,
+                    styles: { fontSize: 8 },
+                    headStyles: { fillColor: [15, 133, 211] }
+                });
+            }
+
+            // Page 2+: Match Details by Round
+            const numRounds = Math.ceil(Math.log2(participants.length));
+
+            for (let round = 1; round <= numRounds; round++) {
+                doc.addPage();
+
+                // Round header
+                doc.setFontSize(18);
+                doc.setTextColor(15, 133, 211);
+                let roundTitle = '';
+                if (round === numRounds) {
+                    roundTitle = 'Final Match';
+                } else if (round === numRounds - 1) {
+                    roundTitle = 'Semi-Final Matches';
+                } else if (round === numRounds - 2) {
+                    roundTitle = 'Quarter-Final Matches';
+                } else {
+                    roundTitle = `Round ${round} Matches`;
+                }
+
+                doc.text(roundTitle, 20, 30);
+
+                // Round matches table
+                const roundMatches = matchesData.filter(m => m.round === round);
+                if (roundMatches.length > 0) {
+                    const matchTableData = roundMatches.map(match => [
+                        `M${match.matchId}`,
+                        match.team1 || 'TBD',
+                        match.team2 || 'TBD',
+                        match.scheduledTime || 'TBD',
+                        match.status,
+                        match.winnerAdvancesTo || 'Tournament Winner'
+                    ]);
+
+                    doc.autoTable({
+                        head: [['Match #', 'Team 1', 'Team 2', 'Scheduled Time', 'Status', 'Winner Advances To']],
+                        body: matchTableData,
+                        startY: 50,
+                        styles: { fontSize: 10 },
+                        headStyles: { fillColor: [15, 133, 211] },
+                        columnStyles: {
+                            0: { cellWidth: 20 },
+                            1: { cellWidth: 35 },
+                            2: { cellWidth: 35 },
+                            3: { cellWidth: 30 },
+                            4: { cellWidth: 25 },
+                            5: { cellWidth: 35 }
+                        }
+                    });
+
+                    // Add match details section
+                    let detailsY = doc.lastAutoTable.finalY + 20;
+                    doc.setFontSize(12);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text('Match Details & Notes:', 20, detailsY);
+
+                    detailsY += 15;
+                    doc.setFontSize(10);
+                    roundMatches.forEach(match => {
+                        doc.text(`Match ${match.matchId}: ${match.team1 || 'TBD'} vs ${match.team2 || 'TBD'}`, 25, detailsY);
+                        detailsY += 8;
+                        doc.text(`  • Status: ${match.status}`, 30, detailsY);
+                        detailsY += 8;
+                        doc.text(`  • Winner advances to: ${match.winnerAdvancesTo}`, 30, detailsY);
+                        detailsY += 8;
+                        doc.text(`  • Scheduled: ${match.scheduledTime || 'Time TBD'}`, 30, detailsY);
+                        detailsY += 15;
+
+                        if (detailsY > 250) {
+                            doc.addPage();
+                            detailsY = 30;
+                        }
+                    });
+                }
+            }
+
+            // Final page: Tournament Rules & Notes
+            doc.addPage();
+            doc.setFontSize(16);
+            doc.setTextColor(15, 133, 211);
+            doc.text('Tournament Rules & Information', 20, 30);
+
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            const rulesText = [
+                '• All matches must be played according to the scheduled time',
+                '• Teams must report match results to tournament organizers',
+                '• No-shows will result in automatic forfeit',
+                '• Disputes must be reported within 30 minutes of match completion',
+                '• Tournament organizers reserve the right to modify schedule if needed',
+                '• All participants must follow the game\'s terms of service',
+                '• Prize distribution will occur after tournament completion',
+                '',
+                'Contact Information:',
+                `• Tournament: ${tournamentData.title}`,
+                `• Format: ${tournamentData.format || 'Single Elimination'}`,
+                `• Total Prize Pool: ₹${tournamentData.prizePool || 0}`,
+                '',
+                'For support or questions, contact the tournament organizers.',
+                '',
+                `Document generated on: ${new Date().toLocaleString()}`
+            ];
+
+            let rulesY = 50;
+            rulesText.forEach(text => {
+                doc.text(text, 20, rulesY);
+                rulesY += 8;
+            });
+
+            // Save the PDF
+            const fileName = `${tournamentData.slug || 'tournament'}-brackets-${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(fileName);
+        }
+    </script>
 </body>
+
 </html>
