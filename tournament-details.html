@@ -530,14 +530,14 @@
     }
 
     /* Additional specificity for mobile host button */
-    #mobile-nav .guest-view a[href="user-dashboard.html"] {
+    #mobile-nav .guest-view a[href="userdashboard.html"] {
       background: #ffffff !important;
       background-color: #ffffff !important;
       background-image: none !important;
       color: #000000 !important;
     }
 
-    #mobile-nav .guest-view a[href="user-dashboard.html"]:hover {
+    #mobile-nav .guest-view a[href="userdashboard.html"]:hover {
       opacity: 0.8 !important;
       filter: brightness(0.9) !important;
     }
@@ -1476,7 +1476,7 @@
         <nav class="primary" role="navigation" aria-label="Primary">
           <div class="nav-links" role="menubar">
             <a href="tournaments.html" role="menuitem">Browse Tournaments</a>
-            <a href="user-dashboard.html" role="menuitem">My Tournaments</a>
+            <a href="userdashboard.html" role="menuitem">My Tournaments</a>
             <a href="index.html#leaderboards" role="menuitem">Leaderboards</a>
           </div>
         </nav>
@@ -1498,7 +1498,7 @@
                   </div>
                 </div>
                 <div class="profile-actions">
-                  <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
+                  <a href="userdashboard.html" class="profile-action" id="modal-dashboard-link">
                     <i class="fas fa-user"></i>
                     <span>My Account</span>
                   </a>
@@ -1815,10 +1815,10 @@
             </div>
           </div>
           <div class="profile-actions">
-            <a href="user-dashboard.html" class="profile-action">
+            <a href="userdashboard.html" class="profile-action">
               <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
             </a>
-            <a href="user-dashboard.html" class="profile-action">
+            <a href="userdashboard.html" class="profile-action">
               <i class="fas fa-trophy"></i> <span>My Tournaments</span>
             </a>
           </div>
@@ -1827,7 +1827,7 @@
         // Bottom actions for logged-in users
         bottomActionsHTML = `
           <div class="mobile-nav-bottom-actions">
-            <a href="user-dashboard.html" class="mobile-host-btn">
+            <a href="userdashboard.html" class="mobile-host-btn">
               <i class="fas fa-plus-circle"></i> Host
             </a>
             <button class="mobile-logout-btn" onclick="logout()">
@@ -1847,7 +1847,7 @@
         // Bottom actions for guests
         bottomActionsHTML = `
           <div class="mobile-nav-bottom-actions">
-            <a href="user-dashboard.html" class="mobile-host-btn">
+            <a href="userdashboard.html" class="mobile-host-btn">
               <i class="fas fa-plus-circle"></i> Host
             </a>
             <button class="mobile-join-btn" onclick="redirectToAuth()">Join Us</button>
