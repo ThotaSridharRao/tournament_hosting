@@ -784,10 +784,19 @@
           };
           localStorage.setItem('nexus_session', JSON.stringify(session));
           showSuccess('Login successful! Redirecting...');
-          // Check for return URL in query parameters
+          // Check for return URL in query parameters, but prioritize admin redirect
           const urlParams = new URLSearchParams(window.location.search);
           const returnUrl = urlParams.get('returnUrl');
-          const redirectUrl = returnUrl ? decodeURIComponent(returnUrl) : (result.redirect_path || 'index.html');
+          
+          // If user is admin, always redirect to admin dashboard regardless of returnUrl
+          let redirectUrl;
+          if (result.data.user.role === 'admin') {
+            redirectUrl = result.redirect_path || 'admin-dashboard.html';
+          } else {
+            redirectUrl = returnUrl ? decodeURIComponent(returnUrl) : (result.redirect_path || 'index.html');
+          }
+          
+          console.log('DEBUG: Final redirect URL:', redirectUrl);
           setTimeout(() => { window.location.href = redirectUrl; }, 1500);
         } else {
           showError(result.message || 'Login failed. Please check your credentials.');
