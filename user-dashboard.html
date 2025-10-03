@@ -2757,6 +2757,94 @@
             }
         }
 
+        // RateLimitHandler with exponential backoff and jitter
+        class RateLimitHandler {
+            constructor() {
+                this.retryDelays = [1000, 2000, 4000, 8000]; // Exponential backoff in ms
+                this.jitterFactor = 0.1; // 10% jitter
+                this.maxRetries = 3;
+            }
+
+            async handleRequest(requestFn, context = 'API request') {
+                let lastError;
+
+                for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
+                    try {
+                        const result = await requestFn();
+
+                        if (attempt > 0) {
+                            logWarning('RATE_LIMIT_RECOVERY', `${context} succeeded after ${attempt} retries`);
+                        }
+
+                        return result;
+                    } catch (error) {
+                        lastError = error;
+
+                        // Don't retry authentication errors
+                        if (error.message.includes('Authentication') ||
+                            error.message.includes('401') ||
+                            error.message.includes('403')) {
+                            throw error;
+                        }
+
+                        // Check if this is a rate limiting error
+                        const isRateLimited = error.isRateLimited ||
+                            error.message.includes('429') ||
+                            error.message.includes('Too Many Requests');
+
+                        if (attempt === this.maxRetries) {
+                            logError('RATE_LIMIT_EXHAUSTED', `${context} failed after ${this.maxRetries} retries`, {
+                                error: error.message,
+                                attempts: attempt + 1,
+                                isRateLimited
+                            });
+                            throw error;
+                        }
+
+                        // Calculate delay - use Retry-After header if available for rate limiting
+                        let delay;
+                        if (isRateLimited && error.retryAfter) {
+                            const retryAfterMs = parseInt(error.retryAfter, 10) * 1000;
+                            delay = Math.min(retryAfterMs, 30000); // Cap at 30 seconds
+                        } else {
+                            const baseDelay = this.retryDelays[Math.min(attempt, this.retryDelays.length - 1)];
+                            delay = this.calculateDelay(attempt, baseDelay);
+                        }
+
+                        logWarning('RATE_LIMIT_RETRY', `${context} attempt ${attempt + 1} failed, retrying in ${delay}ms`, {
+                            error: error.message,
+                            attempt: attempt + 1,
+                            delay,
+                            isRateLimited
+                        });
+
+                        await this.sleep(delay);
+                    }
+                }
+
+                throw lastError;
+            }
+
+            calculateDelay(attempt, baseDelay) {
+                // Add jitter to prevent thundering herd problem
+                const jitter = Math.random() * this.jitterFactor * baseDelay;
+                return Math.floor(baseDelay + jitter);
+            }
+
+            parseRetryAfter(response) {
+                const retryAfter = response.headers.get('Retry-After');
+                if (retryAfter) {
+                    const seconds = parseInt(retryAfter, 10);
+                    return isNaN(seconds) ? null : seconds * 1000; // Convert to milliseconds
+                }
+                return null;
+            }
+
+            sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
         // =========================
         // API REQUEST MANAGER COORDINATION LAYER
         // =========================
@@ -3367,93 +3455,7 @@
 
 
 
-        // RateLimitHandler with exponential backoff and jitter
-        class RateLimitHandler {
-            constructor() {
-                this.retryDelays = [1000, 2000, 4000, 8000]; // Exponential backoff in ms
-                this.jitterFactor = 0.1; // 10% jitter
-                this.maxRetries = 3;
-            }
 
-            async handleRequest(requestFn, context = 'API request') {
-                let lastError;
-
-                for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
-                    try {
-                        const result = await requestFn();
-
-                        if (attempt > 0) {
-                            logWarning('RATE_LIMIT_RECOVERY', `${context} succeeded after ${attempt} retries`);
-                        }
-
-                        return result;
-                    } catch (error) {
-                        lastError = error;
-
-                        // Don't retry authentication errors
-                        if (error.message.includes('Authentication') ||
-                            error.message.includes('401') ||
-                            error.message.includes('403')) {
-                            throw error;
-                        }
-
-                        // Check if this is a rate limiting error
-                        const isRateLimited = error.isRateLimited ||
-                            error.message.includes('429') ||
-                            error.message.includes('Too Many Requests');
-
-                        if (attempt === this.maxRetries) {
-                            logError('RATE_LIMIT_EXHAUSTED', `${context} failed after ${this.maxRetries} retries`, {
-                                error: error.message,
-                                attempts: attempt + 1,
-                                isRateLimited
-                            });
-                            throw error;
-                        }
-
-                        // Calculate delay - use Retry-After header if available for rate limiting
-                        let delay;
-                        if (isRateLimited && error.retryAfter) {
-                            const retryAfterMs = parseInt(error.retryAfter, 10) * 1000;
-                            delay = Math.min(retryAfterMs, 30000); // Cap at 30 seconds
-                        } else {
-                            const baseDelay = this.retryDelays[Math.min(attempt, this.retryDelays.length - 1)];
-                            delay = this.calculateDelay(attempt, baseDelay);
-                        }
-
-                        logWarning('RATE_LIMIT_RETRY', `${context} attempt ${attempt + 1} failed, retrying in ${delay}ms`, {
-                            error: error.message,
-                            attempt: attempt + 1,
-                            delay,
-                            isRateLimited
-                        });
-
-                        await this.sleep(delay);
-                    }
-                }
-
-                throw lastError;
-            }
-
-            calculateDelay(attempt, baseDelay) {
-                // Add jitter to prevent thundering herd problem
-                const jitter = Math.random() * this.jitterFactor * baseDelay;
-                return Math.floor(baseDelay + jitter);
-            }
-
-            parseRetryAfter(response) {
-                const retryAfter = response.headers.get('Retry-After');
-                if (retryAfter) {
-                    const seconds = parseInt(retryAfter, 10);
-                    return isNaN(seconds) ? null : seconds * 1000; // Convert to milliseconds
-                }
-                return null;
-            }
-
-            sleep(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
-        }
 
 
 
