@@ -2473,6 +2473,18 @@
                 throw new Error(`${context} feature is not available`);
             }
 
+            if (response.status === 429) {
+                const retryAfter = response.headers.get('Retry-After');
+                logError('RATE_LIMIT_ERROR', `${context}: Rate limited`, {
+                    ...responseContext,
+                    retryAfter: retryAfter
+                });
+                const error = new Error(`${context}: Too Many Requests`);
+                error.retryAfter = retryAfter;
+                error.isRateLimited = true;
+                throw error;
+            }
+
             if (response.status === 500) {
                 logError('SERVER_ERROR', `${context}: Server error`, responseContext);
                 throw new Error('Server error - please try again later');
@@ -2537,13 +2549,16 @@
             }
         }
 
-        // Retry mechanism for failed requests
+        // Legacy retry mechanism - DEPRECATED: Use ApiRequestManager instead
         async function retryApiCall(apiCall, maxRetries = 2, delay = 1000) {
+            console.warn('retryApiCall is deprecated. Use apiManager.request() instead for better rate limiting.');
+            
+            // Fallback to old behavior for compatibility
             for (let attempt = 1; attempt <= maxRetries; attempt++) {
                 try {
                     return await apiCall();
                 } catch (error) {
-                    logError('API_RETRY', `Attempt ${attempt} failed`, { error: error.message, attempt, maxRetries });
+                    logError('API_RETRY_LEGACY', `Attempt ${attempt} failed`, { error: error.message, attempt, maxRetries });
 
                     if (attempt === maxRetries) {
                         throw error;
@@ -2554,11 +2569,535 @@
                         throw error;
                     }
 
-                    // Wait before retrying
-                    await new Promise(resolve => setTimeout(resolve, delay * attempt));
+                    // Use exponential backoff for better rate limiting
+                    const backoffDelay = delay * Math.pow(2, attempt - 1);
+                    await new Promise(resolve => setTimeout(resolve, backoffDelay));
                 }
             }
         }
+
+        // =========================
+        // RATE LIMITING INFRASTRUCTURE
+        // =========================
+
+        // RequestCache class with TTL-based expiration
+        class RequestCache {
+            constructor(defaultTTL = 300000) { // 5 minutes default
+                this.cache = new Map();
+                this.defaultTTL = defaultTTL;
+            }
+
+            get(key) {
+                const entry = this.cache.get(key);
+                if (!entry) return null;
+
+                if (Date.now() > entry.timestamp + entry.ttl) {
+                    this.cache.delete(key);
+                    return null;
+                }
+
+                return entry.data;
+            }
+
+            set(key, data, ttl = this.defaultTTL) {
+                this.cache.set(key, {
+                    data,
+                    timestamp: Date.now(),
+                    ttl
+                });
+            }
+
+            invalidate(pattern) {
+                if (typeof pattern === 'string') {
+                    // Simple string match
+                    for (const key of this.cache.keys()) {
+                        if (key.includes(pattern)) {
+                            this.cache.delete(key);
+                        }
+                    }
+                } else if (pattern instanceof RegExp) {
+                    // Regex pattern match
+                    for (const key of this.cache.keys()) {
+                        if (pattern.test(key)) {
+                            this.cache.delete(key);
+                        }
+                    }
+                }
+            }
+
+            clear() {
+                this.cache.clear();
+            }
+
+            size() {
+                return this.cache.size;
+            }
+        }
+
+        // RequestDeduplicator to prevent duplicate simultaneous requests
+        class RequestDeduplicator {
+            constructor() {
+                this.pendingRequests = new Map();
+            }
+
+            async deduplicate(key, requestFn) {
+                if (this.pendingRequests.has(key)) {
+                    // Return existing promise
+                    return this.pendingRequests.get(key);
+                }
+
+                // Create new request promise
+                const promise = requestFn().finally(() => {
+                    // Clean up after request completes
+                    this.pendingRequests.delete(key);
+                });
+
+                this.pendingRequests.set(key, promise);
+                return promise;
+            }
+
+            generateKey(url, options = {}) {
+                const method = options.method || 'GET';
+                const body = options.body || '';
+                return `${method}:${url}:${body}`;
+            }
+        }
+
+        // RateLimitHandler with exponential backoff and jitter
+        class RateLimitHandler {
+            constructor() {
+                this.retryDelays = [1000, 2000, 4000, 8000]; // Exponential backoff
+                this.jitterFactor = 0.1;
+            }
+
+            async handleRequest(requestFn, maxRetries = 3, onRetry = null) {
+                for (let attempt = 0; attempt <= maxRetries; attempt++) {
+                    try {
+                        return await requestFn();
+                    } catch (error) {
+                        if (attempt === maxRetries) {
+                            throw error;
+                        }
+
+                        // Only retry rate limiting errors
+                        if (!error.isRateLimited && error.status !== 429) {
+                            throw error;
+                        }
+
+                        // Call retry callback if provided
+                        if (onRetry) {
+                            onRetry(attempt, error);
+                        }
+
+                        const delay = this.calculateDelay(attempt, error.retryAfter);
+                        logInfo('RATE_LIMIT_RETRY', `Rate limited, retrying in ${delay}ms`, {
+                            attempt: attempt + 1,
+                            maxRetries,
+                            retryAfter: error.retryAfter
+                        });
+
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    }
+                }
+            }
+
+            calculateDelay(attempt, retryAfter) {
+                let baseDelay;
+
+                if (retryAfter) {
+                    // Use server-provided Retry-After header
+                    baseDelay = parseInt(retryAfter) * 1000;
+                } else {
+                    // Use exponential backoff
+                    baseDelay = this.retryDelays[Math.min(attempt, this.retryDelays.length - 1)];
+                }
+
+                // Add jitter to prevent thundering herd
+                const jitter = baseDelay * this.jitterFactor * Math.random();
+                return Math.floor(baseDelay + jitter);
+            }
+
+            parseRetryAfter(response) {
+                const retryAfter = response.headers.get('Retry-After');
+                return retryAfter ? parseInt(retryAfter) : null;
+            }
+        }
+
+        // LoadingStateManager for coordinated UI feedback
+        class LoadingStateManager {
+            constructor() {
+                this.loadingStates = new Map();
+                this.rateLimitStates = new Map();
+            }
+
+            setLoading(key, isLoading, message = 'Loading...') {
+                this.loadingStates.set(key, { isLoading, message, timestamp: Date.now() });
+                this.updateUI(key);
+            }
+
+            setRateLimited(key, isRateLimited, retryAfter = null, message = 'High traffic detected, please wait...') {
+                this.rateLimitStates.set(key, { 
+                    isRateLimited, 
+                    retryAfter, 
+                    message, 
+                    timestamp: Date.now() 
+                });
+                this.updateUI(key);
+            }
+
+            updateUI(key) {
+                const loadingState = this.loadingStates.get(key);
+                const rateLimitState = this.rateLimitStates.get(key);
+
+                // Find UI elements to update
+                const elements = document.querySelectorAll(`[data-loading-key="${key}"]`);
+                
+                elements.forEach(element => {
+                    if (rateLimitState?.isRateLimited) {
+                        this.showRateLimitMessage(element, rateLimitState);
+                    } else if (loadingState?.isLoading) {
+                        this.showLoadingMessage(element, loadingState);
+                    } else {
+                        this.hideMessages(element);
+                    }
+                });
+            }
+
+            showRateLimitMessage(element, state) {
+                const estimatedWait = state.retryAfter ? `${state.retryAfter}s` : 'a moment';
+                element.innerHTML = `
+                    <div class="rate-limit-message">
+                        <i class="fas fa-clock text-warning"></i>
+                        <span>${state.message}</span>
+                        <small class="d-block mt-1">Estimated wait: ${estimatedWait}</small>
+                    </div>
+                `;
+                element.style.pointerEvents = 'none';
+                element.style.opacity = '0.7';
+            }
+
+            showLoadingMessage(element, state) {
+                element.innerHTML = `
+                    <div class="loading-message">
+                        <i class="fas fa-spinner fa-spin text-primary"></i>
+                        <span>${state.message}</span>
+                    </div>
+                `;
+            }
+
+            hideMessages(element) {
+                element.style.pointerEvents = '';
+                element.style.opacity = '';
+                // Restore original content if needed
+                if (element.dataset.originalContent) {
+                    element.innerHTML = element.dataset.originalContent;
+                }
+            }
+        }
+
+        // =========================
+        // API REQUEST MANAGER COORDINATION LAYER
+        // =========================
+
+        class ApiRequestManager {
+            constructor() {
+                this.cache = new RequestCache();
+                this.deduplicator = new RequestDeduplicator();
+                this.rateLimitHandler = new RateLimitHandler();
+                this.loadingManager = new LoadingStateManager();
+                this.requestSpacing = 100; // Minimum ms between requests
+                this.lastRequestTime = 0;
+            }
+
+            async request(url, options = {}) {
+                const startTime = Date.now();
+                const method = options.method || 'GET';
+                const cacheKey = this.generateCacheKey(url, options);
+                const dedupeKey = this.deduplicator.generateKey(url, options);
+                let retryCount = 0;
+                let rateLimited = false;
+
+                // Check cache first
+                const cachedData = this.cache.get(cacheKey);
+                if (cachedData && !options.skipCache) {
+                    rateLimitMonitor.recordCacheEvent(true, cacheKey);
+                    logInfo('CACHE_HIT', `Using cached data for ${url}`);
+                    return cachedData;
+                }
+
+                rateLimitMonitor.recordCacheEvent(false, cacheKey);
+
+                // Deduplicate simultaneous requests
+                return this.deduplicator.deduplicate(dedupeKey, async () => {
+                    let result;
+                    let success = false;
+
+                    try {
+                        // Apply request spacing
+                        await this.enforceRequestSpacing();
+
+                        // Handle rate limiting with retries
+                        result = await this.rateLimitHandler.handleRequest(async () => {
+                            const response = await authenticatedFetch(url, options);
+                            return await handleApiResponse(response, options.context || 'API request');
+                        }, 3, (attempt, error) => {
+                            retryCount = attempt;
+                            if (error.isRateLimited || error.status === 429) {
+                                rateLimited = true;
+                                const waitTime = this.rateLimitHandler.calculateDelay(attempt, error.retryAfter);
+                                rateLimitMonitor.recordRateLimitEvent(url, waitTime, error.retryAfter, attempt);
+                            }
+                        });
+
+                        success = true;
+
+                        // Cache successful responses
+                        if (result && options.cacheTTL !== 0) {
+                            this.cache.set(cacheKey, result, options.cacheTTL);
+                        }
+
+                        return result;
+                    } finally {
+                        const endTime = Date.now();
+                        rateLimitMonitor.recordRequest(url, method, startTime, endTime, success, rateLimited, retryCount);
+                    }
+                });
+            }
+
+            async batchRequests(requests, batchSize = 3) {
+                const results = [];
+                
+                for (let i = 0; i < requests.length; i += batchSize) {
+                    const batch = requests.slice(i, i + batchSize);
+                    
+                    // Execute batch with proper spacing
+                    const batchPromises = batch.map(async (request, index) => {
+                        // Stagger requests within batch
+                        if (index > 0) {
+                            await new Promise(resolve => setTimeout(resolve, this.requestSpacing * index));
+                        }
+                        
+                        return this.request(request.url, request.options);
+                    });
+
+                    const batchResults = await Promise.allSettled(batchPromises);
+                    results.push(...batchResults);
+
+                    // Wait between batches
+                    if (i + batchSize < requests.length) {
+                        await new Promise(resolve => setTimeout(resolve, this.requestSpacing * 2));
+                    }
+                }
+
+                return results;
+            }
+
+            async enforceRequestSpacing() {
+                const now = Date.now();
+                const timeSinceLastRequest = now - this.lastRequestTime;
+                
+                if (timeSinceLastRequest < this.requestSpacing) {
+                    const waitTime = this.requestSpacing - timeSinceLastRequest;
+                    await new Promise(resolve => setTimeout(resolve, waitTime));
+                }
+                
+                this.lastRequestTime = Date.now();
+            }
+
+            generateCacheKey(url, options = {}) {
+                const method = options.method || 'GET';
+                const body = options.body || '';
+                const params = new URLSearchParams(options.params || {}).toString();
+                return `${method}:${url}:${params}:${body}`;
+            }
+
+            invalidateCache(pattern) {
+                this.cache.invalidate(pattern);
+            }
+
+            getCacheStats() {
+                return {
+                    size: this.cache.size(),
+                    pendingRequests: this.deduplicator.pendingRequests.size
+                };
+            }
+        }
+
+        // Create global API manager instance
+        const apiManager = new ApiRequestManager();
+
+        // =========================
+        // INTEGRATION TESTING AND MONITORING
+        // =========================
+
+        // Test rate limiting scenarios
+        async function testRateLimiting() {
+            console.log('🧪 Testing rate limiting scenarios...');
+            
+            try {
+                // Test 1: Rapid concurrent requests (should be deduplicated)
+                console.log('Test 1: Concurrent request deduplication');
+                const concurrentPromises = Array(5).fill().map(() => 
+                    apiManager.request(`${API_BASE_URL}/api/user-tournaments`, {
+                        context: 'Concurrent test'
+                    })
+                );
+                
+                const concurrentResults = await Promise.allSettled(concurrentPromises);
+                const successfulConcurrent = concurrentResults.filter(r => r.status === 'fulfilled').length;
+                console.log(`✅ Concurrent requests: ${successfulConcurrent}/5 successful`);
+
+                // Test 2: Cache behavior
+                console.log('Test 2: Cache behavior');
+                const cacheTest1 = await apiManager.request(`${API_BASE_URL}/api/user-tournaments`, {
+                    context: 'Cache test 1',
+                    cacheTTL: 30000
+                });
+                
+                const cacheTest2 = await apiManager.request(`${API_BASE_URL}/api/user-tournaments`, {
+                    context: 'Cache test 2',
+                    cacheTTL: 30000
+                });
+                
+                console.log('✅ Cache test completed');
+
+                // Test 3: Batch requests
+                console.log('Test 3: Batch request handling');
+                const batchRequests = [
+                    { url: `${API_BASE_URL}/api/user-tournaments`, options: { context: 'Batch 1' } },
+                    { url: `${API_BASE_URL}/api/users/me/tournaments`, options: { context: 'Batch 2' } }
+                ];
+                
+                const batchResults = await apiManager.batchRequests(batchRequests);
+                const successfulBatch = batchResults.filter(r => r.status === 'fulfilled').length;
+                console.log(`✅ Batch requests: ${successfulBatch}/${batchRequests.length} successful`);
+
+                // Generate monitoring report
+                const report = rateLimitMonitor.generateReport();
+                console.log('📊 Rate limiting test report:', report);
+
+                return {
+                    concurrentTest: { successful: successfulConcurrent, total: 5 },
+                    batchTest: { successful: successfulBatch, total: batchRequests.length },
+                    cacheStats: apiManager.getCacheStats(),
+                    monitoringReport: report
+                };
+
+            } catch (error) {
+                console.error('❌ Rate limiting test failed:', error);
+                return { error: error.message };
+            }
+        }
+
+        // Add monitoring dashboard
+        function showMonitoringDashboard() {
+            const analytics = rateLimitMonitor.getAnalytics();
+            const cacheStats = apiManager.getCacheStats();
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content" style="background: var(--panel); border: 1px solid var(--border-color);">
+                        <div class="modal-header" style="border-bottom: 1px solid var(--border-color);">
+                            <h5 class="modal-title">Rate Limiting Monitoring Dashboard</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Request Statistics</h6>
+                                    <ul class="list-unstyled">
+                                        <li>Total Requests: <strong>${analytics.requests.total}</strong></li>
+                                        <li>Successful: <strong>${analytics.requests.successful}</strong></li>
+                                        <li>Failed: <strong>${analytics.requests.failed}</strong></li>
+                                        <li>Rate Limited: <strong>${analytics.requests.rateLimited}</strong></li>
+                                        <li>Success Rate: <strong>${((analytics.requests.successful / Math.max(analytics.requests.total, 1)) * 100).toFixed(2)}%</strong></li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Performance Metrics</h6>
+                                    <ul class="list-unstyled">
+                                        <li>Average Response Time: <strong>${analytics.timing.averageTime.toFixed(2)}ms</strong></li>
+                                        <li>Max Response Time: <strong>${analytics.timing.maxTime}ms</strong></li>
+                                        <li>Min Response Time: <strong>${analytics.timing.minTime === Infinity ? 'N/A' : analytics.timing.minTime + 'ms'}</strong></li>
+                                        <li>Requests/Minute: <strong>${analytics.requestsPerMinute}</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <h6>Cache Statistics</h6>
+                                    <ul class="list-unstyled">
+                                        <li>Cache Hits: <strong>${analytics.cache.hits}</strong></li>
+                                        <li>Cache Misses: <strong>${analytics.cache.misses}</strong></li>
+                                        <li>Hit Rate: <strong>${analytics.cache.hitRate.toFixed(2)}%</strong></li>
+                                        <li>Cache Size: <strong>${cacheStats.size}</strong></li>
+                                        <li>Pending Requests: <strong>${cacheStats.pendingRequests}</strong></li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Rate Limiting Events</h6>
+                                    <ul class="list-unstyled">
+                                        <li>Total Events: <strong>${analytics.rateLimiting.events.length}</strong></li>
+                                        <li>Total Wait Time: <strong>${analytics.rateLimiting.totalWaitTime}ms</strong></li>
+                                        <li>Average Wait: <strong>${analytics.rateLimiting.averageWaitTime.toFixed(2)}ms</strong></li>
+                                        <li>Retry Attempts: <strong>${analytics.retries.totalAttempts}</strong></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            ${analytics.rateLimitingPatterns.length > 0 ? `
+                                <div class="mt-3">
+                                    <h6>Rate Limiting Patterns</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Endpoint</th>
+                                                    <th>Events</th>
+                                                    <th>Avg Wait (ms)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                ${analytics.rateLimitingPatterns.map(pattern => `
+                                                    <tr>
+                                                        <td><code>${pattern.endpoint}</code></td>
+                                                        <td>${pattern.count}</td>
+                                                        <td>${pattern.averageWait}</td>
+                                                    </tr>
+                                                `).join('')}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
+                            <button type="button" class="btn btn-secondary" onclick="testRateLimiting().then(console.log)">Run Tests</button>
+                            <button type="button" class="btn btn-info" onclick="exportLogs()">Export Logs</button>
+                            <button type="button" class="btn btn-warning" onclick="clearStoredLogs()">Clear Logs</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            const bootstrapModal = new bootstrap.Modal(modal);
+            bootstrapModal.show();
+            
+            modal.addEventListener('hidden.bs.modal', () => {
+                document.body.removeChild(modal);
+            });
+        }
+
+        // Add keyboard shortcut for monitoring dashboard (Ctrl+Shift+M)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'M') {
+                e.preventDefault();
+                showMonitoringDashboard();
+            }
+        });
 
         // Enhanced logging utility
         function logError(category, message, context = {}) {
@@ -2578,8 +3117,286 @@
 
             console.error(`[${category}] ${message}`, logEntry);
 
-            // In production, you might want to send this to a logging service
-            // sendToLoggingService(logEntry);
+            // Send to monitoring service
+            sendToMonitoringService('error', logEntry);
+        }
+
+        function logWarning(category, message, context = {}) {
+            const timestamp = new Date().toISOString();
+            const sessionData = getSessionData();
+            const userId = sessionData?.user?.id || 'anonymous';
+
+            const logEntry = {
+                timestamp,
+                category,
+                message,
+                userId,
+                userAgent: navigator.userAgent,
+                url: window.location.href,
+                context
+            };
+
+            console.warn(`[${category}] ${message}`, logEntry);
+            sendToMonitoringService('warning', logEntry);
+        }
+
+        function logInfo(category, message, context = {}) {
+            const timestamp = new Date().toISOString();
+            const sessionData = getSessionData();
+            const userId = sessionData?.user?.id || 'anonymous';
+
+            const logEntry = {
+                timestamp,
+                category,
+                message,
+                userId,
+                userAgent: navigator.userAgent,
+                url: window.location.href,
+                context
+            };
+
+            console.info(`[${category}] ${message}`, logEntry);
+            sendToMonitoringService('info', logEntry);
+        }
+
+        // =========================
+        // COMPREHENSIVE LOGGING AND MONITORING
+        // =========================
+
+        class RateLimitingMonitor {
+            constructor() {
+                this.metrics = {
+                    requests: {
+                        total: 0,
+                        successful: 0,
+                        failed: 0,
+                        rateLimited: 0
+                    },
+                    timing: {
+                        totalTime: 0,
+                        averageTime: 0,
+                        maxTime: 0,
+                        minTime: Infinity
+                    },
+                    retries: {
+                        totalAttempts: 0,
+                        successfulRetries: 0,
+                        failedRetries: 0
+                    },
+                    cache: {
+                        hits: 0,
+                        misses: 0,
+                        hitRate: 0
+                    },
+                    rateLimiting: {
+                        events: [],
+                        totalWaitTime: 0,
+                        averageWaitTime: 0,
+                        patterns: new Map()
+                    }
+                };
+                this.startTime = Date.now();
+            }
+
+            recordRequest(url, method, startTime, endTime, success, rateLimited = false, retryCount = 0) {
+                const duration = endTime - startTime;
+                
+                // Update request metrics
+                this.metrics.requests.total++;
+                if (success) {
+                    this.metrics.requests.successful++;
+                } else {
+                    this.metrics.requests.failed++;
+                }
+                
+                if (rateLimited) {
+                    this.metrics.requests.rateLimited++;
+                }
+
+                // Update timing metrics
+                this.metrics.timing.totalTime += duration;
+                this.metrics.timing.averageTime = this.metrics.timing.totalTime / this.metrics.requests.total;
+                this.metrics.timing.maxTime = Math.max(this.metrics.timing.maxTime, duration);
+                this.metrics.timing.minTime = Math.min(this.metrics.timing.minTime, duration);
+
+                // Update retry metrics
+                if (retryCount > 0) {
+                    this.metrics.retries.totalAttempts += retryCount;
+                    if (success) {
+                        this.metrics.retries.successfulRetries++;
+                    } else {
+                        this.metrics.retries.failedRetries++;
+                    }
+                }
+
+                // Log detailed request information
+                logInfo('REQUEST_METRICS', `Request completed: ${method} ${url}`, {
+                    duration,
+                    success,
+                    rateLimited,
+                    retryCount,
+                    endpoint: this.extractEndpoint(url)
+                });
+            }
+
+            recordCacheEvent(hit, key) {
+                if (hit) {
+                    this.metrics.cache.hits++;
+                } else {
+                    this.metrics.cache.misses++;
+                }
+                
+                const total = this.metrics.cache.hits + this.metrics.cache.misses;
+                this.metrics.cache.hitRate = total > 0 ? (this.metrics.cache.hits / total) * 100 : 0;
+
+                logInfo('CACHE_METRICS', `Cache ${hit ? 'hit' : 'miss'} for key: ${key}`, {
+                    hitRate: this.metrics.cache.hitRate.toFixed(2) + '%',
+                    totalHits: this.metrics.cache.hits,
+                    totalMisses: this.metrics.cache.misses
+                });
+            }
+
+            recordRateLimitEvent(url, waitTime, retryAfter, attempt) {
+                const event = {
+                    timestamp: Date.now(),
+                    url,
+                    waitTime,
+                    retryAfter,
+                    attempt,
+                    endpoint: this.extractEndpoint(url)
+                };
+
+                this.metrics.rateLimiting.events.push(event);
+                this.metrics.rateLimiting.totalWaitTime += waitTime;
+                
+                const eventCount = this.metrics.rateLimiting.events.length;
+                this.metrics.rateLimiting.averageWaitTime = this.metrics.rateLimiting.totalWaitTime / eventCount;
+
+                // Track patterns by endpoint
+                const endpoint = this.extractEndpoint(url);
+                const pattern = this.metrics.rateLimiting.patterns.get(endpoint) || { count: 0, totalWait: 0 };
+                pattern.count++;
+                pattern.totalWait += waitTime;
+                this.metrics.rateLimiting.patterns.set(endpoint, pattern);
+
+                logWarning('RATE_LIMIT_EVENT', `Rate limiting detected for ${endpoint}`, {
+                    waitTime,
+                    retryAfter,
+                    attempt,
+                    totalEvents: eventCount,
+                    averageWaitTime: this.metrics.rateLimiting.averageWaitTime.toFixed(2)
+                });
+            }
+
+            extractEndpoint(url) {
+                try {
+                    const urlObj = new URL(url, window.location.origin);
+                    return urlObj.pathname.replace(/\/[0-9a-f]{24}/g, '/:id'); // Replace MongoDB IDs with :id
+                } catch {
+                    return url;
+                }
+            }
+
+            getAnalytics() {
+                const uptime = Date.now() - this.startTime;
+                const requestsPerMinute = (this.metrics.requests.total / (uptime / 60000)).toFixed(2);
+                
+                return {
+                    ...this.metrics,
+                    uptime,
+                    requestsPerMinute,
+                    rateLimitingPatterns: Array.from(this.metrics.rateLimiting.patterns.entries()).map(([endpoint, data]) => ({
+                        endpoint,
+                        count: data.count,
+                        averageWait: (data.totalWait / data.count).toFixed(2)
+                    }))
+                };
+            }
+
+            generateReport() {
+                const analytics = this.getAnalytics();
+                
+                logInfo('RATE_LIMITING_REPORT', 'Rate limiting analytics report', {
+                    summary: {
+                        totalRequests: analytics.requests.total,
+                        successRate: ((analytics.requests.successful / analytics.requests.total) * 100).toFixed(2) + '%',
+                        rateLimitedRequests: analytics.requests.rateLimited,
+                        cacheHitRate: analytics.cache.hitRate.toFixed(2) + '%',
+                        averageResponseTime: analytics.timing.averageTime.toFixed(2) + 'ms',
+                        requestsPerMinute: analytics.requestsPerMinute
+                    },
+                    rateLimiting: {
+                        totalEvents: analytics.rateLimiting.events.length,
+                        totalWaitTime: analytics.rateLimiting.totalWaitTime + 'ms',
+                        averageWaitTime: analytics.rateLimiting.averageWaitTime.toFixed(2) + 'ms',
+                        topPatterns: analytics.rateLimitingPatterns.slice(0, 5)
+                    }
+                });
+
+                return analytics;
+            }
+        }
+
+        // Global monitoring instance
+        const rateLimitMonitor = new RateLimitingMonitor();
+
+        // Enhanced monitoring service
+        function sendToMonitoringService(level, logEntry) {
+            // Store logs locally for debugging
+            const logs = JSON.parse(localStorage.getItem('nexus_logs') || '[]');
+            logs.push({ level, ...logEntry });
+            
+            // Keep only last 100 logs to prevent storage overflow
+            if (logs.length > 100) {
+                logs.splice(0, logs.length - 100);
+            }
+            
+            localStorage.setItem('nexus_logs', JSON.stringify(logs));
+
+            // In production, send to external monitoring service
+            if (window.location.hostname !== 'localhost' && window.location.protocol !== 'file:') {
+                // Example: Send to monitoring service
+                // fetch('/api/monitoring/logs', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify({ level, ...logEntry })
+                // }).catch(console.error);
+            }
+        }
+
+        // Utility functions for monitoring
+        function getStoredLogs() {
+            return JSON.parse(localStorage.getItem('nexus_logs') || '[]');
+        }
+
+        function clearStoredLogs() {
+            localStorage.removeItem('nexus_logs');
+            logInfo('LOGS_CLEARED', 'Local logs cleared');
+        }
+
+        function exportLogs() {
+            const logs = getStoredLogs();
+            const analytics = rateLimitMonitor.generateReport();
+            
+            const exportData = {
+                timestamp: new Date().toISOString(),
+                logs,
+                analytics,
+                userAgent: navigator.userAgent,
+                url: window.location.href
+            };
+
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `nexus-logs-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            logInfo('LOGS_EXPORTED', 'Logs and analytics exported');
         }
 
         function logWarning(category, message, context = {}) {
@@ -2597,6 +3414,290 @@
 
             console.warn(`[${category}] ${message}`, logEntry);
         }
+
+        // ===== RATE LIMITING INFRASTRUCTURE =====
+
+        // RequestCache class with TTL-based expiration
+        class RequestCache {
+            constructor(defaultTTL = 300000) { // 5 minutes default
+                this.cache = new Map();
+                this.defaultTTL = defaultTTL;
+            }
+
+            get(key) {
+                const entry = this.cache.get(key);
+                if (!entry) return null;
+
+                const now = Date.now();
+                if (now > entry.timestamp + entry.ttl) {
+                    this.cache.delete(key);
+                    return null;
+                }
+
+                return entry.data;
+            }
+
+            set(key, data, ttl = this.defaultTTL) {
+                this.cache.set(key, {
+                    data,
+                    timestamp: Date.now(),
+                    ttl,
+                    key
+                });
+            }
+
+            invalidate(pattern) {
+                if (typeof pattern === 'string') {
+                    // Simple string matching
+                    for (const [key] of this.cache) {
+                        if (key.includes(pattern)) {
+                            this.cache.delete(key);
+                        }
+                    }
+                } else if (pattern instanceof RegExp) {
+                    // Regex matching
+                    for (const [key] of this.cache) {
+                        if (pattern.test(key)) {
+                            this.cache.delete(key);
+                        }
+                    }
+                }
+            }
+
+            clear() {
+                this.cache.clear();
+            }
+
+            size() {
+                return this.cache.size;
+            }
+        }
+
+        // RequestDeduplicator to prevent duplicate simultaneous requests
+        class RequestDeduplicator {
+            constructor() {
+                this.pendingRequests = new Map();
+            }
+
+            async deduplicate(key, requestFn) {
+                if (this.pendingRequests.has(key)) {
+                    // Return existing promise
+                    return this.pendingRequests.get(key);
+                }
+
+                // Create new promise and store it
+                const promise = requestFn().finally(() => {
+                    // Clean up after request completes
+                    this.pendingRequests.delete(key);
+                });
+
+                this.pendingRequests.set(key, promise);
+                return promise;
+            }
+
+            generateKey(url, options = {}) {
+                // Create unique key based on URL and relevant options
+                const method = options.method || 'GET';
+                const body = options.body ? JSON.stringify(options.body) : '';
+                return `${method}:${url}:${body}`;
+            }
+
+            clear() {
+                this.pendingRequests.clear();
+            }
+        }
+
+        // RateLimitHandler with exponential backoff and jitter
+        class RateLimitHandler {
+            constructor() {
+                this.retryDelays = [1000, 2000, 4000, 8000]; // Exponential backoff in ms
+                this.jitterFactor = 0.1; // 10% jitter
+                this.maxRetries = 3;
+            }
+
+            async handleRequest(requestFn, context = 'API request') {
+                let lastError;
+
+                for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
+                    try {
+                        const result = await requestFn();
+                        
+                        if (attempt > 0) {
+                            logWarning('RATE_LIMIT_RECOVERY', `${context} succeeded after ${attempt} retries`);
+                        }
+                        
+                        return result;
+                    } catch (error) {
+                        lastError = error;
+
+                        // Don't retry authentication errors
+                        if (error.message.includes('Authentication') || 
+                            error.message.includes('401') || 
+                            error.message.includes('403')) {
+                            throw error;
+                        }
+
+                        // Check if this is a rate limiting error
+                        const isRateLimited = error.isRateLimited || 
+                                            error.message.includes('429') || 
+                                            error.message.includes('Too Many Requests');
+
+                        if (attempt === this.maxRetries) {
+                            logError('RATE_LIMIT_EXHAUSTED', `${context} failed after ${this.maxRetries} retries`, {
+                                error: error.message,
+                                attempts: attempt + 1,
+                                isRateLimited
+                            });
+                            throw error;
+                        }
+
+                        // Calculate delay - use Retry-After header if available for rate limiting
+                        let delay;
+                        if (isRateLimited && error.retryAfter) {
+                            const retryAfterMs = parseInt(error.retryAfter, 10) * 1000;
+                            delay = Math.min(retryAfterMs, 30000); // Cap at 30 seconds
+                        } else {
+                            const baseDelay = this.retryDelays[Math.min(attempt, this.retryDelays.length - 1)];
+                            delay = this.calculateDelay(attempt, baseDelay);
+                        }
+
+                        logWarning('RATE_LIMIT_RETRY', `${context} attempt ${attempt + 1} failed, retrying in ${delay}ms`, {
+                            error: error.message,
+                            attempt: attempt + 1,
+                            delay,
+                            isRateLimited
+                        });
+
+                        await this.sleep(delay);
+                    }
+                }
+
+                throw lastError;
+            }
+
+            calculateDelay(attempt, baseDelay) {
+                // Add jitter to prevent thundering herd problem
+                const jitter = Math.random() * this.jitterFactor * baseDelay;
+                return Math.floor(baseDelay + jitter);
+            }
+
+            parseRetryAfter(response) {
+                const retryAfter = response.headers.get('Retry-After');
+                if (retryAfter) {
+                    const seconds = parseInt(retryAfter, 10);
+                    return isNaN(seconds) ? null : seconds * 1000; // Convert to milliseconds
+                }
+                return null;
+            }
+
+            sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
+        // ApiRequestManager - Central coordinator for all API requests
+        class ApiRequestManager {
+            constructor() {
+                this.cache = new RequestCache();
+                this.deduplicator = new RequestDeduplicator();
+                this.rateLimitHandler = new RateLimitHandler();
+                this.batchDelay = 100; // 100ms delay between batched requests
+            }
+
+            async request(url, options = {}, cacheOptions = {}) {
+                const { 
+                    useCache = true, 
+                    cacheTTL = 300000, // 5 minutes default
+                    context = 'API request'
+                } = cacheOptions;
+
+                // Generate cache and deduplication keys
+                const cacheKey = this.generateCacheKey(url, options);
+                const dedupeKey = this.deduplicator.generateKey(url, options);
+
+                // Check cache first if enabled
+                if (useCache) {
+                    const cachedData = this.cache.get(cacheKey);
+                    if (cachedData) {
+                        logWarning('CACHE_HIT', `Using cached data for ${context}`, { url, cacheKey });
+                        return cachedData;
+                    }
+                }
+
+                // Use deduplicator to prevent duplicate requests
+                return this.deduplicator.deduplicate(dedupeKey, async () => {
+                    return this.rateLimitHandler.handleRequest(async () => {
+                        const response = await authenticatedFetch(url, options);
+                        const result = await handleApiResponse(response, context);
+
+                        // Cache successful responses if caching is enabled
+                        if (useCache && result) {
+                            this.cache.set(cacheKey, result, cacheTTL);
+                            logWarning('CACHE_SET', `Cached response for ${context}`, { url, cacheKey });
+                        }
+
+                        return result;
+                    }, context);
+                });
+            }
+
+            async batchRequests(requests) {
+                const results = [];
+                
+                for (let i = 0; i < requests.length; i++) {
+                    const request = requests[i];
+                    
+                    try {
+                        const result = await this.request(
+                            request.url, 
+                            request.options || {}, 
+                            request.cacheOptions || {}
+                        );
+                        results.push({ success: true, data: result, index: i });
+                    } catch (error) {
+                        results.push({ success: false, error, index: i });
+                    }
+
+                    // Add delay between requests to prevent overwhelming the server
+                    if (i < requests.length - 1) {
+                        await this.sleep(this.batchDelay);
+                    }
+                }
+
+                return results;
+            }
+
+            generateCacheKey(url, options = {}) {
+                const method = options.method || 'GET';
+                const body = options.body ? JSON.stringify(options.body) : '';
+                const sessionData = getSessionData();
+                const userId = sessionData?.user?.id || 'anonymous';
+                
+                // Include user ID in cache key to prevent cross-user data leakage
+                return `${userId}:${method}:${url}:${body}`;
+            }
+
+            invalidateCache(pattern) {
+                this.cache.invalidate(pattern);
+            }
+
+            clearCache() {
+                this.cache.clear();
+            }
+
+            getCacheStats() {
+                return {
+                    size: this.cache.size(),
+                    pendingRequests: this.deduplicator.pendingRequests.size
+                };
+            }
+
+            sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
+        // ApiRequestManager instance already created above
 
         function logInfo(category, message, context = {}) {
             const timestamp = new Date().toISOString();
@@ -2819,11 +3920,18 @@
                     }, 100);
                 }
 
-                // Load data for specific tabs
+                // Load data for specific tabs with smart caching
                 if (tabName === 'tournaments') {
                     loadUserTournaments();
                 } else if (tabName === 'overview') {
-                    loadDashboardStats();
+                    // Check if we have recent cached data before making new requests
+                    const cacheStats = apiManager.getCacheStats();
+                    if (cacheStats.size > 0) {
+                        // Try to load from cache first, then refresh in background if needed
+                        loadDashboardStats();
+                    } else {
+                        loadDashboardStats();
+                    }
                 } else if (tabName === 'joined') {
                     loadJoinedTournaments();
                 }
@@ -3289,37 +4397,50 @@
                 // Show loading state
                 showLoadingState();
 
-                // Get hosted tournaments
-                try {
-                    const hostedResult = await retryApiCall(async () => {
-                        const response = await authenticatedFetch(`${API_BASE_URL}/api/user-tournaments`);
-                        return await handleApiResponse(response, 'Load hosted tournaments');
-                    });
-
-                    if (hostedResult) {
-                        hostedTournaments = hostedResult.data || [];
-                        hostedCount = hostedTournaments.length;
-                        console.log(`Loaded ${hostedCount} hosted tournaments`);
+                // Use batched requests to prevent rate limiting
+                const batchRequests = [
+                    {
+                        url: `${API_BASE_URL}/api/user-tournaments`,
+                        cacheOptions: { 
+                            context: 'Load hosted tournaments',
+                            useCache: true,
+                            cacheTTL: 180000 // 3 minutes cache for hosted tournaments
+                        }
+                    },
+                    {
+                        url: `${API_BASE_URL}/api/users/me/tournaments`,
+                        cacheOptions: { 
+                            context: 'Load joined tournaments',
+                            useCache: true,
+                            cacheTTL: 180000 // 3 minutes cache for joined tournaments
+                        }
                     }
-                } catch (error) {
-                    console.error('Error loading hosted tournaments:', error);
+                ];
+
+                const results = await apiManager.batchRequests(batchRequests);
+
+                // Process hosted tournaments result
+                const hostedResult = results[0];
+                if (hostedResult.success && hostedResult.data) {
+                    hostedTournaments = hostedResult.data.data || [];
+                    hostedCount = hostedTournaments.length;
+                    console.log(`Loaded ${hostedCount} hosted tournaments`);
+                } else if (hostedResult.error) {
+                    console.error('Error loading hosted tournaments:', hostedResult.error.message);
                     // Don't show error message to user - they might not have created any tournaments yet
                 }
 
-                // Get joined tournaments
-                try {
-                    const joinedResult = await retryApiCall(async () => {
-                        const response = await authenticatedFetch(`${API_BASE_URL}/api/users/me/tournaments`);
-                        return await handleApiResponse(response, 'Load joined tournaments');
-                    });
-
-                    if (joinedResult) {
-                        joinedTournaments = joinedResult.data || [];
-                        console.log(`Loaded ${joinedTournaments.length} joined tournaments`);
+                // Process joined tournaments result
+                const joinedResult = results[1];
+                if (joinedResult.success && joinedResult.data) {
+                    joinedTournaments = joinedResult.data.data || [];
+                    console.log(`Loaded ${joinedTournaments.length} joined tournaments`);
+                } else if (joinedResult.error) {
+                    console.error('Error loading joined tournaments:', joinedResult.error.message);
+                    // Only show error for joined tournaments if it's not a rate limiting issue
+                    if (!joinedResult.error.message.includes('429')) {
+                        showErrorMessage(joinedResult.error.message);
                     }
-                } catch (error) {
-                    console.error('Error loading joined tournaments:', error);
-                    showErrorMessage(error.message);
                 }
 
                 // Calculate stats
@@ -3327,7 +4448,6 @@
                 const totalParticipants = hostedTournaments.reduce((sum, t) => {
                     return sum + (t.participants ? t.participants.length : 0);
                 }, 0);
-
 
                 // Update display with null checks
                 const totalTournamentsEl = document.getElementById('totalTournaments');
@@ -3345,6 +4465,10 @@
                 if (hostedCount > 0 || joinedCount > 0) {
                     console.log('Dashboard data loaded successfully');
                 }
+
+                // Log cache stats for monitoring
+                const cacheStats = apiManager.getCacheStats();
+                logWarning('CACHE_STATS', 'Dashboard stats loaded', cacheStats);
 
             } catch (error) {
                 console.error('Error loading dashboard stats:', error);
@@ -3390,24 +4514,15 @@
                     `;
                 }
 
-                const response = await fetch(`${API_BASE_URL}/api/users/me/tournaments`, {
+                const result = await apiManager.request(`${API_BASE_URL}/api/users/me/tournaments`, {
                     method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${sessionData.token}`
-                    }
+                    context: 'Load joined tournaments',
+                    cacheTTL: 120000 // Cache for 2 minutes
                 });
 
-                if (response.status === 401) {
-                    console.warn('Authentication failed for joined tournaments');
-                    handleAuthenticationError();
-                    return;
-                }
-
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result.success) {
-                        let tournaments = result.data || [];
-                        console.log(`Successfully loaded ${tournaments.length} joined tournaments`);
+                if (result) {
+                    let tournaments = result.data || [];
+                    console.log(`Successfully loaded ${tournaments.length} joined tournaments`);
 
                         // Apply status filter if selected
                         const statusFilter = document.getElementById('joinedStatusFilter');
@@ -3426,20 +4541,7 @@
                             });
                         }
 
-                        displayJoinedTournaments(tournaments);
-                    } else {
-                        console.error('Failed to load joined tournaments:', result.message);
-                        displayJoinedTournamentsError('Failed to load tournament data');
-                    }
-                } else if (response.status === 404) {
-                    console.warn('Joined tournaments endpoint not found');
-                    displayJoinedTournamentsError('Joined tournaments feature is not available');
-                } else if (response.status === 500) {
-                    console.error('Server error loading joined tournaments');
-                    displayJoinedTournamentsError('Server error - please try again later');
-                } else {
-                    console.error('Failed to fetch joined tournaments:', response.status);
-                    displayJoinedTournamentsError('Failed to load joined tournaments');
+                    displayJoinedTournaments(tournaments);
                 }
             } catch (error) {
                 console.error('Error loading joined tournaments:', error);
@@ -3731,8 +4833,10 @@
 
         async function loadManagementTournaments() {
             try {
-                const response = await authenticatedFetch(`${API_BASE_URL}/api/user-tournaments`);
-                const result = await handleApiResponse(response, 'Load management tournaments');
+                const result = await apiManager.request(`${API_BASE_URL}/api/user-tournaments`, {
+                    context: 'Load management tournaments',
+                    cacheTTL: 60000 // Cache for 1 minute
+                });
                 
                 if (result) {
                     managementTournaments = result.data || [];
@@ -4174,18 +5278,20 @@
 
         async function updateTournamentStatusAPI(tournamentId, newStatus) {
             try {
-                const response = await authenticatedFetch(`${API_BASE_URL}/api/user-tournaments/${tournamentId}`, {
+                const result = await apiManager.request(`${API_BASE_URL}/api/user-tournaments/${tournamentId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ status: newStatus })
+                    body: JSON.stringify({ status: newStatus }),
+                    context: 'Update tournament status',
+                    cacheTTL: 0 // Don't cache PUT requests
                 });
-
-                const result = await handleApiResponse(response, 'Update tournament status');
                 
                 if (result) {
                     showAlert('Tournament status updated successfully!', 'success');
+                    // Invalidate cache for tournament lists
+                    apiManager.invalidateCache('/api/user-tournaments');
                     loadManagementTournaments(); // Refresh the list
                 }
             } catch (error) {
@@ -4297,18 +5403,20 @@
             }
 
             try {
-                const response = await authenticatedFetch(`${API_BASE_URL}/api/user-tournaments/${tournamentId}/leaderboard`, {
+                const result = await apiManager.request(`${API_BASE_URL}/api/user-tournaments/${tournamentId}/leaderboard`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ standings: finalists })
+                    body: JSON.stringify({ standings: finalists }),
+                    context: 'Update finalists',
+                    cacheTTL: 0 // Don't cache PUT requests
                 });
-
-                const result = await handleApiResponse(response, 'Update finalists');
                 
                 if (result) {
                     showAlert('Finalists updated successfully!', 'success');
+                    // Invalidate cache for tournament lists
+                    apiManager.invalidateCache('/api/user-tournaments');
                     loadManagementTournaments(); // Refresh the list
                     
                     // Close modal
@@ -4334,14 +5442,16 @@
 
             if (confirm(`Are you sure you want to delete "${tournament.title}"?\n\nThis action cannot be undone and will permanently remove all tournament data.`)) {
                 try {
-                    const response = await authenticatedFetch(`${API_BASE_URL}/api/user-tournaments/${tournamentId}`, {
-                        method: 'DELETE'
+                    const result = await apiManager.request(`${API_BASE_URL}/api/user-tournaments/${tournamentId}`, {
+                        method: 'DELETE',
+                        context: 'Delete tournament',
+                        cacheTTL: 0 // Don't cache DELETE requests
                     });
-
-                    const result = await handleApiResponse(response, 'Delete tournament');
                     
                     if (result) {
                         showAlert('Tournament deleted successfully!', 'success');
+                        // Invalidate cache for tournament lists
+                        apiManager.invalidateCache('/api/user-tournaments');
                         loadManagementTournaments(); // Refresh the list
                         loadUserTournaments(); // Refresh main tournaments list
                         loadDashboardStats(); // Refresh stats
