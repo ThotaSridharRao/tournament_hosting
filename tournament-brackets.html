@@ -581,7 +581,7 @@
 
         <div class="download-section" id="download-section" style="display: none;">
             <h3><i class="fas fa-download"></i> Download Tournament Brackets</h3>
-            <p>Generate a comprehensive PDF with all match details, schedules, and bracket information.</p>
+            <p>Generate a comprehensive PDF with all team slots and tournament information.</p>
             <button class="download-btn" id="download-pdf-btn" onclick="downloadBracketsPDF()">
                 <i class="fas fa-file-pdf"></i>
                 Download Brackets PDF
@@ -698,21 +698,14 @@
             `;
             formatInfo.style.display = 'block';
 
-            // Show download section based on admin access only
+            // Show download section
             const downloadSection = document.getElementById('download-section');
             const downloadBtn = document.getElementById('download-pdf-btn');
 
-            // Check if user is admin to show/hide download functionality
-            checkAdminAccess().then(isAdmin => {
-                if (isAdmin) {
-                    downloadSection.style.display = 'block';
-                    downloadBtn.disabled = false;
-                    downloadBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Download Brackets PDF (Admin)';
-                    downloadBtn.classList.remove('admin-only');
-                } else {
-                    downloadSection.style.display = 'none';
-                }
-            });
+            downloadSection.style.display = 'block';
+            downloadBtn.disabled = false;
+            downloadBtn.innerHTML = '<i class="fas fa-file-pdf"></i> Download Brackets PDF';
+            downloadBtn.classList.remove('admin-only');
         }
 
         function displayTournamentStats() {
@@ -1042,7 +1035,7 @@
 
             // Build table based on type
             if (tableConfig.type === 'qualifier') {
-                html += `<thead><tr><th>Slot #</th><th>Team Name</th><th>Captain</th></tr></thead>`;
+                html += `<thead><tr><th>S.No</th><th>Team Name</th><th>Captain</th></tr></thead>`;
                 html += `<tbody>`;
 
                 // Create slots for this qualifier and fill with teams
@@ -1453,20 +1446,15 @@
         }
 
         async function downloadBracketsPDF() {
-            // Check if user is admin
-            const isAdmin = await checkAdminAccess();
-            if (!isAdmin) {
-                alert('Access denied. Only administrators can download tournament brackets.');
-                return;
-            }
-
-            if (!tournamentData || !matchesData.length) {
+            if (!tournamentData) {
                 alert('No tournament data available for download.');
                 return;
             }
 
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
+            const participants = tournamentData.participants || [];
+            const format = (tournamentData.format || 'single_elimination').toLowerCase();
 
             // Page 1: Tournament Overview
             doc.setFontSize(20);
@@ -1475,7 +1463,7 @@
 
             doc.setFontSize(12);
             doc.setTextColor(0, 0, 0);
-            doc.text(`Tournament Brackets & Match Schedule`, 20, 45);
+            doc.text(`Tournament Brackets & Team Slots`, 20, 45);
             doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 55);
 
             // Tournament Information
@@ -1483,12 +1471,12 @@
             doc.text('Tournament Information', 20, 75);
             doc.setFontSize(10);
 
-            const participants = tournamentData.participants || [];
+            const maxTeams = getMaxTeamsForDisplay();
             const infoText = [
                 `Format: ${tournamentData.format || 'Single Elimination'}`,
                 `Game: ${tournamentData.game || 'Not specified'}`,
                 `Teams Registered: ${participants.length}`,
-                `Maximum Teams: ${tournamentData.maxTeams || 'Unlimited'}`,
+                `Maximum Teams: ${maxTeams}`,
                 `Entry Fee: ₹${tournamentData.entryFee || 0}`,
                 `Prize Pool: ₹${tournamentData.prizePool || 0}`,
                 `Status: ${tournamentData.status || 'Unknown'}`,
@@ -1504,100 +1492,129 @@
                 yPos += 8;
             });
 
-            // Registered Teams
-            if (participants.length > 0) {
-                doc.setFontSize(14);
-                doc.text('Registered Teams', 20, yPos + 10);
-                yPos += 20;
+            // Generate tournament tables based on format
+            const formatConfig = getTournamentFormatConfig(format, participants.length);
 
-                const teamData = participants.map((p, index) => [
-                    `#${index + 1}`,
-                    p.teamName,
-                    p.captainEmail,
-                    p.players ? p.players.length : 0,
-                    p.paymentStatus || 'Pending'
-                ]);
+            if (formatConfig && formatConfig.stages) {
+                // Add tournament tables for each stage
+                formatConfig.stages.forEach((stage, stageIndex) => {
+                    doc.addPage();
 
-                doc.autoTable({
-                    head: [['Seed', 'Team Name', 'Captain Email', 'Players', 'Payment Status']],
-                    body: teamData,
-                    startY: yPos,
-                    styles: { fontSize: 8 },
-                    headStyles: { fillColor: [15, 133, 211] }
+                    // Stage header
+                    doc.setFontSize(18);
+                    doc.setTextColor(15, 133, 211);
+                    doc.text(stage.name, 20, 30);
+
+                    doc.setFontSize(12);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text(stage.description, 20, 45);
+
+                    let currentY = 60;
+
+                    stage.tables.forEach((table, tableIndex) => {
+                        // Check if we need a new page
+                        if (currentY > 200) {
+                            doc.addPage();
+                            currentY = 30;
+                        }
+
+                        // Table header
+                        doc.setFontSize(14);
+                        doc.setTextColor(15, 133, 211);
+                        doc.text(table.name, 20, currentY);
+                        currentY += 15;
+
+                        if (table.type === 'qualifier') {
+                            // Generate qualifier table data
+                            const kpSettings = tournamentData.kpSettings || {};
+                            const groupSize = kpSettings.groupSize || 25;
+                            const startIndex = tableIndex * groupSize;
+                            const endIndex = Math.min(startIndex + groupSize, participants.length);
+                            const qualifierTeams = participants.slice(startIndex, endIndex);
+
+                            const tableData = [];
+                            for (let slot = 1; slot <= groupSize; slot++) {
+                                const team = qualifierTeams[slot - 1];
+                                tableData.push([
+                                    slot.toString(),
+                                    team ? (team.teamName || 'Unnamed Team') : 'Open Slot',
+                                    team ? (team.captainEmail || 'No Captain Email') : '-'
+                                ]);
+                            }
+
+                            doc.autoTable({
+                                head: [['S.No', 'Team Name', 'Captain']],
+                                body: tableData,
+                                startY: currentY,
+                                styles: { fontSize: 8 },
+                                headStyles: { fillColor: [15, 133, 211] },
+                                columnStyles: {
+                                    0: { cellWidth: 20, halign: 'center' },
+                                    1: { cellWidth: 80 },
+                                    2: { cellWidth: 70 }
+                                }
+                            });
+
+                            currentY = doc.lastAutoTable.finalY + 20;
+
+                        } else if (table.type === 'final') {
+                            // Generate final table data
+                            const kpSettings = tournamentData.kpSettings || {};
+                            const numberOfGroups = kpSettings.numberOfGroups || 4;
+                            const qualifiersPerGroup = kpSettings.qualifiersPerGroup || 4;
+
+                            const tableData = [];
+                            for (let group = 1; group <= numberOfGroups; group++) {
+                                for (let pos = 1; pos <= qualifiersPerGroup; pos++) {
+                                    tableData.push([
+                                        (((group - 1) * qualifiersPerGroup) + pos).toString(),
+                                        `Qualifier ${group} - Position ${pos}`,
+                                        'TBD'
+                                    ]);
+                                }
+                            }
+
+                            doc.autoTable({
+                                head: [['Position', 'Qualified From', 'Team Name']],
+                                body: tableData,
+                                startY: currentY,
+                                styles: { fontSize: 8 },
+                                headStyles: { fillColor: [15, 133, 211] },
+                                columnStyles: {
+                                    0: { cellWidth: 25, halign: 'center' },
+                                    1: { cellWidth: 70 },
+                                    2: { cellWidth: 75 }
+                                }
+                            });
+
+                            currentY = doc.lastAutoTable.finalY + 20;
+                        }
+                    });
                 });
-            }
-
-            // Page 2+: Match Details by Round
-            const numRounds = Math.ceil(Math.log2(participants.length));
-
-            for (let round = 1; round <= numRounds; round++) {
+            } else {
+                // Fallback: Simple participant list
                 doc.addPage();
-
-                // Round header
-                doc.setFontSize(18);
+                doc.setFontSize(16);
                 doc.setTextColor(15, 133, 211);
-                let roundTitle = '';
-                if (round === numRounds) {
-                    roundTitle = 'Final Match';
-                } else if (round === numRounds - 1) {
-                    roundTitle = 'Semi-Final Matches';
-                } else if (round === numRounds - 2) {
-                    roundTitle = 'Quarter-Final Matches';
-                } else {
-                    roundTitle = `Round ${round} Matches`;
-                }
+                doc.text('Registered Teams', 20, 30);
 
-                doc.text(roundTitle, 20, 30);
-
-                // Round matches table
-                const roundMatches = matchesData.filter(m => m.round === round);
-                if (roundMatches.length > 0) {
-                    const matchTableData = roundMatches.map(match => [
-                        `M${match.matchId}`,
-                        match.team1 || 'TBD',
-                        match.team2 || 'TBD',
-                        match.scheduledTime || 'TBD',
-                        match.status,
-                        match.winnerAdvancesTo || 'Tournament Winner'
+                if (participants.length > 0) {
+                    const teamData = participants.map((p, index) => [
+                        (index + 1).toString(),
+                        p.teamName || 'Unnamed Team',
+                        p.captainEmail || 'No Captain Email'
                     ]);
 
                     doc.autoTable({
-                        head: [['Match #', 'Team 1', 'Team 2', 'Scheduled Time', 'Status', 'Winner Advances To']],
-                        body: matchTableData,
+                        head: [['S.No', 'Team Name', 'Captain Email']],
+                        body: teamData,
                         startY: 50,
                         styles: { fontSize: 10 },
                         headStyles: { fillColor: [15, 133, 211] },
                         columnStyles: {
-                            0: { cellWidth: 20 },
-                            1: { cellWidth: 35 },
-                            2: { cellWidth: 35 },
-                            3: { cellWidth: 30 },
-                            4: { cellWidth: 25 },
-                            5: { cellWidth: 35 }
-                        }
-                    });
-
-                    // Add match details section
-                    let detailsY = doc.lastAutoTable.finalY + 20;
-                    doc.setFontSize(12);
-                    doc.setTextColor(0, 0, 0);
-                    doc.text('Match Details & Notes:', 20, detailsY);
-
-                    detailsY += 15;
-                    doc.setFontSize(10);
-                    roundMatches.forEach(match => {
-                        doc.text(`Match ${match.matchId}: ${match.team1 || 'TBD'} vs ${match.team2 || 'TBD'}`, 25, detailsY);
-                        detailsY += 8;
-                        doc.text(`  • Status: ${match.status}`, 30, detailsY);
-                        detailsY += 8;
-                        doc.text(`  • Winner advances to: ${match.winnerAdvancesTo}`, 30, detailsY);
-                        detailsY += 8;
-                        doc.text(`  • Scheduled: ${match.scheduledTime || 'Time TBD'}`, 30, detailsY);
-                        detailsY += 15;
-
-                        if (detailsY > 250) {
-                            doc.addPage();
-                            detailsY = 30;
+                            0: { cellWidth: 20, halign: 'center' },
+                            1: { cellWidth: 80 },
+                            2: { cellWidth: 70 }
                         }
                     });
                 }
