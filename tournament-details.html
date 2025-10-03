@@ -2213,7 +2213,7 @@
             // Show brackets button when registration is closed
             bracketsActionBtn.style.display = 'inline-flex';
             bracketsActionBtn.onclick = () => {
-              window.location.href = `tournament-brackets-view.html?slug=${tournament.slug}`;
+              window.location.href = `tournament-brackets.html?slug=${tournament.slug}`;
             };
             break;
           case 'ongoing':
@@ -2223,7 +2223,7 @@
             // Show brackets button for ongoing and ended tournaments
             bracketsActionBtn.style.display = 'inline-flex';
             bracketsActionBtn.onclick = () => {
-              window.location.href = `tournament-brackets-view.html?slug=${tournament.slug}`;
+              window.location.href = `tournament-brackets.html?slug=${tournament.slug}`;
             };
             break;
           default:

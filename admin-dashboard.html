@@ -1118,10 +1118,9 @@
                 return;
             }
 
-            // Open brackets view in a new tab/window
-            // You can create a dedicated brackets.html page or add it to the existing tournament details page
+            // Open brackets view in same tab
             const bracketsUrl = `tournament-brackets.html?slug=${slug}`;
-            window.open(bracketsUrl, '_blank');
+            window.location.href = bracketsUrl;
             
             // Alternative: Show brackets in a modal (uncomment if you prefer modal view)
             // showBracketsModal(tournament);
