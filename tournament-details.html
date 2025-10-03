@@ -1627,9 +1627,9 @@
         }
 
         timelineData.forEach((event, index) => {
-            // Use the simplified time data
+            // Use the 24-hour time data
             const date = event.dateOnly || event.displayTime.split(',')[0].trim();
-            const time12hr = event.time12hr || '';
+            const time24hr = event.time24hr || '';
             
             // Apply simple status coloring for visibility
             let rowClass = '';
@@ -1644,8 +1644,8 @@
                 rowClass = 'current-row';
             }
 
-            // Show clean 12-hour time format
-            const timeDisplay = time12hr ? `<span style="font-weight: 600; color: var(--primary-color);">${time12hr}</span>` : 'TBD';
+            // Show clean 24-hour time format to avoid timezone conversion issues
+            const timeDisplay = time24hr ? `<span style="font-weight: 600; color: var(--primary-color);">${time24hr}</span>` : 'TBD';
 
             const rowHtml = `
                 <tr class="${rowClass}">
@@ -1675,16 +1675,16 @@
         
         const formatEventData = (dateObj, title, description = '') => {
             if (!dateObj) return null;
-            const day = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            const time12hr = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            const day = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'Asia/Kolkata' });
+            const time24hr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Kolkata' });
 
             return {
                 date: dateObj, 
                 isoDatetime: dateObj.toISOString(), 
                 title: title,
                 description: description,
-                displayTime: `${day}, ${time12hr}`,
-                time12hr: time12hr,
+                displayTime: `${day}, ${time24hr}`,
+                time24hr: time24hr,
                 dateOnly: day
             };
         };
@@ -1798,8 +1798,8 @@
 
         const formatDateWithTime = (dateString) => {
             const date = new Date(dateString);
-            const dateStr = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-            const timeStr = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            const dateStr = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' });
+            const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Kolkata' });
             return `${dateStr} at ${timeStr}`;
         };
         

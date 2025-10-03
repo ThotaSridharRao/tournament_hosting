@@ -436,7 +436,7 @@
         async function loadTournamentBrackets() {
             try {
                 // Load tournament data
-                const response = await fetch(`${API_BASE_URL}/api/tournaments/${tournamentSlug}`);
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}`);
                 if (!response.ok) {
                     throw new Error('Tournament not found');
                 }
