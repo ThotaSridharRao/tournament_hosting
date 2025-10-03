@@ -483,8 +483,7 @@
             color: #6c757d;
         }
 
-        .match-schedule,
-        .match-result {
+        .match-schedule {
             color: var(--text-secondary);
         }
 
@@ -659,9 +658,6 @@
             const infoHtml = `
                 <div class="info-item">
                     <strong>Format:</strong> ${tournamentData.format || 'Single Elimination'}
-                </div>
-                <div class="info-item">
-                    <strong>Teams:</strong> ${participants.length}/${tournamentData.maxTeams || 'Unlimited'}
                 </div>
                 <div class="info-item">
                     <strong>Status:</strong> ${statusBadge}
@@ -1032,9 +1028,7 @@
             html += `<tr>`;
             html += `<th>Match #</th>`;
             html += `<th>Teams</th>`;
-            html += `<th>Status</th>`;
             html += `<th>Schedule</th>`;
-            html += `<th>Result</th>`;
             html += `</tr>`;
             html += `</thead>`;
             html += `<tbody>`;
@@ -1045,9 +1039,7 @@
                 html += `<tr>`;
                 html += `<td class="match-number">M${match.id}</td>`;
                 html += `<td class="match-teams">${match.teams}</td>`;
-                html += `<td class="match-status">${match.status}</td>`;
                 html += `<td class="match-schedule">${match.schedule}</td>`;
-                html += `<td class="match-result">${match.result}</td>`;
                 html += `</tr>`;
             });
 
@@ -1086,7 +1078,7 @@
                     id: matchIdBase + 1,
                     teams: teamsDisplay,
                     status: status,
-                    schedule: tableConfig.date || 'TBD',
+                    schedule: getMatchSchedule(matchIdBase + 1, tableConfig.date),
                     result: 'Pending'
                 });
             } else if (tableConfig.type === 'final') {
@@ -1097,7 +1089,7 @@
                     id: matchIdBase + 1,
                     teams: qualifiedTeams,
                     status: participants.length > 0 ? 'Teams Ready' : 'Awaiting Qualifiers',
-                    schedule: tableConfig.date || 'TBD',
+                    schedule: getMatchSchedule(matchIdBase + 1, tableConfig.date),
                     result: 'Pending'
                 });
             } else {
@@ -1124,7 +1116,7 @@
                         id: matchIdBase + i + 1,
                         teams: teamsDisplay,
                         status: matchTeams.length > 0 ? 'Teams Assigned' : 'Awaiting Teams',
-                        schedule: 'TBD',
+                        schedule: getMatchSchedule(matchIdBase + i + 1, null),
                         result: 'Pending'
                     });
                 }
@@ -1254,8 +1246,6 @@
                         <th>vs</th>
                         <th>Team 2</th>
                         <th>Scheduled Time</th>
-                        <th>Status</th>
-                        <th>Winner Advances To</th>
                     </tr>
                 </thead>
                 <tbody>`;
@@ -1267,8 +1257,6 @@
                         <td><span class="vs-separator">VS</span></td>
                         <td>${match.team2 || 'TBD'} ${match.team2 ? `<span class="seed-number">#${match.seed2}</span>` : ''}</td>
                         <td>${match.scheduledTime || 'TBD'}</td>
-                        <td>${match.status}</td>
-                        <td>${match.winnerAdvancesTo || 'Tournament Winner'}</td>
                     </tr>`;
                 });
 
@@ -1335,7 +1323,7 @@
                         seed1: seed1,
                         seed2: seed2,
                         status: status,
-                        scheduledTime: 'TBD',
+                        scheduledTime: getMatchSchedule(matchId, null),
                         winnerAdvancesTo: winnerAdvancesTo
                     });
                 }
@@ -1469,6 +1457,40 @@
             const parts = value.split(`; ${name}=`);
             if (parts.length === 2) return parts.pop().split(';').shift();
             return null;
+        }
+
+        function getMatchSchedule(matchId, fallbackDate) {
+            // Check for schedule events
+            if (tournamentData.scheduleEvents) {
+                const matchEvent = tournamentData.scheduleEvents.find(event =>
+                    event.title.toLowerCase().includes('match') &&
+                    event.title.toLowerCase().includes(matchId.toString())
+                );
+                if (matchEvent) {
+                    const date = new Date(`${matchEvent.date}T${matchEvent.time}`);
+                    return date.toLocaleString();
+                }
+            }
+
+            // Check KP format match schedule
+            if (tournamentData.format === 'kp' && tournamentData.kpSettings && tournamentData.kpSettings.matchSchedule) {
+                const kpMatch = tournamentData.kpSettings.matchSchedule.find(match =>
+                    match.match.toLowerCase().includes(matchId.toString()) ||
+                    match.match.toLowerCase().includes('match')
+                );
+                if (kpMatch) {
+                    const date = new Date(kpMatch.date);
+                    return date.toLocaleString();
+                }
+            }
+
+            // Fallback to provided date or TBD
+            if (fallbackDate && fallbackDate !== 'TBD') {
+                const date = new Date(fallbackDate);
+                return date.toLocaleString();
+            }
+
+            return 'TBD';
         }
 
         async function downloadBracketsPDF() {
