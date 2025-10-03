@@ -1669,7 +1669,14 @@
         let allEvents = [];
 
         const parseDate = (dateStr) => {
-            const date = new Date(dateStr);
+            // Parse manually to avoid timezone conversion
+            const cleanStr = dateStr.replace('Z', '').replace('T', ' ');
+            const [datePart, timePart] = cleanStr.split(' ');
+            const [year, month, day] = datePart.split('-');
+            const [hours, minutes, seconds] = timePart ? timePart.split(':') : ['00', '00', '00'];
+            
+            // Create date object with local timezone (no conversion)
+            const date = new Date(year, month - 1, day, hours, minutes, seconds || 0);
             return isNaN(date) ? null : date;
         };
         
@@ -1807,18 +1814,18 @@
         document.getElementById('max-teams').textContent = tournament.maxTeams || 'Unlimited';
 
         const formatDateWithTime = (dateString) => {
-            const date = new Date(dateString);
+            // Parse the date string manually to avoid timezone conversion
+            // Assuming format like "2025-01-15T15:00:00Z" or "2025-01-15T15:00:00"
+            const dateStr = dateString.replace('Z', '').replace('T', ' ');
+            const [datePart, timePart] = dateStr.split(' ');
+            const [year, month, day] = datePart.split('-');
+            const [hours, minutes] = timePart ? timePart.split(':') : ['00', '00'];
             
-            // Extract raw time components to avoid timezone conversion
-            const year = date.getFullYear();
-            const month = date.getMonth();
-            const day = date.getDate();
-            const hours = date.getHours();
-            const minutes = date.getMinutes();
+            // Create date display without timezone conversion
+            const displayDate = new Date(year, month - 1, day).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+            const displayTime = `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
             
-            const dateStr = new Date(year, month, day).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-            const timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-            return `${dateStr} at ${timeStr}`;
+            return `${displayDate} at ${displayTime}`;
         };
         
         document.getElementById('reg-start-date').textContent = formatDateWithTime(tournament.registrationStart);
