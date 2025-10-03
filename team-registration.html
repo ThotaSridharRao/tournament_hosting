@@ -1337,6 +1337,7 @@
                                     <div class="profile-photo"><i class="fas fa-user"></i></div>
                                     <div class="profile-info">
                                         <div class="profile-username" id="modal-username">User</div>
+                                        <div class="profile-userid" id="modal-userid">ID: Loading...</div>
                                     </div>
                                 </div>
                                 <div class="profile-actions">
@@ -2035,6 +2036,10 @@
 
             if (user) {
                 document.getElementById('modal-username').textContent = user.username || user.email.split('@')[0];
+                const useridElement = document.getElementById('modal-userid');
+                if (useridElement && user.id) {
+                    useridElement.textContent = `ID: ${user.id}`;
+                }
                 if (guestMenu) guestMenu.style.display = 'none';
                 if (userMenu) userMenu.style.display = 'flex';
             } else {

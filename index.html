@@ -1455,6 +1455,7 @@
                   <div class="profile-photo"><i class="fas fa-user"></i></div>
                   <div class="profile-info">
                     <div class="profile-username" id="modal-username">User</div>
+                    <div class="profile-userid" id="modal-userid">ID: Loading...</div>
                   </div>
                 </div>
                 <div class="profile-actions">
@@ -2017,15 +2018,60 @@
       window.location.reload(); // Reload the current page to update the nav
     }
 
-    // --- NAVBAR LOGIC ---
-    function checkUserAuthentication() {
+    async function fetchUserData() {
       const sessionData = getSessionData();
+      if (!sessionData || !sessionData.token) return null;
+
+      // If we already have complete user data, return it
+      if (sessionData.user && sessionData.user.id) {
+        return sessionData.user;
+      }
+
+      try {
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
+        
+        const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${sessionData.token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success && result.data.user) {
+            // Update session with complete user data
+            const updatedSession = {
+              ...sessionData,
+              user: result.data.user
+            };
+            localStorage.setItem('nexus_session', JSON.stringify(updatedSession));
+            return result.data.user;
+          }
+        }
+      } catch (error) {
+        console.log('Failed to fetch user data:', error);
+      }
+
+      return sessionData.user;
+    }
+
+    // --- NAVBAR LOGIC ---
+    async function checkUserAuthentication() {
       const guestMenu = document.getElementById('guest-menu');
       const userMenu = document.getElementById('user-menu');
-      const user = sessionData?.data?.user || sessionData?.user;
+      
+      // Fetch user data (from session or backend)
+      const user = await fetchUserData();
 
       if (user) {
         document.getElementById('modal-username').textContent = user.username || user.email.split('@')[0];
+        const useridElement = document.getElementById('modal-userid');
+        if (useridElement && user.id) {
+          useridElement.textContent = `ID: ${user.id}`;
+        }
         if (guestMenu) guestMenu.style.display = 'none';
         if (userMenu) userMenu.style.display = 'flex';
       } else {
@@ -2034,10 +2080,9 @@
       }
     }
 
-    function setupMobileNav() {
-      const sessionData = getSessionData();
+    async function setupMobileNav() {
       const mobileNavContainer = document.getElementById('mobile-nav');
-      const user = sessionData?.data?.user || sessionData?.user;
+      const user = await fetchUserData();
 
       const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
 
@@ -2261,8 +2306,10 @@
       });
 
       // Set up the content of the navbars
-      checkUserAuthentication();
-      setupMobileNav();
+      (async () => {
+        await checkUserAuthentication();
+        await setupMobileNav();
+      })();
     });
 
     // Keep-alive functionality to prevent backend from sleeping

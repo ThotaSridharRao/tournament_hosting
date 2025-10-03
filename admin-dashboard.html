@@ -23,7 +23,7 @@
            Theme variables (Cyberpunk)
            ========================= */
         :root {
-            --primary-color: #0AFAD9;
+            --primary-color: #0f85d3;
             /* Electric Cyan */
             --bg-dark: #0D0A1A;
             /* Dark Matter Black */
@@ -905,6 +905,7 @@
                                 <div class="profile-photo"><i class="fas fa-user-shield"></i></div>
                                 <div class="profile-info">
                                     <div class="profile-username" id="modal-username">Admin</div>
+                                    <div class="profile-userid" id="modal-userid">ID: Loading...</div>
                                 </div>
                             </div>
                             <div class="profile-actions">
@@ -968,6 +969,10 @@
             const user = sessionData?.data?.user || sessionData?.user;
             if (user) {
                 document.getElementById('modal-username').textContent = user.username || user.email;
+                const useridElement = document.getElementById('modal-userid');
+                if (useridElement && user.id) {
+                    useridElement.textContent = `ID: ${user.id}`;
+                }
                 if (userMenu) userMenu.style.display = 'flex';
             } else {
                 if (userMenu) userMenu.style.display = 'none';
@@ -1509,7 +1514,7 @@
             btn.textContent = 'Creating...'; btn.disabled = true;
             try {
                 const formData = new FormData();
-                
+
                 // Add all form fields, including file only if selected
                 const formElements = form.elements;
                 for (let element of formElements) {
@@ -1558,7 +1563,7 @@
 
             try {
                 const formData = new FormData();
-                
+
                 // Add all form fields except file inputs
                 const formElements = form.elements;
                 for (let element of formElements) {

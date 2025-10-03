@@ -29,7 +29,17 @@ function checkUserAuthentication() {
   const user = sessionData?.data?.user || sessionData?.user;
 
   if (user) {
-    document.getElementById('modal-username').textContent = user.username || user.email.split('@')[0];
+    const usernameElement = document.getElementById('modal-username');
+    const useridElement = document.getElementById('modal-userid');
+    
+    if (usernameElement) {
+      usernameElement.textContent = user.username || user.email.split('@')[0];
+    }
+    
+    if (useridElement && user.id) {
+      useridElement.textContent = `ID: ${user.id}`;
+    }
+    
     if (guestMenu) guestMenu.style.display = 'none';
     if (userMenu) userMenu.style.display = 'flex';
   } else {
@@ -110,6 +120,7 @@ function setupMobileNav() {
         <div class="profile-photo"><i class="fas fa-user"></i></div>
         <div class="profile-info">
           <div class="profile-username">${username}</div>
+          <div class="profile-userid">ID: ${user.id}</div>
         </div>
       </div>
       <div class="profile-actions">
