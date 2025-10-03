@@ -480,14 +480,14 @@
     }
     
     /* Additional specificity for mobile host button */
-    #mobile-nav .guest-view a[href="user-dashboard.html"] {
+    #mobile-nav .guest-view a[href="userdashboard.html"] {
         background: #ffffff !important;
         background-color: #ffffff !important;
         background-image: none !important;
         color: #000000 !important;
     }
     
-    #mobile-nav .guest-view a[href="user-dashboard.html"]:hover {
+    #mobile-nav .guest-view a[href="userdashboard.html"]:hover {
         opacity: 0.8 !important;
         filter: brightness(0.9) !important;
     }
@@ -1281,7 +1281,7 @@
                     </div>
                   </div>
                   <div class="profile-actions">
-                    <a href="user-dashboard.html" class="profile-action" id="modal-dashboard-link">
+                    <a href="userdashboard.html" class="profile-action" id="modal-dashboard-link">
                       <i class="fas fa-user"></i>
                       <span>My Account</span>
                     </a>
@@ -2372,7 +2372,7 @@
             dashboardLink.innerHTML = '<i class="fas fa-shield-alt"></i><span>Admin Dashboard</span>';
           } else {
             roleBadge.style.display = 'none';
-            dashboardLink.href = 'user-dashboard.html';
+            dashboardLink.href = 'userdashboard.html';
             dashboardLink.innerHTML = '<i class="fas fa-user"></i><span>My Account</span>';
           }
         } catch (error) {
@@ -2478,20 +2478,20 @@
             </div>
           </div>
           <div class="profile-actions">
-            <a href="user-dashboard.html" class="profile-action">
+            <a href="userdashboard.html" class="profile-action">
               <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
             </a>
             <a href="tournaments.html" class="profile-action">
               <i class="fas fa-trophy"></i> <span>Browse Tournaments</span>
             </a>
-            <a href="user-dashboard.html" class="profile-action">
+            <a href="userdashboard.html" class="profile-action">
               <i class="fas fa-list"></i> <span>My Tournaments</span>
             </a>
           </div>
         `;
         bottomActionsHTML = `
           <div class="mobile-nav-bottom-actions">
-            <a href="user-dashboard.html?tab=create" class="mobile-host-btn">
+            <a href="userdashboard.html?tab=create" class="mobile-host-btn">
               <i class="fas fa-plus-circle"></i> Host
             </a>
             <button class="mobile-logout-btn" onclick="logout()">
@@ -2507,13 +2507,13 @@
             <p>Join the arena to compete, win prizes, and track your stats!</p>
           </div>
           <div class="profile-actions">
-            <a href="user-dashboard.html" class="profile-action">
+            <a href="userdashboard.html" class="profile-action">
               <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
             </a>
             <a href="tournaments.html" class="profile-action">
               <i class="fas fa-trophy"></i> <span>Browse Tournaments</span>
             </a>
-            <a href="user-dashboard.html" class="profile-action">
+            <a href="userdashboard.html" class="profile-action">
               <i class="fas fa-list"></i> <span>My Tournaments</span>
             </a>
           </div>
