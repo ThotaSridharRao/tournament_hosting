@@ -935,7 +935,8 @@
       padding: 4rem 0;
     }
 
-    .finalists-table {
+    /* Finalists Table - Same design as Schedule Table */
+    .finalists-table-container {
       background: var(--panel);
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
@@ -943,76 +944,69 @@
       margin-top: 2rem;
     }
 
-    .finalists-table table {
+    .finalists-table {
       width: 100%;
       border-collapse: collapse;
     }
 
-    .finalists-table th {
-      background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
-      color: white;
-      padding: 1.5rem 2rem;
-      text-align: left;
-      font-weight: 700;
-      font-size: 1.1rem;
-      border: none;
+    .finalists-table th,
+    .finalists-table td {
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
     }
 
-    .finalists-table th:first-child {
-      width: 80px;
-      text-align: center;
+    .finalists-table th {
+      background: rgba(15, 133, 211, 0.1);
+      color: var(--primary-color);
+      font-weight: 700;
+      font-size: 1.1rem;
     }
 
     .finalists-table td {
-      padding: 1.5rem 2rem;
-      border-bottom: 1px solid var(--border-color);
+      background: transparent;
       color: var(--text-primary);
-      font-size: 1rem;
-      transition: all 0.3s ease;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .finalists-table tr:hover {
+      background-color: rgba(10, 250, 217, 0.05);
     }
 
     .finalists-table tr:last-child td {
       border-bottom: none;
     }
 
-    .finalists-table tbody tr:hover {
-      background: rgba(15, 133, 211, 0.1);
-      transform: scale(1.01);
-    }
-
-    .finalist-rank {
-      font-weight: 700;
-      color: var(--primary-color);
-      font-size: 1.2rem;
-      text-align: center;
-      min-width: 40px;
-    }
-
-    .finalist-team {
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    /* Trophy icons for top 3 */
-    .finalist-rank.rank-1::before {
-      content: "🏆 ";
-      margin-right: 0.5rem;
-    }
-
-    .finalist-rank.rank-2::before {
-      content: "🥈 ";
-      margin-right: 0.5rem;
-    }
-
-    .finalist-rank.rank-3::before {
-      content: "🥉 ";
-      margin-right: 0.5rem;
-    }
-
     .empty-finalists {
       text-align: center;
       padding: 3rem;
       color: var(--text-secondary);
+    }
+
+    /* Bigger font size for larger screens */
+    @media (min-width: 1200px) {
+      .finalists-table th {
+        font-size: 1.3rem;
+        padding: 1.5rem;
+      }
+
+      .finalists-table td {
+        font-size: 1.2rem;
+        padding: 1.5rem;
+      }
+    }
+
+    @media (min-width: 1920px) {
+      .finalists-table th {
+        font-size: 1.4rem;
+        padding: 2rem;
+      }
+
+      .finalists-table td {
+        font-size: 1.3rem;
+        padding: 2rem;
+      }
     }
 
     /* Responsive design for finalists table */
@@ -1570,7 +1564,7 @@
           <h2 class="section-title">Final Standings</h2>
           <p class="section-subtitle">The top teams who battled it out for glory.</p>
         </div>
-        <div class="finalists-table" id="finalists-table">
+        <div class="finalists-table-container" id="finalists-table">
           <div id="finalists-content">
             <!-- Content populated by JS -->
           </div>
@@ -2026,24 +2020,23 @@
       const displayFinalists = paddedFinalists.slice(0, 8);
 
       finalistsContent.innerHTML = `
-          <table>
+          <table class="finalists-table">
               <thead>
                   <tr>
-                      <th>Rank</th>
+                      <th>S.No.</th>
                       <th>Team Name</th>
                   </tr>
               </thead>
               <tbody>
                   ${displayFinalists.map((team, index) => {
         const rank = index + 1;
-        const rankClass = rank <= 3 ? `rank-${rank}` : '';
         const teamName = team.isEmpty ? '-' : (team.teamName || team.name || `Team ${rank}`);
         const rowClass = team.isEmpty ? 'style="opacity: 0.3;"' : '';
 
         return `
                           <tr ${rowClass}>
-                              <td class="finalist-rank ${rankClass}">${rank}</td>
-                              <td class="finalist-team">${teamName}</td>
+                              <td>${rank}</td>
+                              <td>${teamName}</td>
                           </tr>
                       `;
       }).join('')}
