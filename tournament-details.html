@@ -1675,8 +1675,18 @@
         
         const formatEventData = (dateObj, title, description = '') => {
             if (!dateObj) return null;
-            const day = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'Asia/Kolkata' });
-            const time24hr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Kolkata' });
+            
+            // Extract the time components directly without timezone conversion
+            // This ensures 15:00 input shows as 15:00 output
+            const year = dateObj.getFullYear();
+            const month = dateObj.getMonth();
+            const date = dateObj.getDate();
+            const hours = dateObj.getHours();
+            const minutes = dateObj.getMinutes();
+            
+            // Create display strings using the raw values
+            const day = new Date(year, month, date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const time24hr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 
             return {
                 date: dateObj, 
@@ -1798,8 +1808,16 @@
 
         const formatDateWithTime = (dateString) => {
             const date = new Date(dateString);
-            const dateStr = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' });
-            const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Kolkata' });
+            
+            // Extract raw time components to avoid timezone conversion
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const day = date.getDate();
+            const hours = date.getHours();
+            const minutes = date.getMinutes();
+            
+            const dateStr = new Date(year, month, day).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+            const timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
             return `${dateStr} at ${timeStr}`;
         };
         
