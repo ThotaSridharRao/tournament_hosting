@@ -625,6 +625,19 @@
             }
         }
 
+        function getMaxTeamsForDisplay() {
+            const format = (tournamentData.format || 'single_elimination').toLowerCase();
+            let maxTeams = tournamentData.maxTeams;
+
+            // For KP format, calculate maxTeams from kpSettings if not set
+            if (format === 'kp' && tournamentData.kpSettings && !maxTeams) {
+                const kpSettings = tournamentData.kpSettings;
+                maxTeams = (kpSettings.groupSize || 25) * (kpSettings.numberOfGroups || 4);
+            }
+
+            return maxTeams || 'Unlimited';
+        }
+
         function displayTournamentInfo() {
             const participants = tournamentData.participants || [];
             const status = tournamentData.status || 'unknown';
@@ -637,7 +650,7 @@
                     <strong>Format:</strong> ${tournamentData.format || 'Single Elimination'}
                 </div>
                 <div class="info-item">
-                    <strong>Teams:</strong> ${participants.length}/${tournamentData.maxTeams || 'Unlimited'}
+                    <strong>Teams:</strong> ${participants.length}/${getMaxTeamsForDisplay()}
                 </div>
                 <div class="info-item">
                     <strong>Status:</strong> ${statusBadge}
@@ -689,7 +702,24 @@
 
             let totalMatches = 0;
             let rounds = 0;
-            let maxTeams = tournamentData.maxTeams || participants.length;
+            // Calculate maxTeams based on format
+            let maxTeams = tournamentData.maxTeams;
+
+            // For KP format, calculate maxTeams from kpSettings if not set
+            if (format === 'kp' && tournamentData.kpSettings && !maxTeams) {
+                const kpSettings = tournamentData.kpSettings;
+                maxTeams = (kpSettings.groupSize || 25) * (kpSettings.numberOfGroups || 4);
+            }
+
+            // Fallback to participants length or unlimited
+            if (!maxTeams) {
+                maxTeams = participants.length || 'Unlimited';
+            }
+
+            console.log('Tournament Data:', tournamentData);
+            console.log('Format:', format);
+            console.log('Max Teams:', maxTeams);
+            console.log('Participants:', participants.length);
 
             if (formatConfig) {
                 // Calculate total matches from format configuration
@@ -1007,32 +1037,67 @@
             const matchIdBase = (stageIndex * 100) + (tableIndex * 10);
 
             if (tableConfig.type === 'qualifier') {
-                // Use backend data for qualifier matches
+                // Distribute registered teams among qualifier matches
                 const kpSettings = tournamentData.kpSettings || {};
-                const groupSize = kpSettings.groupSize || 25;
+                const numberOfGroups = kpSettings.numberOfGroups || 4;
+
+                // Assign teams to specific qualifier matches (one team per match slot)
+                // For example: Team 1 -> Match 1, Team 2 -> Match 2, etc.
+                const assignedTeam = participants[tableIndex] || null;
+
+                let teamsDisplay = '';
+                let status = '';
+
+                if (assignedTeam) {
+                    teamsDisplay = assignedTeam.teamName;
+                    status = 'Team Assigned';
+                } else {
+                    teamsDisplay = 'No team assigned';
+                    status = 'Awaiting Team Assignment';
+                }
 
                 matches.push({
                     id: matchIdBase + 1,
-                    teams: tableConfig.teams || `${groupSize} teams competing`,
-                    status: 'Scheduled',
+                    teams: teamsDisplay,
+                    status: status,
                     schedule: tableConfig.date || 'TBD',
                     result: 'Pending'
                 });
             } else if (tableConfig.type === 'final') {
+                // Show all registered teams for final (they would qualify from qualifiers)
+                const qualifiedTeams = participants.length > 0 ? `${participants.length} registered teams` : 'Awaiting Qualifiers';
+
                 matches.push({
                     id: matchIdBase + 1,
-                    teams: tableConfig.teams || 'Top Qualifiers',
-                    status: 'Awaiting Qualifiers',
+                    teams: qualifiedTeams,
+                    status: participants.length > 0 ? 'Teams Ready' : 'Awaiting Qualifiers',
                     schedule: tableConfig.date || 'TBD',
                     result: 'Pending'
                 });
             } else {
-                // Generate standard matches
+                // Generate standard matches with actual team distribution
+                const teamsPerMatch = Math.ceil(participants.length / tableConfig.totalMatches);
+
                 for (let i = 0; i < tableConfig.totalMatches; i++) {
+                    const startIndex = i * teamsPerMatch;
+                    const endIndex = Math.min(startIndex + teamsPerMatch, participants.length);
+                    const matchTeams = participants.slice(startIndex, endIndex);
+
+                    let teamsDisplay = 'TBD vs TBD';
+                    if (matchTeams.length > 0) {
+                        if (matchTeams.length === 1) {
+                            teamsDisplay = `${matchTeams[0].teamName} vs TBD`;
+                        } else if (matchTeams.length === 2) {
+                            teamsDisplay = `${matchTeams[0].teamName} vs ${matchTeams[1].teamName}`;
+                        } else {
+                            teamsDisplay = `${matchTeams.length} teams competing`;
+                        }
+                    }
+
                     matches.push({
                         id: matchIdBase + i + 1,
-                        teams: 'TBD vs TBD',
-                        status: 'Scheduled',
+                        teams: teamsDisplay,
+                        status: matchTeams.length > 0 ? 'Teams Assigned' : 'Awaiting Teams',
                         schedule: 'TBD',
                         result: 'Pending'
                     });
