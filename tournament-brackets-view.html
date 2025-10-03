@@ -453,10 +453,7 @@
       color: var(--text-secondary);
     }
 
-    .team-captain {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
+    
 
     .qualifier-source {
       color: var(--text-secondary);
@@ -996,7 +993,7 @@
 
       // Build table based on type
       if (tableConfig.type === 'qualifier') {
-        html += `<thead><tr><th>S.No</th><th>Team Name</th><th>Captain</th></tr></thead>`;
+        html += `<thead><tr><th>S.No</th><th>Team Name</th></thead>`;
         html += `<tbody>`;
 
         // Create slots for this qualifier and fill with teams
@@ -1006,10 +1003,10 @@
           html += `<td class="match-number">${slot}</td>`;
           if (team) {
             html += `<td class="match-teams"><strong>${team.teamName || 'Unnamed Team'}</strong></td>`;
-            html += `<td class="team-captain">${team.captainEmail || 'No Captain Email'}</td>`;
+            
           } else {
             html += `<td class="match-teams"><em>Open Slot</em></td>`;
-            html += `<td class="team-captain">-</td>`;
+            
           }
           html += `</tr>`;
         }
@@ -1232,7 +1229,7 @@
                             ${participants.map((p, i) => `
                                 <div class="participant-card">
                                     <h4>${p.teamName}</h4>
-                                    <p><strong>Captain:</strong> ${p.captainEmail}</p>
+                                    
                                     <p><strong>Players:</strong> ${p.players ? p.players.length : 0}</p>
                                     <span class="seed-number">Seed #${i + 1}</span>
                                 </div>
@@ -1256,7 +1253,7 @@
                             ${participants.map((p, i) => `
                                 <div class="participant-card">
                                     <h4>${p.teamName}</h4>
-                                    <p><strong>Captain:</strong> ${p.captainEmail}</p>
+                                    
                                     <p><strong>Players:</strong> ${p.players ? p.players.length : 0}</p>
                                     <span class="seed-number">Team #${i + 1}</span>
                                 </div>
@@ -1279,7 +1276,7 @@
                             ${participants.map((p, i) => `
                                 <div class="participant-card">
                                     <h4>${p.teamName}</h4>
-                                    <p><strong>Captain:</strong> ${p.captainEmail}</p>
+                                    
                                     <p><strong>Players:</strong> ${p.players ? p.players.length : 0}</p>
                                     <span class="seed-number">Team #${i + 1}</span>
                                 </div>
@@ -1300,7 +1297,7 @@
                     ${participants.map((p, i) => `
                         <div class="participant-card">
                             <h4>${p.teamName}</h4>
-                            <p><strong>Captain:</strong> ${p.captainEmail}</p>
+                            
                             <p><strong>Players:</strong> ${p.players ? p.players.length : 0}</p>
                             <p><strong>Registration:</strong> ${new Date(p.registrationDate).toLocaleDateString()}</p>
                             <p><strong>Payment:</strong> ${p.paymentStatus || 'Pending'}</p>
