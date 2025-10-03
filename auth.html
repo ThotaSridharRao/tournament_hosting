@@ -769,7 +769,14 @@
         
         const result = await response.json();
         
-        if (response.ok && result.data && result.data.token) {
+        // Debug logging
+        console.log('DEBUG: Login response:', result);
+        console.log('DEBUG: Response status:', response.status);
+        console.log('DEBUG: Result success:', result.success);
+        console.log('DEBUG: Result data:', result.data);
+        console.log('DEBUG: Redirect path:', result.redirect_path);
+        
+        if (response.ok && result.success && result.data && result.data.token) {
           // NEW CODE
           const session = {
             token: result.data.token,
