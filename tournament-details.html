@@ -956,6 +956,20 @@
       border-bottom: 1px solid var(--border-color);
     }
 
+    .finalists-table th:nth-child(1),
+    .finalists-table td:nth-child(1),
+    .finalists-table th:nth-child(3),
+    .finalists-table td:nth-child(3) {
+      width: 80px;
+    }
+
+    .finalists-table th:nth-child(2),
+    .finalists-table td:nth-child(2),
+    .finalists-table th:nth-child(4),
+    .finalists-table td:nth-child(4) {
+      width: auto;
+    }
+
     .finalists-table th {
       background: rgba(15, 133, 211, 0.1);
       color: var(--primary-color);
@@ -1014,16 +1028,15 @@
 
       .finalists-table th,
       .finalists-table td {
-        padding: 1rem;
-        font-size: 0.9rem;
+        padding: 0.75rem 0.25rem;
+        font-size: 0.85rem;
       }
 
-      .finalists-table th:first-child {
-        width: 60px;
-      }
-
-      .finalist-rank {
-        font-size: 1rem;
+      .finalists-table th:nth-child(1),
+      .finalists-table td:nth-child(1),
+      .finalists-table th:nth-child(3),
+      .finalists-table td:nth-child(3) {
+        width: 50px;
       }
     }
 
@@ -1031,12 +1044,15 @@
 
       .finalists-table th,
       .finalists-table td {
-        padding: 0.75rem 0.5rem;
-        font-size: 0.85rem;
+        padding: 0.5rem 0.25rem;
+        font-size: 0.8rem;
       }
 
-      .finalists-table th:first-child {
-        width: 50px;
+      .finalists-table th:nth-child(1),
+      .finalists-table td:nth-child(1),
+      .finalists-table th:nth-child(3),
+      .finalists-table td:nth-child(3) {
+        width: 40px;
       }
     }
 
@@ -2013,23 +2029,38 @@
       // Show all finalists that admin has added
       const displayFinalists = finalists;
 
+      // Split finalists into two columns of 8 each
+      const leftColumn = displayFinalists.slice(0, 8);
+      const rightColumn = displayFinalists.slice(8, 16);
+      const maxRows = Math.max(leftColumn.length, rightColumn.length);
+
       finalistsContent.innerHTML = `
           <table class="finalists-table">
               <thead>
                   <tr>
                       <th>S.No.</th>
                       <th>Team Name</th>
+                      <th>S.No.</th>
+                      <th>Team Name</th>
                   </tr>
               </thead>
               <tbody>
-                  ${displayFinalists.map((team, index) => {
-        const rank = index + 1;
-        const teamName = team.teamName || team.name || `Team ${rank}`;
+                  ${Array.from({ length: maxRows }, (_, index) => {
+        const leftTeam = leftColumn[index];
+        const rightTeam = rightColumn[index];
+
+        const leftRank = leftTeam ? index + 1 : '';
+        const leftName = leftTeam ? (leftTeam.teamName || leftTeam.name || `Team ${index + 1}`) : '';
+
+        const rightRank = rightTeam ? index + 9 : '';
+        const rightName = rightTeam ? (rightTeam.teamName || rightTeam.name || `Team ${index + 9}`) : '';
 
         return `
                           <tr>
-                              <td>${rank}</td>
-                              <td>${teamName}</td>
+                              <td>${leftRank}</td>
+                              <td>${leftName}</td>
+                              <td>${rightRank}</td>
+                              <td>${rightName}</td>
                           </tr>
                       `;
       }).join('')}
