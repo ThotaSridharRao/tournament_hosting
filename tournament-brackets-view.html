@@ -541,6 +541,64 @@
       font-weight: 600;
       color: var(--accent-secondary);
     }
+
+    .qualifier-carousel {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .carousel-container {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .carousel-slides {
+      display: flex;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .carousel-slide {
+      min-width: 100%;
+      flex-shrink: 0;
+    }
+
+    .carousel-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .carousel-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--ease);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .carousel-btn:hover:not(:disabled) {
+      background: var(--accent-secondary);
+      transform: translateY(-2px);
+    }
+
+    .carousel-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .carousel-indicator {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 1rem;
+    }
   </style>
 </head>
 
@@ -733,17 +791,44 @@
         html += `<p>${stage.description}</p>`;
         html += `</div>`;
 
-        // Create tables for this stage
-        stage.tables.forEach((table, tableIndex) => {
-          html += createMatchTable(table, participants, stageIndex, tableIndex);
-        });
+        // Check if this is qualifier stage for carousel
+        if (stage.name.includes('Qualifier')) {
+          html += `<div class="qualifier-carousel">`;
+          html += `<div class="carousel-container">`;
+          html += `<div class="carousel-slides" id="carousel-slides">`;
+          
+          // Create all qualifier tables as slides
+          stage.tables.forEach((table, tableIndex) => {
+            html += `<div class="carousel-slide">`;
+            html += createMatchTable(table, participants, stageIndex, tableIndex);
+            html += `</div>`;
+          });
+          
+          html += `</div></div>`; // Close carousel-slides and carousel-container
+          
+          // Add navigation controls
+          html += `<div class="carousel-controls">`;
+          html += `<button class="carousel-btn" id="prev-btn" onclick="previousSlide()" disabled>
+                      <i class="fas fa-chevron-left"></i> Previous
+                  </button>`;
+          html += `<span class="carousel-indicator" id="slide-indicator">Match 1 of ${stage.tables.length}</span>`;
+          html += `<button class="carousel-btn" id="next-btn" onclick="nextSlide()">
+                      Next <i class="fas fa-chevron-right"></i>
+                  </button>`;
+          html += `</div>`;
+          
+          html += `</div>`; // Close qualifier-carousel
+        } else {
+          // For finalists or other stages, display normally
+          stage.tables.forEach((table, tableIndex) => {
+            html += createMatchTable(table, participants, stageIndex, tableIndex);
+          });
+        }
 
         html += `</div>`;
       });
 
-
-
-      container.innerHTML = html;
+          container.innerHTML = html;
     }
 
     function getTournamentFormatConfig(format, participantCount) {
@@ -1305,40 +1390,6 @@
       return null;
     }
 
-    function getMatchSchedule(matchId, fallbackDate) {
-      // Check for schedule events
-      if (tournamentData.scheduleEvents) {
-        const matchEvent = tournamentData.scheduleEvents.find(event =>
-          event.title.toLowerCase().includes('match') &&
-          event.title.toLowerCase().includes(matchId.toString())
-        );
-        if (matchEvent) {
-          const date = new Date(`${matchEvent.date}T${matchEvent.time}`);
-          return date.toLocaleString();
-        }
-      }
-
-      // Check KP format match schedule
-      if (tournamentData.format === 'kp' && tournamentData.kpSettings && tournamentData.kpSettings.matchSchedule) {
-        const kpMatch = tournamentData.kpSettings.matchSchedule.find(match =>
-          match.match.toLowerCase().includes(matchId.toString()) ||
-          match.match.toLowerCase().includes('match')
-        );
-        if (kpMatch) {
-          const date = new Date(kpMatch.date);
-          return date.toLocaleString();
-        }
-      }
-
-      // Fallback to provided date or TBD
-      if (fallbackDate && fallbackDate !== 'TBD') {
-        const date = new Date(fallbackDate);
-        return date.toLocaleString();
-      }
-
-      return 'TBD';
-    }
-
 
 
     // Read-only schedule functions for user view
@@ -1497,6 +1548,58 @@
         });
       }
     });
+
+    // Carousel navigation
+    let currentSlide = 0;
+    let totalSlides = 0;
+
+    // Initialize carousel after DOM is loaded
+    function initializeCarousel() {
+      const slides = document.querySelectorAll('.carousel-slide');
+      totalSlides = slides.length;
+      if (totalSlides > 0) {
+        updateCarousel();
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        updateCarousel();
+      }
+    }
+
+    function previousSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateCarousel();
+      }
+    }
+
+    function updateCarousel() {
+      const carouselSlides = document.getElementById('carousel-slides');
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+      const indicator = document.getElementById('slide-indicator');
+      
+      if (carouselSlides) {
+        carouselSlides.style.transform = `translateX(-${currentSlide * 100}%)`;
+      }
+      
+      // Update button states
+      if (prevBtn) prevBtn.disabled = currentSlide === 0;
+      if (nextBtn) nextBtn.disabled = currentSlide === totalSlides - 1;
+      
+      // Update indicator
+      if (indicator) indicator.textContent = `Match ${currentSlide + 1} of ${totalSlides}`;
+    }
+
+    // Call initializeCarousel after brackets are loaded
+    const originalDisplayBrackets = displayBrackets;
+    displayBrackets = function() {
+      originalDisplayBrackets();
+      setTimeout(initializeCarousel, 100);
+    };
   </script>
 </body>
 
