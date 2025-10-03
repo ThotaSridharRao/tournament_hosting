@@ -594,6 +594,7 @@
         let tournamentData = null;
         let matchesData = [];
 
+
         // Get tournament slug from URL
         const urlParams = new URLSearchParams(window.location.search);
         const tournamentSlug = urlParams.get('slug');
@@ -1018,72 +1019,51 @@
 
         function createMatchTable(tableConfig, participants, stageIndex, tableIndex) {
             const tableId = `stage-${stageIndex}-table-${tableIndex}`;
-
             let html = `<div class="match-table-container">`;
             html += `<div class="match-table-header">`;
             html += `<h5><i class="fas fa-list"></i> ${tableConfig.name}</h5>`;
-            
+
+            // Correctly calculate team count for the header
+            const kpSettings = tournamentData.kpSettings || {};
+            const groupSize = kpSettings.groupSize || 25;
+            const startIndex = tableIndex * groupSize;
+            const endIndex = Math.min(startIndex + groupSize, participants.length);
+            const qualifierTeams = participants.slice(startIndex, endIndex);
+
             if (tableConfig.type === 'qualifier') {
-                const kpSettings = tournamentData.kpSettings || {};
-                const groupSize = kpSettings.groupSize || 25;
-                const startIndex = tableIndex * groupSize;
-                const endIndex = Math.min(startIndex + groupSize, participants.length);
-                const qualifierTeams = participants.slice(startIndex, endIndex);
                 html += `<span class="match-count">${qualifierTeams.length}/${groupSize} Teams</span>`;
             } else {
                 html += `<span class="match-count">${tableConfig.totalMatches} ${tableConfig.totalMatches === 1 ? 'Match' : 'Matches'}</span>`;
             }
             html += `</div>`;
 
+            // Start Table
+            html += `<table class="match-table" id="${tableId}">`;
+
+            // Build table based on type
             if (tableConfig.type === 'qualifier') {
-                // Create team slots table for qualifiers
-                html += `<table class="match-table" id="${tableId}">`;
-                html += `<thead>`;
-                html += `<tr>`;
-                html += `<th>Slot #</th>`;
-                html += `<th>Team Name</th>`;
-                html += `<th>Captain</th>`;
-                html += `</tr>`;
-                html += `</thead>`;
+                html += `<thead><tr><th>Slot #</th><th>Team Name</th><th>Captain</th></tr></thead>`;
                 html += `<tbody>`;
 
-                // Get teams assigned to this qualifier
-                const kpSettings = tournamentData.kpSettings || {};
-                const groupSize = kpSettings.groupSize || 25;
-                const startIndex = tableIndex * groupSize;
-                const endIndex = Math.min(startIndex + groupSize, participants.length);
-                const qualifierTeams = participants.slice(startIndex, endIndex);
-
-                // Create slots for this qualifier
+                // Create slots for this qualifier and fill with teams
                 for (let slot = 1; slot <= groupSize; slot++) {
                     const team = qualifierTeams[slot - 1];
                     html += `<tr>`;
                     html += `<td class="match-number">${slot}</td>`;
                     if (team) {
-                        html += `<td class="match-teams"><strong>${team.teamName}</strong></td>`;
-                        html += `<td class="team-captain">${team.captainEmail}</td>`;
+                        html += `<td class="match-teams"><strong>${team.teamName || 'Unnamed Team'}</strong></td>`;
+                        html += `<td class="team-captain">${team.captainEmail || 'No Captain Email'}</td>`;
                     } else {
                         html += `<td class="match-teams"><em>Open Slot</em></td>`;
                         html += `<td class="team-captain">-</td>`;
                     }
                     html += `</tr>`;
                 }
-
                 html += `</tbody>`;
-                html += `</table>`;
             } else if (tableConfig.type === 'final') {
-                // Create final match table
-                html += `<table class="match-table" id="${tableId}">`;
-                html += `<thead>`;
-                html += `<tr>`;
-                html += `<th>Position</th>`;
-                html += `<th>Qualified From</th>`;
-                html += `<th>Team Name</th>`;
-                html += `</tr>`;
-                html += `</thead>`;
+                html += `<thead><tr><th>Position</th><th>Qualified From</th><th>Team Name</th></tr></thead>`;
                 html += `<tbody>`;
 
-                const kpSettings = tournamentData.kpSettings || {};
                 const numberOfGroups = kpSettings.numberOfGroups || 4;
                 const qualifiersPerGroup = kpSettings.qualifiersPerGroup || 4;
 
@@ -1096,121 +1076,14 @@
                         html += `</tr>`;
                     }
                 }
-
                 html += `</tbody>`;
-                html += `</table>`;
-            } else {
-                // Default table for other formats
-                html += `<table class="match-table" id="${tableId}">`;
-                html += `<thead>`;
-                html += `<tr>`;
-                html += `<th>Match #</th>`;
-                html += `<th>Teams</th>`;
-                html += `</tr>`;
-                html += `</thead>`;
-                html += `<tbody>`;
-
-                const matches = generateMatches(tableConfig, participants, stageIndex, tableIndex);
-                matches.forEach((match, matchIndex) => {
-                    html += `<tr>`;
-                    html += `<td class="match-number">M${match.id}</td>`;
-                    html += `<td class="match-teams">${match.teams}</td>`;
-                    html += `</tr>`;
-                });
-
-                html += `</tbody>`;
-                html += `</table>`;
             }
 
-            html += `</div>`;
+            html += `</table></div>`;
             return html;
         }
 
-        function generateMatches(tableConfig, participants, stageIndex, tableIndex) {
-            const matches = [];
-            const matchIdBase = (stageIndex * 100) + (tableIndex * 10);
 
-            if (tableConfig.type === 'qualifier') {
-                // Distribute registered teams among qualifier matches
-                const kpSettings = tournamentData.kpSettings || {};
-                const numberOfGroups = kpSettings.numberOfGroups || 4;
-                const groupSize = kpSettings.groupSize || 25;
-
-                // Calculate which teams belong to this qualifier
-                const startIndex = tableIndex * groupSize;
-                const endIndex = Math.min(startIndex + groupSize, participants.length);
-                const qualifierTeams = participants.slice(startIndex, endIndex);
-
-                let teamsDisplay = '';
-                let status = '';
-
-                if (qualifierTeams.length > 0) {
-                    if (qualifierTeams.length === 1) {
-                        teamsDisplay = `${qualifierTeams[0].teamName} (+ ${groupSize - 1} more slots)`;
-                    } else if (qualifierTeams.length < groupSize) {
-                        teamsDisplay = `${qualifierTeams.length} teams registered (${groupSize - qualifierTeams.length} slots remaining)`;
-                    } else {
-                        teamsDisplay = `${qualifierTeams.length} teams competing`;
-                    }
-                    status = `${qualifierTeams.length}/${groupSize} teams registered`;
-                } else {
-                    teamsDisplay = `0/${groupSize} teams registered`;
-                    status = 'Awaiting Team Registration';
-                }
-
-                matches.push({
-                    id: matchIdBase + 1,
-                    teams: teamsDisplay,
-                    status: status,
-                    result: 'Pending'
-                });
-            } else if (tableConfig.type === 'final') {
-                // Show qualified teams for final (top teams from each qualifier)
-                const kpSettings = tournamentData.kpSettings || {};
-                const numberOfGroups = kpSettings.numberOfGroups || 4;
-                const qualifiersPerGroup = kpSettings.qualifiersPerGroup || 4;
-                const totalQualifiers = numberOfGroups * qualifiersPerGroup;
-
-                const qualifiedTeams = participants.length > 0 ? `Top ${totalQualifiers} teams from qualifiers` : 'Awaiting Qualifiers';
-
-                matches.push({
-                    id: matchIdBase + 1,
-                    teams: qualifiedTeams,
-                    status: participants.length > 0 ? `${totalQualifiers} teams will qualify` : 'Awaiting Qualifiers',
-                    result: 'Pending'
-                });
-            } else {
-                // Generate standard matches with actual team distribution
-                const teamsPerMatch = Math.ceil(participants.length / tableConfig.totalMatches);
-
-                for (let i = 0; i < tableConfig.totalMatches; i++) {
-                    const startIndex = i * teamsPerMatch;
-                    const endIndex = Math.min(startIndex + teamsPerMatch, participants.length);
-                    const matchTeams = participants.slice(startIndex, endIndex);
-
-                    let teamsDisplay = 'TBD vs TBD';
-                    if (matchTeams.length > 0) {
-                        if (matchTeams.length === 1) {
-                            teamsDisplay = `${matchTeams[0].teamName} vs TBD`;
-                        } else if (matchTeams.length === 2) {
-                            teamsDisplay = `${matchTeams[0].teamName} vs ${matchTeams[1].teamName}`;
-                        } else {
-                            teamsDisplay = `${matchTeams.length} teams competing`;
-                        }
-                    }
-
-                    matches.push({
-                        id: matchIdBase + i + 1,
-                        teams: teamsDisplay,
-                        status: matchTeams.length > 0 ? 'Teams Assigned' : 'Awaiting Teams',
-
-                        result: 'Pending'
-                    });
-                }
-            }
-
-            return matches;
-        }
 
         function createFinalistsTable(finalists) {
             let html = `<div class="finalists-section">`;
