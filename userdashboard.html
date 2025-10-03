@@ -1510,16 +1510,19 @@
 
                 if (result.success && result.data) {
                     // Update global state with data from combined endpoint
-                    tournamentData.hosted = result.data.hosted || [];
-                    tournamentData.joined = result.data.joined || [];
-                    tournamentData.counts = result.data.counts || {};
+                    // The API response is wrapped by apiCall, so we need result.data.data
+                    const apiData = result.data.data || result.data;
+                    tournamentData.hosted = apiData.hosted || [];
+                    tournamentData.joined = apiData.joined || [];
+                    tournamentData.counts = apiData.counts || {};
                     tournamentData.lastFetch = Date.now();
                 } else {
                     // Fallback to empty arrays if request fails
                     tournamentData.hosted = [];
                     tournamentData.joined = [];
                     tournamentData.counts = {};
-                    showAlert('Failed to load tournaments: ' + (result.error || 'Unknown error'), 'warning');
+                    const errorMsg = result.error || (result.data && result.data.message) || 'Unknown error';
+                    showAlert('Failed to load tournaments: ' + errorMsg, 'warning');
                 }
 
                 return tournamentData;
