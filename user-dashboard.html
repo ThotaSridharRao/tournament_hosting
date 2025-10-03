@@ -667,7 +667,75 @@
             font-weight: 300;
         }
 
+        /* =========================
+           Tabs Bar Styles
+           ========================= */
+        .tabs-section {
+            background: var(--panel);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0;
+            position: sticky;
+            top: 60px;
+            z-index: 100;
+        }
 
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0;
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .tabs-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            min-width: 120px;
+        }
+
+        .tab-btn i {
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-color);
+            background: rgba(10, 250, 217, 0.05);
+        }
+
+        .tab-btn:hover i {
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            background: rgba(10, 250, 217, 0.1);
+        }
+
+        .tab-btn.active i {
+            transform: scale(1.1);
+        }
 
         .tab-content {
             padding: 2rem;
@@ -1323,6 +1391,21 @@
                 padding: 1rem;
             }
 
+            .tabs-container {
+                justify-content: flex-start;
+                padding: 0 1rem;
+            }
+
+            .tab-btn {
+                min-width: 100px;
+                padding: 0.75rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .tab-btn i {
+                font-size: 1rem;
+            }
+
             .nav-tabs .nav-link {
                 font-size: 0.875rem;
                 padding: 0.75rem 1rem;
@@ -1501,16 +1584,6 @@
         <div class="header-container">
             <a href="index.html" class="brand" aria-hidden="false">GamingNexus</a>
             <div class="header-right">
-                <nav class="primary" role="navigation" aria-label="Primary">
-                    <div class="nav-links" role="menubar">
-                        <a href="#" role="menuitem" onclick="switchToTab('overview')">Overview</a>
-                        <a href="#" role="menuitem" onclick="switchToTab('tournaments')">Hosted Tournaments</a>
-                        <a href="#" role="menuitem" onclick="switchToTab('joined')">Joined Tournaments</a>
-                        <a href="#" role="menuitem" onclick="switchToTab('create')">Create Tournament</a>
-                        <a href="#" role="menuitem" onclick="switchToTab('manage')">Manage Tournaments</a>
-                        <a href="dispute-support.html" role="menuitem">Support & Disputes</a>
-                    </div>
-                </nav>
                 <div class="nav-actions">
                     <div id="guest-menu">
                         <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
@@ -1556,6 +1629,38 @@
             <div class="hero-content">
                 <h2>Welcome, <span id="hero-username">User</span></h2>
                 <p class="hero-subtitle">Track your gaming journey and tournament performance</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs Bar Section -->
+    <div class="container-fluid">
+        <div class="tabs-section">
+            <div class="tabs-container">
+                <button class="tab-btn active" data-tab="overview" onclick="switchToTab('overview')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Overview</span>
+                </button>
+                <button class="tab-btn" data-tab="tournaments" onclick="switchToTab('tournaments')">
+                    <i class="fas fa-trophy"></i>
+                    <span>Hosted</span>
+                </button>
+                <button class="tab-btn" data-tab="joined" onclick="switchToTab('joined')">
+                    <i class="fas fa-users"></i>
+                    <span>Joined</span>
+                </button>
+                <button class="tab-btn" data-tab="create" onclick="switchToTab('create')">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Create</span>
+                </button>
+                <button class="tab-btn" data-tab="manage" onclick="switchToTab('manage')">
+                    <i class="fas fa-cogs"></i>
+                    <span>Manage</span>
+                </button>
+                <button class="tab-btn" data-tab="support" onclick="window.location.href='dispute-support.html'">
+                    <i class="fas fa-headset"></i>
+                    <span>Support</span>
+                </button>
             </div>
         </div>
     </div>
@@ -2485,16 +2590,12 @@
 
             const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
 
-            // Dashboard-specific navigation links
+            // Basic navigation links (tabs are now in the tabs bar)
             const navLinksHTML = `
                 <div class="mobile-nav-links">
-                    <a href="#" onclick="switchToTab('overview')"><i class="fas fa-chart-line"></i> Overview</a>
-                    <a href="#" onclick="switchToTab('tournaments')"><i class="fas fa-list"></i> Hosted Tournaments</a>
-                    <a href="#" onclick="switchToTab('joined')"><i class="fas fa-users"></i> Joined Tournaments</a>
-                    <a href="#" onclick="switchToTab('create')"><i class="fas fa-plus"></i> Create Tournament</a>
-                    <a href="#" onclick="switchToTab('manage')"><i class="fas fa-cogs"></i> Manage Tournaments</a>
-                    <a href="dispute-support.html"><i class="fas fa-headset"></i> Support & Disputes</a>
                     <a href="index.html"><i class="fas fa-home"></i> Home</a>
+                    <a href="tournaments.html"><i class="fas fa-trophy"></i> Browse Tournaments</a>
+                    <a href="dispute-support.html"><i class="fas fa-headset"></i> Support & Disputes</a>
                 </div>
             `;
 
@@ -2615,27 +2716,16 @@
             if (targetPane) {
                 targetPane.classList.add('show', 'active');
 
-                // Update active nav link
-                const allNavLinks = document.querySelectorAll('.nav-links a[onclick*="switchToTab"]');
-                allNavLinks.forEach(link => {
-                    link.classList.remove('active');
+                // Update active tab button
+                const allTabBtns = document.querySelectorAll('.tab-btn');
+                allTabBtns.forEach(btn => {
+                    btn.classList.remove('active');
                 });
 
-                // Find and activate the current nav link
-                const activeNavLink = document.querySelector(`.nav-links a[onclick*="switchToTab('${tabName}')"]`);
-                if (activeNavLink) {
-                    activeNavLink.classList.add('active');
-                }
-
-                // Also update mobile nav links
-                const allMobileNavLinks = document.querySelectorAll('.mobile-nav-links a[onclick*="switchToTab"]');
-                allMobileNavLinks.forEach(link => {
-                    link.classList.remove('active');
-                });
-
-                const activeMobileNavLink = document.querySelector(`.mobile-nav-links a[onclick*="switchToTab('${tabName}')"]`);
-                if (activeMobileNavLink) {
-                    activeMobileNavLink.classList.add('active');
+                // Find and activate the current tab button
+                const activeTabBtn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
+                if (activeTabBtn) {
+                    activeTabBtn.classList.add('active');
                 }
 
                 // Initialize specific tab functionality
