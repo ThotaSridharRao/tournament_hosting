@@ -954,6 +954,12 @@
       padding: 1rem;
       text-align: center;
       border-bottom: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+    }
+
+    .finalists-table th:last-child,
+    .finalists-table td:last-child {
+      border-right: none;
     }
 
     .finalists-table th:nth-child(1),
@@ -968,6 +974,12 @@
     .finalists-table th:nth-child(4),
     .finalists-table td:nth-child(4) {
       width: auto;
+    }
+
+    /* Add thicker border between the two sections */
+    .finalists-table th:nth-child(2),
+    .finalists-table td:nth-child(2) {
+      border-right: 2px solid var(--primary-color);
     }
 
     .finalists-table th {
