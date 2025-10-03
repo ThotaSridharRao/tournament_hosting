@@ -420,6 +420,7 @@
         // Get tournament slug from URL
         const urlParams = new URLSearchParams(window.location.search);
         const tournamentSlug = urlParams.get('slug');
+        console.log('Tournament Slug:', tournamentSlug);
 
         if (!tournamentSlug) {
             document.getElementById('brackets-container').innerHTML = `
@@ -441,7 +442,10 @@
                     throw new Error('Tournament not found');
                 }
 
-                tournamentData = await response.json();
+                const apiResponse = await response.json();
+                console.log('API Response:', apiResponse);
+                tournamentData = apiResponse.data || apiResponse;
+                console.log('Tournament Data:', tournamentData);
 
                 // Update page title and info
                 document.getElementById('tournament-title').textContent = tournamentData.title;
