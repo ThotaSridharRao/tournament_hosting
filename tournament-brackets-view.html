@@ -59,6 +59,21 @@
       .container {
         padding: 1rem;
       }
+
+      /* On mobile, reduce table padding for better fit */
+      .match-table th,
+      .match-table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      /* Adjust column widths for mobile */
+      .match-table th:nth-child(1),
+      .match-table td:nth-child(1),
+      .match-table th:nth-child(3),
+      .match-table td:nth-child(3) {
+        width: 60px;
+      }
     }
 
     .hero-section {
@@ -429,6 +444,28 @@
       border-bottom: none;
     }
 
+    /* Qualifier table 4-column layout styling */
+    .match-table th:nth-child(1),
+    .match-table td:nth-child(1),
+    .match-table th:nth-child(3),
+    .match-table td:nth-child(3) {
+      width: 80px;
+      text-align: center;
+    }
+
+    .match-table th:nth-child(2),
+    .match-table td:nth-child(2),
+    .match-table th:nth-child(4),
+    .match-table td:nth-child(4) {
+      width: auto;
+    }
+
+    /* Add border between the two sections for better visual separation */
+    .match-table th:nth-child(2),
+    .match-table td:nth-child(2) {
+      border-right: 2px solid var(--primary-color);
+    }
+
     .match-number {
       font-weight: 700;
       color: var(--accent-secondary);
@@ -763,19 +800,40 @@
 
       // Build table based on type
       if (tableConfig.type === 'qualifier') {
-        html += `<thead><tr><th>S.No</th><th>Team Name</th></tr></thead>`;
+        html += `<thead><tr><th>S.No</th><th>Team Name</th><th>S.No</th><th>Team Name</th></tr></thead>`;
         html += `<tbody>`;
 
-        // Create slots for this qualifier and fill with teams
-        for (let slot = 1; slot <= groupSize; slot++) {
-          const team = qualifierTeams[slot - 1];
+        // Create slots for this qualifier with 2 teams per row (13 rows total for 25 teams + 1 extra slot)
+        const maxRows = Math.ceil(groupSize / 2); // 13 rows for 25 teams
+        for (let row = 0; row < maxRows; row++) {
           html += `<tr>`;
-          html += `<td class="match-number">${slot}</td>`;
-          if (team) {
-            html += `<td class="match-teams"><strong>${team.teamName || 'Unnamed Team'}</strong></td>`;
+          
+          // First team (left side)
+          const slot1 = (row * 2) + 1;
+          const team1 = qualifierTeams[slot1 - 1];
+          html += `<td class="match-number">${slot1}</td>`;
+          if (team1) {
+            html += `<td class="match-teams"><strong>${team1.teamName || 'Unnamed Team'}</strong></td>`;
           } else {
             html += `<td class="match-teams"><em>Open Slot</em></td>`;
           }
+          
+          // Second team (right side)
+          const slot2 = (row * 2) + 2;
+          if (slot2 <= groupSize) {
+            const team2 = qualifierTeams[slot2 - 1];
+            html += `<td class="match-number">${slot2}</td>`;
+            if (team2) {
+              html += `<td class="match-teams"><strong>${team2.teamName || 'Unnamed Team'}</strong></td>`;
+            } else {
+              html += `<td class="match-teams"><em>Open Slot</em></td>`;
+            }
+          } else {
+            // Empty cells for the last row if odd number of teams
+            html += `<td class="match-number"></td>`;
+            html += `<td class="match-teams"></td>`;
+          }
+          
           html += `</tr>`;
         }
         html += `</tbody>`;
