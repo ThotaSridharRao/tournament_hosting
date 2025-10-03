@@ -1389,6 +1389,7 @@
                 opacity: 0;
                 transform: translateX(-50%) translateY(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateX(-50%) translateY(0);
@@ -1400,6 +1401,7 @@
                 opacity: 1;
                 transform: translateX(-50%) translateY(0);
             }
+
             to {
                 opacity: 0;
                 transform: translateX(-50%) translateY(-20px);
@@ -1855,7 +1857,8 @@
                                                 <input type="text" class="form-control" id="tournamentGame" required
                                                     placeholder="Enter game name (e.g., BGMI, Free Fire, Valorant, CS:GO)"
                                                     maxlength="50">
-                                                <div class="form-text">Enter the name of the game for this tournament</div>
+                                                <div class="form-text">Enter the name of the game for this tournament
+                                                </div>
                                             </div>
                                         </div>
 
@@ -2088,7 +2091,8 @@
                                     <h5><i class="fas fa-calculator me-2"></i>Hosting Fee Calculator</h5>
                                     <div class="alert alert-success mb-3">
                                         <i class="fas fa-gift me-2"></i>
-                                        <strong>Development Mode:</strong> Tournament hosting is currently FREE for testing!
+                                        <strong>Development Mode:</strong> Tournament hosting is currently FREE for
+                                        testing!
                                     </div>
 
                                     <div id="pricingInfo">
@@ -2163,7 +2167,7 @@
                 <!-- Manage Tournaments Tab -->
                 <div class="tab-pane fade" id="manage" role="tabpanel">
                     <h4 class="mb-4 text-center fw-bold">Manage Your Tournaments</h4>
-                    
+
                     <!-- Management Operations Tabs -->
                     <div class="operation-tabs mb-4">
                         <button class="operation-tab-btn active" data-operation="update">Update Tournament</button>
@@ -2331,6 +2335,15 @@
 
         let currentUser = null;
         let createdTournamentId = null;
+
+        // Fallback: Always hide loading screen after maximum 3 seconds
+        setTimeout(() => {
+            const loader = document.getElementById('loader-wrapper');
+            if (loader && !loader.classList.contains('hidden')) {
+                console.warn('Loading screen was still visible after 3 seconds, forcing hide');
+                loader.classList.add('hidden');
+            }
+        }, 3000);
 
         // --- NAVBAR HELPER FUNCTIONS ---
         function redirectToAuth(tab = 'register') {
@@ -2552,7 +2565,7 @@
         // Legacy retry mechanism - DEPRECATED: Use ApiRequestManager instead
         async function retryApiCall(apiCall, maxRetries = 2, delay = 1000) {
             console.warn('retryApiCall is deprecated. Use apiManager.request() instead for better rate limiting.');
-            
+
             // Fallback to old behavior for compatibility
             for (let attempt = 1; attempt <= maxRetries; attempt++) {
                 try {
@@ -2634,94 +2647,9 @@
             }
         }
 
-        // RequestDeduplicator to prevent duplicate simultaneous requests
-        class RequestDeduplicator {
-            constructor() {
-                this.pendingRequests = new Map();
-            }
 
-            async deduplicate(key, requestFn) {
-                if (this.pendingRequests.has(key)) {
-                    // Return existing promise
-                    return this.pendingRequests.get(key);
-                }
 
-                // Create new request promise
-                const promise = requestFn().finally(() => {
-                    // Clean up after request completes
-                    this.pendingRequests.delete(key);
-                });
 
-                this.pendingRequests.set(key, promise);
-                return promise;
-            }
-
-            generateKey(url, options = {}) {
-                const method = options.method || 'GET';
-                const body = options.body || '';
-                return `${method}:${url}:${body}`;
-            }
-        }
-
-        // RateLimitHandler with exponential backoff and jitter
-        class RateLimitHandler {
-            constructor() {
-                this.retryDelays = [1000, 2000, 4000, 8000]; // Exponential backoff
-                this.jitterFactor = 0.1;
-            }
-
-            async handleRequest(requestFn, maxRetries = 3, onRetry = null) {
-                for (let attempt = 0; attempt <= maxRetries; attempt++) {
-                    try {
-                        return await requestFn();
-                    } catch (error) {
-                        if (attempt === maxRetries) {
-                            throw error;
-                        }
-
-                        // Only retry rate limiting errors
-                        if (!error.isRateLimited && error.status !== 429) {
-                            throw error;
-                        }
-
-                        // Call retry callback if provided
-                        if (onRetry) {
-                            onRetry(attempt, error);
-                        }
-
-                        const delay = this.calculateDelay(attempt, error.retryAfter);
-                        logInfo('RATE_LIMIT_RETRY', `Rate limited, retrying in ${delay}ms`, {
-                            attempt: attempt + 1,
-                            maxRetries,
-                            retryAfter: error.retryAfter
-                        });
-
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                    }
-                }
-            }
-
-            calculateDelay(attempt, retryAfter) {
-                let baseDelay;
-
-                if (retryAfter) {
-                    // Use server-provided Retry-After header
-                    baseDelay = parseInt(retryAfter) * 1000;
-                } else {
-                    // Use exponential backoff
-                    baseDelay = this.retryDelays[Math.min(attempt, this.retryDelays.length - 1)];
-                }
-
-                // Add jitter to prevent thundering herd
-                const jitter = baseDelay * this.jitterFactor * Math.random();
-                return Math.floor(baseDelay + jitter);
-            }
-
-            parseRetryAfter(response) {
-                const retryAfter = response.headers.get('Retry-After');
-                return retryAfter ? parseInt(retryAfter) : null;
-            }
-        }
 
         // LoadingStateManager for coordinated UI feedback
         class LoadingStateManager {
@@ -2736,11 +2664,11 @@
             }
 
             setRateLimited(key, isRateLimited, retryAfter = null, message = 'High traffic detected, please wait...') {
-                this.rateLimitStates.set(key, { 
-                    isRateLimited, 
-                    retryAfter, 
-                    message, 
-                    timestamp: Date.now() 
+                this.rateLimitStates.set(key, {
+                    isRateLimited,
+                    retryAfter,
+                    message,
+                    timestamp: Date.now()
                 });
                 this.updateUI(key);
             }
@@ -2751,7 +2679,7 @@
 
                 // Find UI elements to update
                 const elements = document.querySelectorAll(`[data-loading-key="${key}"]`);
-                
+
                 elements.forEach(element => {
                     if (rateLimitState?.isRateLimited) {
                         this.showRateLimitMessage(element, rateLimitState);
@@ -2792,6 +2720,40 @@
                 if (element.dataset.originalContent) {
                     element.innerHTML = element.dataset.originalContent;
                 }
+            }
+        }
+
+        // RequestDeduplicator to prevent duplicate requests
+        class RequestDeduplicator {
+            constructor() {
+                this.pendingRequests = new Map();
+            }
+
+            async deduplicate(key, requestFn) {
+                if (this.pendingRequests.has(key)) {
+                    // Return existing promise
+                    return this.pendingRequests.get(key);
+                }
+
+                // Create new promise and store it
+                const promise = requestFn().finally(() => {
+                    // Clean up after request completes
+                    this.pendingRequests.delete(key);
+                });
+
+                this.pendingRequests.set(key, promise);
+                return promise;
+            }
+
+            generateKey(url, options = {}) {
+                // Create unique key based on URL and relevant options
+                const method = options.method || 'GET';
+                const body = options.body ? JSON.stringify(options.body) : '';
+                return `${method}:${url}:${body}`;
+            }
+
+            clear() {
+                this.pendingRequests.clear();
             }
         }
 
@@ -2866,17 +2828,17 @@
 
             async batchRequests(requests, batchSize = 3) {
                 const results = [];
-                
+
                 for (let i = 0; i < requests.length; i += batchSize) {
                     const batch = requests.slice(i, i + batchSize);
-                    
+
                     // Execute batch with proper spacing
                     const batchPromises = batch.map(async (request, index) => {
                         // Stagger requests within batch
                         if (index > 0) {
                             await new Promise(resolve => setTimeout(resolve, this.requestSpacing * index));
                         }
-                        
+
                         return this.request(request.url, request.options);
                     });
 
@@ -2895,12 +2857,12 @@
             async enforceRequestSpacing() {
                 const now = Date.now();
                 const timeSinceLastRequest = now - this.lastRequestTime;
-                
+
                 if (timeSinceLastRequest < this.requestSpacing) {
                     const waitTime = this.requestSpacing - timeSinceLastRequest;
                     await new Promise(resolve => setTimeout(resolve, waitTime));
                 }
-                
+
                 this.lastRequestTime = Date.now();
             }
 
@@ -2933,16 +2895,16 @@
         // Test rate limiting scenarios
         async function testRateLimiting() {
             console.log('🧪 Testing rate limiting scenarios...');
-            
+
             try {
                 // Test 1: Rapid concurrent requests (should be deduplicated)
                 console.log('Test 1: Concurrent request deduplication');
-                const concurrentPromises = Array(5).fill().map(() => 
+                const concurrentPromises = Array(5).fill().map(() =>
                     apiManager.request(`${API_BASE_URL}/api/user-tournaments`, {
                         context: 'Concurrent test'
                     })
                 );
-                
+
                 const concurrentResults = await Promise.allSettled(concurrentPromises);
                 const successfulConcurrent = concurrentResults.filter(r => r.status === 'fulfilled').length;
                 console.log(`✅ Concurrent requests: ${successfulConcurrent}/5 successful`);
@@ -2953,12 +2915,12 @@
                     context: 'Cache test 1',
                     cacheTTL: 30000
                 });
-                
+
                 const cacheTest2 = await apiManager.request(`${API_BASE_URL}/api/user-tournaments`, {
                     context: 'Cache test 2',
                     cacheTTL: 30000
                 });
-                
+
                 console.log('✅ Cache test completed');
 
                 // Test 3: Batch requests
@@ -2967,7 +2929,7 @@
                     { url: `${API_BASE_URL}/api/user-tournaments`, options: { context: 'Batch 1' } },
                     { url: `${API_BASE_URL}/api/users/me/tournaments`, options: { context: 'Batch 2' } }
                 ];
-                
+
                 const batchResults = await apiManager.batchRequests(batchRequests);
                 const successfulBatch = batchResults.filter(r => r.status === 'fulfilled').length;
                 console.log(`✅ Batch requests: ${successfulBatch}/${batchRequests.length} successful`);
@@ -2993,7 +2955,7 @@
         function showMonitoringDashboard() {
             const analytics = rateLimitMonitor.getAnalytics();
             const cacheStats = apiManager.getCacheStats();
-            
+
             const modal = document.createElement('div');
             modal.className = 'modal fade';
             modal.innerHTML = `
@@ -3081,11 +3043,11 @@
                     </div>
                 </div>
             `;
-            
+
             document.body.appendChild(modal);
             const bootstrapModal = new bootstrap.Modal(modal);
             bootstrapModal.show();
-            
+
             modal.addEventListener('hidden.bs.modal', () => {
                 document.body.removeChild(modal);
             });
@@ -3200,7 +3162,7 @@
 
             recordRequest(url, method, startTime, endTime, success, rateLimited = false, retryCount = 0) {
                 const duration = endTime - startTime;
-                
+
                 // Update request metrics
                 this.metrics.requests.total++;
                 if (success) {
@@ -3208,7 +3170,7 @@
                 } else {
                     this.metrics.requests.failed++;
                 }
-                
+
                 if (rateLimited) {
                     this.metrics.requests.rateLimited++;
                 }
@@ -3245,7 +3207,7 @@
                 } else {
                     this.metrics.cache.misses++;
                 }
-                
+
                 const total = this.metrics.cache.hits + this.metrics.cache.misses;
                 this.metrics.cache.hitRate = total > 0 ? (this.metrics.cache.hits / total) * 100 : 0;
 
@@ -3268,7 +3230,7 @@
 
                 this.metrics.rateLimiting.events.push(event);
                 this.metrics.rateLimiting.totalWaitTime += waitTime;
-                
+
                 const eventCount = this.metrics.rateLimiting.events.length;
                 this.metrics.rateLimiting.averageWaitTime = this.metrics.rateLimiting.totalWaitTime / eventCount;
 
@@ -3300,7 +3262,7 @@
             getAnalytics() {
                 const uptime = Date.now() - this.startTime;
                 const requestsPerMinute = (this.metrics.requests.total / (uptime / 60000)).toFixed(2);
-                
+
                 return {
                     ...this.metrics,
                     uptime,
@@ -3315,7 +3277,7 @@
 
             generateReport() {
                 const analytics = this.getAnalytics();
-                
+
                 logInfo('RATE_LIMITING_REPORT', 'Rate limiting analytics report', {
                     summary: {
                         totalRequests: analytics.requests.total,
@@ -3345,12 +3307,12 @@
             // Store logs locally for debugging
             const logs = JSON.parse(localStorage.getItem('nexus_logs') || '[]');
             logs.push({ level, ...logEntry });
-            
+
             // Keep only last 100 logs to prevent storage overflow
             if (logs.length > 100) {
                 logs.splice(0, logs.length - 100);
             }
-            
+
             localStorage.setItem('nexus_logs', JSON.stringify(logs));
 
             // In production, send to external monitoring service
@@ -3377,7 +3339,7 @@
         function exportLogs() {
             const logs = getStoredLogs();
             const analytics = rateLimitMonitor.generateReport();
-            
+
             const exportData = {
                 timestamp: new Date().toISOString(),
                 logs,
@@ -3399,113 +3361,11 @@
             logInfo('LOGS_EXPORTED', 'Logs and analytics exported');
         }
 
-        function logWarning(category, message, context = {}) {
-            const timestamp = new Date().toISOString();
-            const sessionData = getSessionData();
-            const userId = sessionData?.user?.id || 'anonymous';
 
-            const logEntry = {
-                timestamp,
-                category,
-                message,
-                userId,
-                context
-            };
 
-            console.warn(`[${category}] ${message}`, logEntry);
-        }
+        // Rate limiting infrastructure already implemented above - duplicate section removed
 
-        // ===== RATE LIMITING INFRASTRUCTURE =====
 
-        // RequestCache class with TTL-based expiration
-        class RequestCache {
-            constructor(defaultTTL = 300000) { // 5 minutes default
-                this.cache = new Map();
-                this.defaultTTL = defaultTTL;
-            }
-
-            get(key) {
-                const entry = this.cache.get(key);
-                if (!entry) return null;
-
-                const now = Date.now();
-                if (now > entry.timestamp + entry.ttl) {
-                    this.cache.delete(key);
-                    return null;
-                }
-
-                return entry.data;
-            }
-
-            set(key, data, ttl = this.defaultTTL) {
-                this.cache.set(key, {
-                    data,
-                    timestamp: Date.now(),
-                    ttl,
-                    key
-                });
-            }
-
-            invalidate(pattern) {
-                if (typeof pattern === 'string') {
-                    // Simple string matching
-                    for (const [key] of this.cache) {
-                        if (key.includes(pattern)) {
-                            this.cache.delete(key);
-                        }
-                    }
-                } else if (pattern instanceof RegExp) {
-                    // Regex matching
-                    for (const [key] of this.cache) {
-                        if (pattern.test(key)) {
-                            this.cache.delete(key);
-                        }
-                    }
-                }
-            }
-
-            clear() {
-                this.cache.clear();
-            }
-
-            size() {
-                return this.cache.size;
-            }
-        }
-
-        // RequestDeduplicator to prevent duplicate simultaneous requests
-        class RequestDeduplicator {
-            constructor() {
-                this.pendingRequests = new Map();
-            }
-
-            async deduplicate(key, requestFn) {
-                if (this.pendingRequests.has(key)) {
-                    // Return existing promise
-                    return this.pendingRequests.get(key);
-                }
-
-                // Create new promise and store it
-                const promise = requestFn().finally(() => {
-                    // Clean up after request completes
-                    this.pendingRequests.delete(key);
-                });
-
-                this.pendingRequests.set(key, promise);
-                return promise;
-            }
-
-            generateKey(url, options = {}) {
-                // Create unique key based on URL and relevant options
-                const method = options.method || 'GET';
-                const body = options.body ? JSON.stringify(options.body) : '';
-                return `${method}:${url}:${body}`;
-            }
-
-            clear() {
-                this.pendingRequests.clear();
-            }
-        }
 
         // RateLimitHandler with exponential backoff and jitter
         class RateLimitHandler {
@@ -3521,26 +3381,26 @@
                 for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
                     try {
                         const result = await requestFn();
-                        
+
                         if (attempt > 0) {
                             logWarning('RATE_LIMIT_RECOVERY', `${context} succeeded after ${attempt} retries`);
                         }
-                        
+
                         return result;
                     } catch (error) {
                         lastError = error;
 
                         // Don't retry authentication errors
-                        if (error.message.includes('Authentication') || 
-                            error.message.includes('401') || 
+                        if (error.message.includes('Authentication') ||
+                            error.message.includes('401') ||
                             error.message.includes('403')) {
                             throw error;
                         }
 
                         // Check if this is a rate limiting error
-                        const isRateLimited = error.isRateLimited || 
-                                            error.message.includes('429') || 
-                                            error.message.includes('Too Many Requests');
+                        const isRateLimited = error.isRateLimited ||
+                            error.message.includes('429') ||
+                            error.message.includes('Too Many Requests');
 
                         if (attempt === this.maxRetries) {
                             logError('RATE_LIMIT_EXHAUSTED', `${context} failed after ${this.maxRetries} retries`, {
@@ -3595,125 +3455,14 @@
             }
         }
 
-        // ApiRequestManager - Central coordinator for all API requests
-        class ApiRequestManager {
-            constructor() {
-                this.cache = new RequestCache();
-                this.deduplicator = new RequestDeduplicator();
-                this.rateLimitHandler = new RateLimitHandler();
-                this.batchDelay = 100; // 100ms delay between batched requests
-            }
 
-            async request(url, options = {}, cacheOptions = {}) {
-                const { 
-                    useCache = true, 
-                    cacheTTL = 300000, // 5 minutes default
-                    context = 'API request'
-                } = cacheOptions;
 
-                // Generate cache and deduplication keys
-                const cacheKey = this.generateCacheKey(url, options);
-                const dedupeKey = this.deduplicator.generateKey(url, options);
 
-                // Check cache first if enabled
-                if (useCache) {
-                    const cachedData = this.cache.get(cacheKey);
-                    if (cachedData) {
-                        logWarning('CACHE_HIT', `Using cached data for ${context}`, { url, cacheKey });
-                        return cachedData;
-                    }
-                }
 
-                // Use deduplicator to prevent duplicate requests
-                return this.deduplicator.deduplicate(dedupeKey, async () => {
-                    return this.rateLimitHandler.handleRequest(async () => {
-                        const response = await authenticatedFetch(url, options);
-                        const result = await handleApiResponse(response, context);
 
-                        // Cache successful responses if caching is enabled
-                        if (useCache && result) {
-                            this.cache.set(cacheKey, result, cacheTTL);
-                            logWarning('CACHE_SET', `Cached response for ${context}`, { url, cacheKey });
-                        }
 
-                        return result;
-                    }, context);
-                });
-            }
 
-            async batchRequests(requests) {
-                const results = [];
-                
-                for (let i = 0; i < requests.length; i++) {
-                    const request = requests[i];
-                    
-                    try {
-                        const result = await this.request(
-                            request.url, 
-                            request.options || {}, 
-                            request.cacheOptions || {}
-                        );
-                        results.push({ success: true, data: result, index: i });
-                    } catch (error) {
-                        results.push({ success: false, error, index: i });
-                    }
 
-                    // Add delay between requests to prevent overwhelming the server
-                    if (i < requests.length - 1) {
-                        await this.sleep(this.batchDelay);
-                    }
-                }
-
-                return results;
-            }
-
-            generateCacheKey(url, options = {}) {
-                const method = options.method || 'GET';
-                const body = options.body ? JSON.stringify(options.body) : '';
-                const sessionData = getSessionData();
-                const userId = sessionData?.user?.id || 'anonymous';
-                
-                // Include user ID in cache key to prevent cross-user data leakage
-                return `${userId}:${method}:${url}:${body}`;
-            }
-
-            invalidateCache(pattern) {
-                this.cache.invalidate(pattern);
-            }
-
-            clearCache() {
-                this.cache.clear();
-            }
-
-            getCacheStats() {
-                return {
-                    size: this.cache.size(),
-                    pendingRequests: this.deduplicator.pendingRequests.size
-                };
-            }
-
-            sleep(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
-        }
-
-        // ApiRequestManager instance already created above
-
-        function logInfo(category, message, context = {}) {
-            const timestamp = new Date().toISOString();
-            const sessionData = getSessionData();
-            const userId = sessionData?.user?.id || 'anonymous';
-
-            const logEntry = {
-                timestamp,
-                category,
-                message,
-                userId,
-                context
-            };
-
-            console.log(`[${category}] ${message}`, logEntry);
-        }
 
         function logout() {
             localStorage.removeItem('nexus_session');
@@ -3960,6 +3709,14 @@
 
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', async function () {
+            // Always hide loading screen first, regardless of authentication
+            setTimeout(() => {
+                const loader = document.getElementById('loader-wrapper');
+                if (loader) {
+                    loader.classList.add('hidden');
+                }
+            }, 500);
+
             // Check authentication first
             if (!requireAuthentication()) {
                 return; // Exit if not authenticated (user will be redirected)
@@ -3993,14 +3750,6 @@
 
             // Show overview tab by default
             switchToTab('overview');
-
-            // Hide loading screen after initialization
-            setTimeout(() => {
-                const loader = document.getElementById('loader-wrapper');
-                if (loader) {
-                    loader.classList.add('hidden');
-                }
-            }, 1500);
         });
 
         function setupCalendarIcons() {
@@ -4228,7 +3977,7 @@
                 if (!response.ok) {
                     console.error(`❌ HTTP Error: ${response.status} ${response.statusText}`);
                     let errorMessage = 'Failed to create tournament. ';
-                    
+
                     if (response.status === 429) {
                         errorMessage += 'Too many requests. Please wait a moment and try again.';
                     } else if (response.status === 401) {
@@ -4240,7 +3989,7 @@
                     } else {
                         errorMessage += `Error ${response.status}. Please try again.`;
                     }
-                    
+
                     showAlert(errorMessage, 'danger');
                     return;
                 }
@@ -4254,11 +4003,11 @@
 
                     // Check if tournament is free (hosting fee is 0)
                     const isFree = result.data.hostingFee === 0;
-                    
+
                     // Update modal content based on whether tournament is free
                     const modalAlert = document.querySelector('#successModal .alert');
                     const paymentButton = document.getElementById('proceedToPayment');
-                    
+
                     if (isFree) {
                         modalAlert.className = 'alert alert-success';
                         modalAlert.innerHTML = `
@@ -4295,7 +4044,7 @@
                 }
             } catch (error) {
                 console.error('Error creating tournament:', error);
-                
+
                 let errorMessage = 'Failed to create tournament. ';
                 if (error.name === 'TypeError' && error.message.includes('fetch')) {
                     errorMessage += 'Network error. Please check your connection and try again.';
@@ -4304,7 +4053,7 @@
                 } else {
                     errorMessage += 'Please try again.';
                 }
-                
+
                 showAlert(errorMessage, 'danger');
             } finally {
                 submitBtn.disabled = false;
@@ -4401,7 +4150,7 @@
                 const batchRequests = [
                     {
                         url: `${API_BASE_URL}/api/user-tournaments`,
-                        cacheOptions: { 
+                        cacheOptions: {
                             context: 'Load hosted tournaments',
                             useCache: true,
                             cacheTTL: 180000 // 3 minutes cache for hosted tournaments
@@ -4409,7 +4158,7 @@
                     },
                     {
                         url: `${API_BASE_URL}/api/users/me/tournaments`,
-                        cacheOptions: { 
+                        cacheOptions: {
                             context: 'Load joined tournaments',
                             useCache: true,
                             cacheTTL: 180000 // 3 minutes cache for joined tournaments
@@ -4524,22 +4273,22 @@
                     let tournaments = result.data || [];
                     console.log(`Successfully loaded ${tournaments.length} joined tournaments`);
 
-                        // Apply status filter if selected
-                        const statusFilter = document.getElementById('joinedStatusFilter');
-                        if (statusFilter && statusFilter.value) {
-                            const filterValue = statusFilter.value;
-                            tournaments = tournaments.filter(tournament => {
-                                const status = tournament.status || 'upcoming';
-                                if (filterValue === 'registered') {
-                                    return status === 'upcoming' || status === 'registration_open';
-                                } else if (filterValue === 'active') {
-                                    return status === 'live' || status === 'ongoing';
-                                } else if (filterValue === 'completed') {
-                                    return status === 'completed' || status === 'ended';
-                                }
-                                return true;
-                            });
-                        }
+                    // Apply status filter if selected
+                    const statusFilter = document.getElementById('joinedStatusFilter');
+                    if (statusFilter && statusFilter.value) {
+                        const filterValue = statusFilter.value;
+                        tournaments = tournaments.filter(tournament => {
+                            const status = tournament.status || 'upcoming';
+                            if (filterValue === 'registered') {
+                                return status === 'upcoming' || status === 'registration_open';
+                            } else if (filterValue === 'active') {
+                                return status === 'live' || status === 'ongoing';
+                            } else if (filterValue === 'completed') {
+                                return status === 'completed' || status === 'ended';
+                            }
+                            return true;
+                        });
+                    }
 
                     displayJoinedTournaments(tournaments);
                 }
@@ -4810,7 +4559,7 @@
         function initializeManagementTab() {
             // Set up operation tab listeners
             document.querySelectorAll('.operation-tab-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', function () {
                     const operation = this.dataset.operation;
                     switchManagementOperation(operation);
                 });
@@ -4837,7 +4586,7 @@
                     context: 'Load management tournaments',
                     cacheTTL: 60000 // Cache for 1 minute
                 });
-                
+
                 if (result) {
                     managementTournaments = result.data || [];
                     renderManagementOperation(currentManagementOperation);
@@ -4875,7 +4624,7 @@
             }
 
             container.innerHTML = contentHtml;
-            
+
             // Initialize operation-specific functionality
             initializeOperationHandlers(operation);
         }
@@ -4949,8 +4698,8 @@
                 
                 <div class="tournament-management-list">
                     ${managementTournaments.map(tournament => {
-                        const hasParticipants = tournament.participants && tournament.participants.length > 0;
-                        return `
+                const hasParticipants = tournament.participants && tournament.participants.length > 0;
+                return `
                             <div class="tournament-management-item">
                                 <div class="tournament-management-header">
                                     <div class="tournament-management-info">
@@ -4972,7 +4721,7 @@
                                 </div>
                             </div>
                         `;
-                    }).join('')}
+            }).join('')}
                 </div>
             `;
         }
@@ -5268,7 +5017,7 @@
             if (!tournament) return;
 
             const newStatus = prompt(`Update status for "${tournament.title}"\nCurrent status: ${tournament.status}\n\nEnter new status (active, draft, completed, cancelled):`, tournament.status);
-            
+
             if (newStatus && ['active', 'draft', 'completed', 'cancelled'].includes(newStatus.toLowerCase())) {
                 updateTournamentStatusAPI(tournamentId, newStatus.toLowerCase());
             } else if (newStatus) {
@@ -5287,7 +5036,7 @@
                     context: 'Update tournament status',
                     cacheTTL: 0 // Don't cache PUT requests
                 });
-                
+
                 if (result) {
                     showAlert('Tournament status updated successfully!', 'success');
                     // Invalidate cache for tournament lists
@@ -5310,10 +5059,10 @@
             if (!tournament) return;
 
             showAlert(`Downloading ${tournament.title} data as ${format.toUpperCase()}...`, 'info');
-            
+
             // Create download URL
             const downloadUrl = `${API_BASE_URL}/api/user-tournaments/${tournamentId}/export?format=${format}`;
-            
+
             // Create temporary link and trigger download
             const link = document.createElement('a');
             link.href = downloadUrl;
@@ -5321,7 +5070,7 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
+
             // TODO: Implement actual download API endpoint
         }
 
@@ -5332,11 +5081,11 @@
             // Create finalists management modal
             const finalistsModal = createFinalistsModal(tournament);
             document.body.appendChild(finalistsModal);
-            
+
             // Show modal
             const modal = new bootstrap.Modal(finalistsModal);
             modal.show();
-            
+
             // Clean up modal when closed
             finalistsModal.addEventListener('hidden.bs.modal', () => {
                 document.body.removeChild(finalistsModal);
@@ -5358,7 +5107,7 @@
                             
                             <form id="finalists-form">
                                 <div class="finalists-list">
-                                    ${Array.from({length: 16}, (_, i) => `
+                                    ${Array.from({ length: 16 }, (_, i) => `
                                         <div class="leaderboard-entry">
                                             <div class="leaderboard-position">#${i + 1}</div>
                                             <input type="text" class="leaderboard-team-input" 
@@ -5387,12 +5136,12 @@
         async function saveFinalists(tournamentId) {
             const form = document.getElementById('finalists-form');
             const formData = new FormData(form);
-            
+
             const finalists = [];
             for (let i = 0; i < 16; i++) {
                 const teamName = formData.get(`finalist_${i}`);
                 const points = formData.get(`points_${i}`);
-                
+
                 if (teamName && teamName.trim()) {
                     finalists.push({
                         position: i + 1,
@@ -5412,13 +5161,13 @@
                     context: 'Update finalists',
                     cacheTTL: 0 // Don't cache PUT requests
                 });
-                
+
                 if (result) {
                     showAlert('Finalists updated successfully!', 'success');
                     // Invalidate cache for tournament lists
                     apiManager.invalidateCache('/api/user-tournaments');
                     loadManagementTournaments(); // Refresh the list
-                    
+
                     // Close modal
                     const modal = bootstrap.Modal.getInstance(document.querySelector('.modal.show'));
                     if (modal) modal.hide();
@@ -5434,7 +5183,7 @@
             if (!tournament) return;
 
             const hasParticipants = tournament.participants && tournament.participants.length > 0;
-            
+
             if (hasParticipants) {
                 showAlert('Cannot delete tournament with registered participants', 'warning');
                 return;
@@ -5447,7 +5196,7 @@
                         context: 'Delete tournament',
                         cacheTTL: 0 // Don't cache DELETE requests
                     });
-                    
+
                     if (result) {
                         showAlert('Tournament deleted successfully!', 'success');
                         // Invalidate cache for tournament lists
