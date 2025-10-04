@@ -938,9 +938,7 @@
       font-weight: 500;
     }
 
-    .finalists-table tr:hover {
-      background-color: rgba(10, 250, 217, 0.05);
-    }
+
 
     .finalists-table tr:last-child td {
       border-bottom: none;
@@ -1347,9 +1345,6 @@
 
       .faq-grid {
         max-width: 1200px;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
       }
 
       .details-main h2,
@@ -1530,7 +1525,6 @@
           <table id="event-list" class="schedule-table">
             <thead>
               <tr>
-                <th>S.No.</th>
                 <th>Event Name</th>
                 <th>Date</th>
                 <th>Time</th>
@@ -1538,7 +1532,7 @@
             </thead>
             <tbody>
               <tr>
-                <td colspan="4" style="text-align:center; color: var(--text-secondary); padding: 2rem;">Loading
+                <td colspan="3" style="text-align:center; color: var(--text-secondary); padding: 2rem;">Loading
                   schedule...</td>
               </tr>
             </tbody>
@@ -1854,7 +1848,7 @@
       tableBody.innerHTML = ''; // Clear existing content
 
       if (timelineData.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--text-secondary); padding: 2rem;">No detailed match schedule has been posted yet.</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="3" style="text-align:center; color: var(--text-secondary); padding: 2rem;">No detailed match schedule has been posted yet.</td></tr>`;
         return;
       }
 
@@ -1881,7 +1875,6 @@
 
         const rowHtml = `
                 <tr class="${rowClass}">
-                    <td>${index + 1}</td>
                     <td>${event.title}${event.description ? `<br><small style="color: var(--text-secondary);">${event.description}</small>` : ''}</td>
                     <td>${date}</td>
                     <td>${timeDisplay}</td>
@@ -2045,16 +2038,239 @@
 
       const formatContainer = document.getElementById('tournament-format-details');
       let formatHTML = '';
+      
       if (tournament.format === 'kp' && tournament.kpSettings) {
         const s = tournament.kpSettings;
+        const maxTeams = tournament.maxTeams || (s.numberOfGroups * s.groupSize);
+        const totalQualifiers = s.numberOfGroups || 4;
+        const totalMatches = totalQualifiers + 1; // Qualifiers + Final
+        
         formatHTML = `
-                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem;">
-                    <li><strong>Structure:</strong> ${s.numberOfGroups || 'Multiple'} qualifier groups of ${s.groupSize || 'several'} teams each.</li>
-                    <li><strong>Advancement:</strong> The top 4 of each qualification match will advance to the finals to determine the 16 finalists.</li>
-                </ul>
-            `;
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div>
+              <h4 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem;">Format: KP (Knockout Playoffs)</h4>
+              <p style="margin: 0; color: var(--text-secondary);">A multi-stage tournament format with qualifying rounds followed by finals.</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; background: rgba(15, 133, 211, 0.1); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--primary-color);">
+              <div><strong>Max Teams:</strong> ${maxTeams}</div>
+              <div><strong>Total Matches:</strong> ${totalMatches}</div>
+              <div><strong>Qualifiers:</strong> ${totalQualifiers}</div>
+              <div><strong>Finals:</strong> 1</div>
+            </div>
+            
+            <div>
+              <h4 style="color: var(--primary-color); margin: 0 0 1rem 0; font-size: 1.1rem;">Tournament Structure:</h4>
+              <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Qualifier Stage:</strong> ${totalQualifiers} qualifier groups of ${s.groupSize || 25} teams each
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Advancement:</strong> Top 4 teams from each qualifier advance to finals
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Finals:</strong> ${totalQualifiers * 4} qualified teams compete for the championship
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Finalists:</strong> Final standings will appear in the Finalists section after completion
+                </li>
+              </ul>
+            </div>
+            
+            <div style="background: rgba(93, 63, 211, 0.1); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--accent-secondary);">
+              <h4 style="color: var(--accent-secondary); margin: 0 0 1rem 0; font-size: 1.1rem;">Important Rules & Information:</h4>
+              <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--accent-secondary);">•</span>
+                  <strong>Registration:</strong> Teams can register only once for this tournament
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--accent-secondary);">•</span>
+                  <strong>Match Schedule:</strong> Check the Brackets page for match times and opponents
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--accent-secondary);">•</span>
+                  <strong>Room Details:</strong> Room ID and password will be shared on the Brackets page at scheduled match time
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--accent-secondary);">•</span>
+                  <strong>Brackets Access:</strong> Use the "View Brackets" button above to access live tournament brackets
+                </li>
+              </ul>
+            </div>
+          </div>
+        `;
+      } else if (tournament.format === 'single_elimination') {
+        const maxTeams = tournament.maxTeams || 'Unlimited';
+        const totalRounds = maxTeams !== 'Unlimited' ? Math.ceil(Math.log2(maxTeams)) : 'Variable';
+        const totalMatches = maxTeams !== 'Unlimited' ? maxTeams - 1 : 'Variable';
+        
+        formatHTML = `
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div>
+              <h4 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem;">Format: Single Elimination</h4>
+              <p style="margin: 0; color: var(--text-secondary);">A knockout tournament where teams are eliminated after losing one match.</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; background: rgba(15, 133, 211, 0.1); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--primary-color);">
+              <div><strong>Max Teams:</strong> ${maxTeams}</div>
+              <div><strong>Total Matches:</strong> ${totalMatches}</div>
+              <div><strong>Rounds:</strong> ${totalRounds}</div>
+              <div><strong>Format:</strong> Knockout</div>
+            </div>
+            
+            <div>
+              <h4 style="color: var(--primary-color); margin: 0 0 1rem 0; font-size: 1.1rem;">Tournament Structure:</h4>
+              <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Elimination:</strong> Lose one match and you're out of the tournament
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Advancement:</strong> Win your match to advance to the next round
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Finals:</strong> Last two teams compete for the championship
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Finalists:</strong> Final standings will appear in the Finalists section after completion
+                </li>
+              </ul>
+            </div>
+            
+            <div style="background: rgba(93, 63, 211, 0.1); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--accent-secondary);">
+              <h4 style="color: var(--accent-secondary); margin: 0 0 1rem 0; font-size: 1.1rem;">Important Rules & Information:</h4>
+              <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--accent-secondary);">•</span>
+                  <strong>Registration:</strong> Teams can register only once for this tournament
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--accent-secondary);">•</span>
+                  <strong>Match Schedule:</strong> Check the Brackets page for match times and opponents
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--accent-secondary);">•</span>
+                  <strong>Room Details:</strong> Room ID and password will be shared on the Brackets page at scheduled match time
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--accent-secondary);">•</span>
+                  <strong>Brackets Access:</strong> Use the "View Brackets" button above to access live tournament brackets
+                </li>
+              </ul>
+            </div>
+          </div>
+        `;
+      } else if (tournament.format === 'double_elimination') {
+        const maxTeams = tournament.maxTeams || 'Unlimited';
+        const totalMatches = maxTeams !== 'Unlimited' ? (maxTeams * 2) - 2 : 'Variable';
+        
+        formatHTML = `
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div>
+              <h4 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem;">Format: Double Elimination</h4>
+              <p style="margin: 0; color: var(--text-secondary);">Teams must lose twice to be eliminated, featuring winners and losers brackets.</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; background: rgba(15, 133, 211, 0.1); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--primary-color);">
+              <div><strong>Max Teams:</strong> ${maxTeams}</div>
+              <div><strong>Total Matches:</strong> ${totalMatches}</div>
+              <div><strong>Brackets:</strong> 2 (Winners & Losers)</div>
+              <div><strong>Eliminations:</strong> 2 losses required</div>
+            </div>
+            
+            <div>
+              <h4 style="color: var(--primary-color); margin: 0 0 1rem 0; font-size: 1.1rem;">Tournament Structure:</h4>
+              <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Winners Bracket:</strong> Teams that haven't lost a match
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Losers Bracket:</strong> Teams that lost once get a second chance
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Grand Finals:</strong> Winners bracket champion vs Losers bracket champion
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Finalists:</strong> Final standings will appear in the Finalists section after completion
+                </li>
+              </ul>
+            </div>
+            
+            <div style="background: rgba(93, 63, 211, 0.1); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--accent-secondary);">
+              <h4 style="color: var(--accent-secondary); margin: 0 0 1rem 0; font-size: 1.1rem;">Important Rules & Information:</h4>
+              <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--accent-secondary);">•</span>
+                  <strong>Registration:</strong> Teams can register only once for this tournament
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--accent-secondary);">•</span>
+                  <strong>Match Schedule:</strong> Check the Brackets page for match times and opponents
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--accent-secondary);">•</span>
+                  <strong>Room Details:</strong> Room ID and password will be shared on the Brackets page at scheduled match time
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--accent-secondary);">•</span>
+                  <strong>Brackets Access:</strong> Use the "View Brackets" button above to access live tournament brackets
+                </li>
+              </ul>
+            </div>
+          </div>
+        `;
       } else {
-        formatHTML = `<p>This tournament features a <strong>${tournament.format ? tournament.format.replace('_', ' ') : 'Standard'}</strong> format.</p>`;
+        // Generic format for other tournament types
+        const formatName = tournament.format ? tournament.format.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Standard';
+        const maxTeams = tournament.maxTeams || 'Unlimited';
+        
+        formatHTML = `
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div>
+              <h4 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem;">Format: ${formatName}</h4>
+              <p style="margin: 0; color: var(--text-secondary);">Tournament format details will be updated as more information becomes available.</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; background: rgba(15, 133, 211, 0.1); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--primary-color);">
+              <div><strong>Max Teams:</strong> ${maxTeams}</div>
+              <div><strong>Format:</strong> ${formatName}</div>
+            </div>
+            
+            <div style="background: rgba(93, 63, 211, 0.1); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--accent-secondary);">
+              <h4 style="color: var(--accent-secondary); margin: 0 0 1rem 0; font-size: 1.1rem;">Important Rules & Information:</h4>
+              <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--accent-secondary);">•</span>
+                  <strong>Registration:</strong> Teams can register only once for this tournament
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--accent-secondary);">•</span>
+                  <strong>Match Schedule:</strong> Check the Brackets page for match times and opponents
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--accent-secondary);">•</span>
+                  <strong>Room Details:</strong> Room ID and password will be shared on the Brackets page at scheduled match time
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--accent-secondary);">•</span>
+                  <strong>Brackets Access:</strong> Use the "View Brackets" button above to access live tournament brackets
+                </li>
+              </ul>
+            </div>
+          </div>
+        `;
       }
       formatContainer.innerHTML = formatHTML;
 
