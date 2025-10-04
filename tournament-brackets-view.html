@@ -156,91 +156,24 @@
       transform: scale(1.1);
     }
 
-    .profile-modal {
-      position: absolute;
-      top: 100%;
-      right: 0;
-      background: var(--panel);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      min-width: 280px;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-10px);
-      transition: all 0.3s ease;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      margin-top: 10px;
-    }
-
-    .profile-dropdown:hover .profile-modal {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .profile-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .profile-photo {
-      width: 50px;
-      height: 50px;
-      background: linear-gradient(135deg, var(--accent-secondary), var(--primary-color));
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #000;
-      font-size: 1.5rem;
-      flex-shrink: 0;
-    }
-
-    .profile-username {
-      font-weight: 700;
-      font-size: 1.1rem;
-    }
-
-    .profile-userid {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      opacity: 0.8;
-    }
-
-    .profile-actions {
-      padding: 0.5rem;
-    }
-
-    .profile-action {
+    .profile-info {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      padding: 0.75rem 1rem;
-      color: var(--text-secondary);
-      text-decoration: none;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-      font-weight: 600;
-      width: 100%;
-      border: none;
-      background: none;
       cursor: pointer;
-      font-family: inherit;
+      transition: all 0.3s ease;
+      padding: 0.5rem;
+      border-radius: 6px;
     }
 
-    .profile-action:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--primary-color);
-      transform: translateX(4px);
+    .profile-info:hover {
+      background: rgba(10, 250, 217, 0.1);
     }
 
-    .logout-action:hover {
-      background: rgba(255, 0, 0, 0.1);
-      color: #ff6b6b;
+    .profile-username {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-primary);
     }
 
     /* Hamburger & Mobile Nav Panel */
@@ -258,14 +191,18 @@
       top: 0;
       right: -100%;
       width: 300px;
-      height: 100%;
+      height: 100vh;
+      max-height: 100vh;
       background: var(--panel);
       z-index: 2000;
       transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
       box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
       padding-top: 60px;
+      padding-bottom: 0;
       display: flex;
       flex-direction: column;
+      overflow-y: auto;
+      box-sizing: border-box;
     }
 
     .mobile-nav.is-open {
@@ -298,6 +235,9 @@
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
     }
 
     .mobile-nav-links a {
@@ -324,11 +264,13 @@
     /* Mobile Navigation Bottom Actions */
     .mobile-nav-bottom-actions {
       margin-top: auto;
-      padding: 1.5rem;
+      padding: 1rem 1.5rem 1.5rem 1.5rem;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
       gap: 1rem;
       justify-content: center;
+      flex-shrink: 0;
+      min-height: auto;
     }
 
     /* Mobile Navigation Buttons - Standardized */
@@ -339,17 +281,20 @@
       align-items: center !important;
       justify-content: center !important;
       gap: 0.5rem !important;
-      padding: 0.75rem 1.5rem !important;
+      padding: 0.75rem 1rem !important;
       border: none !important;
       border-radius: 6px !important;
       text-decoration: none !important;
       font-weight: 600 !important;
-      font-size: 0.9rem !important;
+      font-size: 0.85rem !important;
+      line-height: 1.2 !important;
       transition: all 0.3s ease !important;
       cursor: pointer !important;
       font-family: inherit !important;
       flex: 1 !important;
-      min-height: 44px !important;
+      min-height: 40px !important;
+      max-height: 40px !important;
+      box-sizing: border-box !important;
     }
 
     .mobile-host-btn {
@@ -1074,6 +1019,38 @@
         padding: 0.5rem;
       }
     }
+
+    /* =========================
+       Custom Scrollbar Styles
+       ========================= */
+    ::-webkit-scrollbar-track {
+      border-radius: 5px;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-dark);
+    }
+
+    ::-webkit-scrollbar {
+      border-radius: 5px;
+      width: 10px;
+      background-color: var(--bg-dark);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      background-color: var(--panel);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      border-radius: 5px;
+      background-color: var(--accent-secondary);
+    }
+
+    /* Firefox scrollbar */
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: var(--panel) var(--bg-dark);
+    }
   </style>
 </head>
 
@@ -1093,29 +1070,11 @@
             <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
           </div>
           <div id="user-menu" style="display: none;">
-            <div class="profile-dropdown">
-              <div class="profile-icon" id="profile-icon">
+            <div class="profile-info" onclick="window.location.href='userdashboard.html'">
+              <div class="profile-icon">
                 <i class="fas fa-user-circle"></i>
               </div>
-              <div class="profile-modal" id="profile-modal">
-                <div class="profile-header">
-                  <div class="profile-photo"><i class="fas fa-user"></i></div>
-                  <div class="profile-info">
-                    <div class="profile-username" id="modal-username">User</div>
-                    <div class="profile-userid" id="modal-userid">ID: Loading...</div>
-                  </div>
-                </div>
-                <div class="profile-actions">
-                  <a href="userdashboard.html" class="profile-action" id="modal-dashboard-link">
-                    <i class="fas fa-user"></i>
-                    <span>My Account</span>
-                  </a>
-                  <button class="profile-action logout-action" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Logout</span>
-                  </button>
-                </div>
-              </div>
+              <div class="profile-username" id="navbar-username">User</div>
             </div>
           </div>
         </div>
@@ -2021,10 +1980,9 @@
         const user = await fetchUserData();
   
         if (user) {
-          document.getElementById('modal-username').textContent = user.username || user.email.split('@')[0];
-          const useridElement = document.getElementById('modal-userid');
-          if (useridElement && user.id) {
-            useridElement.textContent = `ID: ${user.id}`;
+          const navbarUsername = document.getElementById('navbar-username');
+          if (navbarUsername) {
+            navbarUsername.textContent = user.username || user.email.split('@')[0];
           }
           if (guestMenu) guestMenu.style.display = 'none';
           if (userMenu) userMenu.style.display = 'flex';
