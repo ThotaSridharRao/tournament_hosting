@@ -2087,23 +2087,11 @@
         formatHTML = `
           <div style="display: flex; flex-direction: column; gap: 1.5rem;">
             <div>
-              <h4 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem;">Format: KP (Knockout Playoffs)</h4>
-              <p style="margin: 0; color: var(--text-secondary);">A multi-stage tournament format with qualifying rounds followed by finals.</p>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; background: rgba(15, 133, 211, 0.1); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--primary-color);">
-              <div><strong>Max Teams:</strong> ${maxTeams}</div>
-              <div><strong>Total Matches:</strong> ${totalMatches}</div>
-              <div><strong>Qualifiers:</strong> ${totalQualifiers}</div>
-              <div><strong>Finals:</strong> 1</div>
-            </div>
-            
-            <div>
               <h4 style="color: var(--primary-color); margin: 0 0 1rem 0; font-size: 1.1rem;">Tournament Structure:</h4>
               <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
                 <li style="padding-left: 1.5rem; position: relative;">
                   <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
-                  <strong>Qualifier Stage:</strong> ${totalQualifiers} qualifier groups of ${s.groupSize || 25} teams each
+                  <strong>Tournament Format:</strong> KP
                 </li>
                 <li style="padding-left: 1.5rem; position: relative;">
                   <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
@@ -2129,20 +2117,12 @@
         formatHTML = `
           <div style="display: flex; flex-direction: column; gap: 1.5rem;">
             <div>
-              <h4 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem;">Format: Single Elimination</h4>
-              <p style="margin: 0; color: var(--text-secondary);">A knockout tournament where teams are eliminated after losing one match.</p>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; background: rgba(15, 133, 211, 0.1); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--primary-color);">
-              <div><strong>Max Teams:</strong> ${maxTeams}</div>
-              <div><strong>Total Matches:</strong> ${totalMatches}</div>
-              <div><strong>Rounds:</strong> ${totalRounds}</div>
-              <div><strong>Format:</strong> Knockout</div>
-            </div>
-            
-            <div>
               <h4 style="color: var(--primary-color); margin: 0 0 1rem 0; font-size: 1.1rem;">Tournament Structure:</h4>
               <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Tournament Format:</strong> Single Elimination
+                </li>
                 <li style="padding-left: 1.5rem; position: relative;">
                   <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
                   <strong>Elimination:</strong> Lose one match and you're out of the tournament
@@ -2170,20 +2150,12 @@
         formatHTML = `
           <div style="display: flex; flex-direction: column; gap: 1.5rem;">
             <div>
-              <h4 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem;">Format: Double Elimination</h4>
-              <p style="margin: 0; color: var(--text-secondary);">Teams must lose twice to be eliminated, featuring winners and losers brackets.</p>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; background: rgba(15, 133, 211, 0.1); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--primary-color);">
-              <div><strong>Max Teams:</strong> ${maxTeams}</div>
-              <div><strong>Total Matches:</strong> ${totalMatches}</div>
-              <div><strong>Brackets:</strong> 2 (Winners & Losers)</div>
-              <div><strong>Eliminations:</strong> 2 losses required</div>
-            </div>
-            
-            <div>
               <h4 style="color: var(--primary-color); margin: 0 0 1rem 0; font-size: 1.1rem;">Tournament Structure:</h4>
               <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Tournament Format:</strong> Double Elimination
+                </li>
                 <li style="padding-left: 1.5rem; position: relative;">
                   <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
                   <strong>Winners Bracket:</strong> Teams that haven't lost a match
@@ -2212,13 +2184,17 @@
         formatHTML = `
           <div style="display: flex; flex-direction: column; gap: 1.5rem;">
             <div>
-              <h4 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem;">Format: ${formatName}</h4>
-              <p style="margin: 0; color: var(--text-secondary);">Tournament format details will be updated as more information becomes available.</p>
-            </div>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; background: rgba(15, 133, 211, 0.1); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--primary-color);">
-              <div><strong>Max Teams:</strong> ${maxTeams}</div>
-              <div><strong>Format:</strong> ${formatName}</div>
+              <h4 style="color: var(--primary-color); margin: 0 0 1rem 0; font-size: 1.1rem;">Tournament Structure:</h4>
+              <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Tournament Format:</strong> ${formatName}
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Details:</strong> Tournament format details will be updated as more information becomes available
+                </li>
+              </ul>
             </div>
           </div>
         `;
