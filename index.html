@@ -1845,7 +1845,7 @@
           };
           return statusMap[status] || status;
         }
-        
+
         const rawStatus = tournament.status || 'upcoming';
         const status = normalizeStatus(rawStatus);
         const statusText = status.replace(/_/g, ' ');
@@ -2030,7 +2030,7 @@
       try {
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
-        
+
         const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
           method: 'GET',
           headers: {
@@ -2062,7 +2062,7 @@
     async function checkUserAuthentication() {
       const guestMenu = document.getElementById('guest-menu');
       const userMenu = document.getElementById('user-menu');
-      
+
       // Fetch user data (from session or backend)
       const user = await fetchUserData();
 
