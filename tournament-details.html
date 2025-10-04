@@ -1419,7 +1419,8 @@
           <div class="nav-links" role="menubar">
             <a href="tournaments.html" role="menuitem">Browse Tournaments</a>
             <a href="userdashboard.html" role="menuitem">My Tournaments</a>
-            <a href="index.html#leaderboards" role="menuitem">Leaderboards</a>
+            <a href="#schedule-section" role="menuitem">Schedule</a>
+            <a href="#finalists-section" role="menuitem">Finalists</a>
           </div>
         </nav>
         <div class="nav-actions">
@@ -1488,17 +1489,7 @@
                 <li><span class="info-label">Max Teams</span><span class="info-value" id="max-teams">--</span></li>
               </ul>
             </div>
-            <div class="info-card">
-              <h3><i class="fas fa-calendar-alt"></i> Schedule</h3>
-              <ul class="info-list">
-                <li><span class="info-label">Reg. Opens</span><span class="info-value" id="reg-start-date">--</span>
-                </li>
-                <li><span class="info-label">Reg. Closes</span><span class="info-value" id="reg-end-date">--</span></li>
-                <li><span class="info-label">Starts</span><span class="info-value" id="tournament-start-date">--</span>
-                </li>
-                <li><span class="info-label">Ends</span><span class="info-value" id="tournament-end-date">--</span></li>
-              </ul>
-            </div>
+
             <div class="info-card">
               <h3><i class="fas fa-trophy"></i> Prizes</h3>
               <ul class="info-list" id="prize-list">
@@ -1510,7 +1501,7 @@
       </div>
     </section>
 
-    <section class="leaderboard-section" id="finalists-section" style="display: none;">
+    <section class="leaderboard-section" id="finalists-section">
       <div class="container">
         <div class="section-header">
           <h2 class="section-title">Finalists</h2>
@@ -1518,13 +1509,16 @@
         </div>
         <div class="finalists-table-container" id="finalists-table">
           <div id="finalists-content">
-            <!-- Content populated by JS -->
+            <div class="empty-finalists">
+              <i class="fas fa-trophy" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+              <p>Final standings will appear here once the tournament concludes.</p>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="schedule-section">
+    <section class="schedule-section" id="schedule-section">
       <div class="container">
         <div class="section-header">
           <h2 class="section-title">Event Schedule</h2>
@@ -1717,6 +1711,13 @@
       }
     }
 
+    function closeMobileNav() {
+      const mobileNav = document.getElementById('mobile-nav');
+      if (mobileNav) {
+        mobileNav.classList.remove('is-open');
+      }
+    }
+
     function setupMobileNav() {
       const sessionData = getSessionData();
       const mobileNavContainer = document.getElementById('mobile-nav');
@@ -1778,10 +1779,33 @@
         `;
       }
 
+      // Navigation links section
+      const navigationLinksHTML = `
+        <div class="mobile-nav-links">
+          <a href="tournaments.html">
+            <i class="fas fa-trophy"></i>
+            Browse Tournaments
+          </a>
+          <a href="userdashboard.html">
+            <i class="fas fa-tachometer-alt"></i>
+            My Tournaments
+          </a>
+          <a href="#schedule-section" onclick="closeMobileNav()">
+            <i class="fas fa-calendar-alt"></i>
+            Schedule
+          </a>
+          <a href="#finalists-section" onclick="closeMobileNav()">
+            <i class="fas fa-crown"></i>
+            Finalists
+          </a>
+        </div>
+      `;
+
       // Combine the parts into the final HTML for the panel
       mobileNavContainer.innerHTML = `
         ${closeButtonHTML}
         ${userSectionHTML}
+        ${navigationLinksHTML}
         ${bottomActionsHTML}
       `;
     }
@@ -2061,10 +2085,7 @@
         return `${displayDate} at ${displayTime}`;
       };
 
-      document.getElementById('reg-start-date').textContent = formatDateWithTime(tournament.registrationStart);
-      document.getElementById('reg-end-date').textContent = formatDateWithTime(tournament.registrationEnd);
-      document.getElementById('tournament-start-date').textContent = formatDateWithTime(tournament.tournamentStart);
-      document.getElementById('tournament-end-date').textContent = formatDateWithTime(tournament.tournamentEnd);
+
 
       const prizeList = document.getElementById('prize-list');
       prizeList.innerHTML = '';
@@ -2086,14 +2107,9 @@
       const bracketsActionBtn = document.getElementById('brackets-action');
       const finalistsSection = document.getElementById('finalists-section');
 
-      // Show finalists section if there are finalists, regardless of tournament status
-      const hasFinalists = tournament.finalists && tournament.finalists.length > 0;
-      if (hasFinalists) {
-        finalistsSection.style.display = 'block';
-        renderFinalists(tournament.finalists);
-      } else {
-        finalistsSection.style.display = 'none';
-      }
+      // Always show finalists section and render appropriate content
+      finalistsSection.style.display = 'block';
+      renderFinalists(tournament.finalists || []);
 
       primaryActionBtn.style.display = 'inline-flex';
       primaryActionBtn.disabled = false;
