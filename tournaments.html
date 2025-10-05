@@ -12,477 +12,251 @@
 
   <style>
     /* =========================
-       NAVBAR STYLES (Embedded)
+       NAVBAR STYLES (Modern Design)
        ========================= */
-
-    /* General Header Styles */
-    header.site-header {
+    .nav-normal {
+      background: rgba(13, 10, 26, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 1.2rem 2rem;
       position: fixed;
-      inset: 0 0 auto 0;
-      background: rgba(26, 26, 26, 0.5);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      z-index: 1200;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      height: 60px;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+      transform: translateY(0);
     }
 
-    .header-container {
+    .nav-normal.nav-hidden {
+      transform: translateY(-100%);
+    }
+
+    .nav-normal.nav-scrolled {
+      background: rgba(13, 10, 26, 0.3);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+    }
+
+    .nav-container {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      padding: 0 2rem;
-      height: 100%;
+      align-items: center;
       max-width: 1400px;
       margin: 0 auto;
     }
 
-    .brand {
-      font-weight: 700;
+    .logo {
       font-size: 1.5rem;
-      color: var(--copy);
+      font-weight: 700;
+      color: white;
       text-decoration: none;
+      letter-spacing: -0.5px;
     }
 
-    .header-right {
+    .nav-center {
       display: flex;
       align-items: center;
-      gap: 1rem;
-    }
-
-    /* Navigation Styles */
-    .primary {
-      display: flex;
-      align-items: center;
+      gap: 2.5rem;
     }
 
     .nav-links {
       display: flex;
+      gap: 0;
+      list-style: none;
       align-items: center;
-      gap: 2rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links li {
+      position: relative;
     }
 
     .nav-links a {
-      color: var(--copy, #F0F0F0);
+      color: rgba(255, 255, 255, 0.7);
       text-decoration: none;
       font-weight: 500;
       font-size: 0.95rem;
-      transition: color 0.3s ease;
-      padding: 0.5rem 0;
+      transition: all 0.3s ease;
+      padding: 0.6rem 1.2rem;
+      display: block;
     }
 
     .nav-links a:hover {
-      color: var(--accent-2, #0AFAD9);
+      color: white;
     }
 
-    .nav-links a.active {
-      color: var(--accent-2, #0AFAD9);
-      font-weight: 600;
-    }
-
-    .nav-actions {
+    .auth-buttons {
       display: flex;
-      align-items: center;
       gap: 1rem;
-      margin-left: 2rem;
-      padding-left: 2rem;
-      border-left: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .header-cta {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #fff;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .header-cta:hover {
-      opacity: 0.8;
-      filter: brightness(0.9);
-    }
-
-    /* Host Button Styles */
-    .host-btn {
-      display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      background: #ffffff;
-      color: #000000;
-      border: none;
-      border-radius: 6px;
+    }
+
+    .btn {
+      padding: 0.65rem 1.5rem;
+      border-radius: 8px;
       text-decoration: none;
       font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
       font-size: 0.9rem;
-      transition: all 0.3s ease;
     }
 
-    .host-btn:hover {
-      opacity: 0.8;
-      filter: brightness(0.9);
+    .btn-request {
+      background: white;
+      color: #0a0a0a;
     }
 
-    .host-btn i {
-      font-size: 1rem;
+    .btn-request:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
     }
 
-    /* Profile Dropdown (Desktop) */
-    .profile-dropdown {
-      position: relative;
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+
+    .user-info {
       display: flex;
       align-items: center;
-    }
-
-    .profile-icon {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--copy);
-      cursor: pointer;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-      font-size: 1.5rem;
-    }
-
-    .profile-icon:hover {
-      color: var(--accent);
-      background: rgba(255, 69, 0, 0.1);
-      transform: scale(1.1);
-    }
-
-    .profile-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      cursor: pointer;
-      padding: 0.5rem;
-    }
-
-    .profile-icon {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--copy);
-      border-radius: 50%;
-      transition: all 0.3s ease;
-      font-size: 1.5rem;
-    }
-
-    .profile-icon:hover {
-      color: var(--accent);
-      background: rgba(10, 250, 217, 0.1);
-      transform: scale(1.1);
-    }
-
-    .profile-username {
-      font-weight: 600;
-      font-size: 0.95rem;
-      color: var(--copy);
-    }
-
-    .logout-action:hover {
-      background: rgba(255, 0, 0, 0.1);
-      color: #ff6b6b;
-    }
-
-    /* Mobile Navigation Bottom Actions */
-    .mobile-nav-bottom-actions {
-      padding: 1rem 0.75rem 0.75rem 0.75rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      margin-top: auto;
-      display: flex;
       gap: 0.8rem;
-      justify-content: center;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-secondary) 100%);
+      display: flex;
       align-items: center;
-      flex-shrink: 0;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.85rem;
     }
 
-    .mobile-logout-btn {
-      display: inline-flex !important;
-      align-items: center !important;
-      gap: 0.4rem !important;
-      padding: 0.5rem 0.8rem !important;
-      background: rgba(255, 0, 0, 0.1) !important;
-      color: #ff6b6b !important;
-      border: 1px solid rgba(255, 107, 107, 0.3) !important;
-      border-radius: 5px !important;
-      text-decoration: none !important;
-      font-weight: 600 !important;
-      font-size: 0.85rem !important;
-      line-height: 1 !important;
-      transition: all 0.3s ease !important;
-      cursor: pointer !important;
-      flex: 1 !important;
-      max-width: 120px !important;
-      min-height: 36px !important;
-      justify-content: center !important;
+    .user-name {
+      font-weight: 500;
+      font-size: 0.9rem;
     }
 
-    .mobile-logout-btn:hover {
-      background: rgba(255, 0, 0, 0.2) !important;
-      border-color: rgba(255, 107, 107, 0.5) !important;
-    }
-
-    .mobile-logout-btn i {
-      font-size: 0.85rem !important;
-      color: inherit !important;
-    }
-
-    /* Hamburger & Mobile Nav Panel */
-    .hamburger {
+    .menu-toggle {
       display: none;
       background: none;
       border: none;
-      color: var(--copy);
-      font-size: 1.5rem;
       cursor: pointer;
-    }
-
-    .mobile-nav {
-      position: fixed;
-      top: 0;
-      right: -100%;
-      width: 300px;
-      height: 100vh;
-      background: var(--panel);
-      z-index: 2000;
-      transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
-      padding-top: 60px;
-      padding-bottom: 20px;
-      display: flex;
-      flex-direction: column;
-      border-radius: 0 0 0 15px;
-      overflow-y: auto;
-      box-sizing: border-box;
-    }
-
-    .mobile-nav.is-open {
-      right: 0;
-    }
-
-    .mobile-nav-close {
-      position: absolute;
-      top: 0.75rem;
-      right: 1rem;
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-size: 1.5rem;
-      cursor: pointer;
-      line-height: 1;
-      transition: color 0.2s ease, transform 0.3s ease;
-    }
-
-    .mobile-nav-close:hover {
-      color: var(--copy);
-      transform: rotate(90deg);
-    }
-
-    .mobile-nav .guest-view {
-      padding: 1rem;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.75rem;
-      margin-top: 0.5rem;
-    }
-
-    /* Button container for side-by-side layout */
-    .mobile-nav .guest-view .button-container {
-      display: flex;
-      gap: 0.8rem;
-      width: 100%;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .mobile-nav .guest-view i {
-      font-size: 2rem;
-      color: var(--accent);
-    }
-
-    .mobile-nav .guest-view p {
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    /* Mobile Navigation Links Styling */
-    .mobile-nav-links {
       padding: 0.5rem;
-      margin-top: 0.5rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .menu-icon {
+      width: 24px;
+      height: 20px;
+      position: relative;
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      justify-content: space-between;
     }
 
-    .mobile-nav-links a {
-      color: var(--muted);
-      text-decoration: none;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      font-weight: 600;
-      transition: all 0.2s ease;
+    .menu-icon span {
+      width: 100%;
+      height: 2px;
+      background: white;
+      border-radius: 2px;
+      transition: all 0.3s ease;
     }
 
-    .mobile-nav-links a:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--copy);
+    .menu-toggle.active .menu-icon span:nth-child(1) {
+      transform: rotate(45deg) translate(7px, 7px);
     }
 
-    .mobile-nav-links a i {
-      margin-right: 0.5rem;
-      color: var(--accent-2, #0AFAD9);
+    .menu-toggle.active .menu-icon span:nth-child(2) {
+      opacity: 0;
     }
 
-    /* Mobile Navigation Buttons */
-    .mobile-nav .mobile-host-btn,
-    .guest-view .mobile-host-btn,
-    a.mobile-host-btn,
-    .mobile-nav-bottom-actions .mobile-host-btn {
-      display: inline-flex !important;
-      align-items: center !important;
-      gap: 0.4rem !important;
-      padding: 0.5rem 0.8rem !important;
-      background: #ffffff !important;
-      background-color: #ffffff !important;
-      background-image: none !important;
-      color: #000000 !important;
-      border: none !important;
-      border-radius: 5px !important;
-      text-decoration: none !important;
-      font-weight: 600 !important;
-      font-size: 0.85rem !important;
-      line-height: 1 !important;
-      transition: all 0.3s ease !important;
-      margin-bottom: 0 !important;
-      width: auto !important;
-      justify-content: center !important;
-      box-sizing: border-box !important;
-      flex: 1 !important;
-      max-width: 120px !important;
-      min-height: 36px !important;
-      cursor: pointer !important;
+    .menu-toggle.active .menu-icon span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
     }
 
-    /* Icon sizing for mobile host button */
-    .mobile-nav .mobile-host-btn i,
-    .guest-view .mobile-host-btn i,
-    a.mobile-host-btn i {
-      font-size: 0.85rem !important;
-      color: #000000 !important;
-    }
-
-    .mobile-nav .mobile-host-btn:hover,
-    .guest-view .mobile-host-btn:hover,
-    a.mobile-host-btn:hover,
-    .mobile-nav-bottom-actions .mobile-host-btn:hover {
-      opacity: 0.8 !important;
-      filter: brightness(0.9) !important;
-    }
-
-    .mobile-join-btn {
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      gap: 0.4rem !important;
-      padding: 0.5rem 0.8rem !important;
-      background: linear-gradient(135deg, var(--accent, #5D3FD3), var(--accent-2, #0AFAD9)) !important;
-      color: #ffffff !important;
-      border: none !important;
-      border-radius: 5px !important;
-      text-decoration: none !important;
-      font-weight: 600 !important;
-      font-size: 0.85rem !important;
-      line-height: 1 !important;
-      cursor: pointer !important;
-      transition: all 0.3s ease !important;
-      margin-bottom: 0 !important;
-      width: auto !important;
-      box-sizing: border-box !important;
-      flex: 1 !important;
-      max-width: 200px !important;
-      min-height: 36px !important;
-      margin: 0;
-    }
-
-    .mobile-join-btn:hover {
-      opacity: 0.8;
-      filter: brightness(0.9);
-    }
-
-    /* Force override any inherited button styles */
-    .mobile-host-btn * {
-      color: inherit !important;
-    }
-
-    /* Additional specificity for mobile host button */
-    #mobile-nav .guest-view a[href="userdashboard.html"] {
-      background: #ffffff !important;
-      background-color: #ffffff !important;
-      background-image: none !important;
-      color: #000000 !important;
-    }
-
-    #mobile-nav .guest-view a[href="userdashboard.html"]:hover {
-      opacity: 0.8 !important;
-      filter: brightness(0.9) !important;
-    }
-
-    /* Responsive Media Queries */
-    @media (max-width: 768px) {
-      .header-container {
-        padding: 0 1rem;
+    /* Mobile Styles */
+    @media (max-width: 968px) {
+      .menu-toggle {
+        display: block;
       }
 
-      .primary {
-        display: none;
+      .nav-center {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        height: 100vh;
+        width: 85%;
+        max-width: 350px;
+        flex-direction: column;
+        background: rgba(15, 15, 15, 0.98);
+        backdrop-filter: blur(20px);
+        padding: 6rem 2rem 2rem;
+        gap: 0;
+        transition: right 0.3s ease;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        align-items: flex-start;
+        overflow-y: auto;
       }
 
-      .nav-actions {
-        display: none;
+      .nav-center.active {
+        right: 0;
       }
 
-      .hamburger {
-        display: inline-flex;
-        align-items: center;
+      .nav-links {
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+      }
+
+      .nav-links li {
+        width: 100%;
+      }
+
+      .nav-links a {
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .auth-buttons {
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .user-info {
+        width: 100%;
         justify-content: center;
       }
 
-      /* Hide host button on mobile - will be in mobile menu */
-      .host-btn {
-        display: none;
-      }
-    }
-
-    @media (min-width: 1600px) {
-      header.site-header {
-        height: 80px;
-        padding: 0 3rem;
-      }
-
-      .back-btn,
-      .header-cta,
-      .profile-username {
-        font-size: 1.1rem;
-      }
-
-      .header-cta {
-        padding: 0.7rem 1.25rem;
-      }
-
-      .profile-icon {
-        font-size: 1.75rem;
+      #user-menu {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
       }
     }
 
@@ -812,7 +586,8 @@
       overflow: hidden;
       transition: all 0.3s var(--ease-out-quart);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      max-width: 500px; /* Prevent cards from getting too wide */
+      max-width: 500px;
+      /* Prevent cards from getting too wide */
       width: 100%;
     }
 
@@ -1243,76 +1018,36 @@
 </head>
 
 <body>
-  <header class="site-header" role="banner">
-    <div class="header-container">
-      <a href="index.html" class="brand" aria-hidden="false">GamingNexus</a>
-      <div class="header-right">
-        <nav class="primary" role="navigation" aria-label="Primary">
-          <div class="nav-links" role="menubar">
-            <a href="index.html" role="menuitem">Home</a>
-            <a href="tournaments.html" role="menuitem" class="active">Tournaments</a>
-            <a href="index.html#why-us" role="menuitem">Why Us</a>
-            <a href="index.html#faq" role="menuitem">FAQ</a>
-          </div>
-        </nav>
-        <div class="nav-actions">
+  <nav class="nav-normal">
+    <div class="nav-container">
+      <a href="index.html" class="logo">GamingNexus</a>
+      <div class="nav-center" id="normalNav">
+        <ul class="nav-links">
+          <li><a href="tournaments.html">Tournaments</a></li>
+          <li><a href="tournament-brackets.html">Brackets</a></li>
+        </ul>
+        <div class="auth-buttons" id="normalAuth">
           <div id="guest-menu">
-            <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
+            <a href="auth.html" class="btn btn-request">Join Us</a>
           </div>
           <div id="user-menu" style="display: none;">
-            <div class="profile-info" onclick="window.location.href='userdashboard.html'">
-              <div class="profile-icon">
-                <i class="fas fa-user-circle"></i>
-              </div>
-              <div class="profile-username" id="navbar-username">User</div>
+            <div class="user-info">
+              <div class="user-avatar" id="user-avatar">U</div>
+              <span class="user-name" id="navbar-username">User</span>
             </div>
+            <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
           </div>
         </div>
-        <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
-          <i class="fas fa-bars"></i>
-        </button>
       </div>
-    </div>
-  </header>
-
-  <div id="mobile-nav" class="mobile-nav" hidden>
-    <button class="mobile-nav-close" onclick="closeMobileNav()">
-      <i class="fas fa-times"></i>
-    </button>
-
-    <!-- Guest View (when not logged in) -->
-    <div id="mobile-guest-view" class="guest-view">
-      <i class="fas fa-user-circle"></i>
-      <p>Join GamingNexus to host tournaments and compete with the best players!</p>
-      <a href="create-tournament.html" class="mobile-host-btn">
-        <i class="fas fa-plus-circle"></i>
-        Host Tournament
-      </a>
-      <button class="mobile-join-btn" onclick="redirectToAuth()">
-        Join Us
+      <button class="menu-toggle" id="normalMenuToggle">
+        <div class="menu-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
       </button>
     </div>
-
-    <!-- Navigation Links -->
-    <div class="mobile-nav-links">
-      <a href="index.html">
-        <i class="fas fa-home"></i>
-        Home
-      </a>
-      <a href="tournaments.html">
-        <i class="fas fa-trophy"></i>
-        Tournaments
-      </a>
-      <a href="index.html#why-us">
-        <i class="fas fa-star"></i>
-        Why Us
-      </a>
-      <a href="index.html#faq">
-        <i class="fas fa-question-circle"></i>
-        FAQ
-      </a>
-    </div>
-  </div>
+  </nav>
 
   <main>
     <!-- Page Header -->
@@ -1404,163 +1139,146 @@
   </footer>
 
   <script>
-    // Helper function to redirect to auth with return URL
-    function redirectToAuth(tab = 'register') {
-      const currentUrl = window.location.href;
-      const returnUrl = encodeURIComponent(currentUrl);
-      window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
-    }
-
-    // Simulated tournament data (would come from backend API)
-    const tournamentsData = [
-      {
-        id: 1,
-        title: "PUBG Global Series 2025",
-        description: "The biggest PUBG tournament of the year is here! Join us as the best teams from around the world battle it out in London for the title of Global Champions.",
-        prizePool: "$500K",
-        teams: "32",
-        duration: "7 Days",
-        status: "registration",
-        game: "pubg",
-        detailsLink: "tournament-details.html?tournament=pubg-global-series-2025",
-        badge: "Featured"
-      },
-      {
-        id: 2,
-        title: "BGMI Masters Championship",
-        description: "India's premier BGMI tournament featuring the country's top teams competing for glory and massive prizes in an epic battle royale showdown.",
-        prizePool: "$300K",
-        teams: "24",
-        duration: "5 Days",
-        status: "upcoming",
-        game: "bgmi",
-        detailsLink: "tournament-bgmi-masters.html",
-        badge: "Premium"
-      },
-      {
-        id: 3,
-        title: "BGMI Championship Series",
-        description: "The biggest BGMI tournament of the year! Assemble your squad and compete against India's best players for the ultimate battle royale championship title.",
-        prizePool: "$750K",
-        teams: "48",
-        duration: "10 Days",
-        status: "registration",
-        game: "bgmi",
-        detailsLink: "tournament-championship-series.html",
-        badge: "Championship"
-      },
-      {
-        id: 4,
-        title: "PUBG Mobile World Cup",
-        description: "Global championship featuring the best PUBG Mobile teams from around the world competing for the ultimate title and massive prize pool.",
-        prizePool: "$1M",
-        teams: "64",
-        duration: "14 Days",
-        status: "upcoming",
-        game: "pubg",
-        detailsLink: "#",
-        badge: "World Cup"
-      },
-      {
-        id: 5,
-        title: "BGMI Pro League Season 3",
-        description: "Professional league featuring India's top BGMI teams competing in a season-long format with weekly matches and playoffs.",
-        prizePool: "$200K",
-        teams: "16",
-        duration: "8 Weeks",
-        status: "live",
-        game: "bgmi",
-        detailsLink: "tournament-details.html?tournament=bgmi-masters-championship&status=live",
-        badge: "Pro League"
-      },
-      {
-        id: 6,
-        title: "PUBG Continental Series",
-        description: "Regional championship bringing together the best teams from Asia, Europe, and Americas for an epic continental showdown.",
-        prizePool: "$400K",
-        teams: "40",
-        duration: "6 Days",
-        status: "registration",
-        game: "pubg",
-        detailsLink: "#",
-        badge: "Continental"
-      },
-      {
-        id: 7,
-        title: "PUBG Global Championship 2024",
-        description: "The concluded global championship where Team Liquid emerged victorious after an intense final battle against the world's best teams.",
-        prizePool: "$600K",
-        teams: "32",
-        duration: "Completed",
-        status: "completed",
-        game: "pubg",
-        detailsLink: "tournament-details.html?tournament=bgmi-championship-series&status=completed&winner=liquid",
-        badge: "Champion",
-        winner: {
-          team: "Team Liquid",
-          logo: "TL",
-          members: ["ScreaM", "Jamppi", "soulcas", "Nivera"],
-          prize: "$200,000"
-        }
-      },
-      {
-        id: 8,
-        title: "BGMI Masters 2024 Finals",
-        description: "Epic conclusion to the BGMI Masters where Soul dominated the competition with exceptional gameplay and strategic prowess.",
-        prizePool: "$400K",
-        teams: "24",
-        duration: "Completed",
-        status: "completed",
-        game: "bgmi",
-        detailsLink: "tournament-bgmi-masters.html?completed=true&winner=soul",
-        badge: "Champion",
-        winner: {
-          team: "Team Soul",
-          logo: "TS",
-          members: ["Mortal", "Viper", "Clutchgod", "Regaltos"],
-          prize: "$120,000"
-        }
-      },
-      {
-        id: 9,
-        title: "PUBG Nations Cup 2024",
-        description: "International tournament concluded with spectacular performances where Natus Vincere claimed the championship title.",
-        prizePool: "$350K",
-        teams: "28",
-        duration: "Completed",
-        status: "completed",
-        game: "pubg",
-        detailsLink: "tournament-championship-series.html?completed=true&winner=navi",
-        badge: "Champion",
-        winner: {
-          team: "Natus Vincere",
-          logo: "NV",
-          members: ["s1mple", "electronic", "Perfecto", "b1t"],
-          prize: "$100,000"
-        }
-      }
-    ];
-
-    let currentFilter = 'all';
-
-    // API Configuration (Production)
+    // API Configuration
     const API_BASE_URL = 'https://t2-237c.onrender.com';
 
     // Status configurations
-    // Status configurations - standardized with admin dashboard
     const statusConfig = {
       upcoming: "Upcoming",
       registration_open: "Registration Open",
       registration_closed: "Registration Closed",
       ongoing: "Ongoing",
       ended: "Ended",
-      // Legacy status mappings for backward compatibility
-      live: "Ongoing", // Map 'live' to 'ongoing'
-      completed: "Ended", // Map 'completed' to 'ended'
+      live: "Ongoing",
+      completed: "Ended",
       default: "Unknown"
     };
 
-    // Function to normalize status values to match admin dashboard
+    let currentFilter = 'all';
+
+    // =========================
+    // AUTHENTICATION FUNCTIONS
+    // =========================
+
+    function getSessionData() {
+      const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+      try {
+        return session ? JSON.parse(session) : null;
+      } catch (error) {
+        console.error('Error parsing session:', error);
+        return null;
+      }
+    }
+
+    function redirectToAuth(tab = 'register') {
+      const returnUrl = encodeURIComponent(window.location.href);
+      window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
+    }
+
+    function handleLogout() {
+      if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('nexus_session');
+        sessionStorage.removeItem('nexus_session');
+        window.location.href = 'index.html';
+      }
+    }
+
+    function checkUserAuthentication() {
+      const sessionData = getSessionData();
+      const guestMenu = document.getElementById('guest-menu');
+      const userMenu = document.getElementById('user-menu');
+      const user = sessionData?.user;
+
+      if (user) {
+        const username = user.username || user.email?.split('@')[0] || 'User';
+        const userInitials = username.substring(0, 2).toUpperCase();
+
+        // Update navbar elements
+        const navbarUsername = document.getElementById('navbar-username');
+        const userAvatar = document.getElementById('user-avatar');
+
+        if (navbarUsername) navbarUsername.textContent = username;
+        if (userAvatar) userAvatar.textContent = userInitials;
+
+        // Show user menu, hide guest menu
+        if (guestMenu) guestMenu.style.display = 'none';
+        if (userMenu) userMenu.style.display = 'flex';
+      } else {
+        // Show guest menu, hide user menu
+        if (guestMenu) guestMenu.style.display = 'block';
+        if (userMenu) userMenu.style.display = 'none';
+      }
+    }
+
+    // =========================
+    // NAVBAR FUNCTIONS
+    // =========================
+
+    function initSmartNavbar() {
+      const navbar = document.querySelector('.nav-normal');
+      if (!navbar) return;
+
+      let lastScrollY = window.scrollY;
+      let ticking = false;
+
+      function updateNavbar() {
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY > 50) {
+          navbar.classList.add('nav-scrolled');
+        } else {
+          navbar.classList.remove('nav-scrolled');
+        }
+
+        if (currentScrollY > 100) {
+          if (currentScrollY > lastScrollY && currentScrollY > 200) {
+            navbar.classList.add('nav-hidden');
+          } else {
+            navbar.classList.remove('nav-hidden');
+          }
+        } else {
+          navbar.classList.remove('nav-hidden');
+        }
+
+        lastScrollY = currentScrollY;
+        ticking = false;
+      }
+
+      function requestTick() {
+        if (!ticking) {
+          requestAnimationFrame(updateNavbar);
+          ticking = true;
+        }
+      }
+
+      window.addEventListener('scroll', requestTick, { passive: true });
+      updateNavbar();
+    }
+
+    function initMobileMenu() {
+      const normalMenuToggle = document.getElementById('normalMenuToggle');
+      const normalNav = document.getElementById('normalNav');
+
+      if (normalMenuToggle && normalNav) {
+        normalMenuToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          normalMenuToggle.classList.toggle('active');
+          normalNav.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.nav-normal') && normalNav.classList.contains('active')) {
+            normalNav.classList.remove('active');
+            normalMenuToggle.classList.remove('active');
+          }
+        });
+      }
+    }
+
+    // =========================
+    // TOURNAMENT FUNCTIONS
+    // =========================
+
     function normalizeStatus(status) {
       const statusMap = {
         'live': 'ongoing',
@@ -1570,19 +1288,27 @@
       return statusMap[status] || status;
     }
 
-    // Fetch tournaments from API
+    function getStatusBadge(status) {
+      const badges = {
+        'upcoming': 'Coming Soon',
+        'registration_open': 'Registration Open',
+        'registration_closed': 'Registration Closed',
+        'ongoing': 'Live Now',
+        'ended': 'Completed'
+      };
+      return badges[status] || 'Unknown';
+    }
+
     async function fetchTournaments(filters = {}) {
       try {
-        // Build query parameters
         const params = new URLSearchParams();
         if (filters.tournament_type) params.append('tournament_type', filters.tournament_type);
         if (filters.game) params.append('game', filters.game);
         if (filters.status) params.append('status', filters.status);
         if (filters.search) params.append('search', filters.search);
-        params.append('limit', '100'); // Get more tournaments for better filtering
+        params.append('limit', '100');
 
         const url = `${API_BASE_URL}/api/tournaments/all?${params.toString()}`;
-        console.log('Fetching from:', url);
         const response = await fetch(url);
 
         if (!response.ok) {
@@ -1590,61 +1316,54 @@
         }
 
         const result = await response.json();
-        console.log('API Response:', result);
 
         if (result.success) {
-          // Transform backend data to match frontend format
-          return result.data.map(tournament => {
-            return {
-              id: tournament._id,
-              slug: tournament.slug,
-              title: tournament.title,
-              description: tournament.description || '',
-              game: tournament.game || 'Unknown',
-              status: normalizeStatus(tournament.status),
-              badge: getStatusBadge(normalizeStatus(tournament.status)),
-              prizePool: tournament.prizePool || 0,
-              maxTeams: tournament.maxTeams || 16,
-              participants: tournament.participants || [],
-              registrationStart: tournament.registrationStart,
-              registrationEnd: tournament.registrationEnd,
-              tournamentStart: tournament.tournamentStart,
-              tournamentEnd: tournament.tournamentEnd,
-              posterImage: tournament.posterImage,
-              hostingType: tournament.hostingType || 'admin',
-              organizerUsername: tournament.organizerUsername || 'Admin',
-              organizerEmail: tournament.organizerEmail || '',
-              detailsLink: `tournament-details.html?slug=${tournament.slug}`
-            };
-          });
+          return result.data.map(tournament => ({
+            id: tournament._id,
+            slug: tournament.slug,
+            title: tournament.title,
+            description: tournament.description || '',
+            game: tournament.game || 'Unknown',
+            status: normalizeStatus(tournament.status),
+            badge: getStatusBadge(normalizeStatus(tournament.status)),
+            prizePool: tournament.prizePool || 0,
+            maxTeams: tournament.maxTeams || 16,
+            participants: tournament.participants || [],
+            registrationStart: tournament.registrationStart,
+            registrationEnd: tournament.registrationEnd,
+            tournamentStart: tournament.tournamentStart,
+            tournamentEnd: tournament.tournamentEnd,
+            posterImage: tournament.posterImage,
+            hostingType: tournament.hostingType || 'admin',
+            organizerUsername: tournament.organizerUsername || 'Admin',
+            organizerEmail: tournament.organizerEmail || '',
+            detailsLink: `tournament-details.html?slug=${tournament.slug}`
+          }));
         } else {
           throw new Error(result.error || 'Failed to fetch tournaments');
         }
       } catch (error) {
         console.error('Error fetching tournaments:', error);
-        // Return empty array on error, let the UI handle the empty state
         return [];
       }
     }
 
+    // Fallback tournaments data for when API fails
+    const fallbackTournaments = [
+      {
+        id: 1,
+        title: "Sample Tournament",
+        description: "This is sample data",
+        status: "upcoming",
+        tournamentStart: new Date().toISOString(),
+        tournamentEnd: new Date(Date.now() + 86400000).toISOString(),
+        slug: "sample-tournament"
+      }
+    ];
 
-    // Get status badge text
-    function getStatusBadge(status) {
-      const badges = {
-        'upcoming': 'Coming Soon',
-        'registration_open': 'Registration Open',
-        'registration_closed': 'Registration Closed',
-        'live': 'Live Now',
-        'completed': 'Completed'
-      };
-      return badges[status] || 'Unknown';
-    }
-
-    // Create tournament card HTML
     function createTournamentCard(tournament) {
       const statusInfo = statusConfig[tournament.status] || statusConfig.default;
 
-      // Calculate duration
       let duration = 'TBD';
       if (tournament.tournamentStart && tournament.tournamentEnd) {
         const startDate = new Date(tournament.tournamentStart);
@@ -1653,87 +1372,45 @@
         duration = durationDays === 1 ? '1 Day' : `${durationDays} Days`;
       }
 
-      // Determine if we should show the register button
       const normalizedStatus = normalizeStatus(tournament.status);
       const showRegisterButton = normalizedStatus === 'registration_open';
 
       const actionsHTML = showRegisterButton ? `
         <div class="tournament-actions">
           <a href="${tournament.detailsLink}" class="btn-secondary">
-            <i class="fas fa-info-circle"></i>
-            View Details
+            <i class="fas fa-info-circle"></i> View Details
           </a>
           <button class="btn-primary" onclick="handleRegistration('${tournament.slug}')">
-            <i class="fas fa-user-plus"></i>
-            Register
+            <i class="fas fa-user-plus"></i> Register
           </button>
         </div>
       ` : `
         <div class="tournament-actions">
           <a href="${tournament.detailsLink}" class="btn-primary" style="flex: 1;">
-            <i class="fas fa-info-circle"></i>
-            View Details
+            <i class="fas fa-info-circle"></i> View Details
           </a>
         </div>
       `;
 
-      // Format prize pool
-      const prizePoolFormatted = tournament.prizePool ?
-        `₹${tournament.prizePool.toLocaleString()}` :
-        'TBD';
+      const prizePoolFormatted = tournament.prizePool ? `₹${tournament.prizePool.toLocaleString()}` : 'TBD';
 
-      // Organizer information
       const organizerInfo = tournament.hostingType === 'user_hosted' ? `
-        <div class="organizer-info" style="
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          margin-bottom: 1rem;
-          padding: 0.5rem;
-          background: rgba(255, 215, 0, 0.1);
-          border-radius: 8px;
-          border-left: 3px solid var(--accent);
-        ">
+        <div class="organizer-info" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding: 0.5rem; background: rgba(255, 215, 0, 0.1); border-radius: 8px; border-left: 3px solid var(--accent);">
           <i class="fas fa-user-crown" style="color: var(--accent); font-size: 0.9rem;"></i>
           <div style="flex: 1;">
             <div style="font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;">Organized by</div>
             <div style="font-weight: 600; color: var(--copy); font-size: 0.9rem;">${tournament.organizerUsername}</div>
           </div>
-          <div class="hosting-badge" style="
-            background: linear-gradient(135deg, var(--accent), #e0ac10);
-            color: #000;
-            padding: 0.25rem 0.5rem;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-          ">Community</div>
+          <div class="hosting-badge" style="background: linear-gradient(135deg, var(--accent), #e0ac10); color: #000; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Community</div>
         </div>
       ` : `
-        <div class="organizer-info" style="
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          margin-bottom: 1rem;
-          padding: 0.5rem;
-          background: rgba(108, 117, 125, 0.1);
-          border-radius: 8px;
-          border-left: 3px solid #6c757d;
-        ">
+        <div class="organizer-info" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding: 0.5rem; background: rgba(108, 117, 125, 0.1); border-radius: 8px; border-left: 3px solid #6c757d;">
           <i class="fas fa-shield-alt" style="color: #6c757d; font-size: 0.9rem;"></i>
           <div style="flex: 1;">
             <div style="font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;">Official Tournament</div>
             <div style="font-weight: 600; color: var(--copy); font-size: 0.9rem;">Gaming Nexus</div>
           </div>
-          <div class="hosting-badge" style="
-            background: linear-gradient(135deg, #6c757d, #495057);
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-          ">Official</div>
+          <div class="hosting-badge" style="background: linear-gradient(135deg, #6c757d, #495057); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Official</div>
         </div>
       `;
 
@@ -1744,10 +1421,7 @@
           </div>
           <div class="tournament-content">
             <h3 class="tournament-title">${tournament.title}</h3>
-
-            
             ${organizerInfo}
-            
             <div class="tournament-stats">
               <div class="stat">
                 <span class="stat-value">${prizePoolFormatted}</span>
@@ -1762,18 +1436,8 @@
                 <span class="stat-label">Duration</span>
               </div>
             </div>
-            
             ${actionsHTML}
-            
-            <!-- Social Sharing -->
-            <div class="social-sharing" style="
-              display: flex;
-              justify-content: center;
-              gap: 0.5rem;
-              margin-top: 1rem;
-              padding-top: 1rem;
-              border-top: 1px solid rgba(255, 255, 255, 0.1);
-            ">
+            <div class="social-sharing" style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
               <button onclick="shareOnTwitter('${tournament.title}', '${tournament.slug}')" class="share-btn" title="Share on Twitter">
                 <i class="fab fa-twitter"></i>
               </button>
@@ -1792,75 +1456,13 @@
       `;
     }
 
-    // Filter tournaments
-    function filterTournaments(filter) {
-      const cards = document.querySelectorAll('.tournament-card');
-      let visibleCount = 0;
-
-      cards.forEach(card => {
-        const status = card.dataset.status;
-        const game = card.dataset.game;
-        const hostingType = card.dataset.hostingType;
-
-        let show = false;
-
-        if (filter === 'all') {
-          show = true;
-        } else if (filter === 'live' || filter === 'upcoming' || filter === 'registration_open') {
-          show = status === filter;
-        } else if (filter === 'admin') {
-          show = hostingType === 'admin';
-        } else if (filter === 'user_hosted') {
-          show = hostingType === 'user_hosted';
-        }
-
-        if (show) {
-          card.style.display = 'block';
-          card.style.animation = 'fadeIn 0.3s ease-in-out';
-          visibleCount++;
-        } else {
-          card.style.display = 'none';
-        }
-      });
-
-      // Show message if no tournaments match the filter
-      const grid = document.getElementById('tournaments-grid');
-      const existingMessage = grid.querySelector('.filter-message');
-      if (existingMessage) {
-        existingMessage.remove();
-      }
-
-      if (visibleCount === 0 && cards.length > 0) {
-        const message = document.createElement('div');
-        message.className = 'filter-message';
-        message.style.cssText = `
-          grid-column: 1 / -1; 
-          text-align: center; 
-          padding: 3rem 1rem; 
-          color: var(--muted);
-        `;
-        message.innerHTML = `
-          <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-          <h3 style="margin-bottom: 0.5rem; color: var(--copy);">No tournaments found</h3>
-          <p>No tournaments match the selected filter. Try a different category.</p>
-        `;
-        grid.appendChild(message);
-      } else {
-        // Update grid layout after filtering
-        updateGridLayout();
-      }
-    }
-
-    // Update grid layout based on number of cards
     function updateGridLayout() {
       const grid = document.getElementById('tournaments-grid');
-      const cards = grid.querySelectorAll('.tournament-card');
+      const cards = Array.from(grid.querySelectorAll('.tournament-card')).filter(card => card.style.display !== 'none');
       const cardCount = cards.length;
 
-      // Remove existing layout classes
       grid.classList.remove('single-card', 'two-cards', 'multi-cards');
 
-      // Add appropriate class based on card count
       if (cardCount === 1) {
         grid.classList.add('single-card');
       } else if (cardCount === 2) {
@@ -1870,7 +1472,52 @@
       }
     }
 
-    // Search tournaments
+    function filterTournaments(filter) {
+      const cards = document.querySelectorAll('.tournament-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const status = card.dataset.status;
+        const hostingType = card.dataset.hostingType;
+        let show = false;
+
+        if (filter === 'all') {
+          show = true;
+        } else if (['live', 'upcoming', 'registration_open'].includes(filter)) {
+          show = status === filter;
+        } else if (filter === 'admin') {
+          show = hostingType === 'admin';
+        } else if (filter === 'user_hosted') {
+          show = hostingType === 'user_hosted';
+        }
+
+        if (show) {
+          card.style.display = 'block';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      const grid = document.getElementById('tournaments-grid');
+      const existingMessage = grid.querySelector('.filter-message');
+      if (existingMessage) existingMessage.remove();
+
+      if (visibleCount === 0 && cards.length > 0) {
+        const message = document.createElement('div');
+        message.className = 'filter-message';
+        message.style.cssText = 'grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--muted);';
+        message.innerHTML = `
+          <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+          <h3 style="margin-bottom: 0.5rem; color: var(--copy);">No tournaments found</h3>
+          <p>No tournaments match the selected filter. Try a different category.</p>
+        `;
+        grid.appendChild(message);
+      } else {
+        updateGridLayout();
+      }
+    }
+
     function searchTournaments(query) {
       const cards = document.querySelectorAll('.tournament-card');
       let visibleCount = 0;
@@ -1878,18 +1525,14 @@
       cards.forEach(card => {
         const title = card.querySelector('.tournament-title').textContent.toLowerCase();
         const game = card.dataset.game.toLowerCase();
-
         const searchQuery = query.toLowerCase();
-        const matches = title.includes(searchQuery) ||
-          game.includes(searchQuery);
+        const matches = title.includes(searchQuery) || game.includes(searchQuery);
 
         if (matches || query === '') {
-          // Also check current filter
           const status = card.dataset.status;
-          const gameType = card.dataset.game;
           const hostingType = card.dataset.hostingType;
-
           let showByFilter = false;
+
           if (currentFilter === 'all') {
             showByFilter = true;
           } else if (['live', 'upcoming', 'registration_open'].includes(currentFilter)) {
@@ -1911,22 +1554,14 @@
         }
       });
 
-      // Show message if no tournaments match the search
       const grid = document.getElementById('tournaments-grid');
       const existingMessage = grid.querySelector('.search-message');
-      if (existingMessage) {
-        existingMessage.remove();
-      }
+      if (existingMessage) existingMessage.remove();
 
       if (visibleCount === 0 && cards.length > 0) {
         const message = document.createElement('div');
         message.className = 'search-message';
-        message.style.cssText = `
-          grid-column: 1 / -1; 
-          text-align: center; 
-          padding: 3rem 1rem; 
-          color: var(--muted);
-        `;
+        message.style.cssText = 'grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: var(--muted);';
         message.innerHTML = `
           <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
           <h3 style="margin-bottom: 0.5rem; color: var(--copy);">No tournaments found</h3>
@@ -1934,222 +1569,20 @@
         `;
         grid.appendChild(message);
       } else {
-        // Update grid layout after search
         updateGridLayout();
       }
     }
 
-    // Initialize page
-    async function initializePage() {
-      try {
-        // Show loading
-        document.getElementById('loading').style.display = 'block';
-        document.getElementById('tournaments-grid').style.display = 'none';
-
-        console.log('Fetching tournaments...');
-        // Fetch tournaments from API
-        const tournaments = await fetchTournaments();
-        console.log('Fetched tournaments:', tournaments);
-
-        // Populate tournaments grid
-        const grid = document.getElementById('tournaments-grid');
-
-        if (tournaments.length === 0) {
-          // Show empty state
-          grid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--muted);">
-              <i class="fas fa-trophy" style="font-size: 4rem; margin-bottom: 1.5rem; opacity: 0.3;"></i>
-              <h3 style="margin-bottom: 1rem; color: var(--copy); font-size: 1.5rem;">No Tournaments Available</h3>
-              <p style="font-size: 1rem; line-height: 1.6; max-width: 400px; margin: 0 auto;">
-                There are currently no tournaments scheduled. Check back soon for exciting new competitions!
-              </p>
-              <button onclick="initializePage()" style="margin-top: 1.5rem; padding: 0.75rem 1.5rem; background: var(--accent); color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
-                <i class="fas fa-sync-alt"></i> Refresh
-              </button>
-            </div>
-          `;
-        } else {
-          grid.innerHTML = tournaments.map(tournament => createTournamentCard(tournament)).join('');
-        }
-
-        // Hide loading and show grid
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('tournaments-grid').style.display = 'grid';
-
-        // Update grid layout based on number of cards
-        updateGridLayout();
-
-        // Add filter event listeners
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            // Update active filter
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            // Apply filter
-            const filter = btn.dataset.filter;
-            currentFilter = filter;
-
-            // Clear search when changing filters
-            const searchInput = document.getElementById('tournament-search');
-            if (searchInput.value) {
-              searchInput.value = '';
-            }
-
-            filterTournaments(filter);
-          });
-        });
-
-        // Add search event listener
-        const searchInput = document.getElementById('tournament-search');
-        if (searchInput) {
-          searchInput.addEventListener('input', (e) => {
-            const query = e.target.value;
-            searchTournaments(query);
-          });
-
-          // Add focus/blur effects
-          searchInput.addEventListener('focus', () => {
-            searchInput.style.borderColor = 'rgba(255, 215, 0, 0.5)';
-            searchInput.style.background = 'rgba(255, 255, 255, 0.15)';
-          });
-
-          searchInput.addEventListener('blur', () => {
-            searchInput.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-            searchInput.style.background = 'rgba(255, 255, 255, 0.1)';
-          });
-        }
-
-        // Store tournaments globally for filtering
-        window.tournamentsData = tournaments;
-
-      } catch (error) {
-        console.error('Error loading tournaments:', error);
-
-        // Hide loading and show error state
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('tournaments-grid').style.display = 'block';
-        document.getElementById('tournaments-grid').innerHTML = `
-          <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--muted);">
-            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
-            <h3 style="margin-bottom: 0.5rem; color: var(--copy);">Error Loading Tournaments</h3>
-            <p style="margin-bottom: 1rem;">Unable to load tournaments. Please check your connection and try again.</p>
-            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-              <button onclick="initializePage()" style="padding: 0.75rem 1.5rem; background: var(--accent); color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
-                <i class="fas fa-sync-alt"></i> Retry
-              </button>
-              <button onclick="loadFallbackData()" style="padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.1); color: var(--copy); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 6px; cursor: pointer; font-weight: 600;">
-                <i class="fas fa-database"></i> Load Sample Data
-              </button>
-            </div>
-          </div>
-        `;
+    function handleRegistration(tournamentSlug) {
+      const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+      if (!session) {
+        alert('Please log in to register for tournaments');
+        redirectToAuth();
+        return;
       }
+      window.location.href = `team-registration.html?slug=${tournamentSlug}`;
     }
 
-    // Load fallback sample data when API is unavailable
-    function loadFallbackData() {
-      console.log('Loading fallback tournament data...');
-
-      const grid = document.getElementById('tournaments-grid');
-      grid.innerHTML = tournamentsData.map(tournament => createTournamentCard(tournament)).join('');
-
-      // Update grid layout for fallback data
-      updateGridLayout();
-
-      // Add filter event listeners
-      document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          // Update active filter
-          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-
-          // Apply filter
-          const filter = btn.dataset.filter;
-          currentFilter = filter;
-
-          // Clear search when changing filters
-          const searchInput = document.getElementById('tournament-search');
-          if (searchInput.value) {
-            searchInput.value = '';
-          }
-
-          filterTournaments(filter);
-        });
-      });
-
-      // Add search event listener
-      const searchInput = document.getElementById('tournament-search');
-      if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-          const query = e.target.value;
-          searchTournaments(query);
-        });
-
-        // Add focus/blur effects
-        searchInput.addEventListener('focus', () => {
-          searchInput.style.borderColor = 'rgba(255, 215, 0, 0.5)';
-          searchInput.style.background = 'rgba(255, 255, 255, 0.15)';
-        });
-
-        searchInput.addEventListener('blur', () => {
-          searchInput.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-          searchInput.style.background = 'rgba(255, 255, 255, 0.1)';
-        });
-      }
-
-      // Store tournaments globally for filtering
-      window.tournamentsData = tournamentsData;
-    }
-
-    // Header scroll effect
-    window.addEventListener('scroll', () => {
-      const header = document.querySelector('.site-header');
-      if (window.scrollY > 100) {
-        header.style.background = 'rgba(15, 15, 15, 0.9)';
-        header.style.backdropFilter = 'blur(30px)';
-      } else {
-        header.style.background = 'rgba(26, 26, 26, 0.8)';
-        header.style.backdropFilter = 'blur(20px)';
-      }
-    });
-
-    // Add fade-in animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-    `;
-    document.head.appendChild(style);
-
-
-
-    // Handle URL parameters for filtering
-    function handleUrlParams() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const filter = urlParams.get('filter');
-
-      if (filter && ['live', 'upcoming', 'registration_open', 'admin', 'user_hosted'].includes(filter)) {
-        currentFilter = filter;
-
-        // Update active filter button
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-          btn.classList.remove('active');
-          if (btn.dataset.filter === filter) {
-            btn.classList.add('active');
-          }
-        });
-
-        // Apply filter
-        setTimeout(() => {
-          filterTournaments(filter);
-        }, 100);
-      }
-    }
-
-    // Social sharing functions
     function shareOnTwitter(title, slug) {
       const url = `${window.location.origin}/tournament-details.html?slug=${slug}`;
       const text = `Check out this amazing tournament: ${title}`;
@@ -2173,7 +1606,6 @@
     function copyTournamentLink(slug) {
       const url = `${window.location.origin}/tournament-details.html?slug=${slug}`;
       navigator.clipboard.writeText(url).then(() => {
-        // Show success feedback
         const btn = event.target.closest('.share-btn');
         const originalIcon = btn.innerHTML;
         btn.innerHTML = '<i class="fas fa-check"></i>';
@@ -2186,7 +1618,6 @@
           btn.style.color = 'var(--muted)';
         }, 2000);
       }).catch(() => {
-        // Fallback for older browsers
         const textArea = document.createElement('textarea');
         textArea.value = url;
         document.body.appendChild(textArea);
@@ -2194,7 +1625,6 @@
         document.execCommand('copy');
         document.body.removeChild(textArea);
 
-        // Show success feedback
         const btn = event.target.closest('.share-btn');
         const originalIcon = btn.innerHTML;
         btn.innerHTML = '<i class="fas fa-check"></i>';
@@ -2209,414 +1639,86 @@
       });
     }
 
-    // Handle registration button clicks
-    function handleRegistration(tournamentSlug) {
-      // Check if user is authenticated
-      const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+    async function initializePage() {
+      try {
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('tournaments-grid').style.display = 'none';
 
-      if (!session) {
-        alert('Please log in to register for tournaments');
-        redirectToAuth();
-        return;
-      }
+        const tournaments = await fetchTournaments();
+        const grid = document.getElementById('tournaments-grid');
 
-      // User is already logged in, redirect directly to team registration
-      window.location.href = `team-registration.html?slug=${tournamentSlug}`;
-    }
+        if (tournaments.length === 0) {
+          grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--muted);">
+              <i class="fas fa-trophy" style="font-size: 4rem; margin-bottom: 1.5rem; opacity: 0.3;"></i>
+              <h3 style="margin-bottom: 1rem; color: var(--copy); font-size: 1.5rem;">No Tournaments Available</h3>
+              <p style="font-size: 1rem; line-height: 1.6; max-width: 400px; margin: 0 auto;">
+                There are currently no tournaments scheduled. Check back soon for exciting new competitions!
+              </p>
+              <button onclick="initializePage()" style="margin-top: 1.5rem; padding: 0.75rem 1.5rem; background: var(--accent); color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                <i class="fas fa-sync-alt"></i> Refresh
+              </button>
+            </div>
+          `;
+        } else {
+          grid.innerHTML = tournaments.map(tournament => createTournamentCard(tournament)).join('');
+        }
 
-    // Initialize when page loads
-    document.addEventListener('DOMContentLoaded', () => {
-      // Initialize authentication first
-      initializeProfileDropdown();
-      checkUserAuthentication();
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('tournaments-grid').style.display = 'grid';
+        updateGridLayout();
 
-      // Then initialize page content
-      initializePage().then(() => {
-        handleUrlParams();
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.filter;
+            const searchInput = document.getElementById('tournament-search');
+            if (searchInput.value) searchInput.value = '';
+            filterTournaments(currentFilter);
+          });
+        });
 
-        // Add search functionality
         const searchInput = document.getElementById('tournament-search');
         if (searchInput) {
-          searchInput.addEventListener('input', (e) => {
-            searchTournaments(e.target.value);
-          });
+          searchInput.addEventListener('input', (e) => searchTournaments(e.target.value));
         }
 
-        // Add filter functionality
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        filterButtons.forEach(btn => {
-          btn.addEventListener('click', () => {
-            // Remove active class from all buttons
-            filterButtons.forEach(b => b.classList.remove('active'));
-            // Add active class to clicked button
-            btn.classList.add('active');
-            // Filter tournaments
-            filterTournaments(btn.dataset.filter);
-          });
-        });
-      }).catch(error => {
-        console.error('Failed to initialize page:', error);
-        // Load fallback data if API fails
-        loadFallbackData();
-        handleUrlParams();
-      });
+        window.tournamentsData = tournaments;
 
-      // Mobile Navigation Functions
-      function openMobileNav() {
-        const mobileNav = document.getElementById('mobile-nav');
-        if (mobileNav) {
-          mobileNav.hidden = false;
-          mobileNav.classList.add('is-open');
-        }
-      }
-
-      function closeMobileNav() {
-        const mobileNav = document.getElementById('mobile-nav');
-        if (mobileNav) {
-          mobileNav.classList.remove('is-open');
-          setTimeout(() => {
-            mobileNav.hidden = true;
-          }, 400);
-        }
-      }
-
-      // Add hamburger click event
-      document.addEventListener('DOMContentLoaded', () => {
-        const hamburger = document.querySelector('.hamburger');
-        if (hamburger) {
-          hamburger.addEventListener('click', openMobileNav);
-        }
-      });
-    });
-
-    // Authentication handling
-    function checkUserAuthentication() {
-      const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
-
-      if (session) {
-        try {
-          const sessionData = JSON.parse(session);
-          const user = sessionData.user;
-          const userRoles = user?.roles || [];
-
-          // Update navigation for logged-in users
-          const authButtons = document.querySelector('.nav-actions');
-          if (authButtons) {
-            authButtons.innerHTML = `
-              <div style="display: flex; align-items: center; gap: 1rem;">
-                <span style="color: var(--copy); font-weight: 600;">${user.username}</span>
-                ${userRoles.includes('admin') ? '<span style="background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #000; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">Admin</span>' : ''}
-                <button onclick="logout()" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--copy); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600;">
-                  <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-              </div>
-            `;
-          }
-
-          return true;
-        } catch (error) {
-          console.error('Invalid session data:', error);
-          return false;
-        }
-      }
-
-      return false;
-    }
-
-    async function logout() {
-      try {
-        const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
-
-        if (session) {
-          const sessionData = JSON.parse(session);
-
-          // Call logout API
-          await fetch(`${API_BASE_URL}/api/auth/logout`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${sessionData.token}`,
-              'Content-Type': 'application/json'
-            }
-          });
-        }
       } catch (error) {
-        console.error('Logout API error:', error);
-      } finally {
-        localStorage.removeItem('nexus_session');
-        sessionStorage.removeItem('nexus_session');
-        window.location.reload();
-      }
-    }
-
-    // Profile dropdown functionality
-    function initializeProfileDropdown() {
-      const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
-
-      if (session) {
-        try {
-          const sessionData = JSON.parse(session);
-          const user = sessionData.user;
-
-          // Show user menu, hide guest menu
-          document.getElementById('user-menu').style.display = 'flex';
-          document.getElementById('guest-menu').style.display = 'none';
-
-          // Update profile info
-          const navbarUsername = document.getElementById('navbar-username');
-          if (navbarUsername) {
-            navbarUsername.textContent = user.username || user.email || 'User';
-          }
-
-          // Profile info is now handled by the simple click-to-redirect
-          // No need for admin badge or dashboard link manipulation since we removed the modal
-        } catch (error) {
-          console.error('Error parsing session data:', error);
-          // Show guest menu if session is invalid
-          document.getElementById('user-menu').style.display = 'none';
-          document.getElementById('guest-menu').style.display = 'flex';
-        }
-      } else {
-        // Show guest menu if no session
-        document.getElementById('user-menu').style.display = 'none';
-        document.getElementById('guest-menu').style.display = 'flex';
-      }
-    }
-
-
-
-    // =========================
-    // NAVBAR JAVASCRIPT (Embedded)
-    // =========================
-
-    // --- NAVBAR HELPER FUNCTIONS ---
-    function redirectToAuth(tab = 'register') {
-      const returnUrl = encodeURIComponent(window.location.href);
-      window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
-    }
-
-    function getSessionData() {
-      const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
-      try {
-        return session ? JSON.parse(session) : null;
-      } catch (error) {
-        return null;
-      }
-    }
-
-    function logout() {
-      localStorage.removeItem('nexus_session');
-      sessionStorage.removeItem('nexus_session');
-      window.location.reload(); // Reload the current page to update the nav
-    }
-
-    // --- NAVBAR LOGIC ---
-    function checkUserAuthentication() {
-      const sessionData = getSessionData();
-      const guestMenu = document.getElementById('guest-menu');
-      const userMenu = document.getElementById('user-menu');
-      const user = sessionData?.data?.user || sessionData?.user;
-
-      if (user) {
-        const navbarUsername = document.getElementById('navbar-username');
-        if (navbarUsername) {
-          navbarUsername.textContent = user.username || user.email.split('@')[0];
-        }
-        if (guestMenu) guestMenu.style.display = 'none';
-        if (userMenu) userMenu.style.display = 'flex';
-      } else {
-        if (guestMenu) guestMenu.style.display = 'flex';
-        if (userMenu) userMenu.style.display = 'none';
-      }
-    }
-
-    function setupMobileNav() {
-      const sessionData = getSessionData();
-      const mobileNavContainer = document.getElementById('mobile-nav');
-      const user = sessionData?.data?.user || sessionData?.user;
-
-      const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
-
-      // Contextual navigation links based on current page
-      let navLinksHTML = '';
-      const currentPage = window.location.pathname.split('/').pop();
-
-      if (currentPage === 'index.html' || currentPage === '') {
-        // Homepage navigation
-        navLinksHTML = `
-          <div class="mobile-nav-links">
-            <a href="tournaments.html">Tournaments</a>
-            <a href="create-tournament.html"><i class="fas fa-plus-circle"></i> Host Tournament</a>
-            <a href="#why-us">Why Us</a>
-            <a href="#faq">FAQ</a>
-          </div>
-        `;
-      } else {
-        // All pages now use the same simplified navigation
-        navLinksHTML = '';
-      }
-
-      let userSectionHTML = '';
-      let bottomActionsHTML = '';
-
-      if (user) {
-        // Logged-in user view
-        const username = user.username || user.email.split('@')[0];
-        const userId = user.id || user.user_id || 'N/A';
-        userSectionHTML = `
-          <div class="profile-header">
-            <div class="profile-photo"><i class="fas fa-user"></i></div>
-            <div class="profile-info">
-              <div class="profile-username">${username}</div>
-              <div class="profile-userid">ID: ${userId}</div>
-            </div>
-          </div>
-          <div class="profile-actions">
-            <a href="userdashboard.html" class="profile-action">
-              <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
-            </a>
-            <a href="tournaments.html" class="profile-action">
-              <i class="fas fa-trophy"></i> <span>Browse Tournaments</span>
-            </a>
-            <a href="userdashboard.html" class="profile-action">
-              <i class="fas fa-list"></i> <span>My Tournaments</span>
-            </a>
-          </div>
-        `;
-        bottomActionsHTML = `
-          <div class="mobile-nav-bottom-actions">
-            <a href="userdashboard.html?tab=create" class="mobile-host-btn">
-              <i class="fas fa-plus-circle"></i> Host
-            </a>
-            <button class="mobile-logout-btn" onclick="logout()">
-              <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
-          </div>
-        `;
-      } else {
-        // Guest view
-        userSectionHTML = `
-          <div class="guest-view">
-            <i class="fas fa-gamepad"></i>
-            <p>Join the arena to compete, win prizes, and track your stats!</p>
-          </div>
-          <div class="profile-actions">
-            <a href="userdashboard.html" class="profile-action">
-              <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
-            </a>
-            <a href="tournaments.html" class="profile-action">
-              <i class="fas fa-trophy"></i> <span>Browse Tournaments</span>
-            </a>
-            <a href="userdashboard.html" class="profile-action">
-              <i class="fas fa-list"></i> <span>My Tournaments</span>
-            </a>
-          </div>
-        `;
-        bottomActionsHTML = `
-          <div class="mobile-nav-bottom-actions">
-            <button class="mobile-join-btn" onclick="redirectToAuth()">
-              <i class="fas fa-user-plus"></i> Join Us
+        console.error('Error loading tournaments:', error);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('tournaments-grid').style.display = 'block';
+        document.getElementById('tournaments-grid').innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--muted);">
+            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+            <h3 style="margin-bottom: 0.5rem; color: var(--copy);">Error Loading Tournaments</h3>
+            <p style="margin-bottom: 1rem;">Unable to load tournaments. Please check your connection and try again.</p>
+            <button onclick="initializePage()" style="padding: 0.75rem 1.5rem; background: var(--accent); color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+              <i class="fas fa-sync-alt"></i> Retry
             </button>
           </div>
         `;
       }
-
-      // Combine the parts into the final HTML for the panel
-      mobileNavContainer.innerHTML = `
-        ${closeButtonHTML}
-        ${userSectionHTML}
-        ${navLinksHTML}
-        ${bottomActionsHTML}
-      `;
-
-      // Add click handlers for navigation links to close mobile menu
-      setTimeout(() => {
-        const hostBtn = mobileNavContainer.querySelector('.mobile-host-btn');
-        const navLinks = mobileNavContainer.querySelectorAll('.profile-action');
-        const logoutBtn = mobileNavContainer.querySelector('.mobile-logout-btn');
-        const joinBtn = mobileNavContainer.querySelector('.mobile-join-btn');
-
-        if (hostBtn) {
-          hostBtn.addEventListener('click', () => {
-            // Close mobile nav when host button is clicked
-            const mobileNav = document.getElementById('mobile-nav');
-            if (mobileNav) {
-              mobileNav.classList.remove('is-open');
-            }
-          });
-        }
-
-        if (logoutBtn) {
-          logoutBtn.addEventListener('click', () => {
-            // Close mobile nav when logout button is clicked
-            const mobileNav = document.getElementById('mobile-nav');
-            if (mobileNav) {
-              mobileNav.classList.remove('is-open');
-            }
-          });
-        }
-
-        if (joinBtn) {
-          joinBtn.addEventListener('click', () => {
-            // Close mobile nav when join button is clicked
-            const mobileNav = document.getElementById('mobile-nav');
-            if (mobileNav) {
-              mobileNav.classList.remove('is-open');
-            }
-          });
-        }
-
-        // Close mobile nav when any navigation link is clicked
-        navLinks.forEach(link => {
-          link.addEventListener('click', () => {
-            const mobileNav = document.getElementById('mobile-nav');
-            if (mobileNav) {
-              mobileNav.classList.remove('is-open');
-            }
-          });
-        });
-      }, 100);
     }
 
-    // --- NAVBAR INITIALIZATION ---
+    // =========================
+    // INITIALIZATION
+    // =========================
+
     document.addEventListener('DOMContentLoaded', () => {
-      const hamburger = document.querySelector('.hamburger');
-      const mobileNav = document.getElementById('mobile-nav');
-
-      if (!hamburger || !mobileNav) {
-        console.error("Navbar elements not found. Make sure the HTML is included.");
-        return;
-      }
-
-      function closeMobileNav() {
-        mobileNav.classList.remove('is-open');
-        hamburger.setAttribute('aria-expanded', 'false');
-      }
-
-      hamburger.addEventListener('click', () => {
-        const isOpen = mobileNav.classList.toggle('is-open');
-        hamburger.setAttribute('aria-expanded', isOpen);
-      });
-
-      document.addEventListener('click', (event) => {
-        if (!mobileNav.classList.contains('is-open')) return;
-        const closeButton = event.target.closest('.mobile-nav-close');
-        if (closeButton) {
-          closeMobileNav();
-          return;
-        }
-        const isClickInsideNav = event.target.closest('#mobile-nav');
-        const isClickOnHamburger = event.target.closest('.hamburger');
-        if (!isClickInsideNav && !isClickOnHamburger) {
-          closeMobileNav();
-        }
-      });
-
-      // Set up the content of the navbars
+      // Initialize navbar
       checkUserAuthentication();
-      setupMobileNav();
-    });
+      initSmartNavbar();
+      initMobileMenu();
 
+      // Initialize page
+      initializePage();
+    });
   </script>
+
+
 </body>
 
 </html>
