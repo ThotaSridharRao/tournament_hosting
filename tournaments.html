@@ -14,12 +14,12 @@
     /* =========================
        NAVBAR STYLES (Embedded)
        ========================= */
-    
+
     /* General Header Styles */
     header.site-header {
       position: fixed;
       inset: 0 0 auto 0;
-      background: rgba(26, 26, 26, 0.5); 
+      background: rgba(26, 26, 26, 0.5);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       z-index: 1200;
@@ -131,31 +131,31 @@
     }
 
     /* Profile Dropdown (Desktop) */
-    .profile-dropdown { 
-      position: relative; 
-      display: flex; 
-      align-items: center; 
+    .profile-dropdown {
+      position: relative;
+      display: flex;
+      align-items: center;
     }
-    
-    .profile-icon { 
-      width: 40px; 
-      height: 40px; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      color: var(--copy); 
-      cursor: pointer; 
-      border-radius: 50%; 
-      transition: all 0.3s ease; 
-      font-size: 1.5rem; 
+
+    .profile-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--copy);
+      cursor: pointer;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      font-size: 1.5rem;
     }
-    
-    .profile-icon:hover { 
-      color: var(--accent); 
-      background: rgba(255, 69, 0, 0.1); 
-      transform: scale(1.1); 
+
+    .profile-icon:hover {
+      color: var(--accent);
+      background: rgba(255, 69, 0, 0.1);
+      transform: scale(1.1);
     }
-    
+
     .profile-info {
       display: flex;
       align-items: center;
@@ -187,10 +187,10 @@
       font-size: 0.95rem;
       color: var(--copy);
     }
-    
-    .logout-action:hover { 
-      background: rgba(255, 0, 0, 0.1); 
-      color: #ff6b6b; 
+
+    .logout-action:hover {
+      background: rgba(255, 0, 0, 0.1);
+      color: #ff6b6b;
     }
 
     /* Mobile Navigation Bottom Actions */
@@ -237,64 +237,64 @@
     }
 
     /* Hamburger & Mobile Nav Panel */
-    .hamburger { 
-      display: none; 
-      background: none; 
-      border: none; 
-      color: var(--copy); 
-      font-size: 1.5rem; 
-      cursor: pointer; 
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--copy);
+      font-size: 1.5rem;
+      cursor: pointer;
     }
-    
-    .mobile-nav { 
-      position: fixed; 
-      top: 0; 
-      right: -100%; 
-      width: 300px; 
-      height: 100vh; 
-      background: var(--panel); 
-      z-index: 2000; 
-      transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
-      box-shadow: -10px 0 30px rgba(0,0,0,0.5); 
-      padding-top: 60px; 
+
+    .mobile-nav {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 300px;
+      height: 100vh;
+      background: var(--panel);
+      z-index: 2000;
+      transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+      padding-top: 60px;
       padding-bottom: 20px;
-      display: flex; 
-      flex-direction: column; 
+      display: flex;
+      flex-direction: column;
       border-radius: 0 0 0 15px;
       overflow-y: auto;
       box-sizing: border-box;
     }
-    
-    .mobile-nav.is-open { 
-      right: 0; 
-    }
-    
-    .mobile-nav-close { 
-      position: absolute; 
-      top: 0.75rem; 
-      right: 1rem; 
-      background: none; 
-      border: none; 
-      color: var(--muted); 
-      font-size: 1.5rem; 
-      cursor: pointer; 
-      line-height: 1; 
-      transition: color 0.2s ease, transform 0.3s ease; 
-    }
-    
-    .mobile-nav-close:hover { 
-      color: var(--copy); 
-      transform: rotate(90deg); 
+
+    .mobile-nav.is-open {
+      right: 0;
     }
 
-    .mobile-nav .guest-view { 
-      padding: 1rem; 
-      text-align: center; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      gap: 0.75rem; 
-      margin-top: 0.5rem; 
+    .mobile-nav-close {
+      position: absolute;
+      top: 0.75rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s ease, transform 0.3s ease;
+    }
+
+    .mobile-nav-close:hover {
+      color: var(--copy);
+      transform: rotate(90deg);
+    }
+
+    .mobile-nav .guest-view {
+      padding: 1rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
     }
 
     /* Button container for side-by-side layout */
@@ -305,44 +305,44 @@
       justify-content: center;
       align-items: center;
     }
-    
-    .mobile-nav .guest-view i { 
-      font-size: 2rem; 
-      color: var(--accent); 
+
+    .mobile-nav .guest-view i {
+      font-size: 2rem;
+      color: var(--accent);
     }
-    
-    .mobile-nav .guest-view p { 
-      color: var(--muted); 
-      line-height: 1.6; 
+
+    .mobile-nav .guest-view p {
+      color: var(--muted);
+      line-height: 1.6;
     }
 
     /* Mobile Navigation Links Styling */
     .mobile-nav-links {
-        padding: 0.5rem;
-        margin-top: 0.5rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
     }
 
     .mobile-nav-links a {
-        color: var(--muted);
-        text-decoration: none;
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.2s ease;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.2s ease;
     }
 
     .mobile-nav-links a:hover {
-        background: rgba(255, 255, 255, 0.05);
-        color: var(--copy);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--copy);
     }
 
     .mobile-nav-links a i {
-        margin-right: 0.5rem;
-        color: var(--accent-2, #0AFAD9);
+      margin-right: 0.5rem;
+      color: var(--accent-2, #0AFAD9);
     }
 
     /* Mobile Navigation Buttons */
@@ -350,93 +350,93 @@
     .guest-view .mobile-host-btn,
     a.mobile-host-btn,
     .mobile-nav-bottom-actions .mobile-host-btn {
-        display: inline-flex !important;
-        align-items: center !important;
-        gap: 0.4rem !important;
-        padding: 0.5rem 0.8rem !important;
-        background: #ffffff !important;
-        background-color: #ffffff !important;
-        background-image: none !important;
-        color: #000000 !important;
-        border: none !important;
-        border-radius: 5px !important;
-        text-decoration: none !important;
-        font-weight: 600 !important;
-        font-size: 0.85rem !important;
-        line-height: 1 !important;
-        transition: all 0.3s ease !important;
-        margin-bottom: 0 !important;
-        width: auto !important;
-        justify-content: center !important;
-        box-sizing: border-box !important;
-        flex: 1 !important;
-        max-width: 120px !important;
-        min-height: 36px !important;
-        cursor: pointer !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 0.4rem !important;
+      padding: 0.5rem 0.8rem !important;
+      background: #ffffff !important;
+      background-color: #ffffff !important;
+      background-image: none !important;
+      color: #000000 !important;
+      border: none !important;
+      border-radius: 5px !important;
+      text-decoration: none !important;
+      font-weight: 600 !important;
+      font-size: 0.85rem !important;
+      line-height: 1 !important;
+      transition: all 0.3s ease !important;
+      margin-bottom: 0 !important;
+      width: auto !important;
+      justify-content: center !important;
+      box-sizing: border-box !important;
+      flex: 1 !important;
+      max-width: 120px !important;
+      min-height: 36px !important;
+      cursor: pointer !important;
     }
 
     /* Icon sizing for mobile host button */
     .mobile-nav .mobile-host-btn i,
     .guest-view .mobile-host-btn i,
     a.mobile-host-btn i {
-        font-size: 0.85rem !important;
-        color: #000000 !important;
+      font-size: 0.85rem !important;
+      color: #000000 !important;
     }
 
     .mobile-nav .mobile-host-btn:hover,
     .guest-view .mobile-host-btn:hover,
     a.mobile-host-btn:hover,
     .mobile-nav-bottom-actions .mobile-host-btn:hover {
-        opacity: 0.8 !important;
-        filter: brightness(0.9) !important;
+      opacity: 0.8 !important;
+      filter: brightness(0.9) !important;
     }
 
     .mobile-join-btn {
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 0.4rem !important;
-        padding: 0.5rem 0.8rem !important;
-        background: linear-gradient(135deg, var(--accent, #5D3FD3), var(--accent-2, #0AFAD9)) !important;
-        color: #ffffff !important;
-        border: none !important;
-        border-radius: 5px !important;
-        text-decoration: none !important;
-        font-weight: 600 !important;
-        font-size: 0.85rem !important;
-        line-height: 1 !important;
-        cursor: pointer !important;
-        transition: all 0.3s ease !important;
-        margin-bottom: 0 !important;
-        width: auto !important;
-        box-sizing: border-box !important;
-        flex: 1 !important;
-        max-width: 200px !important;
-        min-height: 36px !important;
-        margin: 0;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 0.4rem !important;
+      padding: 0.5rem 0.8rem !important;
+      background: linear-gradient(135deg, var(--accent, #5D3FD3), var(--accent-2, #0AFAD9)) !important;
+      color: #ffffff !important;
+      border: none !important;
+      border-radius: 5px !important;
+      text-decoration: none !important;
+      font-weight: 600 !important;
+      font-size: 0.85rem !important;
+      line-height: 1 !important;
+      cursor: pointer !important;
+      transition: all 0.3s ease !important;
+      margin-bottom: 0 !important;
+      width: auto !important;
+      box-sizing: border-box !important;
+      flex: 1 !important;
+      max-width: 200px !important;
+      min-height: 36px !important;
+      margin: 0;
     }
 
     .mobile-join-btn:hover {
-        opacity: 0.8;
-        filter: brightness(0.9);
+      opacity: 0.8;
+      filter: brightness(0.9);
     }
 
     /* Force override any inherited button styles */
     .mobile-host-btn * {
-        color: inherit !important;
+      color: inherit !important;
     }
-    
+
     /* Additional specificity for mobile host button */
     #mobile-nav .guest-view a[href="userdashboard.html"] {
-        background: #ffffff !important;
-        background-color: #ffffff !important;
-        background-image: none !important;
-        color: #000000 !important;
+      background: #ffffff !important;
+      background-color: #ffffff !important;
+      background-image: none !important;
+      color: #000000 !important;
     }
-    
+
     #mobile-nav .guest-view a[href="userdashboard.html"]:hover {
-        opacity: 0.8 !important;
-        filter: brightness(0.9) !important;
+      opacity: 0.8 !important;
+      filter: brightness(0.9) !important;
     }
 
     /* Responsive Media Queries */
@@ -444,43 +444,45 @@
       .header-container {
         padding: 0 1rem;
       }
-      
+
       .primary {
         display: none;
       }
-      
-      .nav-actions { 
-        display: none; 
+
+      .nav-actions {
+        display: none;
       }
-      
-      .hamburger { 
+
+      .hamburger {
         display: inline-flex;
         align-items: center;
         justify-content: center;
       }
-      
+
       /* Hide host button on mobile - will be in mobile menu */
-      .host-btn { 
+      .host-btn {
         display: none;
       }
     }
 
     @media (min-width: 1600px) {
-      header.site-header { 
-        height: 80px; 
-        padding: 0 3rem; 
+      header.site-header {
+        height: 80px;
+        padding: 0 3rem;
       }
-      
-      .back-btn, .header-cta, .profile-username { 
-        font-size: 1.1rem; 
+
+      .back-btn,
+      .header-cta,
+      .profile-username {
+        font-size: 1.1rem;
       }
-      
-      .header-cta { 
-        padding: 0.7rem 1.25rem; 
+
+      .header-cta {
+        padding: 0.7rem 1.25rem;
       }
-      
-      .profile-icon { 
-        font-size: 1.75rem; 
+
+      .profile-icon {
+        font-size: 1.75rem;
       }
     }
 
@@ -488,11 +490,16 @@
        Theme variables (Cyberpunk) - Matching index.html
        ========================= */
     :root {
-      --primary-color: #0AFAD9;      /* Electric Cyan */
-      --bg-dark: #0D0A1A;            /* Dark Matter Black */
-      --accent-secondary: #5D3FD3;   /* Deep Indigo */
-      --panel: #161329;              /* Dark Indigo Panel */
-      --text-primary: #F0F0F0;       /* Starlight White */
+      --primary-color: #0AFAD9;
+      /* Electric Cyan */
+      --bg-dark: #0D0A1A;
+      /* Dark Matter Black */
+      --accent-secondary: #5D3FD3;
+      /* Deep Indigo */
+      --panel: #161329;
+      /* Dark Indigo Panel */
+      --text-primary: #F0F0F0;
+      /* Starlight White */
       --text-secondary: rgba(240, 240, 240, 0.7);
       --border-color: rgba(10, 250, 217, 0.2);
       --ease: 0.3s ease;
@@ -500,17 +507,19 @@
       /* Legacy variables for compatibility */
       --copy: var(--text-primary);
       --muted: var(--text-secondary);
-      --accent: var(--accent-secondary); /* Using Indigo as main accent */
-      --accent-2: var(--primary-color); /* Using Cyan as secondary accent */
+      --accent: var(--accent-secondary);
+      /* Using Indigo as main accent */
+      --accent-2: var(--primary-color);
+      /* Using Cyan as secondary accent */
       --radius: 12px;
       --container: 1400px;
-      
+
       /* Additional colors */
       --success-color: #28a745;
       --warning-color: #ffc107;
       --danger-color: #dc3545;
       --info-color: #17a2b8;
-      
+
       /* Enhanced easing curves */
       --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
       --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
@@ -565,19 +574,19 @@
       margin-bottom: 1.5rem;
       position: relative;
     }
-    
+
     .tournament-card:hover {
       transform: translateY(-10px);
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
       border-color: var(--primary-color);
     }
-    
+
     .tournament-card img {
       width: 100%;
       height: 200px;
       object-fit: cover;
     }
-    
+
     .tournament-content {
       padding: 1.5rem;
       flex-grow: 1;
@@ -585,7 +594,7 @@
       flex-direction: column;
       justify-content: space-between;
     }
-    
+
     .tournament-card h3 {
       font-size: 1.2rem;
       font-weight: 600;
@@ -593,7 +602,7 @@
       line-height: 1.4;
       color: var(--text-primary);
     }
-    
+
     .tournament-card p {
       color: var(--text-secondary);
       font-size: 0.9rem;
@@ -685,14 +694,16 @@
       gap: 0.75rem;
       flex-wrap: wrap;
       justify-content: center;
-      padding: 2px 1rem 0 1rem; /* Added 2px top padding to prevent hover cut-off */
+      padding: 2px 1rem 0 1rem;
+      /* Added 2px top padding to prevent hover cut-off */
       position: relative;
       z-index: 11;
     }
 
     /* Search Bar Styles */
     .search-container {
-      margin-bottom: 2.3125rem; /* 2rem + 5px = 37px total */
+      margin-bottom: 2.3125rem;
+      /* 2rem + 5px = 37px total */
       display: flex;
       justify-content: center;
       position: relative;
@@ -902,6 +913,7 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
       flex: 1;
       text-align: center;
+      text-decoration: none;
     }
 
     .btn-secondary:hover {
@@ -1004,7 +1016,8 @@
       .filters {
         justify-content: flex-start;
         overflow-x: auto;
-        padding: 2px 1rem 0.5rem 1rem; /* Added 2px top padding for hover effect */
+        padding: 2px 1rem 0.5rem 1rem;
+        /* Added 2px top padding for hover effect */
         scrollbar-width: none;
         -ms-overflow-style: none;
         gap: 0.5rem;
@@ -1051,7 +1064,8 @@
       /* Search bar responsive improvements */
       .search-container {
         padding: 0 1rem;
-        margin-bottom: 1.8125rem; /* 1.5rem + 5px = 29px total */
+        margin-bottom: 1.8125rem;
+        /* 1.5rem + 5px = 29px total */
       }
 
       .search-wrapper {
@@ -1059,7 +1073,8 @@
       }
 
       #tournament-search {
-        font-size: 16px !important; /* Prevents zoom on iOS */
+        font-size: 16px !important;
+        /* Prevents zoom on iOS */
         padding: 0.875rem 1rem 0.875rem 2.75rem;
       }
 
@@ -1091,7 +1106,8 @@
 
       /* Mobile search bar adjustments */
       .search-container {
-        margin-bottom: 1.3125rem; /* 1rem + 5px = 21px total */
+        margin-bottom: 1.3125rem;
+        /* 1rem + 5px = 21px total */
       }
 
       #tournament-search {
@@ -1110,7 +1126,8 @@
       }
 
       .filters {
-        padding: 2px 0.5rem 0.5rem 0.5rem; /* Added 2px top padding for hover effect */
+        padding: 2px 0.5rem 0.5rem 0.5rem;
+        /* Added 2px top padding for hover effect */
         gap: 0.4rem;
       }
 
@@ -1199,75 +1216,75 @@
 
 <body>
   <header class="site-header" role="banner">
-  <div class="header-container">
+    <div class="header-container">
       <a href="index.html" class="brand" aria-hidden="false">GamingNexus</a>
       <div class="header-right">
-          <nav class="primary" role="navigation" aria-label="Primary">
-              <div class="nav-links" role="menubar">
-                  <a href="index.html" role="menuitem">Home</a>
-                  <a href="tournaments.html" role="menuitem" class="active">Tournaments</a>
-                  <a href="index.html#why-us" role="menuitem">Why Us</a>
-                  <a href="index.html#faq" role="menuitem">FAQ</a>
+        <nav class="primary" role="navigation" aria-label="Primary">
+          <div class="nav-links" role="menubar">
+            <a href="index.html" role="menuitem">Home</a>
+            <a href="tournaments.html" role="menuitem" class="active">Tournaments</a>
+            <a href="index.html#why-us" role="menuitem">Why Us</a>
+            <a href="index.html#faq" role="menuitem">FAQ</a>
+          </div>
+        </nav>
+        <div class="nav-actions">
+          <div id="guest-menu">
+            <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
+          </div>
+          <div id="user-menu" style="display: none;">
+            <div class="profile-info" onclick="window.location.href='userdashboard.html'">
+              <div class="profile-icon">
+                <i class="fas fa-user-circle"></i>
               </div>
-          </nav>
-          <div class="nav-actions">
-            <div id="guest-menu">
-              <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
-            </div>
-            <div id="user-menu" style="display: none;">
-              <div class="profile-info" onclick="window.location.href='userdashboard.html'">
-                <div class="profile-icon">
-                  <i class="fas fa-user-circle"></i>
-                </div>
-                <div class="profile-username" id="navbar-username">User</div>
-              </div>
+              <div class="profile-username" id="navbar-username">User</div>
             </div>
           </div>
-          <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
-              <i class="fas fa-bars"></i>
-          </button>
-      </div>   
-  </div>
-</header>
+        </div>
+        <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
 
-<div id="mobile-nav" class="mobile-nav" hidden>
-  <button class="mobile-nav-close" onclick="closeMobileNav()">
-    <i class="fas fa-times"></i>
-  </button>
-  
-  <!-- Guest View (when not logged in) -->
-  <div id="mobile-guest-view" class="guest-view">
-    <i class="fas fa-user-circle"></i>
-    <p>Join GamingNexus to host tournaments and compete with the best players!</p>
-    <a href="create-tournament.html" class="mobile-host-btn">
-      <i class="fas fa-plus-circle"></i>
-      Host Tournament
-    </a>
-    <button class="mobile-join-btn" onclick="redirectToAuth()">
-      Join Us
+  <div id="mobile-nav" class="mobile-nav" hidden>
+    <button class="mobile-nav-close" onclick="closeMobileNav()">
+      <i class="fas fa-times"></i>
     </button>
+
+    <!-- Guest View (when not logged in) -->
+    <div id="mobile-guest-view" class="guest-view">
+      <i class="fas fa-user-circle"></i>
+      <p>Join GamingNexus to host tournaments and compete with the best players!</p>
+      <a href="create-tournament.html" class="mobile-host-btn">
+        <i class="fas fa-plus-circle"></i>
+        Host Tournament
+      </a>
+      <button class="mobile-join-btn" onclick="redirectToAuth()">
+        Join Us
+      </button>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="mobile-nav-links">
+      <a href="index.html">
+        <i class="fas fa-home"></i>
+        Home
+      </a>
+      <a href="tournaments.html">
+        <i class="fas fa-trophy"></i>
+        Tournaments
+      </a>
+      <a href="index.html#why-us">
+        <i class="fas fa-star"></i>
+        Why Us
+      </a>
+      <a href="index.html#faq">
+        <i class="fas fa-question-circle"></i>
+        FAQ
+      </a>
+    </div>
   </div>
-  
-  <!-- Navigation Links -->
-  <div class="mobile-nav-links">
-    <a href="index.html">
-      <i class="fas fa-home"></i>
-      Home
-    </a>
-    <a href="tournaments.html">
-      <i class="fas fa-trophy"></i>
-      Tournaments
-    </a>
-    <a href="index.html#why-us">
-      <i class="fas fa-star"></i>
-      Why Us
-    </a>
-    <a href="index.html#faq">
-      <i class="fas fa-question-circle"></i>
-      FAQ
-    </a>
-  </div>
-</div>
 
   <main>
     <!-- Page Header -->
@@ -1505,7 +1522,7 @@
     // Status configurations - standardized with admin dashboard
     const statusConfig = {
       upcoming: "Upcoming",
-      registration_open: "Registration Open", 
+      registration_open: "Registration Open",
       registration_closed: "Registration Closed",
       ongoing: "Ongoing",
       ended: "Ended",
@@ -1535,7 +1552,7 @@
         if (filters.status) params.append('status', filters.status);
         if (filters.search) params.append('search', filters.search);
         params.append('limit', '100'); // Get more tournaments for better filtering
-        
+
         const url = `${API_BASE_URL}/api/tournaments/all?${params.toString()}`;
         console.log('Fetching from:', url);
         const response = await fetch(url);
@@ -1678,7 +1695,7 @@
           <i class="fas fa-shield-alt" style="color: #6c757d; font-size: 0.9rem;"></i>
           <div style="flex: 1;">
             <div style="font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;">Official Tournament</div>
-            <div style="font-weight: 600; color: var(--copy); font-size: 0.9rem;">EArena</div>
+            <div style="font-weight: 600; color: var(--copy); font-size: 0.9rem;">Gaming Nexus</div>
           </div>
           <div class="hosting-badge" style="
             background: linear-gradient(135deg, #6c757d, #495057);
@@ -1699,7 +1716,7 @@
           </div>
           <div class="tournament-content">
             <h3 class="tournament-title">${tournament.title}</h3>
-            <p class="tournament-description">${tournament.description || 'Join this exciting tournament and compete with the best players!'}</p>
+
             
             ${organizerInfo}
             
@@ -1810,12 +1827,10 @@
 
       cards.forEach(card => {
         const title = card.querySelector('.tournament-title').textContent.toLowerCase();
-        const description = card.querySelector('.tournament-description').textContent.toLowerCase();
         const game = card.dataset.game.toLowerCase();
 
         const searchQuery = query.toLowerCase();
         const matches = title.includes(searchQuery) ||
-          description.includes(searchQuery) ||
           game.includes(searchQuery);
 
         if (matches || query === '') {
@@ -2105,7 +2120,7 @@
         btn.innerHTML = '<i class="fas fa-check"></i>';
         btn.style.background = 'rgba(40, 167, 69, 0.2)';
         btn.style.color = '#28a745';
-        
+
         setTimeout(() => {
           btn.innerHTML = originalIcon;
           btn.style.background = 'rgba(255, 255, 255, 0.1)';
@@ -2119,14 +2134,14 @@
         textArea.select();
         document.execCommand('copy');
         document.body.removeChild(textArea);
-        
+
         // Show success feedback
         const btn = event.target.closest('.share-btn');
         const originalIcon = btn.innerHTML;
         btn.innerHTML = '<i class="fas fa-check"></i>';
         btn.style.background = 'rgba(40, 167, 69, 0.2)';
         btn.style.color = '#28a745';
-        
+
         setTimeout(() => {
           btn.innerHTML = originalIcon;
           btn.style.background = 'rgba(255, 255, 255, 0.1)';
@@ -2155,11 +2170,11 @@
       // Initialize authentication first
       initializeProfileDropdown();
       checkUserAuthentication();
-      
+
       // Then initialize page content
       initializePage().then(() => {
         handleUrlParams();
-        
+
         // Add search functionality
         const searchInput = document.getElementById('tournament-search');
         if (searchInput) {
@@ -2167,7 +2182,7 @@
             searchTournaments(e.target.value);
           });
         }
-        
+
         // Add filter functionality
         const filterButtons = document.querySelectorAll('.filter-btn');
         filterButtons.forEach(btn => {
@@ -2187,32 +2202,32 @@
         handleUrlParams();
       });
 
-    // Mobile Navigation Functions
-    function openMobileNav() {
-      const mobileNav = document.getElementById('mobile-nav');
-      if (mobileNav) {
-        mobileNav.hidden = false;
-        mobileNav.classList.add('is-open');
+      // Mobile Navigation Functions
+      function openMobileNav() {
+        const mobileNav = document.getElementById('mobile-nav');
+        if (mobileNav) {
+          mobileNav.hidden = false;
+          mobileNav.classList.add('is-open');
+        }
       }
-    }
 
-    function closeMobileNav() {
-      const mobileNav = document.getElementById('mobile-nav');
-      if (mobileNav) {
-        mobileNav.classList.remove('is-open');
-        setTimeout(() => {
-          mobileNav.hidden = true;
-        }, 400);
+      function closeMobileNav() {
+        const mobileNav = document.getElementById('mobile-nav');
+        if (mobileNav) {
+          mobileNav.classList.remove('is-open');
+          setTimeout(() => {
+            mobileNav.hidden = true;
+          }, 400);
+        }
       }
-    }
 
-    // Add hamburger click event
-    document.addEventListener('DOMContentLoaded', () => {
-      const hamburger = document.querySelector('.hamburger');
-      if (hamburger) {
-        hamburger.addEventListener('click', openMobileNav);
-      }
-    });
+      // Add hamburger click event
+      document.addEventListener('DOMContentLoaded', () => {
+        const hamburger = document.querySelector('.hamburger');
+        if (hamburger) {
+          hamburger.addEventListener('click', openMobileNav);
+        }
+      });
     });
 
     // Authentication handling
@@ -2251,7 +2266,7 @@
 
     async function logout() {
       try {
-        const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+        const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
 
         if (session) {
           const sessionData = JSON.parse(session);
@@ -2268,15 +2283,15 @@
       } catch (error) {
         console.error('Logout API error:', error);
       } finally {
-        localStorage.removeItem('earena_session');
-        sessionStorage.removeItem('earena_session');
+        localStorage.removeItem('nexus_session');
+        sessionStorage.removeItem('nexus_session');
         window.location.reload();
       }
     }
 
     // Profile dropdown functionality
     function initializeProfileDropdown() {
-      const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+      const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
 
       if (session) {
         try {
@@ -2309,11 +2324,11 @@
     }
 
 
-    
+
     // =========================
     // NAVBAR JAVASCRIPT (Embedded)
     // =========================
-    
+
     // --- NAVBAR HELPER FUNCTIONS ---
     function redirectToAuth(tab = 'register') {
       const returnUrl = encodeURIComponent(window.location.href);
@@ -2361,11 +2376,11 @@
       const user = sessionData?.data?.user || sessionData?.user;
 
       const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
-      
+
       // Contextual navigation links based on current page
       let navLinksHTML = '';
       const currentPage = window.location.pathname.split('/').pop();
-      
+
       if (currentPage === 'index.html' || currentPage === '') {
         // Homepage navigation
         navLinksHTML = `
@@ -2380,7 +2395,7 @@
         // All pages now use the same simplified navigation
         navLinksHTML = '';
       }
-      
+
       let userSectionHTML = '';
       let bottomActionsHTML = '';
 
@@ -2460,7 +2475,7 @@
         const navLinks = mobileNavContainer.querySelectorAll('.profile-action');
         const logoutBtn = mobileNavContainer.querySelector('.mobile-logout-btn');
         const joinBtn = mobileNavContainer.querySelector('.mobile-join-btn');
-        
+
         if (hostBtn) {
           hostBtn.addEventListener('click', () => {
             // Close mobile nav when host button is clicked
@@ -2509,10 +2524,10 @@
       const mobileNav = document.getElementById('mobile-nav');
 
       if (!hamburger || !mobileNav) {
-          console.error("Navbar elements not found. Make sure the HTML is included.");
-          return;
+        console.error("Navbar elements not found. Make sure the HTML is included.");
+        return;
       }
-      
+
       function closeMobileNav() {
         mobileNav.classList.remove('is-open');
         hamburger.setAttribute('aria-expanded', 'false');
@@ -2536,7 +2551,7 @@
           closeMobileNav();
         }
       });
-      
+
       // Set up the content of the navbars
       checkUserAuthentication();
       setupMobileNav();

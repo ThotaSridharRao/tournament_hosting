@@ -868,7 +868,7 @@ return `${API_BASE_URL}/api/static/images/${filename}`;
 
 // --- AUTHENTICATION & USER INFO ---
 function getSessionData() {
-const session = localStorage.getItem('earena_session') || sessionStorage.getItem('earena_session');
+const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
 try {
 return JSON.parse(session);
 } catch (error) {
@@ -877,8 +877,8 @@ return null;
 }
 
 function logout() {
-localStorage.removeItem('earena_session');
-sessionStorage.removeItem('earena_session');
+localStorage.removeItem('nexus_session');
+sessionStorage.removeItem('nexus_session');
 redirectToAuth();
 }
 
