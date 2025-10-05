@@ -1803,26 +1803,6 @@
     // Modern Navbar Functions
     let isLoggedIn = false;
 
-    // Mobile menu toggle
-    const normalMenuToggle = document.getElementById('normalMenuToggle');
-    const normalNav = document.getElementById('normalNav');
-
-    if (normalMenuToggle && normalNav) {
-      normalMenuToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        normalMenuToggle.classList.toggle('active');
-        normalNav.classList.toggle('active');
-      });
-
-      // Close menu when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!e.target.closest('.nav-normal') && normalNav.classList.contains('active')) {
-          normalNav.classList.remove('active');
-          normalMenuToggle.classList.remove('active');
-        }
-      });
-    }
-
     // Handle logout
     function handleLogout() {
       if (confirm('Are you sure you want to logout?')) {
@@ -1917,14 +1897,23 @@
     }
 
     function checkUserAuthentication() {
+      console.log('🔍 checkUserAuthentication() called');
+
       const sessionData = getSessionData();
       const guestMenu = document.getElementById('guest-menu');
       const userMenu = document.getElementById('user-menu');
       const user = sessionData?.user;
 
+      console.log('📊 Session data:', sessionData);
+      console.log('👤 User data:', user);
+      console.log('🎯 Guest menu element:', guestMenu);
+      console.log('🎯 User menu element:', userMenu);
+
       if (user) {
         const username = user.username || user.email.split('@')[0];
         const userInitials = username.substring(0, 2).toUpperCase();
+
+        console.log('✅ User authenticated:', username);
 
         // Update navbar elements
         const navbarUsername = document.getElementById('navbar-username');
@@ -1932,25 +1921,86 @@
 
         if (navbarUsername) {
           navbarUsername.textContent = username;
+          console.log('✅ Updated navbar username:', username);
         }
 
         if (userAvatar) {
           userAvatar.textContent = userInitials;
+          console.log('✅ Updated user avatar:', userInitials);
         }
 
         // Show user menu, hide guest menu
-        if (guestMenu) guestMenu.style.display = 'none';
-        if (userMenu) userMenu.style.display = 'flex';
+        if (guestMenu) {
+          guestMenu.style.display = 'none';
+          console.log('✅ Hidden guest menu');
+        }
+        if (userMenu) {
+          userMenu.style.display = 'flex';
+          console.log('✅ Shown user menu');
+        }
 
         isLoggedIn = true;
       } else {
+        console.log('❌ User not authenticated');
+
         // Show guest menu, hide user menu
-        if (guestMenu) guestMenu.style.display = 'flex';
-        if (userMenu) userMenu.style.display = 'none';
+        if (guestMenu) {
+          guestMenu.style.display = 'flex';
+          console.log('✅ Shown guest menu');
+        }
+        if (userMenu) {
+          userMenu.style.display = 'none';
+          console.log('✅ Hidden user menu');
+        }
 
         isLoggedIn = false;
       }
     }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize mobile menu toggle
+      const normalMenuToggle = document.getElementById('normalMenuToggle');
+      const normalNav = document.getElementById('normalNav');
+
+      if (normalMenuToggle && normalNav) {
+        normalMenuToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          normalMenuToggle.classList.toggle('active');
+          normalNav.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.nav-normal') && normalNav.classList.contains('active')) {
+            normalNav.classList.remove('active');
+            normalMenuToggle.classList.remove('active');
+          }
+        });
+      }
+
+      initSmartNavbar(); // Initialize smart scroll behavior
+
+      // Small delay to ensure all elements are ready
+      setTimeout(() => {
+        checkUserAuthentication(); // Check if user is logged in
+      }, 100);
+
+      // Also check authentication when page becomes visible (in case user comes back from auth)
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) {
+          setTimeout(() => {
+            checkUserAuthentication();
+          }, 100);
+        }
+      });
+    });
+
+    // Manual test function - can be called from browser console
+    window.testAuth = function () {
+      console.log('=== MANUAL AUTH TEST ===');
+      checkUserAuthentication();
+    };
 
     // Keep-alive functionality to prevent backend from sleeping
     function keepBackendAlive() {
