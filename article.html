@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article | GamingNexus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
+
+    <style>
+        /* =========================
+           NAVBAR STYLES (Modern Design)
+           ========================= */
+        .nav-normal {
+            background: rgba(13, 10, 26, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1.2rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+            transform: translateY(0);
+        }
+
+        .nav-normal.nav-hidden {
+            transform: translateY(-100%);
+        }
+
+        .nav-normal.nav-scrolled {
+            background: rgba(13, 10, 26, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0;
+            list-style: none;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            position: relative;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            padding: 0.6rem 1.2rem;
+            display: block;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.65rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-request {
+            background: white;
+            color: #0a0a0a;
+        }
+
+        .btn-request:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .user-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        #user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .menu-icon {
+            width: 24px;
+            height: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .menu-icon span {
+            width: 100%;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 968px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                height: 100vh;
+                width: 85%;
+                max-width: 350px;
+                flex-direction: column;
+                background: rgba(15, 15, 15, 0.98);
+                backdrop-filter: blur(20px);
+                padding: 6rem 2rem 2rem;
+                gap: 0;
+                transition: right 0.3s ease;
+                border-left: 1px solid rgba(255, 255, 255, 0.1);
+                align-items: flex-start;
+                overflow-y: auto;
+            }
+
+            .nav-center.active {
+                right: 0;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 0;
+            }
+
+            .nav-links li {
+                width: 100%;
+            }
+
+            .nav-links a {
+                padding: 1rem 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .auth-buttons {
+                flex-direction: column;
+                width: 100%;
+                gap: 1rem;
+                margin-top: 2rem;
+                padding-top: 2rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .user-info {
+                width: 100%;
+                justify-content: center;
+            }
+
+            #user-menu {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                gap: 1rem;
+            }
+        }
+
+        /* =========================
+           Theme variables (Cyberpunk)
+           ========================= */
+        :root {
+            --primary-color: #0AFAD9;
+            --bg-dark: #0D0A1A;
+            --accent-secondary: #5D3FD3;
+            --panel: #161329;
+            --text-primary: #F0F0F0;
+            --text-secondary: rgba(240, 240, 240, 0.7);
+            --border-color: rgba(10, 250, 217, 0.2);
+            --ease: 0.3s ease;
+            --copy: var(--text-primary);
+            --muted: var(--text-secondary);
+            --accent: var(--accent-secondary);
+            --accent-2: var(--primary-color);
+            --radius: 12px;
+            --container: 1400px;
+        }
+
+        /* =========================
+           Base styles
+           ========================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            width: min(94%, var(--container));
+            margin: 0 auto;
+        }
+
+        /* =========================
+           Article Styles
+           ========================= */
+        .article-main {
+            padding-top: 120px;
+            padding-bottom: 4rem;
+            min-height: 100vh;
+        }
+
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .article-header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .article-category {
+            display: inline-block;
+            background: var(--primary-color);
+            color: var(--bg-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1.5rem;
+        }
+
+        .article-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .article-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .article-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            margin-bottom: 3rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .article-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+
+        .article-content h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 2.5rem 0 1.5rem 0;
+            color: var(--primary-color);
+        }
+
+        .article-content h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem 0;
+            color: var(--text-primary);
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content blockquote {
+            background: var(--panel);
+            border-left: 4px solid var(--primary-color);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        .article-content ul,
+        .article-content ol {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .breadcrumb-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .breadcrumb-link:hover {
+            color: var(--text-primary);
+        }
+
+        .breadcrumb-separator {
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .breadcrumb-current {
+            color: var(--text-primary);
+            font-weight: 500;
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* =========================
+           Footer Styles
+           ========================= */
+        footer.site-footer {
+            background: var(--panel);
+            padding: 5rem 2rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto 3rem auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2.5rem;
+            text-align: left;
+        }
+
+        .footer-column h4 {
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .footer-column ul a,
+        .footer-column p {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: block;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .footer-column ul a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-brand .brand {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .footer-brand .brand:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-brand p {
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+            opacity: 0.7;
+            font-size: 1rem;
+        }
+
+        /* =========================
+           Animations & Loader
+           ========================= */
+        .fade-in-element {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in-element.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        #loader-wrapper.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .site-header,
+        main,
+        .site-footer {
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        body.loaded .site-header,
+        body.loaded main,
+        body.loaded .site-footer {
+            opacity: 1;
+        }
+
+        /* Custom Scrollbar Styles */
+        ::-webkit-scrollbar-track {
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+            background-color: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--panel);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: var(--accent-secondary);
+        }
+
+        /* Firefox scrollbar */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--panel) var(--bg-dark);
+        }
+
+        /* =========================
+           Responsive
+           ========================= */
+        @media (max-width: 768px) {
+            .article-container {
+                padding: 0 1rem;
+            }
+
+            .article-meta {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .article-image {
+                height: 250px;
+            }
+
+            .article-content {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loader-wrapper">
+        <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie"
+            style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+    </div>
+
+    <nav class="nav-normal">
+        <div class="nav-container">
+            <a href="index.html" class="logo">GamingNexus</a>
+            <div class="nav-center" id="normalNav">
+                <ul class="nav-links">
+                    <li><a href="tournaments.html">Tournaments</a></li>
+                    <li><a href="tournament-brackets.html">Brackets</a></li>
+                    <li><a href="news.html">News</a></li>
+                </ul>
+                <div class="auth-buttons" id="normalAuth">
+                    <div id="guest-menu">
+                        <a href="auth.html" class="btn btn-request">Join Us</a>
+                    </div>
+                    <div id="user-menu" style="display: none;">
+                        <div class="user-info">
+                            <div class="user-avatar" id="user-avatar">U</div>
+                            <span class="user-name" id="navbar-username">User</span>
+                        </div>
+                        <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
+                    </div>
+                </div>
+            </div>
+            <button class="menu-toggle" id="normalMenuToggle">
+                <div class="menu-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </button>
+        </div>
+    </nav>
+
+    <main class="article-main">
+        <div class="article-container">
+            <nav class="breadcrumb fade-in-element">
+                <a href="news.html" class="breadcrumb-link">News</a>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-current" id="breadcrumb-title">Loading...</span>
+            </nav>
+
+            <article>
+                <header class="article-header fade-in-element">
+                    <div class="article-category" id="article-category">ESEA LEAGUE</div>
+                    <h1 class="article-title" id="article-title">Loading Article...</h1>
+                    <div class="article-meta">
+                        <span>
+                            <i class="fas fa-calendar"></i>
+                            <span id="article-date">Loading...</span>
+                        </span>
+                        <span>
+                            <i class="fas fa-clock"></i>
+                            <span id="article-read-time">5 min read</span>
+                        </span>
+                        <span>
+                            <i class="fas fa-user"></i>
+                            <span id="article-author">GamingNexus Team</span>
+                        </span>
+                    </div>
+                </header>
+
+                <img src="" alt="" class="article-image fade-in-element" id="article-image">
+
+                <div class="article-content fade-in-element" id="article-content">
+                    <p>Loading article content...</p>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column footer-brand">
+                    <a href="index.html" class="brand">GamingNexus</a>
+                    <p>The ultimate destination for competitive gaming.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Tournaments</h4>
+                    <ul>
+                        <li><a href="tournaments.html">Browse All</a></li>
+                        <li><a href="tournaments.html?filter=live">Live Matches</a></li>
+                        <li><a href="tournaments.html?filter=upcoming">Upcoming</a></li>
+                        <li><a href="tournaments.html?filter=completed">Past Results</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="#">Discord</a></li>
+                        <li><a href="#">Forums</a></li>
+                        <li><a href="#">Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 GamingNexus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- NAVBAR HELPER FUNCTIONS ---
+        function redirectToAuth(tab = 'register') {
+            const returnUrl = encodeURIComponent(window.location.href);
+            window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
+        }
+
+        // Modern Navbar Functions
+        let isLoggedIn = false;
+
+        // Handle logout
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('nexus_session');
+                sessionStorage.removeItem('nexus_session');
+                window.location.href = 'auth.html';
+            }
+        }
+
+        // Smart Navbar Scroll Behavior
+        function initSmartNavbar() {
+            const navbar = document.querySelector('.nav-normal');
+            if (!navbar) return;
+
+            let lastScrollY = window.scrollY;
+            let ticking = false;
+
+            function updateNavbar() {
+                const currentScrollY = window.scrollY;
+
+                if (currentScrollY > 50) {
+                    navbar.classList.add('nav-scrolled');
+                } else {
+                    navbar.classList.remove('nav-scrolled');
+                }
+
+                if (currentScrollY > 100) {
+                    if (currentScrollY > lastScrollY && currentScrollY > 200) {
+                        navbar.classList.add('nav-hidden');
+                    } else {
+                        navbar.classList.remove('nav-hidden');
+                    }
+                } else {
+                    navbar.classList.remove('nav-hidden');
+                }
+
+                lastScrollY = currentScrollY;
+                ticking = false;
+            }
+
+            function requestTick() {
+                if (!ticking) {
+                    requestAnimationFrame(updateNavbar);
+                    ticking = true;
+                }
+            }
+
+            window.addEventListener('scroll', requestTick, { passive: true });
+            updateNavbar();
+        }
+
+        function getSessionData() {
+            const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+            try {
+                return session ? JSON.parse(session) : null;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function isAuthenticated() {
+            const sessionData = getSessionData();
+            return sessionData && sessionData.token && sessionData.user;
+        }
+
+        function checkUserAuthentication() {
+            const sessionData = getSessionData();
+            const guestMenu = document.getElementById('guest-menu');
+            const userMenu = document.getElementById('user-menu');
+            const user = sessionData?.user;
+
+            if (user) {
+                const username = user.username || user.email.split('@')[0];
+                const userInitials = username.substring(0, 2).toUpperCase();
+
+                const navbarUsername = document.getElementById('navbar-username');
+                const userAvatar = document.getElementById('user-avatar');
+
+                if (navbarUsername) navbarUsername.textContent = username;
+                if (userAvatar) userAvatar.textContent = userInitials;
+
+                if (guestMenu) guestMenu.style.display = 'none';
+                if (userMenu) userMenu.style.display = 'flex';
+
+                isLoggedIn = true;
+            } else {
+                if (guestMenu) guestMenu.style.display = 'block';
+                if (userMenu) userMenu.style.display = 'none';
+                isLoggedIn = false;
+            }
+        }
+
+        // Sample article data (in a real app, this would come from an API)
+        const articlesDatabase = {
+            '1': {
+                title: "A first bad League season does not make a bad player: the NertZ origin story",
+                category: "ESEA LEAGUE",
+                date: "25 SEPT 2025",
+                author: "GamingNexus Team",
+                readTime: "5 min read",
+                image: "https://placehold.co/800x400/161329/0AFAD9?text=NertZ+Origin+Story",
+                content: `
+                    <p>In the world of competitive gaming, first impressions can be deceiving. NertZ's journey from a struggling amateur to a professional earning over $300,000 is a testament to perseverance and the belief that one bad season doesn't define a player's potential.</p>
+                    
+                    <h2>The Rough Beginning</h2>
+                    <p>NertZ's first League season was nothing short of disastrous. With a record of 1-15, many would have given up. The constant losses, the criticism from teammates, and the doubt from the community would have broken most players.</p>
+                    
+                    <blockquote>
+                        "I remember thinking after that first season that maybe I wasn't cut out for this. But something inside me refused to give up." - NertZ
+                    </blockquote>
+                    
+                    <h3>The Turning Point</h3>
+                    <p>What separated NertZ from other struggling players was his approach to failure:</p>
+                    <ul>
+                        <li>Analyzed every loss to identify improvement areas</li>
+                        <li>Sought mentorship from established players</li>
+                        <li>Maintained a rigorous practice schedule despite setbacks</li>
+                        <li>Focused on mental resilience and positive mindset</li>
+                    </ul>
+                    
+                    <p>The transformation didn't happen overnight. It took three more seasons of gradual improvement before NertZ started showing the form that would eventually make him a household name.</p>
+                    
+                    <h2>The Rise to Success</h2>
+                    <p>By his fifth season, NertZ had completely transformed his game. His strategic understanding, mechanical skills, and leadership qualities began to shine through. Teams started taking notice, and offers began pouring in.</p>
+                    
+                    <p>Today, NertZ stands as proof that talent isn't always immediately apparent. His story serves as inspiration for every player who's ever faced a difficult start in their competitive journey.</p>
+                    
+                    <h3>Lessons for Aspiring Players</h3>
+                    <p>NertZ's journey teaches us several valuable lessons:</p>
+                    <ul>
+                        <li>Persistence in the face of failure is crucial</li>
+                        <li>Every loss is an opportunity to learn</li>
+                        <li>Mental fortitude is as important as mechanical skill</li>
+                        <li>Success rarely comes overnight</li>
+                    </ul>
+                    
+                    <p>As NertZ continues to compete at the highest level, his story remains a beacon of hope for players everywhere who refuse to give up on their dreams.</p>
+                `
+            }
+        };
+
+        // Function to fetch article by ID (simulated API call)
+        async function fetchArticle(articleId) {
+            await new Promise(resolve => setTimeout(resolve, 800));
+            return articlesDatabase[articleId] || null;
+        }
+
+        // Article loading functionality
+        async function loadArticle() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const articleId = urlParams.get('id') || '1'; // Default to article 1
+            
+            try {
+                const article = await fetchArticle(articleId);
+                
+                if (!article) {
+                    showError('Article not found');
+                    hideLoader();
+                    return;
+                }
+
+                // Update page elements
+                document.getElementById('article-category').textContent = article.category;
+                document.getElementById('article-title').textContent = article.title;
+                document.getElementById('article-date').textContent = article.date;
+                document.getElementById('article-read-time').textContent = article.readTime;
+                document.getElementById('article-author').textContent = article.author;
+                document.getElementById('article-image').src = article.image;
+                document.getElementById('article-image').alt = article.title;
+                document.getElementById('article-content').innerHTML = article.content;
+                document.getElementById('breadcrumb-title').textContent = article.title;
+                
+                // Update page title
+                document.title = `${article.title} | GamingNexus`;
+                
+                // Hide loader and show content
+                hideLoader();
+                
+            } catch (error) {
+                console.error('Error loading article:', error);
+                showError('Failed to load article');
+                hideLoader();
+            }
+        }
+
+        function hideLoader() {
+            const loader = document.getElementById('loader-wrapper');
+            if (loader) {
+                loader.classList.add('hidden');
+                setTimeout(() => {
+                    document.body.classList.add('loaded');
+                }, 100);
+            }
+        }
+
+        // Scroll Animations
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.fade-in-element');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('is-visible');
+                }
+            });
+        }
+
+        function showError(message) {
+            document.getElementById('article-title').textContent = 'Article Not Found';
+            document.getElementById('article-content').innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ef4444; margin-bottom: 1rem;"></i>
+                    <h3>${message}</h3>
+                    <p>The article you're looking for might have been moved or doesn't exist.</p>
+                    <a href="news.html" class="btn btn-request" style="margin-top: 1rem; display: inline-block;">Back to News</a>
+                </div>
+            `;
+            document.getElementById('breadcrumb-title').textContent = 'Article Not Found';
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize mobile menu toggle
+            const normalMenuToggle = document.getElementById('normalMenuToggle');
+            const normalNav = document.getElementById('normalNav');
+
+            if (normalMenuToggle && normalNav) {
+                normalMenuToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    normalMenuToggle.classList.toggle('active');
+                    normalNav.classList.toggle('active');
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.nav-normal') && normalNav.classList.contains('active')) {
+                        normalNav.classList.remove('active');
+                        normalMenuToggle.classList.remove('active');
+                    }
+                });
+            }
+
+            initSmartNavbar();
+            
+            setTimeout(() => {
+                checkUserAuthentication();
+                loadArticle();
+            }, 100);
+            
+            // Initialize scroll animations
+            window.addEventListener('scroll', animateOnScroll);
+            animateOnScroll(); // Check on load
+            
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    setTimeout(() => {
+                        checkUserAuthentication();
+                    }, 100);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
