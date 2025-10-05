@@ -842,68 +842,125 @@
       width: 100%;
     }
 
-    .news-card,
+
     .tournament-card {
-      background: var(--panel);
-      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
       overflow: hidden;
       transition: all 0.3s ease;
-      border: 1px solid var(--border-color);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      max-width: 500px;
+      width: 100%;
       text-decoration: none;
       color: var(--text-primary);
       display: flex;
       flex-direction: column;
+      position: relative;
     }
 
-    .news-card:hover,
     .tournament-card:hover {
-      opacity: 0.8;
-      filter: brightness(0.9);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 215, 0, 0.2);
     }
+    
+    .news-card {
+  background: var(--panel);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-color);
+  text-decoration: none;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+}
 
-    .news-card img,
-    .tournament-card img {
-      width: 100%;
+.news-card:hover {
+  opacity: 0.8;
+  filter: brightness(0.9);
+}
+
+.news-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.news-content {
+  padding: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.news-meta {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.news-meta .league-name {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.news-card h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.news-card p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+    .tournament-image {
       height: 200px;
-      object-fit: cover;
+      min-height: 200px;
+      max-height: 200px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
     }
 
-    .news-content,
     .tournament-content {
       padding: 1.5rem;
       flex-grow: 1;
-      /* Make content grow to fill space */
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      /* Push footer to bottom */
     }
 
-    .news-meta {
+    .tournament-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent-secondary);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
       color: var(--text-secondary);
-      font-size: 0.8rem;
-      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-
-    .news-meta .league-name {
-      color: var(--primary-color);
-      font-weight: 600;
-    }
-
-    .news-card h3,
-    .tournament-card h3 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      line-height: 1.4;
-    }
-
-    .news-card p,
-    .tournament-card p {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-
     /* =========================
        FAQ Section
        ========================= */
@@ -1214,22 +1271,6 @@
       opacity: 1;
     }
 
-    /* Find this existing rule and add 'position: relative;' */
-    .news-card,
-    .tournament-card {
-      background: var(--panel);
-      border-radius: 12px;
-      overflow: hidden;
-      transition: all 0.3s ease;
-      border: 1px solid var(--border-color);
-      text-decoration: none;
-      color: var(--text-primary);
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      /* <-- ADD THIS LINE */
-    }
-
     /* Add this entire new block of CSS for the status badges */
     .tournament-status-badge {
       position: absolute;
@@ -1428,7 +1469,8 @@
     <section class="section games-section fade-in-element">
       <div class="games-header">
         <h2 class="games-title">Explore your favourite games on Gaming Nexus</h2>
-        <p class="games-subtitle">From CS2 and Overwatch 2 to other competitive titles, Gaming Nexus brings players the best
+        <p class="games-subtitle">From CS2 and Overwatch 2 to other competitive titles, Gaming Nexus brings players the
+          best
           gaming experience across supported games.</p>
       </div>
       <div class="games-carousel-wrapper">
@@ -1686,70 +1728,53 @@
       const grid = document.getElementById('tournaments-grid');
       if (!grid) return;
       if (tournaments.length === 0) {
-        grid.innerHTML = '<p style="text-align: center; width: 100%; grid-column: 1 / -1;">No tournaments available at the moment. Check back soon!</p>';
+        grid.innerHTML = '<p style="text-align: center; width: 100%;">No tournaments available.</p>';
         return;
       }
-      
-      // Limit to maximum 3 tournaments for index page
+
       const limitedTournaments = tournaments.slice(0, 3);
-      
+
       grid.innerHTML = limitedTournaments.map(tournament => {
-        const rawPoster = tournament.posterImage || tournament.backgroundImage || null;
-        let finalPoster = 'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop';
-
-        if (rawPoster) {
-          if (rawPoster.startsWith('http')) {
-            finalPoster = rawPoster;
-          } else {
-            finalPoster = new URL(rawPoster, API_BASE_URL).href;
-          }
-        }
-
-        // --- STATUS NORMALIZATION LOGIC ---
-        // Function to normalize status values to match admin dashboard
-        function normalizeStatus(status) {
-          const statusMap = {
-            'live': 'ongoing',
-            'completed': 'ended',
-            'cancelled': 'ended'
-          };
-          return statusMap[status] || status;
-        }
-
-        const rawStatus = tournament.status || 'upcoming';
-        const status = normalizeStatus(rawStatus);
-        const statusText = status.replace(/_/g, ' ');
-        const statusClass = `status-${status}`;
-        // --- END OF STATUS LOGIC ---
+        const finalPoster = tournament.posterImage || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1000';
+        const status = tournament.status || 'upcoming';
+        const statusText = status.replace(/_/g, ' ').toUpperCase();
+        const prizePool = tournament.prizePool ? `₹${tournament.prizePool.toLocaleString()}` : 'TBD';
+        const teams = `${tournament.participants?.length || 0}/${tournament.maxTeams}`;
+        const startDate = new Date(tournament.tournamentStart);
+        const endDate = new Date(tournament.tournamentEnd);
+        const durationDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+        const duration = durationDays === 1 ? '1 Day' : `${durationDays} Days`;
 
         return `
-                <a href="tournament-details.html?slug=${tournament.slug}" class="tournament-card">
-                    <div class="tournament-status-badge ${statusClass}">${statusText}</div>
-                    
-                    <img src="${finalPoster}" alt="${tournament.title} Poster" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop';">
-                    <div class="tournament-content">
-                        <div>
-                            <h3>${tournament.title}</h3>
-                            <p>💰 ₹${(tournament.prizePool || 0).toLocaleString('en-IN')} Prize Pool</p>
-                        </div>
-                        <div>
-                           <p>📅 ${new Date(tournament.tournamentStart).toLocaleDateString()} | 👥 ${tournament.maxTeams} Teams</p>
-                        </div>
-                    </div>
-                </a>
-            `;
+          <a href="tournament-details.html?slug=${tournament.slug}" class="tournament-card">
+            <div class="tournament-status-badge status-${status}">${statusText}</div>
+            <div class="tournament-image" style="background-image: url('${finalPoster}')"></div>
+            <div class="tournament-content">
+              <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">${tournament.title}</h3>
+              <div class="tournament-stats">
+                <div class="stat">
+                  <span class="stat-value">${prizePool}</span>
+                  <span class="stat-label">Prize Pool</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-value">${teams}</span>
+                  <span class="stat-label">Teams</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-value">${duration}</span>
+                  <span class="stat-label">Duration</span>
+                </div>
+              </div>
+            </div>
+          </a>
+        `;
       }).join('');
 
-      // Add appropriate grid class based on number of tournaments (max 3)
+      // Add grid class
       grid.classList.remove('single-card', 'two-cards', 'three-cards');
-      
-      if (limitedTournaments.length === 1) {
-        grid.classList.add('single-card');
-      } else if (limitedTournaments.length === 2) {
-        grid.classList.add('two-cards');
-      } else if (limitedTournaments.length === 3) {
-        grid.classList.add('three-cards');
-      }
+      if (limitedTournaments.length === 1) grid.classList.add('single-card');
+      else if (limitedTournaments.length === 2) grid.classList.add('two-cards');
+      else grid.classList.add('three-cards');
     }
 
     // Smooth scroll for navigation links (Page-specific)
