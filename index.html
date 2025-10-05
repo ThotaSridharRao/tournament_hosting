@@ -658,8 +658,8 @@
 
     .games-carousel-wrapper {
       position: relative;
-      max-width: 1400px;
-      /* Increased width */
+      max-width: 1600px;
+      /* Increased width for larger cards */
       margin: 0 auto;
     }
 
@@ -684,7 +684,8 @@
       border-radius: 12px;
       object-fit: cover;
       transition: transform 0.3s ease;
-      max-height: 300px;
+      max-height: 450px;
+      min-height: 350px;
     }
 
     .game-card:hover img {
@@ -1044,19 +1045,26 @@
        ========================= */
     @media (min-width: 768px) {
       .game-card {
+        flex-basis: 50%;
+        max-width: 50%;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .game-card {
         flex-basis: 33.33%;
         max-width: 33.33%;
       }
     }
 
-    @media (min-width: 1024px) {
+    @media (min-width: 1280px) {
       .game-card {
         flex-basis: 25%;
         max-width: 25%;
       }
     }
 
-    @media (min-width: 1280px) {
+    @media (min-width: 1600px) {
       .game-card {
         flex-basis: 20%;
         max-width: 20%;
