@@ -163,6 +163,12 @@
       font-size: 0.9rem;
     }
 
+    #user-menu {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
     .menu-toggle {
       display: none;
       background: none;
@@ -670,17 +676,15 @@
       flex: 0 0 50%;
       max-width: 50%;
       padding: 0 0.75rem;
-      height: 550px;
     }
 
     .game-card img {
       width: 100%;
-      height: 100%;
+      height: auto;
       border-radius: 12px;
-      object-fit: contain;
-      /* Changed to contain to show the full image */
-      object-position: center bottom;
+      object-fit: cover;
       transition: transform 0.3s ease;
+      max-height: 300px;
     }
 
     .game-card:hover img {
@@ -800,6 +804,25 @@
       max-width: 1200px;
       margin: 0 auto;
       text-align: left;
+      justify-content: center;
+    }
+
+    /* Single card centering */
+    .tournaments-grid:has(.tournament-card:only-child) {
+      grid-template-columns: 1fr;
+      max-width: 400px;
+    }
+
+    /* Fallback for browsers that don't support :has() */
+    .tournaments-grid.single-card {
+      grid-template-columns: 1fr;
+      max-width: 400px;
+    }
+
+    /* Ensure cards don't get too wide */
+    .tournament-card {
+      max-width: 400px;
+      justify-self: center;
     }
 
     .news-card,
@@ -1043,21 +1066,35 @@
     @media (min-width: 1920px) {
       .tournaments-grid {
         grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        /* Increased min card width */
+        max-width: 1400px;
       }
 
-      .feature-item img {
-        width: 100px;
-        height: 100px;
+      .tournaments-grid.single-card {
+        max-width: 450px;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .tournaments-grid {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
       }
 
-      .feature-item h3 {
-        font-size: 1.5rem;
+      .tournaments-grid.single-card {
+        max-width: 450px;
       }
+    }
 
-      .feature-item p {
-        font-size: 1.1rem;
-      }
+    .feature-item img {
+      width: 100px;
+      height: 100px;
+    }
+
+    .feature-item h3 {
+      font-size: 1.5rem;
+    }
+
+    .feature-item p {
+      font-size: 1.1rem;
     }
 
     /* in index.html, inside <style> */
@@ -1096,6 +1133,14 @@
 
       .tournaments-grid {
         grid-template-columns: 1fr;
+      }
+
+      .tournaments-grid.single-card {
+        max-width: 100%;
+      }
+
+      .tournament-card {
+        max-width: 100%;
       }
     }
 
@@ -1258,7 +1303,9 @@
       <div class="nav-center" id="normalNav">
         <ul class="nav-links">
           <li><a href="tournaments.html">Tournaments</a></li>
-          <li><a href="tournament-brackets.html">Brackets</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#news">News</a></li>
+          <li><a href="#faq">FAQ</a></li>
         </ul>
         <div class="auth-buttons" id="normalAuth">
           <div id="guest-menu">
@@ -1331,7 +1378,7 @@
     </section>
 
     <!-- FEATURES -->
-    <section class="section features-section fade-in-element">
+    <section id="features" class="section features-section fade-in-element">
       <div class="features-grid">
         <div class="feature-item" role="listitem">
           <img src="/assets/gameIcon.png" alt="Play Icon">
@@ -1403,7 +1450,7 @@
     </section>
 
     <!-- NEWS -->
-    <section class="section news-section fade-in-element">
+    <section id="news" class="section news-section fade-in-element">
       <h2 class="news-title">News</h2>
       <div class="news-grid">
         <a href="#" class="news-card">
@@ -1670,6 +1717,13 @@
                 </a>
             `;
       }).join('');
+
+      // Add single-card class for better centering when there's only one tournament
+      if (tournaments.length === 1) {
+        grid.classList.add('single-card');
+      } else {
+        grid.classList.remove('single-card');
+      }
     }
 
     // Smooth scroll for navigation links (Page-specific)
