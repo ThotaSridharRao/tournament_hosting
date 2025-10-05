@@ -780,9 +780,30 @@
 
     .tournaments-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
       gap: 2rem;
-      margin-top: 2rem;
+      margin: 2rem auto 0;
+      justify-content: center;
+      max-width: 1400px;
+      padding: 0 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 400px));
+    }
+
+    /* Single card: centered with constrained width */
+    .tournaments-grid.single-card {
+      grid-template-columns: minmax(350px, 500px);
+      max-width: 500px;
+    }
+
+    /* Two cards: side by side */
+    .tournaments-grid.two-cards {
+      grid-template-columns: repeat(2, minmax(350px, 450px));
+      max-width: 950px;
+    }
+
+    /* Multiple cards: responsive grid */
+    .tournaments-grid.multi-cards {
+      grid-template-columns: repeat(auto-fit, minmax(350px, 400px));
+      max-width: 1400px;
     }
 
     .tournament-card {
@@ -791,6 +812,8 @@
       overflow: hidden;
       transition: all 0.3s var(--ease-out-quart);
       border: 1px solid rgba(255, 255, 255, 0.1);
+      max-width: 500px; /* Prevent cards from getting too wide */
+      width: 100%;
     }
 
     .tournament-card:hover {
@@ -801,18 +824,13 @@
 
     .tournament-image {
       height: 200px;
+      min-height: 200px;
+      max-height: 200px;
       background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      background-size: cover;
+      background-position: center;
       position: relative;
       overflow: hidden;
-    }
-
-    .tournament-image::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 30% 40%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 70% 60%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
     }
 
     .tournament-badge {
@@ -895,6 +913,7 @@
       cursor: pointer;
       flex: 1;
       text-align: center;
+      text-decoration: none;
     }
 
     .btn-primary:hover {
@@ -1008,9 +1027,14 @@
         gap: 1.5rem;
       }
 
-      .tournaments-grid {
+      .tournaments-grid,
+      .tournaments-grid.single-card,
+      .tournaments-grid.two-cards,
+      .tournaments-grid.multi-cards {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+        max-width: 500px;
+        padding: 0 1rem;
       }
 
       .filters {
@@ -1034,10 +1058,14 @@
         font-size: 0.85rem;
       }
 
-      .tournaments-grid {
+      .tournaments-grid,
+      .tournaments-grid.single-card,
+      .tournaments-grid.two-cards,
+      .tournaments-grid.multi-cards {
         grid-template-columns: 1fr;
         gap: 1rem;
         padding: 0 1rem;
+        max-width: 100%;
       }
 
       .page-header {
@@ -1817,6 +1845,28 @@
           <p>No tournaments match the selected filter. Try a different category.</p>
         `;
         grid.appendChild(message);
+      } else {
+        // Update grid layout after filtering
+        updateGridLayout();
+      }
+    }
+
+    // Update grid layout based on number of cards
+    function updateGridLayout() {
+      const grid = document.getElementById('tournaments-grid');
+      const cards = grid.querySelectorAll('.tournament-card');
+      const cardCount = cards.length;
+
+      // Remove existing layout classes
+      grid.classList.remove('single-card', 'two-cards', 'multi-cards');
+
+      // Add appropriate class based on card count
+      if (cardCount === 1) {
+        grid.classList.add('single-card');
+      } else if (cardCount === 2) {
+        grid.classList.add('two-cards');
+      } else if (cardCount >= 3) {
+        grid.classList.add('multi-cards');
       }
     }
 
@@ -1883,6 +1933,9 @@
           <p>No tournaments match your search "${query}". Try different keywords.</p>
         `;
         grid.appendChild(message);
+      } else {
+        // Update grid layout after search
+        updateGridLayout();
       }
     }
 
@@ -1922,6 +1975,9 @@
         // Hide loading and show grid
         document.getElementById('loading').style.display = 'none';
         document.getElementById('tournaments-grid').style.display = 'grid';
+
+        // Update grid layout based on number of cards
+        updateGridLayout();
 
         // Add filter event listeners
         document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -1997,6 +2053,9 @@
 
       const grid = document.getElementById('tournaments-grid');
       grid.innerHTML = tournamentsData.map(tournament => createTournamentCard(tournament)).join('');
+
+      // Update grid layout for fallback data
+      updateGridLayout();
 
       // Add filter event listeners
       document.querySelectorAll('.filter-btn').forEach(btn => {
