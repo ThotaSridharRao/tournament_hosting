@@ -14,9 +14,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="navbar.css">
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
-    <!-- jsPDF for PDF export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
 
     <style>
         /* =========================
@@ -302,6 +300,17 @@
             transform: translateY(0);
         }
 
+        .section-action-btn.delete-btn {
+            background: #dc3545;
+        }
+
+        .section-action-btn.delete-btn:hover {
+            background: #c82333;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+
+
+
         /* Tab System Styles */
         .operation-tabs {
             display: flex;
@@ -422,6 +431,136 @@
             color: var(--primary-color);
             text-align: right;
         }
+
+        /* Delete Mode Styles */
+        .admin-tournament-list.delete-mode .admin-tournament-item {
+            grid-template-columns: 2fr auto auto auto;
+        }
+
+        .tournament-delete-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 6px;
+            background: #dc3545;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: fadeInScale 0.3s ease forwards;
+        }
+
+        .tournament-delete-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeInScale {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+        }
+
+        .schedule-event-item {
+            transition: all 0.3s ease;
+        }
+
+        .remove-event-btn:hover {
+            background: #c82333 !important;
+            transform: scale(1.1);
+        }
+
+        /* Hide delete buttons by default */
+        .admin-tournament-item .tournament-delete-btn {
+            display: none;
+        }
+
+        /* Show delete buttons in delete mode */
+        .admin-tournament-list.delete-mode .tournament-delete-btn {
+            display: flex;
+        }
+
+        /* Edit Mode Styles */
+        .admin-tournament-list.edit-mode .admin-tournament-item {
+            grid-template-columns: 2fr auto auto auto auto;
+        }
+
+        .tournament-edit-actions {
+            display: none;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .admin-tournament-list.edit-mode .tournament-edit-actions {
+            display: flex;
+            animation: fadeInScale 0.3s ease forwards;
+        }
+
+        .tournament-edit-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .tournament-edit-btn.details {
+            background: var(--primary-color);
+        }
+
+        .tournament-edit-btn.details:hover {
+            background: #ff6347;
+            transform: scale(1.05);
+        }
+
+        .tournament-edit-btn.schedule {
+            background: #28a745;
+        }
+
+        .tournament-edit-btn.schedule:hover {
+            background: #218838;
+            transform: scale(1.05);
+        }
+
+        .tournament-edit-btn.status {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .tournament-edit-btn.status:hover {
+            background: #e0a800;
+            transform: scale(1.05);
+        }
+
+        .tournament-edit-btn.finalists {
+            background: #6f42c1;
+        }
+
+        .tournament-edit-btn.finalists:hover {
+            background: #5a32a3;
+            transform: scale(1.05);
+        }
+
+
 
         .tournament-actions {
             display: flex;
@@ -781,6 +920,30 @@
                 min-height: auto;
             }
 
+            .admin-tournament-list.delete-mode .admin-tournament-item {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-tournament-list.delete-mode .tournament-delete-btn {
+                margin: 0.5rem auto 0;
+                width: 40px;
+                height: 40px;
+            }
+
+            .admin-tournament-list.edit-mode .admin-tournament-item {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-tournament-list.edit-mode .tournament-edit-actions {
+                margin: 0.5rem auto 0;
+                justify-content: center;
+            }
+
+            .admin-tournament-list.edit-mode .tournament-edit-btn {
+                width: 40px;
+                height: 40px;
+            }
+
             .admin-tournament-info {
                 text-align: center;
             }
@@ -852,6 +1015,14 @@
                 grid-template-columns: 3fr auto auto;
                 gap: 2.5rem;
                 padding: 1.5rem 2rem;
+            }
+
+            .admin-tournament-list.delete-mode .admin-tournament-item {
+                grid-template-columns: 3fr auto auto auto;
+            }
+
+            .admin-tournament-list.edit-mode .admin-tournament-item {
+                grid-template-columns: 3fr auto auto auto auto;
             }
 
             .admin-tournament-info .name {
@@ -1076,7 +1247,8 @@
                         <div class="profile-username" id="navbar-username">Admin</div>
                     </div>
                 </div>
-                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu"
+                    aria-expanded="false">
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
@@ -1087,7 +1259,7 @@
             <button class="mobile-nav-close" aria-label="Close menu">
                 <i class="fas fa-times"></i>
             </button>
-            
+
             <!-- Mobile User Profile Section -->
             <div class="mobile-user-profile">
                 <div class="mobile-profile-icon">
@@ -1098,7 +1270,7 @@
                     <div class="mobile-profile-email" id="mobile-navbar-email">admin@gamingnexus.com</div>
                 </div>
             </div>
-            
+
             <div class="mobile-nav-links">
                 <a href="#" class="active">
                     <i class="fas fa-tachometer-alt"></i>
@@ -1125,11 +1297,17 @@
                     <div class="section-header">
                         <h3 class="section-title">Tournaments</h3>
                         <div class="section-actions">
-                            <button class="section-action-btn" onclick="showCreateTournament()" title="Create Tournament">
+                            <button class="section-action-btn" onclick="showCreateTournament()"
+                                title="Create Tournament">
                                 <i class="fas fa-plus"></i>
                             </button>
-                            <button class="section-action-btn" onclick="showUpdateTournament()" title="Update Tournament">
+                            <button class="section-action-btn" onclick="showUpdateTournament()"
+                                title="Update Tournament">
                                 <i class="fas fa-pencil-alt"></i>
+                            </button>
+                            <button class="section-action-btn delete-btn" onclick="showDeleteTournament()"
+                                title="Delete Tournament">
+                                <i class="fas fa-trash"></i>
                             </button>
                         </div>
                     </div>
@@ -1147,11 +1325,7 @@
                 </div>
             </div>
 
-            <div class="operation-tabs">
-                <button class="tab-btn active" data-operation="delete">Delete Tournament</button>
-                <button class="tab-btn" data-operation="download">Download Data</button>
-                <button class="tab-btn" data-operation="finalists">Update Finalists</button>
-            </div>
+
 
             <div id="operation-content">
                 <!-- Content is dynamically rendered here -->
@@ -1174,7 +1348,7 @@
                 if (navbarUsername) {
                     navbarUsername.textContent = user.username || user.email;
                 }
-                
+
                 // Update mobile navbar
                 const mobileNavbarUsername = document.getElementById('mobile-navbar-username');
                 const mobileNavbarEmail = document.getElementById('mobile-navbar-email');
@@ -1184,7 +1358,7 @@
                 if (mobileNavbarEmail) {
                     mobileNavbarEmail.textContent = user.email || 'admin@gamingnexus.com';
                 }
-                
+
                 if (userMenu) userMenu.style.display = 'flex';
             } else {
                 if (userMenu) userMenu.style.display = 'none';
@@ -1196,7 +1370,7 @@
             const hamburger = document.getElementById('mobile-menu-toggle');
             const mobileNav = document.getElementById('mobile-nav');
             const mobileNavClose = document.querySelector('.mobile-nav-close');
-            
+
             if (!hamburger || !mobileNav) {
                 console.error("Mobile menu elements not found.");
                 return;
@@ -1227,14 +1401,14 @@
             document.addEventListener('click', (event) => {
                 const isClickInsideNav = event.target.closest('#mobile-nav');
                 const isClickOnHamburger = event.target.closest('#mobile-menu-toggle');
-                
+
                 if (!isClickInsideNav && !isClickOnHamburger && mobileNav.classList.contains('is-open')) {
                     closeMobileNav();
                 }
             });
 
             // Close mobile menu when window is resized to desktop
-            window.addEventListener('resize', function() {
+            window.addEventListener('resize', function () {
                 if (window.innerWidth > 1024) {
                     closeMobileNav();
                 }
@@ -1312,19 +1486,35 @@
 
         async function deleteTournament(event, slug) {
             event.stopPropagation();
+
+            // Find the tournament to get its name
+            const tournament = adminTournaments.find(t => t.slug === slug);
+            const tournamentName = tournament ? tournament.title : 'Unknown Tournament';
+
+            // Show confirmation alert with tournament name
+            const confirmDelete = confirm(`Do you want to delete the tournament "${tournamentName}"?`);
+            if (!confirmDelete) {
+                return; // User cancelled
+            }
+
             if (slug === 'dev-test-championship') {
                 alert("This is a mock tournament and cannot be deleted via API.");
                 return;
             }
-            // The confirm dialog is removed as this function is now only called from the 'Delete' tab, which is an explicit user action.
+
             try {
                 const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}`, {
                     method: 'DELETE', headers: { 'Authorization': `Bearer ${getSessionData()?.token}` }
                 });
                 const result = await response.json();
                 if (response.ok && result.success) {
-                    alert('Tournament deleted successfully!');
+                    alert(`Tournament "${tournamentName}" deleted successfully!`);
                     loadAdminTournaments();
+                    // Refresh the delete list if currently showing
+                    const deleteList = document.getElementById('delete-tournament-list');
+                    if (deleteList) {
+                        renderTournamentList('delete-tournament-list', adminTournaments, 'delete');
+                    }
                 } else {
                     throw new Error(result.detail || 'Failed to delete tournament.');
                 }
@@ -1383,7 +1573,7 @@
             // Open brackets view in same tab
             const bracketsUrl = `tournament-brackets.html?slug=${slug}`;
             window.location.href = bracketsUrl;
-            
+
             // Alternative: Show brackets in a modal (uncomment if you prefer modal view)
             // showBracketsModal(tournament);
         }
@@ -1406,7 +1596,7 @@
                 </div>
             `;
             document.body.appendChild(modal);
-            
+
             // Load brackets data here
             loadTournamentBrackets(tournament.slug, 'brackets-container');
         }
@@ -1453,21 +1643,21 @@
                 operationContent.innerHTML = `
                     <div class="operation-title-header">
                         <h3 class="operation-title">Create Tournament</h3>
-                        <button class="close-btn" onclick="renderOperation('delete')">&times;</button>
+                        <button class="close-btn" onclick="clearOperationContent()">&times;</button>
                     </div>
                     ${getCreateTournamentForm()}
                 `;
-                
+
                 // Add form event listener
                 const form = document.getElementById('create-tournament-form');
                 if (form) {
                     form.addEventListener('submit', handleCreateFormSubmit);
-                    
+
                     // Add format change listener
                     const formatSelect = document.getElementById('tournament-format');
                     const kpFields = document.getElementById('kp-format-fields');
                     if (formatSelect && kpFields) {
-                        formatSelect.addEventListener('change', function() {
+                        formatSelect.addEventListener('change', function () {
                             kpFields.style.display = this.value === 'kp' ? 'block' : 'none';
                         });
                     }
@@ -1476,27 +1666,510 @@
         }
 
         function showUpdateTournament() {
-            // Switch to update tab and render update form
-            const updateTab = document.querySelector('[data-operation="update"]');
-            if (!updateTab) {
-                // If update tab doesn't exist, add it temporarily or show in modal
-                renderOperation('update');
-                // Update the operation content title
-                const operationContent = document.getElementById('operation-content');
-                if (operationContent) {
-                    operationContent.innerHTML = `
-                        <div class="operation-title-header">
-                            <h3 class="operation-title">Update Tournament</h3>
-                            <button class="close-btn" onclick="renderOperation('delete')">&times;</button>
-                        </div>
-                        <p>Select a tournament from the list below to edit its details.</p>
-                        <div id="update-tournament-list" class="admin-tournament-list" style="margin-top: 1.5rem;"></div>
-                    `;
-                    renderTournamentList('update-tournament-list', adminTournaments, 'update');
-                }
+            // Toggle edit mode for tournament cards
+            const tournamentList = document.getElementById('admin-tournament-list');
+            const editBtn = document.querySelector('.section-action-btn[onclick="showUpdateTournament()"]');
+
+            if (tournamentList.classList.contains('edit-mode')) {
+                // Exit edit mode
+                tournamentList.classList.remove('edit-mode');
+                editBtn.innerHTML = '<i class="fas fa-pencil-alt"></i>';
+                editBtn.title = 'Update Tournament';
+                // Re-render tournament list without edit buttons
+                renderTournamentList('admin-tournament-list', adminTournaments, 'manage');
             } else {
-                // If tab exists, click it
-                updateTab.click();
+                // Enter edit mode
+                tournamentList.classList.add('edit-mode');
+                editBtn.innerHTML = '<i class="fas fa-times"></i>';
+                editBtn.title = 'Cancel Edit';
+                // Re-render tournament list with edit buttons
+                renderTournamentList('admin-tournament-list', adminTournaments, 'edit');
+            }
+        }
+
+        function editTournamentDetails(event, slug) {
+            event.stopPropagation();
+            const tournament = adminTournaments.find(t => t.slug === slug);
+            if (!tournament) {
+                alert('Tournament not found!');
+                return;
+            }
+
+            // Show the edit details form
+            const operationContent = document.getElementById('operation-content');
+            if (operationContent) {
+                const formHTML = getUpdateFormHTML(tournament);
+                // Remove the duplicate header from the form HTML
+                const cleanFormHTML = formHTML.replace(
+                    /<div class="operation-title-header">[\s\S]*?<\/div>/,
+                    ''
+                );
+
+                operationContent.innerHTML = `
+                    <div class="operation-title-header">
+                        <h3 class="operation-title">Edit Tournament Details: ${tournament.title}</h3>
+                        <button class="close-btn" onclick="clearOperationContent()">&times;</button>
+                    </div>
+                    ${cleanFormHTML}
+                `;
+
+                // Add form event listener
+                const form = document.getElementById('update-tournament-form');
+                if (form) {
+                    form.addEventListener('submit', handleUpdateFormSubmit);
+
+                    // Add format change listener
+                    const formatSelect = document.getElementById('update-tournament-format');
+                    const kpFields = document.getElementById('update-kp-format-fields');
+                    if (formatSelect && kpFields) {
+                        formatSelect.addEventListener('change', function () {
+                            kpFields.style.display = this.value === 'kp' ? 'block' : 'none';
+                        });
+                    }
+                }
+            }
+        }
+
+        function editTournamentSchedule(event, slug) {
+            event.stopPropagation();
+            const tournament = adminTournaments.find(t => t.slug === slug);
+            if (!tournament) {
+                alert('Tournament not found!');
+                return;
+            }
+
+            // Show schedule update form
+            const operationContent = document.getElementById('operation-content');
+            if (operationContent) {
+                operationContent.innerHTML = `
+                    <div class="operation-title-header">
+                        <h3 class="operation-title">Update Schedule: ${tournament.title}</h3>
+                        <button class="close-btn" onclick="clearOperationContent()">&times;</button>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Select Schedule Type</label>
+                        <select id="schedule-type" class="form-select" onchange="showScheduleOptions('${slug}')">
+                            <option value="">Choose schedule type...</option>
+                            <option value="registration">Registration Dates</option>
+                            <option value="tournament">Tournament Dates</option>
+                            <option value="custom">Custom Events</option>
+                        </select>
+                    </div>
+                    <div id="schedule-options" style="margin-top: 1.5rem;"></div>
+                `;
+            }
+        }
+
+        function showScheduleOptions(slug) {
+            const tournament = adminTournaments.find(t => t.slug === slug);
+            const scheduleType = document.getElementById('schedule-type').value;
+            const optionsContainer = document.getElementById('schedule-options');
+
+            if (!scheduleType || !optionsContainer) return;
+
+            const formattedDate = (iso) => iso ? iso.slice(0, 16) : '';
+
+            let optionsHTML = '';
+
+            switch (scheduleType) {
+                case 'registration':
+                    optionsHTML = `
+                        <h4 class="form-label">Registration Schedule</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Registration Start</label>
+                                <input type="datetime-local" id="reg-start" class="form-input" value="${formattedDate(tournament.registrationStart)}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Registration End</label>
+                                <input type="datetime-local" id="reg-end" class="form-input" value="${formattedDate(tournament.registrationEnd)}">
+                            </div>
+                        </div>
+                        <button type="button" class="submit-btn" onclick="updateRegistrationSchedule('${slug}')">Update Registration Schedule</button>
+                    `;
+                    break;
+                case 'tournament':
+                    optionsHTML = `
+                        <h4 class="form-label">Tournament Schedule</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Tournament Start</label>
+                                <input type="datetime-local" id="tournament-start" class="form-input" value="${formattedDate(tournament.tournamentStart)}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tournament End</label>
+                                <input type="datetime-local" id="tournament-end" class="form-input" value="${formattedDate(tournament.tournamentEnd)}">
+                            </div>
+                        </div>
+                        <button type="button" class="submit-btn" onclick="updateTournamentSchedule('${slug}')">Update Tournament Schedule</button>
+                    `;
+                    break;
+                case 'custom':
+                    const events = tournament.scheduleEvents || [];
+                    optionsHTML = `
+                        <h4 class="form-label">Custom Events</h4>
+                        <div id="custom-events">
+                            ${events.map((event, index) => `
+                                <div class="schedule-event-item" data-index="${index}" style="border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; position: relative;">
+                                    <button type="button" class="remove-event-btn" onclick="removeScheduleEvent(${index})" style="position: absolute; top: 0.5rem; right: 0.5rem; background: #dc3545; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 0.8rem; cursor: pointer;" title="Remove Event">×</button>
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label class="form-label">Event Title</label>
+                                            <input type="text" class="form-input" value="${event.title || ''}" id="event-title-${index}" placeholder="e.g., Check-in Opens">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Event Date & Time</label>
+                                            <input type="datetime-local" class="form-input" value="${formattedDate(event.date + 'T' + event.time)}" id="event-datetime-${index}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Description</label>
+                                        <input type="text" class="form-input" value="${event.description || ''}" id="event-desc-${index}" placeholder="Brief description of the event">
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="form-actions" style="margin-top: 1rem;">
+                            <button type="button" class="submit-btn btn-secondary" onclick="addNewScheduleEvent()" style="background: #6c757d; margin-right: 1rem;">
+                                <i class="fas fa-plus"></i> Add New Event
+                            </button>
+                            <button type="button" class="submit-btn" onclick="updateCustomEvents('${slug}')">Save All Events</button>
+                        </div>
+                    `;
+                    break;
+            }
+
+            optionsContainer.innerHTML = optionsHTML;
+        }
+
+        async function updateRegistrationSchedule(slug) {
+            const regStart = document.getElementById('reg-start').value;
+            const regEnd = document.getElementById('reg-end').value;
+
+            if (!regStart || !regEnd) {
+                alert('Please fill in both registration dates');
+                return;
+            }
+
+            if (new Date(regStart) >= new Date(regEnd)) {
+                alert('Registration start date must be before the end date');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${getSessionData()?.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        registrationStart: regStart,
+                        registrationEnd: regEnd
+                    })
+                });
+
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    alert(`Registration schedule updated successfully!\nStart: ${new Date(regStart).toLocaleString()}\nEnd: ${new Date(regEnd).toLocaleString()}`);
+                    await loadAdminTournaments();
+                } else {
+                    throw new Error(result.detail || 'Failed to update registration schedule.');
+                }
+            } catch (error) {
+                alert('Error updating registration schedule: ' + error.message);
+            }
+        }
+
+        async function updateTournamentSchedule(slug) {
+            const tournamentStart = document.getElementById('tournament-start').value;
+            const tournamentEnd = document.getElementById('tournament-end').value;
+
+            if (!tournamentStart || !tournamentEnd) {
+                alert('Please fill in both tournament dates');
+                return;
+            }
+
+            if (new Date(tournamentStart) >= new Date(tournamentEnd)) {
+                alert('Tournament start date must be before the end date');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${getSessionData()?.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        tournamentStart: tournamentStart,
+                        tournamentEnd: tournamentEnd
+                    })
+                });
+
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    alert(`Tournament schedule updated successfully!\nStart: ${new Date(tournamentStart).toLocaleString()}\nEnd: ${new Date(tournamentEnd).toLocaleString()}`);
+                    await loadAdminTournaments();
+                } else {
+                    throw new Error(result.detail || 'Failed to update tournament schedule.');
+                }
+            } catch (error) {
+                alert('Error updating tournament schedule: ' + error.message);
+            }
+        }
+
+        function addNewScheduleEvent() {
+            const customEventsContainer = document.getElementById('custom-events');
+            if (!customEventsContainer) return;
+            
+            const existingEvents = customEventsContainer.querySelectorAll('.schedule-event-item');
+            const newIndex = existingEvents.length;
+            
+            const newEventHTML = `
+                <div class="schedule-event-item" data-index="${newIndex}" style="border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; position: relative; animation: fadeInScale 0.3s ease forwards;">
+                    <button type="button" class="remove-event-btn" onclick="removeScheduleEvent(${newIndex})" style="position: absolute; top: 0.5rem; right: 0.5rem; background: #dc3545; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 0.8rem; cursor: pointer;" title="Remove Event">×</button>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Event Title</label>
+                            <input type="text" class="form-input" value="" id="event-title-${newIndex}" placeholder="e.g., Check-in Opens">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Event Date & Time</label>
+                            <input type="datetime-local" class="form-input" value="" id="event-datetime-${newIndex}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-input" value="" id="event-desc-${newIndex}" placeholder="Brief description of the event">
+                    </div>
+                </div>
+            `;
+            
+            customEventsContainer.insertAdjacentHTML('beforeend', newEventHTML);
+            
+            // Focus on the new event title field
+            const newTitleField = document.getElementById(`event-title-${newIndex}`);
+            if (newTitleField) {
+                newTitleField.focus();
+            }
+        }
+
+        function removeScheduleEvent(index) {
+            const eventItem = document.querySelector(`.schedule-event-item[data-index="${index}"]`);
+            if (eventItem) {
+                eventItem.style.animation = 'fadeOut 0.3s ease forwards';
+                setTimeout(() => {
+                    eventItem.remove();
+                    // Re-index remaining events
+                    reindexScheduleEvents();
+                }, 300);
+            }
+        }
+
+        function reindexScheduleEvents() {
+            const eventItems = document.querySelectorAll('.schedule-event-item');
+            eventItems.forEach((item, newIndex) => {
+                item.setAttribute('data-index', newIndex);
+                
+                // Update IDs
+                const titleInput = item.querySelector('input[id^="event-title-"]');
+                const datetimeInput = item.querySelector('input[id^="event-datetime-"]');
+                const descInput = item.querySelector('input[id^="event-desc-"]');
+                const removeBtn = item.querySelector('.remove-event-btn');
+                
+                if (titleInput) titleInput.id = `event-title-${newIndex}`;
+                if (datetimeInput) datetimeInput.id = `event-datetime-${newIndex}`;
+                if (descInput) descInput.id = `event-desc-${newIndex}`;
+                if (removeBtn) removeBtn.setAttribute('onclick', `removeScheduleEvent(${newIndex})`);
+            });
+        }
+
+        async function updateScheduleEvents(slug, events) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/schedule`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': `Bearer ${getSessionData()?.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ schedule: events })
+                });
+
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    alert(`Successfully updated ${events.length} custom events!`);
+                    await loadAdminTournaments();
+                } else {
+                    throw new Error(result.detail || 'Failed to update schedule events.');
+                }
+            } catch (error) {
+                alert('Error updating schedule: ' + error.message);
+            }
+        }
+
+        function updateCustomEvents(slug) {
+            const eventItems = document.querySelectorAll('.schedule-event-item');
+            const events = [];
+            let hasErrors = false;
+            
+            eventItems.forEach((item, index) => {
+                const title = document.getElementById(`event-title-${index}`)?.value.trim();
+                const datetime = document.getElementById(`event-datetime-${index}`)?.value;
+                const description = document.getElementById(`event-desc-${index}`)?.value.trim();
+                
+                if (!title || !datetime) {
+                    hasErrors = true;
+                    // Highlight empty fields
+                    if (!title) {
+                        const titleField = document.getElementById(`event-title-${index}`);
+                        if (titleField) {
+                            titleField.style.borderColor = '#dc3545';
+                            titleField.placeholder = 'Title is required';
+                        }
+                    }
+                    if (!datetime) {
+                        const datetimeField = document.getElementById(`event-datetime-${index}`);
+                        if (datetimeField) {
+                            datetimeField.style.borderColor = '#dc3545';
+                        }
+                    }
+                    return;
+                }
+                
+                // Parse datetime
+                const eventDate = new Date(datetime);
+                const date = eventDate.toISOString().split('T')[0];
+                const time = eventDate.toTimeString().split(' ')[0];
+                
+                events.push({
+                    title: title,
+                    description: description || '',
+                    date: date,
+                    time: time
+                });
+            });
+            
+            if (hasErrors) {
+                alert('Please fill in all required fields (Title and Date/Time) for all events.');
+                return;
+            }
+            
+            // Make API call to update schedule events
+            updateScheduleEvents(slug, events);
+        }
+
+        function editTournamentStatus(event, slug) {
+            event.stopPropagation();
+            const tournament = adminTournaments.find(t => t.slug === slug);
+            if (!tournament) {
+                alert('Tournament not found!');
+                return;
+            }
+
+            // Show the status update form
+            const operationContent = document.getElementById('operation-content');
+            if (operationContent) {
+                const statusHTML = getUpdateStatusHTML(tournament);
+                // Remove the duplicate header from the status HTML
+                const cleanStatusHTML = statusHTML.replace(
+                    /<div class="operation-title-header">[\s\S]*?<\/div>/,
+                    ''
+                );
+                
+                operationContent.innerHTML = `
+                    <div class="operation-title-header">
+                        <h3 class="operation-title">Update Status: ${tournament.title}</h3>
+                        <button class="close-btn" onclick="clearOperationContent()">&times;</button>
+                    </div>
+                    ${cleanStatusHTML}
+                `;
+
+                // Add form event listener
+                const form = document.getElementById('update-status-form');
+                if (form) {
+                    form.addEventListener('submit', handleStatusUpdateSubmit);
+                }
+            }
+        }
+
+        function showUpdateFinalists() {
+            // Show the finalists management interface
+            const operationContent = document.getElementById('operation-content');
+            if (operationContent) {
+                operationContent.innerHTML = `
+                    <div class="operation-title-header">
+                        <h3 class="operation-title">Update Finalists</h3>
+                        <button class="close-btn" onclick="clearOperationContent()">&times;</button>
+                    </div>
+                    <p>Select a tournament from the list below to manage its finalists.</p>
+                    <div id="finalists-tournament-list" class="admin-tournament-list" style="margin-top: 1.5rem;"></div>
+                `;
+                renderTournamentList('finalists-tournament-list', adminTournaments, 'finalists');
+            }
+        }
+
+        function editTournamentFinalists(event, slug) {
+            event.stopPropagation();
+            const tournament = adminTournaments.find(t => t.slug === slug);
+            if (!tournament) {
+                alert('Tournament not found!');
+                return;
+            }
+            
+            // Show the finalists editor for this specific tournament
+            const operationContent = document.getElementById('operation-content');
+            if (operationContent) {
+                const finalistsHTML = getFinalistsEditorHTML(tournament);
+                // Remove the duplicate header from the finalists HTML
+                const cleanFinalistsHTML = finalistsHTML.replace(
+                    /<div class="operation-title-header">[\s\S]*?<\/div>/,
+                    ''
+                );
+                
+                operationContent.innerHTML = `
+                    <div class="operation-title-header">
+                        <h3 class="operation-title">Update Finalists: ${tournament.title}</h3>
+                        <button class="close-btn" onclick="clearOperationContent()">&times;</button>
+                    </div>
+                    ${cleanFinalistsHTML}
+                `;
+                
+                // Add form event listener
+                const form = document.getElementById('update-finalists-form');
+                if (form) {
+                    form.addEventListener('submit', handleFinalistsUpdateSubmit);
+                }
+            }
+        }
+
+        function clearOperationContent() {
+            const operationContent = document.getElementById('operation-content');
+            if (operationContent) {
+                operationContent.innerHTML = '';
+            }
+        }
+
+        function showDeleteTournament() {
+            // Toggle delete mode for tournament cards
+            const tournamentList = document.getElementById('admin-tournament-list');
+            const deleteBtn = document.querySelector('.section-action-btn.delete-btn');
+
+            if (tournamentList.classList.contains('delete-mode')) {
+                // Exit delete mode
+                tournamentList.classList.remove('delete-mode');
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                deleteBtn.title = 'Delete Tournament';
+                // Re-render tournament list without delete buttons
+                renderTournamentList('admin-tournament-list', adminTournaments, 'manage');
+            } else {
+                // Enter delete mode
+                tournamentList.classList.add('delete-mode');
+                deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+                deleteBtn.title = 'Cancel Delete';
+                // Re-render tournament list with delete buttons
+                renderTournamentList('admin-tournament-list', adminTournaments, 'delete');
             }
         }
 
@@ -1531,15 +2204,32 @@
                     case 'delete':
                         actionsHtml = `<button class="submit-btn delete" style="width:auto; padding: 0.5rem 1rem; margin-top:0; background-color: #c82333;" onclick="deleteTournament(event, '${t.slug}')">Confirm Delete</button>`;
                         break;
-                    case 'download':
-                        actionsHtml = `
-                            <button class="btn-icon" onclick="downloadData('${t.slug}', 'excel')" title="Download Excel"><i class="fas fa-file-excel" style="font-size: 1.2rem; color: #28a745;"></i></button>
-                            <button class="btn-icon" onclick="downloadData('${t.slug}', 'pdf')" title="Download PDF"><i class="fas fa-file-pdf" style="font-size: 1.2rem; color: #dc3545;"></i></button>`;
-                        break;
+
                     case 'finalists':
                         actionsHtml = `<button class="submit-btn btn-warning" style="padding: 0.5rem 1rem; margin-top:0; width:auto;" onclick="manageFinalists('${t.slug}')">Manage Finalists</button>`;
                         break;
                 }
+                const deleteButton = actionType === 'delete' ?
+                    `<button class="tournament-delete-btn" onclick="deleteTournament(event, '${t.slug}')" title="Delete ${title}">
+                        <i class="fas fa-trash"></i>
+                    </button>` : '';
+
+                const editButtons = actionType === 'edit' ?
+                    `<div class="tournament-edit-actions">
+                        <button class="tournament-edit-btn details" onclick="editTournamentDetails(event, '${t.slug}')" title="Edit Details">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="tournament-edit-btn schedule" onclick="editTournamentSchedule(event, '${t.slug}')" title="Edit Schedule">
+                            <i class="fas fa-calendar-alt"></i>
+                        </button>
+                        <button class="tournament-edit-btn status" onclick="editTournamentStatus(event, '${t.slug}')" title="Edit Status">
+                            <i class="fas fa-toggle-on"></i>
+                        </button>
+                        <button class="tournament-edit-btn finalists" onclick="editTournamentFinalists(event, '${t.slug}')" title="Update Finalists">
+                            <i class="fas fa-trophy"></i>
+                        </button>
+                    </div>` : '';
+
                 return `
                     <div class="admin-tournament-item">
                         <div class="admin-tournament-info">
@@ -1548,6 +2238,8 @@
                         </div>
                         <div class="tournament-participants">${participants}</div>
                         <div class="tournament-prize">${prize}</div>
+                        ${deleteButton}
+                        ${editButtons}
                     </div>`;
             }).join('');
         }
@@ -1560,92 +2252,9 @@
             renderOperation('finalistsEditor', tournament);
         }
 
-        function downloadData(slug, format) {
-            const tournament = adminTournaments.find(t => t.slug === slug);
-            if (!tournament) {
-                alert("Tournament not found!");
-                return;
-            }
 
-            const participants = tournament.participants || [];
-            if (participants.length === 0) {
-                alert("This tournament has no registered participants to export.");
-                return;
-            }
 
-            if (format === 'excel') {
-                const headers = ["Team Name", "Player Name", "In-Game ID", "Email", "Captain?"];
-                const rows = [];
 
-                participants.forEach(team => {
-                    (team.players || []).forEach(player => {
-                        rows.push([
-                            team.teamName || "N/A",
-                            player.name || "N/A",
-                            player.inGameId || "N/A",
-                            player.email || "N/A",
-                            player.isCaptain ? "Yes" : "No"
-                        ]);
-                    });
-                });
-
-                let csvContent = "data:text/csv;charset=utf-8,"
-                    + headers.join(",") + "\n"
-                    + rows.map(e => e.join(",")).join("\n");
-
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                link.setAttribute("download", `${slug}_participants.csv`);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-
-            } else if (format === 'pdf') {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-
-                doc.text(`Participants for ${tournament.title}`, 14, 16);
-
-                const headers = ["S.No", "Team Name", "Team Members", "In-Game ID", "Email"];
-                const rows = [];
-                let serialNo = 1;
-
-                participants.forEach(team => {
-                    const players = team.players || [];
-                    const teamName = team.teamName || "N/A";
-
-                    players.forEach((player, index) => {
-                        rows.push([
-                            index === 0 ? serialNo.toString() : "", // S.No only on first player of team
-                            index === 0 ? teamName : "", // Team name only on first player of team
-                            player.name || "N/A",
-                            player.inGameId || "N/A",
-                            player.email || "N/A"
-                        ]);
-                    });
-                    serialNo++;
-                });
-
-                doc.autoTable({
-                    head: [headers],
-                    body: rows,
-                    startY: 25
-                });
-                doc.save(`${slug}_participants.pdf`);
-            }
-        }
-
-        function removeScheduleEvent(button) {
-            const eventDiv = button.closest('.schedule-event');
-            eventDiv.remove();
-
-            // Check if no events left, show placeholder
-            const container = document.getElementById('schedule-events-container');
-            if (container.children.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color: var(--muted); margin: 1rem 0;">No schedule events yet. Click "Add Event" to create one.</p>';
-            }
-        }
 
         function getCreateFormHTML() {
             return `
@@ -1837,13 +2446,7 @@
                         <div id="delete-tournament-list" class="admin-tournament-list" style="margin-top: 1.5rem;"></div>
                     `;
                     break;
-                case 'download':
-                    contentHtml = `
-                        <h3 class="operation-title">Download Tournament Data</h3>
-                        <p>Select a tournament and choose a format to download participant data.</p>
-                        <div id="download-tournament-list" class="admin-tournament-list" style="margin-top: 1.5rem;"></div>
-                    `;
-                    break;
+
                 case 'finalists':
                     contentHtml = `
                         <h3 class="operation-title">Update Finalists Leaderboard</h3>
@@ -2126,7 +2729,7 @@
             return `
                 <div class="operation-title-header">
                     <h3 class="operation-title">Finalists Leaderboard: ${t.title}</h3>
-                    <button type="button" class="close-btn" onclick="renderOperation('finalists')" title="Cancel">&times;</button>
+                    <button type="button" class="close-btn" onclick="showUpdateFinalists()" title="Back to Finalists List">&times;</button>
                 </div>
                 <form id="update-finalists-form">
                     <input type="hidden" name="slug" value="${t.slug}">
@@ -2186,7 +2789,7 @@
 
             if (slug === 'dev-test-championship') {
                 alert("This is a mock tournament. Finalists cannot be updated.");
-                renderOperation('finalists');
+                showUpdateFinalists();
                 return;
             }
 
@@ -2225,7 +2828,7 @@
                 if (response.ok && result.success) {
                     alert(`Finalists updated successfully! ${finalists.length} teams saved.`);
                     await loadAdminTournaments();
-                    renderOperation('finalists');
+                    showUpdateFinalists();
                 } else {
                     throw new Error(result.detail || 'Failed to update finalists.');
                 }
@@ -2336,7 +2939,7 @@
 
             checkUserAuthentication();
             initializeMobileMenu(); // Initialize mobile menu functionality
-            renderOperation('delete'); // Start with the delete form
+            // Operations div starts empty - content loads when user clicks an action
             loadAdminTournaments(); // Load tournaments in the background
             loadRecentActivity();
 
