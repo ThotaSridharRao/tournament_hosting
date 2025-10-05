@@ -272,6 +272,36 @@
             font-weight: 700;
         }
 
+        .section-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .section-action-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary-color);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .section-action-btn:hover {
+            background: #ff6347;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(15, 133, 211, 0.3);
+        }
+
+        .section-action-btn:active {
+            transform: translateY(0);
+        }
+
         /* Tab System Styles */
         .operation-tabs {
             display: flex;
@@ -323,7 +353,7 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        /* Tournament List */
+        /* Tournament Cards Layout - Horizontal Single Row */
         .admin-tournament-list {
             display: flex;
             flex-direction: column;
@@ -332,25 +362,36 @@
 
         .admin-tournament-item {
             display: grid;
-            grid-template-columns: 2fr auto auto auto;
+            grid-template-columns: 2fr auto auto;
             align-items: center;
-            gap: 1.5rem;
-            padding: 1rem;
-            border-radius: 8px;
+            gap: 2rem;
+            padding: 1.25rem 1.5rem;
+            border-radius: 12px;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
+            min-height: 80px;
         }
 
         .admin-tournament-item:hover {
             background: rgba(255, 69, 0, 0.05);
             border-color: var(--border-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-tournament-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
         }
 
         .admin-tournament-info .name {
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 1.1rem;
             color: var(--text-primary);
             text-decoration: none;
+            line-height: 1.3;
         }
 
         .admin-tournament-info .name:hover {
@@ -360,17 +401,26 @@
         .admin-tournament-info .game {
             font-size: 0.85rem;
             color: var(--text-secondary);
+            font-weight: 500;
         }
 
-        .tournament-participants,
-        .tournament-prize {
-            text-align: right;
+        .tournament-participants {
             color: var(--text-secondary);
+            font-size: 0.95rem;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .tournament-participants::before {
+            content: "👥 ";
+            margin-right: 0.25rem;
         }
 
         .tournament-prize {
             font-weight: 700;
+            font-size: 1.1rem;
             color: var(--primary-color);
+            text-align: right;
         }
 
         .tournament-actions {
@@ -536,11 +586,7 @@
                 gap: 2rem;
             }
 
-            .admin-tournament-item {
-                grid-template-columns: 3fr auto auto auto;
-                gap: 2rem;
-                padding: 1.25rem;
-            }
+
         }
 
         @media (min-width: 1440px) {
@@ -576,6 +622,126 @@
             }
         }
 
+        /* Mobile Menu Styles */
+        .mobile-menu-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 300px;
+            height: 100%;
+            background: var(--panel);
+            z-index: 2000;
+            transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+            padding-top: 70px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-nav.is-open {
+            right: 0;
+        }
+
+        .mobile-nav-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.75rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s ease, transform 0.3s ease;
+        }
+
+        .mobile-nav-close:hover {
+            color: var(--text-primary);
+            transform: rotate(90deg);
+        }
+
+        .mobile-nav-links {
+            padding: 1rem;
+            margin-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .mobile-nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .mobile-nav-links a:hover,
+        .mobile-nav-links a.active {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .mobile-nav-links a i {
+            margin-right: 0.5rem;
+        }
+
+        /* Mobile User Profile Section */
+        .mobile-user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .mobile-profile-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-color);
+            border-radius: 50%;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+        }
+
+        .mobile-profile-info {
+            flex: 1;
+        }
+
+        .mobile-profile-username {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .mobile-profile-email {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
         @media (max-width: 1024px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
@@ -585,8 +751,20 @@
                 padding: 0 1.5rem;
             }
 
-            .nav-links {
+            .primary {
                 display: none;
+            }
+
+            #user-menu {
+                display: none !important;
+            }
+
+            .nav-separator {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
             }
         }
 
@@ -599,10 +777,26 @@
                 grid-template-columns: 1fr;
                 gap: 1rem;
                 text-align: center;
+                padding: 1.25rem;
+                min-height: auto;
             }
 
-            .tournament-actions {
-                justify-content: center;
+            .admin-tournament-info {
+                text-align: center;
+            }
+
+            .admin-tournament-info .name {
+                font-size: 1.1rem;
+            }
+
+            .tournament-participants,
+            .tournament-prize {
+                text-align: center;
+                font-size: 0.95rem;
+            }
+
+            .tournament-prize {
+                font-size: 1.1rem;
             }
         }
 
@@ -653,11 +847,39 @@
             .section-title {
                 font-size: 1.35rem;
             }
+
+            .admin-tournament-item {
+                grid-template-columns: 3fr auto auto;
+                gap: 2.5rem;
+                padding: 1.5rem 2rem;
+            }
+
+            .admin-tournament-info .name {
+                font-size: 1.2rem;
+            }
+
+            .admin-tournament-info .game {
+                font-size: 0.9rem;
+            }
+
+            .tournament-participants,
+            .tournament-prize {
+                font-size: 1rem;
+            }
+
+            .tournament-prize {
+                font-size: 1.2rem;
+            }
         }
 
         @media (min-width: 1440px) {
             .dashboard-section {
                 padding: 2.5rem;
+            }
+
+            .admin-tournament-item {
+                gap: 3rem;
+                padding: 1.75rem 2.5rem;
             }
         }
 
@@ -840,9 +1062,9 @@
                 <nav class="primary">
                     <div class="nav-links">
                         <a href="#" class="active">Dashboard</a>
-                        <a href="#manage-tournaments-section">Manage Tournaments</a>
-                        <a href="tournaments.html">Browse Tournaments</a>
+                        <a href="tournament-brackets.html">Brackets</a>
                         <a href="admin-dispute-management.html">Disputes & Support</a>
+                        <a href="news.html">News</a>
                     </div>
                 </nav>
                 <div class="nav-separator"></div>
@@ -854,14 +1076,62 @@
                         <div class="profile-username" id="navbar-username">Admin</div>
                     </div>
                 </div>
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
         </header>
+
+        <!-- Mobile Navigation -->
+        <div id="mobile-nav" class="mobile-nav">
+            <button class="mobile-nav-close" aria-label="Close menu">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <!-- Mobile User Profile Section -->
+            <div class="mobile-user-profile">
+                <div class="mobile-profile-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="mobile-profile-info">
+                    <div class="mobile-profile-username" id="mobile-navbar-username">Admin</div>
+                    <div class="mobile-profile-email" id="mobile-navbar-email">admin@gamingnexus.com</div>
+                </div>
+            </div>
+            
+            <div class="mobile-nav-links">
+                <a href="#" class="active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="tournament-brackets.html">
+                    <i class="fas fa-sitemap"></i>
+                    Brackets
+                </a>
+                <a href="admin-dispute-management.html">
+                    <i class="fas fa-gavel"></i>
+                    Disputes & Support
+                </a>
+                <a href="news.html">
+                    <i class="fas fa-newspaper"></i>
+                    News
+                </a>
+            </div>
+        </div>
 
         <main class="content-body">
             <div class="dashboard-grid">
                 <div class="dashboard-section" id="manage-tournaments-section">
                     <div class="section-header">
-                        <h3 class="section-title">Manage Tournaments</h3>
+                        <h3 class="section-title">Tournaments</h3>
+                        <div class="section-actions">
+                            <button class="section-action-btn" onclick="showCreateTournament()" title="Create Tournament">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="section-action-btn" onclick="showUpdateTournament()" title="Update Tournament">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="admin-tournament-list" id="admin-tournament-list">
                         <!-- Tournament list will be injected here -->
@@ -878,9 +1148,7 @@
             </div>
 
             <div class="operation-tabs">
-                <button class="tab-btn active" data-operation="create">Create Tournament</button>
-                <button class="tab-btn" data-operation="update">Update Tournament</button>
-                <button class="tab-btn" data-operation="delete">Delete Tournament</button>
+                <button class="tab-btn active" data-operation="delete">Delete Tournament</button>
                 <button class="tab-btn" data-operation="download">Download Data</button>
                 <button class="tab-btn" data-operation="finalists">Update Finalists</button>
             </div>
@@ -901,14 +1169,76 @@
             const userMenu = document.getElementById('user-menu');
             const user = sessionData?.data?.user || sessionData?.user;
             if (user) {
+                // Update desktop navbar
                 const navbarUsername = document.getElementById('navbar-username');
                 if (navbarUsername) {
                     navbarUsername.textContent = user.username || user.email;
                 }
+                
+                // Update mobile navbar
+                const mobileNavbarUsername = document.getElementById('mobile-navbar-username');
+                const mobileNavbarEmail = document.getElementById('mobile-navbar-email');
+                if (mobileNavbarUsername) {
+                    mobileNavbarUsername.textContent = user.username || 'Admin';
+                }
+                if (mobileNavbarEmail) {
+                    mobileNavbarEmail.textContent = user.email || 'admin@gamingnexus.com';
+                }
+                
                 if (userMenu) userMenu.style.display = 'flex';
             } else {
                 if (userMenu) userMenu.style.display = 'none';
             }
+        }
+
+        // Mobile Menu Toggle Functionality
+        function initializeMobileMenu() {
+            const hamburger = document.getElementById('mobile-menu-toggle');
+            const mobileNav = document.getElementById('mobile-nav');
+            const mobileNavClose = document.querySelector('.mobile-nav-close');
+            
+            if (!hamburger || !mobileNav) {
+                console.error("Mobile menu elements not found.");
+                return;
+            }
+
+            function closeMobileNav() {
+                mobileNav.classList.remove('is-open');
+                hamburger.setAttribute('aria-expanded', 'false');
+            }
+
+            function openMobileNav() {
+                mobileNav.classList.add('is-open');
+                hamburger.setAttribute('aria-expanded', 'true');
+            }
+
+            // Toggle mobile menu
+            hamburger.addEventListener('click', () => {
+                const isOpen = mobileNav.classList.toggle('is-open');
+                hamburger.setAttribute('aria-expanded', isOpen);
+            });
+
+            // Close button functionality
+            if (mobileNavClose) {
+                mobileNavClose.addEventListener('click', closeMobileNav);
+            }
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (event) => {
+                const isClickInsideNav = event.target.closest('#mobile-nav');
+                const isClickOnHamburger = event.target.closest('#mobile-menu-toggle');
+                
+                if (!isClickInsideNav && !isClickOnHamburger && mobileNav.classList.contains('is-open')) {
+                    closeMobileNav();
+                }
+            });
+
+            // Close mobile menu when window is resized to desktop
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 1024) {
+                    closeMobileNav();
+                }
+            });
         }
 
         // --- DASHBOARD JAVASCRIPT ---
@@ -1081,6 +1411,95 @@
             loadTournamentBrackets(tournament.slug, 'brackets-container');
         }
 
+        // Helper function to get create tournament form
+        function getCreateTournamentForm() {
+            return `
+                <form id="create-tournament-form">
+                    <div class="form-group"><label for="tournament-name" class="form-label">Tournament Name</label><input type="text" id="tournament-name" name="title" class="form-input" required></div>
+                    <div class="form-group"><label for="tournament-game" class="form-label">Game</label><input type="text" id="tournament-game" name="game" class="form-input" required></div>
+                    <div class="form-group"><label for="tournament-details" class="form-label">Description</label><textarea id="tournament-details" name="description" class="form-textarea" required></textarea></div>
+                    <div class="form-grid">
+                        <div class="form-group"><label for="reg-start-date" class="form-label">Registration Start</label><input type="datetime-local" id="reg-start-date" name="registrationStart" class="form-input" required></div>
+                        <div class="form-group"><label for="reg-end-date" class="form-label">Registration End</label><input type="datetime-local" id="reg-end-date" name="registrationEnd" class="form-input" required></div>
+                        <div class="form-group"><label for="tournament-start-date" class="form-label">Tournament Start</label><input type="datetime-local" id="tournament-start-date" name="tournamentStart" class="form-input" required></div>
+                        <div class="form-group"><label for="tournament-end-date" class="form-label">Tournament End</label><input type="datetime-local" id="tournament-end-date" name="tournamentEnd" class="form-input" required></div>
+                        <div class="form-group"><label for="prize-pool" class="form-label">Prize Pool (₹)</label><input type="number" id="prize-pool" name="prizePool" class="form-input" min="0" required></div>
+                        <div class="form-group"><label for="num-teams" class="form-label">Number of Teams</label><input type="number" id="num-teams" name="maxTeams" class="form-input" min="2" required></div>
+                        <div class="form-group"><label for="entry-fee" class="form-label">Entry Fee (₹)</label><input type="number" id="entry-fee" name="entryFee" class="form-input" min="0" value="0" required></div>
+                        <div class="form-group"><label for="max-players" class="form-label">Max Players per Team</label><input type="number" id="max-players" name="maxPlayersPerTeam" class="form-input" min="1" value="4" required></div>
+                    </div>
+                    <div class="form-group"><label for="tournament-format" class="form-label">Format</label><select id="tournament-format" name="format" class="form-select" required><option value="single-elimination">Single Elimination</option><option value="kp">KP Format</option></select></div>
+                    <div id="kp-format-fields" style="display: none;">
+                        <h4 class="form-label" style="margin-top: 1.5rem; margin-bottom: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">KP Format Schedule</h4>
+                        <div class="form-grid">
+                        <div class="form-group"><label for="qualifier1-date" class="form-label">Qualifier 1 Date</label><input type="datetime-local" id="qualifier1-date" name="qualifier1Date" class="form-input"></div>
+                        <div class="form-group"><label for="qualifier2-date" class="form-label">Qualifier 2 Date</label><input type="datetime-local" id="qualifier2-date" name="qualifier2Date" class="form-input"></div>
+                        <div class="form-group"><label for="qualifier3-date" class="form-label">Qualifier 3 Date</label><input type="datetime-local" id="qualifier3-date" name="qualifier3Date" class="form-input"></div>
+                        <div class="form-group"><label for="qualifier4-date" class="form-label">Qualifier 4 Date</label><input type="datetime-local" id="qualifier4-date" name="qualifier4Date" class="form-input"></div>
+                        <div class="form-group"><label for="final-match-date" class="form-label">Final Match Date</label><input type="datetime-local" id="final-match-date" name="finalMatchDate" class="form-input"></div>
+                        </div>
+                    </div>
+                    <div class="form-group"><label for="tournament-poster" class="form-label">Poster Image</label><input type="file" id="tournament-poster" name="posterImage" class="form-input" accept="image/*"></div>
+                    <button type="submit" class="submit-btn">Create Tournament</button>
+                </form>
+            `;
+        }
+
+        // Functions for section action buttons
+        function showCreateTournament() {
+            // Update the operation content with create form
+            const operationContent = document.getElementById('operation-content');
+            if (operationContent) {
+                operationContent.innerHTML = `
+                    <div class="operation-title-header">
+                        <h3 class="operation-title">Create Tournament</h3>
+                        <button class="close-btn" onclick="renderOperation('delete')">&times;</button>
+                    </div>
+                    ${getCreateTournamentForm()}
+                `;
+                
+                // Add form event listener
+                const form = document.getElementById('create-tournament-form');
+                if (form) {
+                    form.addEventListener('submit', handleCreateFormSubmit);
+                    
+                    // Add format change listener
+                    const formatSelect = document.getElementById('tournament-format');
+                    const kpFields = document.getElementById('kp-format-fields');
+                    if (formatSelect && kpFields) {
+                        formatSelect.addEventListener('change', function() {
+                            kpFields.style.display = this.value === 'kp' ? 'block' : 'none';
+                        });
+                    }
+                }
+            }
+        }
+
+        function showUpdateTournament() {
+            // Switch to update tab and render update form
+            const updateTab = document.querySelector('[data-operation="update"]');
+            if (!updateTab) {
+                // If update tab doesn't exist, add it temporarily or show in modal
+                renderOperation('update');
+                // Update the operation content title
+                const operationContent = document.getElementById('operation-content');
+                if (operationContent) {
+                    operationContent.innerHTML = `
+                        <div class="operation-title-header">
+                            <h3 class="operation-title">Update Tournament</h3>
+                            <button class="close-btn" onclick="renderOperation('delete')">&times;</button>
+                        </div>
+                        <p>Select a tournament from the list below to edit its details.</p>
+                        <div id="update-tournament-list" class="admin-tournament-list" style="margin-top: 1.5rem;"></div>
+                    `;
+                    renderTournamentList('update-tournament-list', adminTournaments, 'update');
+                }
+            } else {
+                // If tab exists, click it
+                updateTab.click();
+            }
+        }
+
         function renderTournamentList(containerId, tournaments, actionType) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -1124,9 +1543,11 @@
                 return `
                     <div class="admin-tournament-item">
                         <div class="admin-tournament-info">
-                            <a href="details.html?slug=${t.slug}" class="name">${title}</a><div class="game">${t.game}</div>
+                            <a href="details.html?slug=${t.slug}" class="name">${title}</a>
+                            <div class="game">${t.game}</div>
                         </div>
-                        <div class="tournament-participants">${participants}</div><div class="tournament-prize">${prize}</div><div class="tournament-actions">${actionsHtml}</div>
+                        <div class="tournament-participants">${participants}</div>
+                        <div class="tournament-prize">${prize}</div>
                     </div>`;
             }).join('');
         }
@@ -1914,7 +2335,8 @@
             }, 1000);
 
             checkUserAuthentication();
-            renderOperation('create'); // Start with the create form
+            initializeMobileMenu(); // Initialize mobile menu functionality
+            renderOperation('delete'); // Start with the delete form
             loadAdminTournaments(); // Load tournaments in the background
             loadRecentActivity();
 
