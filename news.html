@@ -886,11 +886,28 @@
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // In a real application, this would be an actual API call:
-      // const response = await fetch('/api/articles');
-      // return await response.json();
-
-      return sampleArticles;
+      // Get published articles from localStorage (from admin dashboard)
+      const publishedArticles = JSON.parse(localStorage.getItem('nexus_articles') || '{}');
+      const articlesArray = Object.values(publishedArticles).sort((a, b) => 
+        new Date(b.publishedAt) - new Date(a.publishedAt)
+      );
+      
+      // If no published articles, return sample articles
+      if (articlesArray.length === 0) {
+        return sampleArticles;
+      }
+      
+      // Convert published articles to the format expected by news.html
+      return articlesArray.map(article => ({
+        id: article.id,
+        title: article.title,
+        category: article.category,
+        date: article.date,
+        author: article.author,
+        readTime: article.readTime,
+        thumbnail: article.thumbnail || article.image,
+        description: article.description
+      }));
     }
 
     // Function to render articles

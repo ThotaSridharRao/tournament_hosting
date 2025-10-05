@@ -900,6 +900,14 @@
         // Function to fetch article by ID (simulated API call)
         async function fetchArticle(articleId) {
             await new Promise(resolve => setTimeout(resolve, 800));
+            
+            // First check published articles from admin dashboard
+            const publishedArticles = JSON.parse(localStorage.getItem('nexus_articles') || '{}');
+            if (publishedArticles[articleId]) {
+                return publishedArticles[articleId];
+            }
+            
+            // Fallback to sample articles
             return articlesDatabase[articleId] || null;
         }
 
