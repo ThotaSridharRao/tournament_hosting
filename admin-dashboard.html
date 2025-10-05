@@ -1341,7 +1341,7 @@
         function checkUserAuthentication() {
             const sessionData = getSessionData();
             const userMenu = document.getElementById('user-menu');
-            const user = sessionData?.data?.user || sessionData?.user;
+            const user = sessionData?.user; // Fixed: session structure is { token, user }
             if (user) {
                 // Update desktop navbar
                 const navbarUsername = document.getElementById('navbar-username');
@@ -1447,10 +1447,24 @@
 
         function checkAdminAuth() {
             const sessionData = getSessionData();
-            if (!sessionData || !sessionData.token) { console.warn("Auth check: No session data found."); return false; }
-            const user = sessionData?.data?.user || sessionData?.user;
-            if (!user || user.role !== 'admin') { console.warn("Auth check: User is not an admin."); return false; }
+            if (!sessionData || !sessionData.token) {
+                console.warn("Auth check: No session data found.");
+                redirectToAuth();
+                return false;
+            }
+            const user = sessionData?.user; // Fixed: session structure is { token, user }
+            if (!user || user.role !== 'admin') {
+                console.warn("Auth check: User is not an admin.");
+                alert('Access denied. Admin privileges required.');
+                redirectToAuth();
+                return false;
+            }
             return true;
+        }
+
+        function redirectToAuth() {
+            const currentUrl = encodeURIComponent(window.location.href);
+            window.location.href = `auth.html?returnUrl=${currentUrl}`;
         }
 
         async function loadRecentActivity() {
@@ -1923,10 +1937,10 @@
         function addNewScheduleEvent() {
             const customEventsContainer = document.getElementById('custom-events');
             if (!customEventsContainer) return;
-            
+
             const existingEvents = customEventsContainer.querySelectorAll('.schedule-event-item');
             const newIndex = existingEvents.length;
-            
+
             const newEventHTML = `
                 <div class="schedule-event-item" data-index="${newIndex}" style="border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; position: relative; animation: fadeInScale 0.3s ease forwards;">
                     <button type="button" class="remove-event-btn" onclick="removeScheduleEvent(${newIndex})" style="position: absolute; top: 0.5rem; right: 0.5rem; background: #dc3545; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-size: 0.8rem; cursor: pointer;" title="Remove Event">×</button>
@@ -1946,9 +1960,9 @@
                     </div>
                 </div>
             `;
-            
+
             customEventsContainer.insertAdjacentHTML('beforeend', newEventHTML);
-            
+
             // Focus on the new event title field
             const newTitleField = document.getElementById(`event-title-${newIndex}`);
             if (newTitleField) {
@@ -1972,13 +1986,13 @@
             const eventItems = document.querySelectorAll('.schedule-event-item');
             eventItems.forEach((item, newIndex) => {
                 item.setAttribute('data-index', newIndex);
-                
+
                 // Update IDs
                 const titleInput = item.querySelector('input[id^="event-title-"]');
                 const datetimeInput = item.querySelector('input[id^="event-datetime-"]');
                 const descInput = item.querySelector('input[id^="event-desc-"]');
                 const removeBtn = item.querySelector('.remove-event-btn');
-                
+
                 if (titleInput) titleInput.id = `event-title-${newIndex}`;
                 if (datetimeInput) datetimeInput.id = `event-datetime-${newIndex}`;
                 if (descInput) descInput.id = `event-desc-${newIndex}`;
@@ -2013,12 +2027,12 @@
             const eventItems = document.querySelectorAll('.schedule-event-item');
             const events = [];
             let hasErrors = false;
-            
+
             eventItems.forEach((item, index) => {
                 const title = document.getElementById(`event-title-${index}`)?.value.trim();
                 const datetime = document.getElementById(`event-datetime-${index}`)?.value;
                 const description = document.getElementById(`event-desc-${index}`)?.value.trim();
-                
+
                 if (!title || !datetime) {
                     hasErrors = true;
                     // Highlight empty fields
@@ -2037,12 +2051,12 @@
                     }
                     return;
                 }
-                
+
                 // Parse datetime
                 const eventDate = new Date(datetime);
                 const date = eventDate.toISOString().split('T')[0];
                 const time = eventDate.toTimeString().split(' ')[0];
-                
+
                 events.push({
                     title: title,
                     description: description || '',
@@ -2050,12 +2064,12 @@
                     time: time
                 });
             });
-            
+
             if (hasErrors) {
                 alert('Please fill in all required fields (Title and Date/Time) for all events.');
                 return;
             }
-            
+
             // Make API call to update schedule events
             updateScheduleEvents(slug, events);
         }
@@ -2077,7 +2091,7 @@
                     /<div class="operation-title-header">[\s\S]*?<\/div>/,
                     ''
                 );
-                
+
                 operationContent.innerHTML = `
                     <div class="operation-title-header">
                         <h3 class="operation-title">Update Status: ${tournament.title}</h3>
@@ -2117,7 +2131,7 @@
                 alert('Tournament not found!');
                 return;
             }
-            
+
             // Show the finalists editor for this specific tournament
             const operationContent = document.getElementById('operation-content');
             if (operationContent) {
@@ -2127,7 +2141,7 @@
                     /<div class="operation-title-header">[\s\S]*?<\/div>/,
                     ''
                 );
-                
+
                 operationContent.innerHTML = `
                     <div class="operation-title-header">
                         <h3 class="operation-title">Update Finalists: ${tournament.title}</h3>
@@ -2135,7 +2149,7 @@
                     </div>
                     ${cleanFinalistsHTML}
                 `;
-                
+
                 // Add form event listener
                 const form = document.getElementById('update-finalists-form');
                 if (form) {
@@ -2188,7 +2202,7 @@
                 switch (actionType) {
                     case 'manage':
                         actionsHtml = `
-                            <a href="details.html?slug=${t.slug}" class="btn-icon" title="Manage"><i class="fas fa-arrow-right"></i></a>
+                            <a href="tournament-details.html?slug=${t.slug}" class="btn-icon" title="Manage"><i class="fas fa-arrow-right"></i></a>
                             <button class="btn-icon" onclick="viewTournamentBrackets('${t.slug}')" title="View Brackets"><i class="fas fa-sitemap"></i></button>
                             <button class="btn-icon" onclick="editTournament('${t.slug}')" title="Edit"><i class="fas fa-pencil-alt"></i></button>
                             `;
@@ -2233,7 +2247,7 @@
                 return `
                     <div class="admin-tournament-item">
                         <div class="admin-tournament-info">
-                            <a href="details.html?slug=${t.slug}" class="name">${title}</a>
+                            <a href="tournament-details.html?slug=${t.slug}" class="name">${title}</a>
                             <div class="game">${t.game}</div>
                         </div>
                         <div class="tournament-participants">${participants}</div>
@@ -2937,31 +2951,18 @@
                 document.getElementById('loader-wrapper').classList.add('hidden');
             }, 1000);
 
+            // Check admin authentication first - redirect if not authorized
+            if (!checkAdminAuth()) {
+                return; // Stop execution if not authorized
+            }
+
             checkUserAuthentication();
             initializeMobileMenu(); // Initialize mobile menu functionality
             // Operations div starts empty - content loads when user clicks an action
             loadAdminTournaments(); // Load tournaments in the background
             loadRecentActivity();
 
-            const isAdmin = checkAdminAuth();
-            if (!isAdmin) {
-                const form = document.getElementById('create-tournament-form');
-                if (form) {
-                    form.querySelectorAll('input, textarea, select, button').forEach(el => el.disabled = true);
-                    const submitBtn = form.querySelector('.submit-btn');
-                    if (submitBtn) submitBtn.textContent = 'Admin Privileges Required';
-                }
-            }
-
-            const tabsContainer = document.querySelector('.operation-tabs');
-            tabsContainer.addEventListener('click', (event) => {
-                if (event.target.matches('.tab-btn')) {
-                    tabsContainer.querySelector('.active')?.classList.remove('active');
-                    event.target.classList.add('active');
-                    const operation = event.target.dataset.operation;
-                    renderOperation(operation);
-                }
-            });
+            // Operation tabs removed - functionality moved to section action buttons
         });
     </script>
 </body>
