@@ -305,7 +305,8 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            padding-top: 90px; /* Account for fixed navbar */
+            padding-top: 90px;
+            /* Account for fixed navbar */
         }
 
         /* Dashboard Sections */
@@ -732,6 +733,27 @@
             background-color: #e0a800;
         }
 
+        .btn {
+            padding: 0.65rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
         .operation-title-header {
             display: flex;
             justify-content: space-between;
@@ -825,7 +847,7 @@
             }
         }
 
-        
+
         @media (max-width: 768px) {
             .content-body {
                 padding: 1.5rem;
@@ -1161,6 +1183,7 @@
                                 <div class="user-avatar" id="user-avatar">A</div>
                                 <span class="user-name" id="navbar-username">Admin</span>
                             </div>
+                            <button class="btn btn-logout" onclick="logout()">Logout</button>
                         </div>
                     </div>
                 </div>
@@ -1175,7 +1198,7 @@
         </nav>
 
 
-        
+
 
         <main class="content-body">
             <div class="dashboard-grid">
@@ -1223,31 +1246,31 @@
         // --- INLINED NAVBAR.JS ---
         function redirectToAuth(tab = 'register') { const returnUrl = encodeURIComponent(window.location.href); window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`; }
         function getSessionData() { const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session'); try { return session ? JSON.parse(session) : null; } catch (error) { return null; } }
-        function logout() { localStorage.removeItem('nexus_session'); sessionStorage.removeItem('nexus_session'); window.location.reload(); }
-        
+        function logout() { localStorage.removeItem('nexus_session'); sessionStorage.removeItem('nexus_session'); window.location.href = 'auth.html'; }
+
         function checkUserAuthentication() {
             const sessionData = getSessionData();
             const userMenu = document.getElementById('user-menu');
             const user = sessionData?.user;
-            
+
             if (user) {
                 const username = user.username || user.email.split('@')[0];
                 const userInitials = username.substring(0, 2).toUpperCase();
-                
+
                 // Update navbar elements
                 const navbarUsername = document.getElementById('navbar-username');
                 const userAvatar = document.getElementById('user-avatar');
-                
+
                 if (navbarUsername) {
                     navbarUsername.textContent = username;
                 }
-                
+
                 if (userAvatar) {
                     userAvatar.textContent = userInitials;
                 }
-                
+
                 // NEW NAVBAR ALREADY HANDLES MOBILE - NO NEED FOR SEPARATE MOBILE UPDATES
-                
+
                 if (userMenu) userMenu.style.display = 'flex';
             } else {
                 if (userMenu) userMenu.style.display = 'none';
@@ -1308,14 +1331,14 @@
             const sessionData = getSessionData();
             if (!sessionData || !sessionData.token) {
                 console.warn("Auth check: No session data found.");
-                // redirectToAuth(); // Commented out for now
+                redirectToAuth();
                 return false;
             }
             const user = sessionData?.user; // Fixed: session structure is { token, user }
             if (!user || user.role !== 'admin') {
                 console.warn("Auth check: User is not an admin.");
-                // alert('Access denied. Admin privileges required.'); // Commented out for now
-                // redirectToAuth(); // Commented out for now
+                alert('Access denied. Admin privileges required.');
+                redirectToAuth();
                 return false;
             }
             return true;
@@ -2814,7 +2837,7 @@
 
             function updateNavbar() {
                 const currentScrollY = window.scrollY;
-                
+
                 // Add scrolled class when user has scrolled down
                 if (currentScrollY > 50) {
                     navbar.classList.add('nav-scrolled');
@@ -2849,7 +2872,7 @@
 
             // Listen for scroll events
             window.addEventListener('scroll', requestTick, { passive: true });
-            
+
             // Initial call
             updateNavbar();
         }
@@ -2861,9 +2884,9 @@
             }, 1000);
 
             // Check admin authentication first - redirect if not authorized
-            // if (!checkAdminAuth()) {
-            //     return; // Stop execution if not authorized
-            // }
+            if (!checkAdminAuth()) {
+                return; // Stop execution if not authorized
+            }
 
             checkUserAuthentication();
             initSmartNavbar(); // Initialize smart scroll behavior
