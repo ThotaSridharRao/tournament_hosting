@@ -715,6 +715,17 @@
       border-color: rgba(255, 215, 0, 0.3);
     }
 
+    .btn-success {
+      background: linear-gradient(135deg, #28a745, #20c997) !important;
+      color: white !important;
+      cursor: default !important;
+    }
+
+    .btn-success:hover {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
     /* Loading State */
     .loading {
       text-align: center;
@@ -1494,6 +1505,34 @@
     // TOURNAMENT FUNCTIONS
     // =========================
 
+    // Check if user is registered for a specific tournament
+    async function checkUserRegistrationStatus(tournamentSlug) {
+      try {
+        const sessionData = getSessionData();
+        if (!sessionData || !sessionData.token) {
+          return false; // User not logged in
+        }
+
+        const response = await fetch(`${API_BASE_URL}/api/tournaments/${tournamentSlug}/registration-status`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${sessionData.token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          return false; // API error or user not registered
+        }
+
+        const result = await response.json();
+        return result.success && result.data.isRegistered;
+      } catch (error) {
+        console.error('Error checking registration status:', error);
+        return false;
+      }
+    }
+
     function normalizeStatus(status) {
       const statusMap = {
         'live': 'ongoing',
@@ -1591,16 +1630,16 @@
       const showRegisterButton = normalizedStatus === 'registration_open';
 
       const actionsHTML = showRegisterButton ? `
-        <div class="tournament-actions">
+        <div class="tournament-actions" data-tournament-slug="${tournament.slug}">
           <a href="${tournament.detailsLink}" class="btn-secondary">
             <i class="fas fa-info-circle"></i> View Details
           </a>
-          <button class="btn-primary" onclick="handleRegistration('${tournament.slug}')">
+          <button class="btn-primary register-btn" onclick="handleRegistration('${tournament.slug}')">
             <i class="fas fa-user-plus"></i> Register
           </button>
         </div>
       ` : `
-        <div class="tournament-actions">
+        <div class="tournament-actions" data-tournament-slug="${tournament.slug}">
           <a href="${tournament.detailsLink}" class="btn-primary" style="flex: 1;">
             <i class="fas fa-info-circle"></i> View Details
           </a>
@@ -1669,6 +1708,47 @@
           </div>
         </div>
       `;
+    }
+
+    // Update registration status for all tournament cards
+    async function updateRegistrationStatus() {
+      const sessionData = getSessionData();
+      if (!sessionData || !sessionData.token) {
+        return; // User not logged in, no need to check registration status
+      }
+
+      const tournamentActions = document.querySelectorAll('.tournament-actions[data-tournament-slug]');
+
+      for (const actionDiv of tournamentActions) {
+        const slug = actionDiv.dataset.tournamentSlug;
+        const registerBtn = actionDiv.querySelector('.register-btn');
+
+        if (registerBtn) {
+          try {
+            const isRegistered = await checkUserRegistrationStatus(slug);
+
+            if (isRegistered) {
+              registerBtn.innerHTML = '<i class="fas fa-check-circle"></i> Registered';
+              registerBtn.className = 'btn-primary btn-success';
+              registerBtn.disabled = true;
+              registerBtn.onclick = null;
+
+              // Add brackets button for registered users
+              const bracketsBtn = document.createElement('button');
+              bracketsBtn.className = 'btn-secondary';
+              bracketsBtn.innerHTML = '<i class="fas fa-sitemap"></i> View Brackets';
+              bracketsBtn.onclick = () => {
+                window.location.href = `tournament-brackets-view.html?slug=${slug}`;
+              };
+
+              // Insert brackets button after the registered button
+              registerBtn.parentNode.insertBefore(bracketsBtn, registerBtn.nextSibling);
+            }
+          } catch (error) {
+            console.error(`Error checking registration for ${slug}:`, error);
+          }
+        }
+      }
     }
 
     function updateGridLayout() {
@@ -1877,6 +1957,9 @@
           `;
         } else {
           grid.innerHTML = tournaments.map(tournament => createTournamentCard(tournament)).join('');
+
+          // Check registration status for logged-in users
+          updateRegistrationStatus();
         }
 
         document.getElementById('loading').style.display = 'none';
