@@ -797,8 +797,7 @@
       filter: brightness(0.9);
     }
 
-    .news-grid,
-    .tournaments-grid {
+    .news-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 2rem;
@@ -808,22 +807,39 @@
       justify-content: center;
     }
 
-    /* Single card centering */
-    .tournaments-grid:has(.tournament-card:only-child) {
-      grid-template-columns: 1fr;
+    /* Tournaments Grid - Updated to match tournaments.html design */
+    .tournaments-grid {
+      display: grid;
+      gap: 2rem;
+      margin: 2rem auto 0;
+      justify-content: center;
+      max-width: 1200px;
+      padding: 0 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 400px));
+    }
+
+    /* Single card: centered with constrained width */
+    .tournaments-grid.single-card {
+      grid-template-columns: minmax(350px, 400px);
       max-width: 400px;
     }
 
-    /* Fallback for browsers that don't support :has() */
-    .tournaments-grid.single-card {
-      grid-template-columns: 1fr;
-      max-width: 400px;
+    /* Two cards: side by side */
+    .tournaments-grid.two-cards {
+      grid-template-columns: repeat(2, minmax(350px, 400px));
+      max-width: 850px;
+    }
+
+    /* Three cards: responsive grid with max 3 cards */
+    .tournaments-grid.three-cards {
+      grid-template-columns: repeat(auto-fit, minmax(350px, 400px));
+      max-width: 1200px;
     }
 
     /* Ensure cards don't get too wide */
     .tournament-card {
       max-width: 400px;
-      justify-self: center;
+      width: 100%;
     }
 
     .news-card,
@@ -1673,7 +1689,11 @@
         grid.innerHTML = '<p style="text-align: center; width: 100%; grid-column: 1 / -1;">No tournaments available at the moment. Check back soon!</p>';
         return;
       }
-      grid.innerHTML = tournaments.slice(0, 6).map(tournament => {
+      
+      // Limit to maximum 3 tournaments for index page
+      const limitedTournaments = tournaments.slice(0, 3);
+      
+      grid.innerHTML = limitedTournaments.map(tournament => {
         const rawPoster = tournament.posterImage || tournament.backgroundImage || null;
         let finalPoster = 'https://images.unsplash.com/photo-1511556532299-8f662fc26c06?q=80&w=2070&auto=format&fit=crop';
 
@@ -1720,11 +1740,15 @@
             `;
       }).join('');
 
-      // Add single-card class for better centering when there's only one tournament
-      if (tournaments.length === 1) {
+      // Add appropriate grid class based on number of tournaments (max 3)
+      grid.classList.remove('single-card', 'two-cards', 'three-cards');
+      
+      if (limitedTournaments.length === 1) {
         grid.classList.add('single-card');
-      } else {
-        grid.classList.remove('single-card');
+      } else if (limitedTournaments.length === 2) {
+        grid.classList.add('two-cards');
+      } else if (limitedTournaments.length === 3) {
+        grid.classList.add('three-cards');
       }
     }
 
