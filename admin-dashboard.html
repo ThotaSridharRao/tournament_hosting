@@ -380,6 +380,15 @@
             box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
         }
 
+        .section-action-btn.brackets-btn {
+            background: #6f42c1;
+        }
+
+        .section-action-btn.brackets-btn:hover {
+            background: #5a32a3;
+            box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
+        }
+
 
 
         /* Tab System Styles */
@@ -561,6 +570,44 @@
 
         /* Show delete buttons in delete mode */
         .admin-tournament-list.delete-mode .tournament-delete-btn {
+            display: flex;
+        }
+
+        /* Brackets Mode Styles */
+        .admin-tournament-list.brackets-mode .admin-tournament-item {
+            grid-template-columns: 2fr auto auto auto;
+        }
+
+        .tournament-brackets-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 6px;
+            background: #6f42c1;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: fadeInScale 0.3s ease forwards;
+        }
+
+        .tournament-brackets-btn:hover {
+            background: #5a32a3;
+            transform: scale(1.05);
+        }
+
+        /* Hide brackets buttons by default */
+        .admin-tournament-item .tournament-brackets-btn {
+            display: none;
+        }
+
+        /* Show brackets buttons in brackets mode */
+        .admin-tournament-list.brackets-mode .tournament-brackets-btn {
             display: flex;
         }
 
@@ -877,6 +924,16 @@
                 height: 40px;
             }
 
+            .admin-tournament-list.brackets-mode .admin-tournament-item {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-tournament-list.brackets-mode .tournament-brackets-btn {
+                margin: 0.5rem auto 0;
+                width: 40px;
+                height: 40px;
+            }
+
             .admin-tournament-list.edit-mode .admin-tournament-item {
                 grid-template-columns: 1fr;
             }
@@ -965,6 +1022,10 @@
             }
 
             .admin-tournament-list.delete-mode .admin-tournament-item {
+                grid-template-columns: 3fr auto auto auto;
+            }
+
+            .admin-tournament-list.brackets-mode .admin-tournament-item {
                 grid-template-columns: 3fr auto auto auto;
             }
 
@@ -1636,6 +1697,10 @@
                                 title="Update Tournament">
                                 <i class="fas fa-pencil-alt"></i>
                             </button>
+                            <button class="section-action-btn brackets-btn" onclick="showBracketsTournament()"
+                                title="View Tournament Brackets">
+                                <i class="fas fa-sitemap"></i>
+                            </button>
                             <button class="section-action-btn delete-btn" onclick="showDeleteTournament()"
                                 title="Delete Tournament">
                                 <i class="fas fa-trash"></i>
@@ -1646,7 +1711,7 @@
                         <!-- Tournament list will be injected here -->
                     </div>
                 </div>
-                
+
                 <div class="dashboard-section" id="manage-articles-section">
                     <div class="section-header">
                         <h3 class="section-title">Articles</h3>
@@ -1655,8 +1720,7 @@
                                 title="Publish New Article">
                                 <i class="fas fa-plus"></i>
                             </button>
-                            <button class="section-action-btn" onclick="showManageArticles()"
-                                title="Manage Articles">
+                            <button class="section-action-btn" onclick="showManageArticles()" title="Manage Articles">
                                 <i class="fas fa-list"></i>
                             </button>
                         </div>
@@ -1665,7 +1729,7 @@
                         <!-- Article list will be injected here -->
                     </div>
                 </div>
-                
+
                 <div class="dashboard-section">
                     <div class="section-header">
                         <h3 class="section-title">Recent Activity</h3>
@@ -1696,12 +1760,12 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="article-title">Title *</label>
-                            <input type="text" id="article-title" name="title" required 
-                                   placeholder="Enter article title">
+                            <input type="text" id="article-title" name="title" required
+                                placeholder="Enter article title">
                             <div class="error-message" id="title-error"></div>
                         </div>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             <label for="article-category">Category *</label>
@@ -1716,52 +1780,53 @@
                             </select>
                             <div class="error-message" id="category-error"></div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="article-author">Author *</label>
-                            <input type="text" id="article-author" name="author" required 
-                                   placeholder="Author name" value="GamingNexus Team">
+                            <input type="text" id="article-author" name="author" required placeholder="Author name"
+                                value="GamingNexus Team">
                             <div class="error-message" id="author-error"></div>
                         </div>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             <label for="article-image">Featured Image URL *</label>
-                            <input type="url" id="article-image" name="image" required 
-                                   placeholder="https://example.com/image.jpg">
+                            <input type="url" id="article-image" name="image" required
+                                placeholder="https://example.com/image.jpg">
                             <div class="error-message" id="image-error"></div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="article-read-time">Read Time</label>
-                            <input type="text" id="article-read-time" name="readTime" 
-                                   placeholder="5 min read" value="5 min read">
+                            <input type="text" id="article-read-time" name="readTime" placeholder="5 min read"
+                                value="5 min read">
                         </div>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group full-width">
                             <label for="article-description">Description *</label>
-                            <textarea id="article-description" name="description" required 
-                                      placeholder="Brief description for the article card (max 200 characters)"
-                                      maxlength="200" rows="3"></textarea>
+                            <textarea id="article-description" name="description" required
+                                placeholder="Brief description for the article card (max 200 characters)"
+                                maxlength="200" rows="3"></textarea>
                             <div class="char-count">
                                 <span id="desc-char-count">0</span>/200
                             </div>
                             <div class="error-message" id="description-error"></div>
                         </div>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group full-width">
                             <label for="article-content">Article Content *</label>
-                            <textarea id="article-content" name="content" required 
-                                      placeholder="Write your article content here. You can use HTML tags like &lt;h2&gt;, &lt;h3&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;blockquote&gt; etc."
-                                      rows="15"></textarea>
+                            <textarea id="article-content" name="content" required
+                                placeholder="Write your article content here. You can use HTML tags like &lt;h2&gt;, &lt;h3&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;blockquote&gt; etc."
+                                rows="15"></textarea>
                             <div class="error-message" id="content-error"></div>
                             <div class="content-help">
-                                <small>Supported HTML tags: &lt;h2&gt;, &lt;h3&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;blockquote&gt;, &lt;strong&gt;, &lt;em&gt;</small>
+                                <small>Supported HTML tags: &lt;h2&gt;, &lt;h3&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;li&gt;,
+                                    &lt;blockquote&gt;, &lt;strong&gt;, &lt;em&gt;</small>
                             </div>
                         </div>
                     </div>
@@ -2621,6 +2686,28 @@
             }
         }
 
+        function showBracketsTournament() {
+            // Toggle brackets mode for tournament cards
+            const tournamentList = document.getElementById('admin-tournament-list');
+            const bracketsBtn = document.querySelector('.section-action-btn.brackets-btn');
+
+            if (tournamentList.classList.contains('brackets-mode')) {
+                // Exit brackets mode
+                tournamentList.classList.remove('brackets-mode');
+                bracketsBtn.innerHTML = '<i class="fas fa-sitemap"></i>';
+                bracketsBtn.title = 'View Tournament Brackets';
+                // Re-render tournament list without brackets buttons
+                renderTournamentList('admin-tournament-list', adminTournaments, 'manage');
+            } else {
+                // Enter brackets mode
+                tournamentList.classList.add('brackets-mode');
+                bracketsBtn.innerHTML = '<i class="fas fa-times"></i>';
+                bracketsBtn.title = 'Cancel Brackets View';
+                // Re-render tournament list with brackets buttons
+                renderTournamentList('admin-tournament-list', adminTournaments, 'brackets');
+            }
+        }
+
         function renderTournamentList(containerId, tournaments, actionType) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -2653,6 +2740,10 @@
                         actionsHtml = `<button class="submit-btn delete" style="width:auto; padding: 0.5rem 1rem; margin-top:0; background-color: #c82333;" onclick="deleteTournament(event, '${t.slug}')">Confirm Delete</button>`;
                         break;
 
+                    case 'brackets':
+                        actionsHtml = `<button class="submit-btn" style="width:auto; padding: 0.5rem 1rem; margin-top:0; background-color: #6f42c1;" onclick="viewTournamentBrackets('${t.slug}')">View Brackets</button>`;
+                        break;
+
                     case 'finalists':
                         actionsHtml = `<button class="submit-btn btn-warning" style="padding: 0.5rem 1rem; margin-top:0; width:auto;" onclick="manageFinalists('${t.slug}')">Manage Finalists</button>`;
                         break;
@@ -2660,6 +2751,11 @@
                 const deleteButton = actionType === 'delete' ?
                     `<button class="tournament-delete-btn" onclick="deleteTournament(event, '${t.slug}')" title="Delete ${title}">
                         <i class="fas fa-trash"></i>
+                    </button>` : '';
+
+                const bracketsButton = actionType === 'brackets' ?
+                    `<button class="tournament-brackets-btn" onclick="viewTournamentBrackets('${t.slug}')" title="View Brackets for ${title}">
+                        <i class="fas fa-sitemap"></i>
                     </button>` : '';
 
                 const editButtons = actionType === 'edit' ?
@@ -2687,6 +2783,7 @@
                         <div class="tournament-participants">${participants}</div>
                         <div class="tournament-prize">${prize}</div>
                         ${deleteButton}
+                        ${bracketsButton}
                         ${editButtons}
                     </div>`;
             }).join('');
@@ -3446,7 +3543,7 @@
             loadRecentActivity();
 
             // Operation tabs removed - functionality moved to section action buttons
-            
+
             // Initialize article management
             loadArticleList();
         });
@@ -3454,7 +3551,7 @@
         // =========================
         // Article Management Functions
         // =========================
-        
+
         // In-memory article storage (in a real app, this would be a database)
         let articlesStorage = JSON.parse(localStorage.getItem('nexus_articles') || '{}');
         let nextArticleId = parseInt(localStorage.getItem('nexus_next_article_id') || '2');
@@ -3463,15 +3560,15 @@
             document.getElementById('article-modal').style.display = 'flex';
             document.getElementById('article-form').reset();
             clearFormErrors();
-            
+
             // Set current date
             const now = new Date();
-            const dateStr = now.toLocaleDateString('en-GB', { 
-                day: 'numeric', 
-                month: 'short', 
-                year: 'numeric' 
+            const dateStr = now.toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
             }).toUpperCase();
-            
+
             // Auto-fill author if user is logged in
             const sessionData = getSessionData();
             if (sessionData?.user) {
@@ -3564,17 +3661,17 @@
 
             const formData = getFormData();
             const previewHtml = generatePreviewHtml(formData);
-            
+
             document.getElementById('article-preview-content').innerHTML = previewHtml;
             document.getElementById('article-preview-modal').style.display = 'flex';
         }
 
         function getFormData() {
             const now = new Date();
-            const dateStr = now.toLocaleDateString('en-GB', { 
-                day: 'numeric', 
-                month: 'short', 
-                year: 'numeric' 
+            const dateStr = now.toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
             }).toUpperCase();
 
             return {
@@ -3612,10 +3709,10 @@
 
             const formData = getFormData();
             const articleId = nextArticleId.toString();
-            
+
             // Create thumbnail URL (convert main image to smaller size for thumbnail)
             const thumbnailUrl = formData.image.replace(/\/(\d+)x(\d+)\//, '/400x200/');
-            
+
             const article = {
                 id: articleId,
                 title: formData.title,
@@ -3680,7 +3777,7 @@
 
         function loadArticleList() {
             const articleList = document.getElementById('admin-article-list');
-            const articles = Object.values(articlesStorage).sort((a, b) => 
+            const articles = Object.values(articlesStorage).sort((a, b) =>
                 new Date(b.publishedAt) - new Date(a.publishedAt)
             );
 
@@ -3732,25 +3829,25 @@
         }
 
         // Character counter for description
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const descTextarea = document.getElementById('article-description');
             const charCount = document.getElementById('desc-char-count');
-            
+
             if (descTextarea && charCount) {
-                descTextarea.addEventListener('input', function() {
+                descTextarea.addEventListener('input', function () {
                     charCount.textContent = this.value.length;
                 });
             }
         });
 
         // Export articles for news.html and article.html to access
-        window.getPublishedArticles = function() {
-            return Object.values(articlesStorage).sort((a, b) => 
+        window.getPublishedArticles = function () {
+            return Object.values(articlesStorage).sort((a, b) =>
                 new Date(b.publishedAt) - new Date(a.publishedAt)
             );
         };
 
-        window.getArticleById = function(id) {
+        window.getArticleById = function (id) {
             return articlesStorage[id] || null;
         };
     </script>
