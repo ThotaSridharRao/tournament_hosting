@@ -1078,26 +1078,6 @@
         // Modern Navbar Functions
         let isLoggedIn = false;
 
-        // Mobile menu toggle
-        const normalMenuToggle = document.getElementById('normalMenuToggle');
-        const normalNav = document.getElementById('normalNav');
-
-        if (normalMenuToggle && normalNav) {
-            normalMenuToggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                normalMenuToggle.classList.toggle('active');
-                normalNav.classList.toggle('active');
-            });
-
-            // Close menu when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.nav-normal') && normalNav.classList.contains('active')) {
-                    normalNav.classList.remove('active');
-                    normalMenuToggle.classList.remove('active');
-                }
-            });
-        }
-
 
 
         // Handle logout
@@ -2460,25 +2440,48 @@
                 document.getElementById('loader-wrapper').classList.add('hidden');
             }, 1000);
 
+            // Initialize mobile menu toggle
+            const normalMenuToggle = document.getElementById('normalMenuToggle');
+            const normalNav = document.getElementById('normalNav');
+
+            if (normalMenuToggle && normalNav) {
+                normalMenuToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    normalMenuToggle.classList.toggle('active');
+                    normalNav.classList.toggle('active');
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.nav-normal') && normalNav.classList.contains('active')) {
+                        normalNav.classList.remove('active');
+                        normalMenuToggle.classList.remove('active');
+                    }
+                });
+            }
+
             initSmartNavbar(); // Initialize smart scroll behavior
+            
+            // Small delay to ensure all elements are ready
+            setTimeout(() => {
+                checkUserAuthentication(); // Check if user is logged in
+            }, 100);
             
             // Load dashboard data if user is authenticated
             if (isAuthenticated()) {
                 loadDashboardDataWithUpdate();
                 
-                // Setup update form submission
+                // Setup form submissions...
                 const updateForm = document.getElementById('updateTournamentForm');
                 if (updateForm) {
                     updateForm.addEventListener('submit', handleUpdateSubmit);
                 }
 
-                // Setup add event form submission
                 const addEventForm = document.getElementById('addEventForm');
                 if (addEventForm) {
                     addEventForm.addEventListener('submit', handleAddEventSubmit);
                 }
 
-                // Setup finalists form submission
                 const finalistsForm = document.getElementById('finalistsForm');
                 if (finalistsForm) {
                     finalistsForm.addEventListener('submit', handleFinalistsSubmit);
