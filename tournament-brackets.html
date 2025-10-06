@@ -182,13 +182,7 @@
             transform: translateY(-2px);
         }
 
-        .format-info {
-            background: rgba(93, 63, 211, 0.1);
-            border: 1px solid var(--accent-secondary);
-            border-radius: var(--radius);
-            padding: 1rem;
-            margin-bottom: 2rem;
-        }
+
 
         .participants-grid {
             display: grid;
@@ -507,6 +501,11 @@
             display: table-cell !important;
         }
 
+        /* Ensure delete buttons work with 6-column layout */
+        .match-table.delete-mode .team-delete-btn {
+            display: flex;
+        }
+
         .match-table.delete-mode tr:hover {
             background: rgba(220, 53, 69, 0.1);
         }
@@ -565,38 +564,45 @@
             border-bottom: none;
         }
 
-        /* Qualifier table 4-column layout styling */
+        /* Qualifier table 6-column layout styling */
         .match-table th:nth-child(1),
-        .match-table td:nth-child(1) {
-            width: 80px;
+        .match-table td:nth-child(1),
+        .match-table th:nth-child(4),
+        .match-table td:nth-child(4) {
+            width: 60px;
             text-align: center;
         }
 
-        .match-table th:nth-child(3),
-        .match-table td:nth-child(3) {
-            width: auto;
-            text-align: left;
-            min-width: 200px;
-        }
-
         .match-table th:nth-child(2),
-        .match-table td:nth-child(2) {
-            width: 200px;
-            max-width: 200px;
+        .match-table td:nth-child(2),
+        .match-table th:nth-child(5),
+        .match-table td:nth-child(5) {
+            width: 180px;
+            max-width: 180px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
 
-        .match-table th:nth-child(4),
-        .match-table td:nth-child(4) {
+        .match-table th:nth-child(3),
+        .match-table td:nth-child(3),
+        .match-table th:nth-child(6),
+        .match-table td:nth-child(6) {
+            width: auto;
+            text-align: left;
+            min-width: 200px;
+        }
+
+        .match-table th:nth-child(7),
+        .match-table td:nth-child(7) {
             width: auto;
         }
 
         /* Add border between the two sections for better visual separation */
-        .match-table th:nth-child(2),
-        .match-table td:nth-child(2) {
+        .match-table th:nth-child(3),
+        .match-table td:nth-child(3) {
             border-right: 2px solid var(--primary-color);
+            padding-right: 1rem;
         }
 
         .match-number {
@@ -674,11 +680,7 @@
             color: var(--accent-secondary);
         }
 
-        .format-description {
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            font-style: italic;
-        }
+
 
         /* Carousel Styles */
         .qualifier-carousel {
@@ -755,9 +757,9 @@
             /* Adjust column widths for mobile */
             .match-table th:nth-child(1),
             .match-table td:nth-child(1),
-            .match-table th:nth-child(3),
-            .match-table td:nth-child(3) {
-                width: 60px;
+            .match-table th:nth-child(4),
+            .match-table td:nth-child(4) {
+                width: 40px;
             }
 
             /* Carousel mobile adjustments */
@@ -1005,24 +1007,30 @@
                 font-size: 0.85rem;
             }
 
-            /* Reduce column widths further */
+            /* Reduce column widths further for 6-column layout */
             .match-table th:nth-child(1),
-            .match-table td:nth-child(1) {
-                width: 40px;
+            .match-table td:nth-child(1),
+            .match-table th:nth-child(4),
+            .match-table td:nth-child(4) {
+                width: 30px;
             }
 
-            /* Adjust team name column for mobile */
+            /* Adjust team name columns for mobile */
             .match-table th:nth-child(2),
-            .match-table td:nth-child(2) {
-                width: 120px;
-                max-width: 120px;
+            .match-table td:nth-child(2),
+            .match-table th:nth-child(5),
+            .match-table td:nth-child(5) {
+                width: 100px;
+                max-width: 100px;
             }
 
-            /* Captain column on mobile */
+            /* Captain columns on mobile */
             .match-table th:nth-child(3),
-            .match-table td:nth-child(3) {
+            .match-table td:nth-child(3),
+            .match-table th:nth-child(6),
+            .match-table td:nth-child(6) {
                 width: auto;
-                min-width: 150px;
+                min-width: 120px;
             }
 
             .brackets-container {
@@ -1069,9 +1077,7 @@
             </div>
         </div>
 
-        <div class="format-info" id="format-info" style="display: none;">
-            <!-- Format information will be loaded here -->
-        </div>
+
 
         <div class="tournament-stats" id="tournament-stats" style="display: none;">
             <!-- Tournament statistics will be loaded here -->
@@ -1217,20 +1223,7 @@
             // Display tournament statistics
             displayTournamentStats();
 
-            // Show format information
-            const formatInfo = document.getElementById('format-info');
-            const format = tournamentData.format || 'single_elimination';
-            let formatDescription = '';
-
-            // Get format description from format configuration
-            const formatConfig = getTournamentFormatConfig(format, participants.length);
-            formatDescription = formatConfig ? formatConfig.description : `Tournament Format: ${format}`;
-
-            formatInfo.innerHTML = `
-                <h3><i class="fas fa-info-circle"></i> Tournament Format</h3>
-                <p>${formatDescription}</p>
-            `;
-            formatInfo.style.display = 'block';
+            // Format info removed for cleaner interface
 
             // Show download section
             const downloadSection = document.getElementById('download-section');
@@ -1369,16 +1362,11 @@
                 return;
             }
 
-            let html = `<h3>${formatConfig.title}</h3>`;
-            html += `<p class="format-description">${formatConfig.description}</p>`;
+            let html = ``;
 
             // Create match tables for each stage
             formatConfig.stages.forEach((stage, stageIndex) => {
                 html += `<div class="stage-section">`;
-                html += `<div class="stage-header">`;
-                html += `<h4><i class="fas fa-trophy"></i> ${stage.name}</h4>`;
-                html += `<p>${stage.description}</p>`;
-                html += `</div>`;
 
                 // Check if this is qualifier stage for carousel
                 if (stage.name.includes('Qualifier')) {
@@ -1629,26 +1617,58 @@
 
             // Build table based on type
             if (tableConfig.type === 'qualifier') {
-                html += `<thead><tr><th>S.No</th><th>Team Name</th><th>Captain</th><th class="delete-column" style="display: none;">Action</th></tr></thead>`;
+                html += `<thead><tr><th>S.No</th><th>Team Name</th><th>Captain</th><th>S.No</th><th>Team Name</th><th>Captain</th><th class="delete-column" style="display: none;">Action</th></tr></thead>`;
                 html += `<tbody>`;
 
-                // Create slots for this qualifier and fill with teams
-                for (let slot = 1; slot <= groupSize; slot++) {
-                    const team = qualifierTeams[slot - 1];
-                    html += `<tr data-team-id="${team ? team._id || team.id : ''}" data-slot="${slot}">`;
-                    html += `<td class="match-number">${slot}</td>`;
-                    if (team) {
-                        html += `<td class="match-teams">
-                                    <strong>${team.teamName || 'Unnamed Team'}</strong>
-                                    <button class="team-delete-btn" onclick="removeTeam('${team._id || team.id}', '${tableId}', ${slot})" title="Remove Team">
+                // Create rows with 2 teams per row (6 columns total)
+                const totalRows = Math.ceil(groupSize / 2);
+                for (let row = 0; row < totalRows; row++) {
+                    html += `<tr>`;
+
+                    // First team (left side)
+                    const slot1 = (row * 2) + 1;
+                    const team1 = qualifierTeams[slot1 - 1];
+
+                    html += `<td class="match-number">${slot1}</td>`;
+                    if (team1) {
+                        html += `<td class="match-teams" data-team-id="${team1._id || team1.id}">
+                                    <strong>${team1.teamName || 'Unnamed Team'}</strong>
+                                    <button class="team-delete-btn" onclick="removeTeam('${team1._id || team1.id}', '${tableId}', ${slot1})" title="Remove Team">
                                         <i class="fas fa-times"></i>
                                     </button>
                                  </td>`;
-                        html += `<td class="team-captain">${team.captainEmail || 'No Captain Email'}</td>`;
+                        html += `<td class="team-captain">${team1.captainEmail || 'No Captain Email'}</td>`;
                     } else {
                         html += `<td class="match-teams"><em>Open Slot</em></td>`;
                         html += `<td class="team-captain">-</td>`;
                     }
+
+                    // Second team (right side)
+                    const slot2 = (row * 2) + 2;
+                    if (slot2 <= groupSize) {
+                        const team2 = qualifierTeams[slot2 - 1];
+
+                        html += `<td class="match-number">${slot2}</td>`;
+                        if (team2) {
+                            html += `<td class="match-teams" data-team-id="${team2._id || team2.id}">
+                                        <strong>${team2.teamName || 'Unnamed Team'}</strong>
+                                        <button class="team-delete-btn" onclick="removeTeam('${team2._id || team2.id}', '${tableId}', ${slot2})" title="Remove Team">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                     </td>`;
+                            html += `<td class="team-captain">${team2.captainEmail || 'No Captain Email'}</td>`;
+                        } else {
+                            html += `<td class="match-teams"><em>Open Slot</em></td>`;
+                            html += `<td class="team-captain">-</td>`;
+                        }
+                    } else {
+                        // Empty cells for the last row if odd number of teams
+                        html += `<td class="match-number"></td>`;
+                        html += `<td class="match-teams"></td>`;
+                        html += `<td class="team-captain"></td>`;
+                    }
+
+                    // Delete action column (hidden by default)
                     html += `<td class="delete-column" style="display: none;"></td>`;
                     html += `</tr>`;
                 }
