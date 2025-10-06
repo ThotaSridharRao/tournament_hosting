@@ -14,670 +14,694 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
     <style>
-    /* =========================
+        /* =========================
     Theme variables (Cyberpunk)
     ========================= */
-    :root {
-        --primary-color: #0AFAD9;
-        --bg-dark: #0D0A1A;
-        --accent-secondary: #5D3FD3;
-        --panel: #161329;
-        --text-primary: #F0F0F0;
-        --text-secondary: rgba(240, 240, 240, 0.7);
-        --border-color: rgba(10, 250, 217, 0.2);
-        --ease: 0.3s ease;
-        --copy: var(--text-primary);
-        --muted: var(--text-secondary);
-        --accent: var(--accent-secondary);
-        --accent-2: var(--primary-color);
-        --radius: 12px;
-        --container: 1400px;
-        --success-color: #28a745;
-        --warning-color: #ffc107;
-        --danger-color: #dc3545;
-        --info-color: #17a2b8;
-        --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-        --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
-        --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-        --spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-        :root { --ease: 0ms; }
-        * {
-            transition-duration: 0ms !important;
-            animation-duration: 0ms !important;
-            animation-iteration-count: 1 !important;
+        :root {
+            --primary-color: #0AFAD9;
+            --bg-dark: #0D0A1A;
+            --accent-secondary: #5D3FD3;
+            --panel: #161329;
+            --text-primary: #F0F0F0;
+            --text-secondary: rgba(240, 240, 240, 0.7);
+            --border-color: rgba(10, 250, 217, 0.2);
+            --ease: 0.3s ease;
+            --copy: var(--text-primary);
+            --muted: var(--text-secondary);
+            --accent: var(--accent-secondary);
+            --accent-2: var(--primary-color);
+            --radius: 12px;
+            --container: 1400px;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+            --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
-    }
 
-    /* =========================
+        @media (prefers-reduced-motion: reduce) {
+            :root {
+                --ease: 0ms;
+            }
+
+            * {
+                transition-duration: 0ms !important;
+                animation-duration: 0ms !important;
+                animation-iteration-count: 1 !important;
+            }
+        }
+
+        /* =========================
     Base resets & accessibility
     ========================= */
-    *, *::before, *::after { box-sizing: border-box; }
-    html, body { height: 100%; }
-    html { scroll-behavior: smooth; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
 
-    body {
-        margin: 0;
-        font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: var(--bg-dark);
-        color: var(--text-primary);
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        line-height: 1.6;
-        -webkit-text-size-adjust: 100%;
-        overflow-x: hidden;
-        font-size: 16px;
-        position: relative;
-    }
+        html,
+        body {
+            height: 100%;
+        }
 
-    body::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background:
-            radial-gradient(circle at 15% 85%, rgba(10, 250, 217, 0.1) 0%, transparent 40%),
-            radial-gradient(circle at 85% 25%, rgba(93, 63, 211, 0.1) 0%, transparent 40%);
-        z-index: -1;
-        animation: pulse 15s infinite ease-in-out;
-    }
+        html {
+            scroll-behavior: smooth;
+        }
 
-    @keyframes pulse {
-        0%, 100% { opacity: 0.7; }
-        50% { opacity: 1; }
-    }
+        body {
+            margin: 0;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.6;
+            -webkit-text-size-adjust: 100%;
+            overflow-x: hidden;
+            font-size: 16px;
+            position: relative;
+        }
 
-    /* =========================
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 15% 85%, rgba(10, 250, 217, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 85% 25%, rgba(93, 63, 211, 0.1) 0%, transparent 40%);
+            z-index: -1;
+            animation: pulse 15s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.7;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* =========================
     Loader
     ========================= */
-    #loader-wrapper {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: var(--bg-dark);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        transition: opacity 0.5s ease;
-    }
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
 
-    #loader-wrapper.hidden {
-        opacity: 0;
-        pointer-events: none;
-    }
+        #loader-wrapper.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
 
-    /* =========================
+        /* =========================
     NAVBAR STYLES (Modern Design)
     ========================= */
-    .nav-normal {
-        background: rgba(13, 10, 26, 0.1);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        padding: 1.2rem 2rem;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-        transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
-        transform: translateY(0);
-    }
+        .nav-normal {
+            background: rgba(13, 10, 26, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1.2rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+            transform: translateY(0);
+        }
 
-    .nav-normal.nav-hidden {
-        transform: translateY(-100%);
-    }
+        .nav-normal.nav-hidden {
+            transform: translateY(-100%);
+        }
 
-    .nav-normal.nav-scrolled {
-        background: rgba(13, 10, 26, 0.3);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(25px);
-        -webkit-backdrop-filter: blur(25px);
-    }
+        .nav-normal.nav-scrolled {
+            background: rgba(13, 10, 26, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+        }
 
-    .nav-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        max-width: 1400px;
-        margin: 0 auto;
-    }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-    .logo {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: white;
-        text-decoration: none;
-        letter-spacing: -0.5px;
-    }
-
-    .nav-center {
-        display: flex;
-        align-items: center;
-        gap: 2.5rem;
-    }
-
-    .nav-links {
-        display: flex;
-        gap: 0;
-        list-style: none;
-        align-items: center;
-        margin: 0;
-        padding: 0;
-    }
-
-    .nav-links li {
-        position: relative;
-    }
-
-    .nav-links a {
-        color: rgba(255, 255, 255, 0.7);
-        text-decoration: none;
-        font-weight: 500;
-        font-size: 0.95rem;
-        transition: all 0.3s ease;
-        padding: 0.6rem 1.2rem;
-        display: block;
-    }
-
-    .nav-links a:hover {
-        color: white;
-    }
-
-
-
-
-
-    .auth-buttons {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-    }
-
-    .btn {
-        padding: 0.65rem 1.5rem;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        border: none;
-        cursor: pointer;
-        font-size: 0.9rem;
-    }
-
-    .btn-request {
-        background: white;
-        color: #0a0a0a;
-    }
-
-    .btn-request:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
-    }
-
-    .btn-logout {
-        background: rgba(239, 68, 68, 0.15);
-        color: #ef4444;
-        border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
-    .btn-logout:hover {
-        background: rgba(239, 68, 68, 0.25);
-    }
-
-    .user-info {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        padding: 0.5rem 1rem;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 50px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .user-avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-secondary) 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 0.85rem;
-    }
-
-    .user-name {
-        font-weight: 500;
-        font-size: 0.9rem;
-    }
-
-    .menu-toggle {
-        display: none;
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0.5rem;
-    }
-
-    .menu-icon {
-        width: 24px;
-        height: 20px;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-    .menu-icon span {
-        width: 100%;
-        height: 2px;
-        background: white;
-        border-radius: 2px;
-        transition: all 0.3s ease;
-    }
-
-    .menu-toggle.active .menu-icon span:nth-child(1) {
-        transform: rotate(45deg) translate(7px, 7px);
-    }
-
-    .menu-toggle.active .menu-icon span:nth-child(2) {
-        opacity: 0;
-    }
-
-    .menu-toggle.active .menu-icon span:nth-child(3) {
-        transform: rotate(-45deg) translate(7px, -7px);
-    }
-
-    /* Mobile Styles */
-    @media (max-width: 968px) {
-        .menu-toggle {
-            display: block;
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            letter-spacing: -0.5px;
         }
 
         .nav-center {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            height: 100vh;
-            width: 85%;
-            max-width: 350px;
-            flex-direction: column;
-            background: rgba(15, 15, 15, 0.98);
-            backdrop-filter: blur(20px);
-            padding: 6rem 2rem 2rem;
-            gap: 0;
-            transition: right 0.3s ease;
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            align-items: flex-start;
-            overflow-y: auto;
-        }
-
-        .nav-center.active {
-            right: 0;
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
         }
 
         .nav-links {
-            flex-direction: column;
-            width: 100%;
+            display: flex;
             gap: 0;
+            list-style: none;
+            align-items: center;
+            margin: 0;
+            padding: 0;
         }
 
         .nav-links li {
-            width: 100%;
+            position: relative;
         }
 
         .nav-links a {
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            padding: 0.6rem 1.2rem;
+            display: block;
         }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+
 
 
 
         .auth-buttons {
-            flex-direction: column;
-            width: 100%;
-            gap: 1rem;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
         }
 
         .btn {
-            width: 100%;
-            text-align: center;
+            padding: 0.65rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-request {
+            background: white;
+            color: #0a0a0a;
+        }
+
+        .btn-request:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.25);
         }
 
         .user-info {
-            width: 100%;
-            justify-content: center;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        #user-menu {
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .user-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .menu-icon {
+            width: 24px;
+            height: 20px;
+            position: relative;
             display: flex;
             flex-direction: column;
-            width: 100%;
-            gap: 1rem;
+            justify-content: space-between;
         }
-    }
 
-    /* =========================
+        .menu-icon span {
+            width: 100%;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle.active .menu-icon span:nth-child(1) {
+            transform: rotate(45deg) translate(7px, 7px);
+        }
+
+        .menu-toggle.active .menu-icon span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active .menu-icon span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 968px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                height: 100vh;
+                width: 85%;
+                max-width: 350px;
+                flex-direction: column;
+                background: rgba(15, 15, 15, 0.98);
+                backdrop-filter: blur(20px);
+                padding: 6rem 2rem 2rem;
+                gap: 0;
+                transition: right 0.3s ease;
+                border-left: 1px solid rgba(255, 255, 255, 0.1);
+                align-items: flex-start;
+                overflow-y: auto;
+            }
+
+            .nav-center.active {
+                right: 0;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 0;
+            }
+
+            .nav-links li {
+                width: 100%;
+            }
+
+            .nav-links a {
+                padding: 1rem 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+
+
+            .auth-buttons {
+                flex-direction: column;
+                width: 100%;
+                gap: 1rem;
+                margin-top: 2rem;
+                padding-top: 2rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .user-info {
+                width: 100%;
+                justify-content: center;
+            }
+
+            #user-menu {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                gap: 1rem;
+            }
+        }
+
+        /* =========================
     Custom Scrollbar Styles
     ========================= */
-    ::-webkit-scrollbar-track {
-        border: 1px solid var(--border-color);
-        background-color: var(--bg-dark);
-    }
+        ::-webkit-scrollbar-track {
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-dark);
+        }
 
-    ::-webkit-scrollbar {
-        width: 10px;
-        background-color: var(--bg-dark);
-    }
+        ::-webkit-scrollbar {
+            width: 10px;
+            background-color: var(--bg-dark);
+        }
 
-    ::-webkit-scrollbar-thumb {
-        background-color: var(--panel);
-        border-radius: 5px;
-    }
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--panel);
+            border-radius: 5px;
+        }
 
-    ::-webkit-scrollbar-thumb:hover {
-        background-color: var(--accent-secondary);
-    }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: var(--accent-secondary);
+        }
 
-    * {
-        scrollbar-width: thin;
-        scrollbar-color: var(--panel) var(--bg-dark);
-    }
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--panel) var(--bg-dark);
+        }
 
-    /* =========================
+        /* =========================
     Main Content Area
     ========================= */
-    .main-content {
-        margin-top: 90px; /* Space for fixed navbar */
-        padding: 2rem;
-        min-height: calc(100vh - 90px);
-    }
+        .main-content {
+            margin-top: 90px;
+            /* Space for fixed navbar */
+            padding: 2rem;
+            min-height: calc(100vh - 90px);
+        }
 
-    .dashboard-container {
-        background: var(--panel);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius);
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-    }
+        .dashboard-container {
+            background: var(--panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
 
-    .welcome-section {
-        text-align: center;
-        padding: 3rem 0;
-    }
+        .welcome-section {
+            text-align: center;
+            padding: 3rem 0;
+        }
 
-    .welcome-section h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
-    .welcome-section p {
-        font-size: 1.1rem;
-        color: var(--text-secondary);
-        margin-bottom: 2rem;
-    }
+        .welcome-section p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
 
-    /* Stats Cards */
-    .stats-card {
-        background: rgba(0, 0, 0, 0.2);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius);
-        padding: 1.5rem;
-        text-align: center;
-        transition: all 0.3s var(--ease);
-        margin-bottom: 1rem;
-    }
-
-    .stats-card:hover {
-        border-color: var(--primary-color);
-        box-shadow: 0 4px 15px rgba(10, 250, 217, 0.1);
-    }
-
-    .stats-number {
-        font-size: 2rem;
-        font-weight: bold;
-        color: var(--primary-color);
-        margin-bottom: 0.5rem;
-    }
-
-    .stats-card .text-muted {
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-    }
-
-    /* Tournament Cards */
-    .tournament-card, .card {
-        background: rgba(0, 0, 0, 0.2);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius);
-        transition: all 0.3s var(--ease-out-quart);
-        margin-bottom: 1rem;
-        overflow: hidden;
-    }
-
-    .tournament-card:hover, .card:hover {
-        border-color: var(--primary-color);
-        box-shadow: 0 8px 30px rgba(10, 250, 217, 0.1);
-        transform: translateY(-2px);
-    }
-
-    .card-header {
-        background: rgba(0, 0, 0, 0.3);
-        border-bottom: 1px solid var(--border-color);
-        padding: 1rem 1.5rem;
-        color: var(--text-primary);
-        font-weight: 600;
-    }
-
-    .card-body {
-        padding: 1.5rem;
-    }
-
-    /* Table styling */
-    .table {
-        color: var(--text-primary);
-    }
-
-    .table th {
-        background: rgba(0, 0, 0, 0.3);
-        color: var(--text-primary);
-        border-color: var(--border-color);
-        font-weight: 600;
-        padding: 1rem 0.75rem;
-    }
-
-    .table td {
-        background: rgba(0, 0, 0, 0.1);
-        color: var(--text-primary);
-        border-color: var(--border-color);
-        padding: 1rem 0.75rem;
-        vertical-align: middle;
-    }
-
-    .table-hover tbody tr:hover {
-        background: rgba(10, 250, 217, 0.1);
-        color: var(--text-primary);
-    }
-
-    /* Button styling */
-    .btn-primary {
-        background: var(--primary-color);
-        border: none;
-        border-radius: 8px;
-        color: var(--bg-dark);
-        font-weight: 600;
-        padding: 0.5rem 1rem;
-        transition: all 0.3s var(--ease-out-quart);
-    }
-
-    .btn-primary:hover {
-        background: var(--primary-color);
-        filter: brightness(1.1);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(10, 250, 217, 0.3);
-    }
-
-    .btn-outline-primary {
-        border: 1px solid var(--primary-color);
-        color: var(--primary-color);
-        background: transparent;
-    }
-
-    .btn-outline-primary:hover {
-        background: var(--primary-color);
-        color: var(--bg-dark);
-    }
-
-    .btn-outline-secondary {
-        border: 1px solid var(--border-color);
-        color: var(--text-primary);
-        background: transparent;
-    }
-
-    .btn-outline-secondary:hover {
-        background: var(--border-color);
-        color: var(--text-primary);
-    }
-
-    .btn-outline-success {
-        border: 1px solid var(--success-color);
-        color: var(--success-color);
-        background: transparent;
-    }
-
-    .btn-outline-success:hover {
-        background: var(--success-color);
-        color: #fff;
-    }
-
-    .btn-outline-danger {
-        border: 1px solid var(--danger-color);
-        color: var(--danger-color);
-        background: transparent;
-    }
-
-    .btn-outline-danger:hover {
-        background: var(--danger-color);
-        color: #fff;
-    }
-
-    .btn-outline-info {
-        border: 1px solid var(--info-color);
-        color: var(--info-color);
-        background: transparent;
-    }
-
-    .btn-outline-info:hover {
-        background: var(--info-color);
-        color: #fff;
-    }
-
-    .btn-sm {
-        padding: 0.375rem 0.75rem;
-        font-size: 0.875rem;
-    }
-
-    /* Alert styles */
-    .alert {
-        border-radius: 8px;
-        border: none;
-        margin-bottom: 1rem;
-    }
-
-    .alert-success {
-        background: rgba(40, 167, 69, 0.1);
-        color: var(--success-color);
-        border: 1px solid rgba(40, 167, 69, 0.3);
-    }
-
-    .alert-info {
-        background: rgba(23, 162, 184, 0.1);
-        color: var(--info-color);
-        border: 1px solid rgba(23, 162, 184, 0.3);
-    }
-
-    .alert-warning {
-        background: rgba(255, 193, 7, 0.1);
-        color: var(--warning-color);
-        border: 1px solid rgba(255, 193, 7, 0.3);
-    }
-
-    .alert-danger {
-        background: rgba(220, 53, 69, 0.1);
-        color: var(--danger-color);
-        border: 1px solid rgba(220, 53, 69, 0.3);
-    }
-
-    /* Badge styles */
-    .badge {
-        padding: 0.375rem 0.75rem;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        font-weight: 600;
-    }
-
-    .bg-success {
-        background-color: var(--success-color) !important;
-    }
-
-    .bg-primary {
-        background-color: var(--primary-color) !important;
-        color: var(--bg-dark) !important;
-    }
-
-    .bg-info {
-        background-color: var(--info-color) !important;
-    }
-
-    .bg-danger {
-        background-color: var(--danger-color) !important;
-    }
-
-    .bg-secondary {
-        background-color: #6c757d !important;
-    }
-
-    /* Responsive design */
-    @media (max-width: 768px) {
+        /* Stats Cards */
         .stats-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s var(--ease);
             margin-bottom: 1rem;
         }
 
+        .stats-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(10, 250, 217, 0.1);
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-card .text-muted {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Tournament Cards */
+        .tournament-card,
+        .card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            transition: all 0.3s var(--ease-out-quart);
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .tournament-card:hover,
+        .card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 8px 30px rgba(10, 250, 217, 0.1);
+            transform: translateY(-2px);
+        }
+
         .card-header {
-            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
         }
 
-        .card-header h5 {
-            font-size: 1rem;
+        .card-body {
+            padding: 1.5rem;
         }
 
-        .btn-group {
-            flex-direction: column;
-            gap: 0.25rem;
+        /* Table styling */
+        .table {
+            color: var(--text-primary);
         }
 
-        .table-responsive {
+        .table th {
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+            font-weight: 600;
+            padding: 1rem 0.75rem;
+        }
+
+        .table td {
+            background: rgba(0, 0, 0, 0.1);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+            padding: 1rem 0.75rem;
+            vertical-align: middle;
+        }
+
+        .table-hover tbody tr:hover {
+            background: rgba(10, 250, 217, 0.1);
+            color: var(--text-primary);
+        }
+
+        /* Button styling */
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            color: var(--bg-dark);
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s var(--ease-out-quart);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-color);
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(10, 250, 217, 0.3);
+        }
+
+        .btn-outline-primary {
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary-color);
+            color: var(--bg-dark);
+        }
+
+        .btn-outline-secondary {
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            background: transparent;
+        }
+
+        .btn-outline-secondary:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-outline-success {
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+            background: transparent;
+        }
+
+        .btn-outline-success:hover {
+            background: var(--success-color);
+            color: #fff;
+        }
+
+        .btn-outline-danger {
+            border: 1px solid var(--danger-color);
+            color: var(--danger-color);
+            background: transparent;
+        }
+
+        .btn-outline-danger:hover {
+            background: var(--danger-color);
+            color: #fff;
+        }
+
+        .btn-outline-info {
+            border: 1px solid var(--info-color);
+            color: var(--info-color);
+            background: transparent;
+        }
+
+        .btn-outline-info:hover {
+            background: var(--info-color);
+            color: #fff;
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
             font-size: 0.875rem;
         }
-    }
+
+        /* Alert styles */
+        .alert {
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+        .alert-info {
+            background: rgba(23, 162, 184, 0.1);
+            color: var(--info-color);
+            border: 1px solid rgba(23, 162, 184, 0.3);
+        }
+
+        .alert-warning {
+            background: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        /* Badge styles */
+        .badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .bg-success {
+            background-color: var(--success-color) !important;
+        }
+
+        .bg-primary {
+            background-color: var(--primary-color) !important;
+            color: var(--bg-dark) !important;
+        }
+
+        .bg-info {
+            background-color: var(--info-color) !important;
+        }
+
+        .bg-danger {
+            background-color: var(--danger-color) !important;
+        }
+
+        .bg-secondary {
+            background-color: #6c757d !important;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .stats-card {
+                margin-bottom: 1rem;
+            }
+
+            .card-header {
+                padding: 1rem;
+            }
+
+            .card-header h5 {
+                font-size: 1rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+        }
     </style>
 </head>
 
@@ -749,7 +773,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Hosted Tournaments Section -->
             <div class="row">
                 <div class="col-12">
@@ -782,8 +806,10 @@
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="updateTournamentSelect" class="form-label">Select Tournament to Update</label>
-                                    <select class="form-select" id="updateTournamentSelect" onchange="loadTournamentForUpdate()">
+                                    <label for="updateTournamentSelect" class="form-label">Select Tournament to
+                                        Update</label>
+                                    <select class="form-select" id="updateTournamentSelect"
+                                        onchange="loadTournamentForUpdate()">
                                         <option value="">Choose a tournament...</option>
                                     </select>
                                 </div>
@@ -813,12 +839,14 @@
                                     </div>
 
                                     <div class="d-flex justify-content-between mt-3">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="cancelUpdate()">
+                                        <button type="button" class="btn btn-outline-secondary"
+                                            onclick="cancelUpdate()">
                                             <i class="fas fa-times me-2"></i>Cancel
                                         </button>
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-save me-2"></i>Update Tournament
-                                            <span class="loading-spinner spinner-border spinner-border-sm ms-2" style="display: none;" role="status"></span>
+                                            <span class="loading-spinner spinner-border spinner-border-sm ms-2"
+                                                style="display: none;" role="status"></span>
                                         </button>
                                     </div>
                                 </form>
@@ -846,8 +874,10 @@
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-md-12">
-                                    <label for="scheduleTournamentSelect" class="form-label">Select Tournament to Manage Schedule</label>
-                                    <select class="form-select" id="scheduleTournamentSelect" onchange="loadTournamentSchedule()">
+                                    <label for="scheduleTournamentSelect" class="form-label">Select Tournament to Manage
+                                        Schedule</label>
+                                    <select class="form-select" id="scheduleTournamentSelect"
+                                        onchange="loadTournamentSchedule()">
                                         <option value="">Choose a tournament...</option>
                                     </select>
                                 </div>
@@ -856,7 +886,8 @@
                             <div id="scheduleManagementContainer" style="display: none;">
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle me-2"></i>
-                                    <strong>Managing Schedule for:</strong> <span id="selectedScheduleTournamentName">None</span>
+                                    <strong>Managing Schedule for:</strong> <span
+                                        id="selectedScheduleTournamentName">None</span>
                                 </div>
 
                                 <!-- Add New Event Form -->
@@ -869,7 +900,9 @@
                                             <div class="row">
                                                 <div class="col-md-6 mb-3">
                                                     <label for="eventTitle" class="form-label">Event Title *</label>
-                                                    <input type="text" class="form-control" id="eventTitle" required maxlength="100" placeholder="e.g., Registration Opens, Quarter Finals">
+                                                    <input type="text" class="form-control" id="eventTitle" required
+                                                        maxlength="100"
+                                                        placeholder="e.g., Registration Opens, Quarter Finals">
                                                 </div>
                                                 <div class="col-md-6 mb-3">
                                                     <label for="eventType" class="form-label">Event Type *</label>
@@ -887,7 +920,8 @@
                                             <div class="row">
                                                 <div class="col-md-6 mb-3">
                                                     <label for="eventStartTime" class="form-label">Start Time *</label>
-                                                    <input type="datetime-local" class="form-control" id="eventStartTime" required>
+                                                    <input type="datetime-local" class="form-control"
+                                                        id="eventStartTime" required>
                                                 </div>
                                                 <div class="col-md-6 mb-3">
                                                     <label for="eventEndTime" class="form-label">End Time</label>
@@ -896,12 +930,15 @@
                                             </div>
                                             <div class="mb-3">
                                                 <label for="eventDescription" class="form-label">Description</label>
-                                                <textarea class="form-control" id="eventDescription" rows="2" maxlength="500" placeholder="Optional event description..."></textarea>
+                                                <textarea class="form-control" id="eventDescription" rows="2"
+                                                    maxlength="500"
+                                                    placeholder="Optional event description..."></textarea>
                                             </div>
                                             <div class="d-flex justify-content-end">
                                                 <button type="submit" class="btn btn-primary">
                                                     <i class="fas fa-plus me-2"></i>Add Event
-                                                    <span class="loading-spinner spinner-border spinner-border-sm ms-2" style="display: none;" role="status"></span>
+                                                    <span class="loading-spinner spinner-border spinner-border-sm ms-2"
+                                                        style="display: none;" role="status"></span>
                                                 </button>
                                             </div>
                                         </form>
@@ -946,8 +983,10 @@
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col-md-12">
-                                    <label for="finalistsTournamentSelect" class="form-label">Select Tournament to Update Finalists</label>
-                                    <select class="form-select" id="finalistsTournamentSelect" onchange="loadTournamentFinalists()">
+                                    <label for="finalistsTournamentSelect" class="form-label">Select Tournament to
+                                        Update Finalists</label>
+                                    <select class="form-select" id="finalistsTournamentSelect"
+                                        onchange="loadTournamentFinalists()">
                                         <option value="">Choose a tournament...</option>
                                     </select>
                                 </div>
@@ -956,12 +995,14 @@
                             <div id="finalistsManagementContainer" style="display: none;">
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle me-2"></i>
-                                    <strong>Managing Finalists for:</strong> <span id="selectedFinalistsTournamentName">None</span>
+                                    <strong>Managing Finalists for:</strong> <span
+                                        id="selectedFinalistsTournamentName">None</span>
                                 </div>
 
                                 <div class="alert alert-warning">
                                     <i class="fas fa-exclamation-triangle me-2"></i>
-                                    <strong>Instructions:</strong> Enter the top 16 teams in order of their final ranking. Leave empty fields for positions not filled.
+                                    <strong>Instructions:</strong> Enter the top 16 teams in order of their final
+                                    ranking. Leave empty fields for positions not filled.
                                 </div>
 
                                 <form id="finalistsForm">
@@ -981,12 +1022,15 @@
                                     </div>
 
                                     <div class="d-flex justify-content-between mt-4">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="clearFinalists()">
+                                        <button type="button" class="btn btn-outline-secondary"
+                                            onclick="clearFinalists()">
                                             <i class="fas fa-eraser me-2"></i>Clear All
                                         </button>
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-save me-2"></i>Update Leaderboard
-                                            <span class="finalists-loading-spinner spinner-border spinner-border-sm ms-2" style="display: none;" role="status"></span>
+                                            <span
+                                                class="finalists-loading-spinner spinner-border spinner-border-sm ms-2"
+                                                style="display: none;" role="status"></span>
                                         </button>
                                     </div>
                                 </form>
@@ -1047,7 +1091,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="editEventDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="editEventDescription" rows="2" maxlength="500"></textarea>
+                            <textarea class="form-control" id="editEventDescription" rows="2"
+                                maxlength="500"></textarea>
                         </div>
                     </form>
                 </div>
@@ -1055,7 +1100,8 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary" onclick="saveEventChanges()">
                         <i class="fas fa-save me-2"></i>Save Changes
-                        <span class="edit-loading-spinner spinner-border spinner-border-sm ms-2" style="display: none;" role="status"></span>
+                        <span class="edit-loading-spinner spinner-border spinner-border-sm ms-2" style="display: none;"
+                            role="status"></span>
                     </button>
                 </div>
             </div>
@@ -1099,7 +1145,7 @@
 
             function updateNavbar() {
                 const currentScrollY = window.scrollY;
-                
+
                 // Add scrolled class when user has scrolled down
                 if (currentScrollY > 50) {
                     navbar.classList.add('nav-scrolled');
@@ -1134,7 +1180,7 @@
 
             // Listen for scroll events
             window.addEventListener('scroll', requestTick, { passive: true });
-            
+
             // Initial call
             updateNavbar();
         }
@@ -1187,11 +1233,11 @@
                 // Update navbar elements
                 const navbarUsername = document.getElementById('navbar-username');
                 const userAvatar = document.getElementById('user-avatar');
-                
+
                 if (navbarUsername) {
                     navbarUsername.textContent = username;
                 }
-                
+
                 if (userAvatar) {
                     userAvatar.textContent = userInitials;
                 }
@@ -1199,13 +1245,13 @@
                 // Show user menu, hide guest menu
                 if (guestMenu) guestMenu.style.display = 'none';
                 if (userMenu) userMenu.style.display = 'flex';
-                
+
                 isLoggedIn = true;
             } else {
                 // Show guest menu, hide user menu
                 if (guestMenu) guestMenu.style.display = 'block';
                 if (userMenu) userMenu.style.display = 'none';
-                
+
                 isLoggedIn = false;
             }
         }
@@ -1421,7 +1467,7 @@
             const counts = data.counts || {};
             const hostedCount = counts.hosted || (data.hosted ? data.hosted.length : 0);
             const joinedCount = counts.joined || (data.joined ? data.joined.length : 0);
-            const activeCount = counts.active || (data.hosted ? data.hosted.filter(t => 
+            const activeCount = counts.active || (data.hosted ? data.hosted.filter(t =>
                 t.status === 'active' || t.status === 'registration_open'
             ).length : 0);
 
@@ -1440,14 +1486,14 @@
             const data = await fetchTournamentData(true); // Force refresh
             displayTournaments(data.hosted);
             updateDashboardStats(data);
-            
+
             // Also refresh all dropdowns
             if (data.hosted && data.hosted.length > 0) {
                 populateUpdateDropdown(data.hosted);
                 populateScheduleDropdown(data.hosted);
                 populateFinalistsDropdown(data.hosted);
             }
-            
+
             showAlert('Tournaments refreshed successfully!', 'success');
         }
 
@@ -1486,7 +1532,7 @@
 
                 // Get the blob data
                 const blob = await response.blob();
-                
+
                 // Create download link
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -1501,7 +1547,7 @@
 
             } catch (error) {
                 console.error('Error downloading tournament data:', error);
-                
+
                 // Fallback: Generate a simple text file with tournament info
                 try {
                     const tournament = tournamentData.hosted.find(t => t._id === tournamentId);
@@ -1513,10 +1559,10 @@
                         textContent += `Max Teams: ${tournament.maxTeams}\n`;
                         textContent += `Status: ${tournament.status}\n`;
                         textContent += `Created: ${new Date().toLocaleDateString()}\n\n`;
-                        
+
                         textContent += "REGISTERED PARTICIPANTS:\n";
-                        textContent += "=" .repeat(50) + "\n\n";
-                        
+                        textContent += "=".repeat(50) + "\n\n";
+
                         if (participantsList.length === 0) {
                             textContent += "No participants registered yet.\n";
                         } else {
@@ -1527,7 +1573,7 @@
                                 textContent += `   Phone: ${participant.phone || 'N/A'}\n`;
                                 textContent += `   Status: ${participant.status || 'N/A'}\n`;
                                 textContent += `   Payment: ${participant.paymentStatus || 'N/A'}\n`;
-                                
+
                                 if (participant.players && participant.players.length > 0) {
                                     textContent += `   Players:\n`;
                                     participant.players.forEach((player, pIndex) => {
@@ -1537,7 +1583,7 @@
                                 textContent += "\n";
                             });
                         }
-                        
+
                         // Create and download text file
                         const blob = new Blob([textContent], { type: 'text/plain' });
                         const url = window.URL.createObjectURL(blob);
@@ -1548,7 +1594,7 @@
                         a.click();
                         document.body.removeChild(a);
                         window.URL.revokeObjectURL(url);
-                        
+
                         showAlert('Participants data downloaded as text file (PDF export not available)', 'warning');
                     } else {
                         showAlert('Tournament data not found for download', 'danger');
@@ -1564,9 +1610,9 @@
         async function deleteTournament(tournamentId, tournamentName) {
             // Show confirmation dialog
             const confirmMessage = `Are you sure you want to delete "${tournamentName}"?\n\nThis action cannot be undone and will permanently remove:\n• All tournament data\n• Participant registrations\n• Tournament schedule\n• All related information\n\nType "DELETE" to confirm:`;
-            
+
             const userInput = prompt(confirmMessage);
-            
+
             if (userInput !== 'DELETE') {
                 if (userInput !== null) {
                     showAlert('Tournament deletion cancelled - confirmation text did not match', 'info');
@@ -1594,15 +1640,15 @@
 
                 if (result.success) {
                     showAlert(`Tournament "${tournamentName}" deleted successfully!`, 'success');
-                    
+
                     // Refresh tournaments list
                     await refreshTournaments();
-                    
+
                     // Clear any selected tournament in update/schedule sections
                     if (selectedTournament && selectedTournament._id === tournamentId) {
                         cancelUpdate();
                     }
-                    
+
                     if (selectedScheduleTournament && selectedScheduleTournament._id === tournamentId) {
                         document.getElementById('scheduleTournamentSelect').value = '';
                         document.getElementById('scheduleManagementContainer').style.display = 'none';
@@ -1684,11 +1730,11 @@
         function loadTournamentForUpdate() {
             const select = document.getElementById('updateTournamentSelect');
             const selectedOption = select.options[select.selectedIndex];
-            
+
             if (selectedOption.value) {
                 selectedTournament = JSON.parse(selectedOption.dataset.tournament);
                 document.getElementById('selectedTournamentName').textContent = selectedTournament.title || 'Untitled Tournament';
-                
+
                 // Reset field selection
                 document.getElementById('updateField').value = '';
                 document.getElementById('updateFormContainer').style.display = 'none';
@@ -1704,7 +1750,7 @@
         function showUpdateForm() {
             const fieldSelect = document.getElementById('updateField');
             const field = fieldSelect.value;
-            
+
             if (!selectedTournament || !field) {
                 document.getElementById('updateFormContainer').style.display = 'none';
                 document.getElementById('updatePlaceholder').style.display = 'block';
@@ -1815,7 +1861,7 @@
         // Handle update form submission
         async function handleUpdateSubmit(e) {
             e.preventDefault();
-            
+
             if (!selectedTournament) {
                 showAlert('Please select a tournament to update', 'warning');
                 return;
@@ -1829,13 +1875,13 @@
 
             const submitBtn = e.target.querySelector('button[type="submit"]');
             const spinner = submitBtn.querySelector('.loading-spinner');
-            
+
             submitBtn.disabled = true;
             spinner.style.display = 'inline-block';
 
             try {
                 const updateData = {};
-                
+
                 // Collect update data based on field
                 switch (field) {
                     case 'title':
@@ -1871,10 +1917,10 @@
 
                 if (result.success) {
                     showAlert('Tournament updated successfully!', 'success');
-                    
+
                     // Refresh tournament data
                     await refreshTournaments();
-                    
+
                     // Reset form
                     cancelUpdate();
                 } else {
@@ -1913,7 +1959,7 @@
         async function loadDashboardDataWithUpdate() {
             const data = await fetchTournamentData();
             displayTournaments(data.hosted);
-            
+
             // Populate all dropdowns
             if (data.hosted && data.hosted.length > 0) {
                 populateUpdateDropdown(data.hosted);
@@ -1947,15 +1993,15 @@
         async function loadTournamentSchedule() {
             const select = document.getElementById('scheduleTournamentSelect');
             const selectedOption = select.options[select.selectedIndex];
-            
+
             if (selectedOption.value) {
                 selectedScheduleTournament = JSON.parse(selectedOption.dataset.tournament);
                 document.getElementById('selectedScheduleTournamentName').textContent = selectedScheduleTournament.title || 'Untitled Tournament';
-                
+
                 // Show schedule management container
                 document.getElementById('scheduleManagementContainer').style.display = 'block';
                 document.getElementById('schedulePlaceholder').style.display = 'none';
-                
+
                 // Load events for this tournament
                 await fetchTournamentEvents(selectedScheduleTournament._id);
             } else {
@@ -1968,7 +2014,7 @@
         // Fetch tournament events from API
         async function fetchTournamentEvents(tournamentId) {
             const container = document.getElementById('eventsListContainer');
-            
+
             // Show loading state
             container.innerHTML = `
                 <div class="text-center text-muted py-4">
@@ -2026,7 +2072,7 @@
             sortedEvents.forEach((event, index) => {
                 const startTime = new Date(event.startTime).toLocaleString();
                 const endTime = event.endTime ? new Date(event.endTime).toLocaleString() : 'Not specified';
-                
+
                 // Event type badge styling
                 let typeBadgeClass = 'badge bg-secondary';
                 switch (event.type) {
@@ -2079,7 +2125,7 @@
         // Handle add event form submission
         async function handleAddEventSubmit(e) {
             e.preventDefault();
-            
+
             if (!selectedScheduleTournament) {
                 showAlert('Please select a tournament first', 'warning');
                 return;
@@ -2087,7 +2133,7 @@
 
             const submitBtn = e.target.querySelector('button[type="submit"]');
             const spinner = submitBtn.querySelector('.loading-spinner');
-            
+
             submitBtn.disabled = true;
             spinner.style.display = 'inline-block';
 
@@ -2110,10 +2156,10 @@
 
                 if (result.success) {
                     showAlert('Event added successfully!', 'success');
-                    
+
                     // Reset form
                     document.getElementById('addEventForm').reset();
-                    
+
                     // Refresh events list
                     await fetchTournamentEvents(selectedScheduleTournament._id);
                 } else {
@@ -2124,14 +2170,14 @@
                     };
                     tournamentEvents.push(newEvent);
                     displayTournamentEvents(tournamentEvents);
-                    
+
                     showAlert('Event added successfully! (Note: This is a demo - backend integration pending)', 'success');
                     document.getElementById('addEventForm').reset();
                 }
 
             } catch (error) {
                 console.error('Error adding event:', error);
-                
+
                 // For demo purposes, add event locally
                 const newEvent = {
                     title: document.getElementById('eventTitle').value,
@@ -2143,7 +2189,7 @@
                 };
                 tournamentEvents.push(newEvent);
                 displayTournamentEvents(tournamentEvents);
-                
+
                 showAlert('Event added locally! (Backend integration pending)', 'info');
                 document.getElementById('addEventForm').reset();
             } finally {
@@ -2174,12 +2220,12 @@
         async function saveEventChanges() {
             const index = parseInt(document.getElementById('editEventId').value);
             const event = tournamentEvents[index];
-            
+
             if (!event) return;
 
             const saveBtn = document.querySelector('#editEventModal .btn-primary');
             const spinner = saveBtn.querySelector('.edit-loading-spinner');
-            
+
             saveBtn.disabled = true;
             spinner.style.display = 'inline-block';
 
@@ -2195,9 +2241,9 @@
                 // Update locally for demo
                 tournamentEvents[index] = { ...event, ...updatedEventData };
                 displayTournamentEvents(tournamentEvents);
-                
+
                 showAlert('Event updated successfully!', 'success');
-                
+
                 // Close modal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('editEventModal'));
                 modal.hide();
@@ -2224,7 +2270,7 @@
                 // Delete locally for demo
                 tournamentEvents.splice(index, 1);
                 displayTournamentEvents(tournamentEvents);
-                
+
                 showAlert('Event deleted successfully!', 'success');
 
             } catch (error) {
@@ -2267,18 +2313,18 @@
         function loadTournamentFinalists() {
             const select = document.getElementById('finalistsTournamentSelect');
             const selectedOption = select.options[select.selectedIndex];
-            
+
             if (selectedOption.value) {
                 selectedFinalistsTournament = JSON.parse(selectedOption.dataset.tournament);
                 document.getElementById('selectedFinalistsTournamentName').textContent = selectedFinalistsTournament.title || 'Untitled Tournament';
-                
+
                 // Show finalists management container
                 document.getElementById('finalistsManagementContainer').style.display = 'block';
                 document.getElementById('finalistsPlaceholder').style.display = 'none';
-                
+
                 // Generate finalists form
                 generateFinalistsForm();
-                
+
                 // Load existing finalists data if available
                 loadExistingFinalists();
             } else {
@@ -2292,7 +2338,7 @@
         function generateFinalistsForm() {
             const leftContainer = document.getElementById('finalistsLeft');
             const rightContainer = document.getElementById('finalistsRight');
-            
+
             let leftHTML = '';
             let rightHTML = '';
 
@@ -2339,14 +2385,14 @@
 
                 if (result.success && result.data && result.data.standings) {
                     const standings = result.data.standings;
-                    
+
                     // Populate form with existing data
                     standings.forEach((standing, index) => {
                         if (index < 16) { // Only top 16
                             const position = index + 1;
                             const teamInput = document.getElementById(`finalist_${position}`);
                             const pointsInput = document.getElementById(`points_${position}`);
-                            
+
                             if (teamInput) teamInput.value = standing.teamName || '';
                             if (pointsInput) pointsInput.value = standing.points || '';
                         }
@@ -2361,7 +2407,7 @@
         // Handle finalists form submission
         async function handleFinalistsSubmit(e) {
             e.preventDefault();
-            
+
             if (!selectedFinalistsTournament) {
                 showAlert('Please select a tournament first', 'warning');
                 return;
@@ -2369,18 +2415,18 @@
 
             const submitBtn = e.target.querySelector('button[type="submit"]');
             const spinner = submitBtn.querySelector('.finalists-loading-spinner');
-            
+
             submitBtn.disabled = true;
             spinner.style.display = 'inline-block';
 
             try {
                 // Collect finalists data
                 const finalists = [];
-                
+
                 for (let i = 1; i <= 16; i++) {
                     const teamName = document.getElementById(`finalist_${i}`).value.trim();
                     const points = document.getElementById(`points_${i}`).value;
-                    
+
                     if (teamName) {
                         finalists.push({
                             position: i,
@@ -2425,7 +2471,7 @@
                 for (let i = 1; i <= 16; i++) {
                     const teamInput = document.getElementById(`finalist_${i}`);
                     const pointsInput = document.getElementById(`points_${i}`);
-                    
+
                     if (teamInput) teamInput.value = '';
                     if (pointsInput) pointsInput.value = '';
                 }
@@ -2434,7 +2480,7 @@
         }
 
         // Initialize when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Hide loader
             setTimeout(() => {
                 document.getElementById('loader-wrapper').classList.add('hidden');
@@ -2461,16 +2507,16 @@
             }
 
             initSmartNavbar(); // Initialize smart scroll behavior
-            
+
             // Small delay to ensure all elements are ready
             setTimeout(() => {
                 checkUserAuthentication(); // Check if user is logged in
             }, 100);
-            
+
             // Load dashboard data if user is authenticated
             if (isAuthenticated()) {
                 loadDashboardDataWithUpdate();
-                
+
                 // Setup form submissions...
                 const updateForm = document.getElementById('updateTournamentForm');
                 if (updateForm) {
