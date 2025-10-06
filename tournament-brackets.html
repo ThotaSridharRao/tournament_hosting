@@ -443,26 +443,6 @@
             gap: 0.5rem;
         }
 
-        .add-schedule-btn {
-            background: var(--accent-secondary);
-            color: white;
-            border: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: var(--ease);
-        }
-
-        .add-schedule-btn:hover {
-            background: #7c5fd3;
-            transform: scale(1.1);
-        }
-
         .match-schedule {
             background: rgba(93, 63, 211, 0.2);
             color: var(--accent-secondary);
@@ -499,6 +479,28 @@
             border-bottom: none;
         }
 
+        /* Qualifier table 4-column layout styling */
+        .match-table th:nth-child(1),
+        .match-table td:nth-child(1),
+        .match-table th:nth-child(3),
+        .match-table td:nth-child(3) {
+            width: 80px;
+            text-align: center;
+        }
+
+        .match-table th:nth-child(2),
+        .match-table td:nth-child(2),
+        .match-table th:nth-child(4),
+        .match-table td:nth-child(4) {
+            width: auto;
+        }
+
+        /* Add border between the two sections for better visual separation */
+        .match-table th:nth-child(2),
+        .match-table td:nth-child(2) {
+            border-right: 2px solid var(--primary-color);
+        }
+
         .match-number {
             font-weight: 700;
             color: var(--accent-secondary);
@@ -517,10 +519,6 @@
             text-align: center;
             background: rgba(108, 117, 125, 0.2);
             color: #6c757d;
-        }
-
-        .match-schedule {
-            color: var(--text-secondary);
         }
 
         .team-captain {
@@ -583,6 +581,201 @@
             margin-bottom: 2rem;
             font-style: italic;
         }
+
+        /* Carousel Styles */
+        .qualifier-carousel {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .carousel-container {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .carousel-slides {
+            display: flex;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            flex-shrink: 0;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .carousel-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--ease);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .carousel-btn:hover:not(:disabled) {
+            background: var(--accent-secondary);
+            transform: translateY(-2px);
+        }
+
+        .carousel-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .carousel-indicator {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        /* Mobile Responsive Improvements */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            /* On mobile, reduce table padding for better fit */
+            .match-table th,
+            .match-table td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            /* Adjust column widths for mobile */
+            .match-table th:nth-child(1),
+            .match-table td:nth-child(1),
+            .match-table th:nth-child(3),
+            .match-table td:nth-child(3) {
+                width: 60px;
+            }
+
+            /* Carousel mobile adjustments */
+            .carousel-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .carousel-btn i {
+                font-size: 0.75rem;
+            }
+
+            .carousel-indicator {
+                font-size: 0.85rem;
+            }
+
+            .carousel-controls {
+                gap: 0.5rem;
+                flex-wrap: wrap;
+            }
+
+            /* Stage header mobile adjustments */
+            .stage-header {
+                padding: 1rem;
+            }
+
+            .stage-header h4 {
+                font-size: 1.1rem;
+            }
+
+            .stage-header p {
+                font-size: 0.85rem;
+            }
+
+            /* Match table header mobile adjustments */
+            .match-table-header {
+                padding: 0.75rem 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .match-table-header h5 {
+                font-size: 0.95rem;
+            }
+
+            .match-header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .match-count {
+                font-size: 0.75rem;
+                padding: 0.2rem 0.5rem;
+            }
+
+            .match-schedule {
+                font-size: 0.65rem;
+                padding: 0.15rem 0.4rem;
+            }
+
+            /* Brackets container mobile */
+            .brackets-container {
+                padding: 1rem;
+            }
+
+            /* Team names truncation on mobile */
+            .match-teams {
+                max-width: 150px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+
+        /* Extra small devices (phones < 480px) */
+        @media (max-width: 480px) {
+            .carousel-btn {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.75rem;
+            }
+
+            .carousel-btn span {
+                display: none; /* Hide "Previous" and "Next" text */
+            }
+
+            .carousel-indicator {
+                font-size: 0.75rem;
+            }
+
+            .match-table th,
+            .match-table td {
+                padding: 0.5rem 0.25rem;
+                font-size: 0.8rem;
+            }
+
+            .match-number {
+                font-size: 0.75rem;
+            }
+
+            .match-teams strong {
+                font-size: 0.85rem;
+            }
+
+            /* Reduce column widths further */
+            .match-table th:nth-child(1),
+            .match-table td:nth-child(1),
+            .match-table th:nth-child(3),
+            .match-table td:nth-child(3) {
+                width: 40px;
+            }
+
+            .brackets-container {
+                padding: 0.5rem;
+            }
+        }
     </style>
 </head>
 
@@ -629,6 +822,10 @@
         const API_BASE_URL = 'https://t2-237c.onrender.com';
         let tournamentData = null;
         let matchesData = [];
+        
+        // Carousel variables
+        let currentSlide = 0;
+        let totalSlides = 0;
 
 
         // Get tournament slug from URL
@@ -872,10 +1069,39 @@
                 html += `<p>${stage.description}</p>`;
                 html += `</div>`;
 
-                // Create tables for this stage
-                stage.tables.forEach((table, tableIndex) => {
-                    html += createMatchTable(table, participants, stageIndex, tableIndex);
-                });
+                // Check if this is qualifier stage for carousel
+                if (stage.name.includes('Qualifier')) {
+                    html += `<div class="qualifier-carousel">`;
+                    html += `<div class="carousel-container">`;
+                    html += `<div class="carousel-slides" id="carousel-slides">`;
+                    
+                    // Create all qualifier tables as slides
+                    stage.tables.forEach((table, tableIndex) => {
+                        html += `<div class="carousel-slide">`;
+                        html += createMatchTable(table, participants, stageIndex, tableIndex);
+                        html += `</div>`;
+                    });
+                    
+                    html += `</div></div>`; // Close carousel-slides and carousel-container
+                    
+                    // Add navigation controls
+                    html += `<div class="carousel-controls">`;
+                    html += `<button class="carousel-btn" id="prev-btn" onclick="previousSlide()" disabled>
+                                <i class="fas fa-chevron-left"></i> <span>Previous</span>
+                            </button>`;
+                    html += `<span class="carousel-indicator" id="slide-indicator">Match 1 of ${stage.tables.length}</span>`;
+                    html += `<button class="carousel-btn" id="next-btn" onclick="nextSlide()">
+                                <span>Next</span> <i class="fas fa-chevron-right"></i>
+                            </button>`;
+                    html += `</div>`;
+                    
+                    html += `</div>`; // Close qualifier-carousel
+                } else {
+                    // For finalists or other stages, display normally
+                    stage.tables.forEach((table, tableIndex) => {
+                        html += createMatchTable(table, participants, stageIndex, tableIndex);
+                    });
+                }
 
                 html += `</div>`;
             });
@@ -1831,6 +2057,55 @@
             await originalLoadTournamentBrackets();
             // Small delay to ensure DOM is updated
             setTimeout(loadMatchSchedules, 100);
+        };
+
+        // Carousel functionality
+        function initializeCarousel() {
+            const carouselSlides = document.getElementById('carousel-slides');
+            if (carouselSlides) {
+                totalSlides = carouselSlides.children.length;
+                currentSlide = 0;
+                updateCarousel();
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateCarousel();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateCarousel();
+            }
+        }
+
+        function updateCarousel() {
+            const carouselSlides = document.getElementById('carousel-slides');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const indicator = document.getElementById('slide-indicator');
+            
+            if (carouselSlides) {
+                carouselSlides.style.transform = `translateX(-${currentSlide * 100}%)`;
+            }
+            
+            // Update button states
+            if (prevBtn) prevBtn.disabled = currentSlide === 0;
+            if (nextBtn) nextBtn.disabled = currentSlide === totalSlides - 1;
+            
+            // Update indicator
+            if (indicator) indicator.textContent = `Match ${currentSlide + 1} of ${totalSlides}`;
+        }
+
+        // Initialize carousel after brackets are loaded
+        const originalDisplayBrackets = displayBrackets;
+        displayBrackets = function() {
+            originalDisplayBrackets();
+            setTimeout(initializeCarousel, 100);
         };
     </script>
 </body>
