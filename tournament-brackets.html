@@ -1949,38 +1949,33 @@
 
         async function checkAdminAccess() {
             try {
-                // Get auth token from cookies
-                const authToken = getCookie('auth_token');
-                if (!authToken) {
-                    return false;
-                }
-
-                // Check user role with the backend
-                const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    return false;
-                }
-
-                const userData = await response.json();
-                return userData.role === 'admin';
+                const session = getSession();
+                // Check if the user's role is 'admin' directly from the session data.
+                return session && session.user && session.user.role === 'admin';
             } catch (error) {
                 console.error('Error checking admin access:', error);
                 return false;
             }
         }
 
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-            return null;
+        function getSession() {
+            const sessionData = localStorage.getItem('nexus_session');
+            if (!sessionData) {
+                console.warn('No session data found in localStorage.');
+                return null;
+            }
+            try {
+                const session = JSON.parse(sessionData);
+                // Ensure the session object has the expected structure
+                if (session && session.token && session.user) {
+                    return session;
+                }
+                return null;
+            } catch (error) {
+                console.error('Error parsing session data:', error);
+                localStorage.removeItem('nexus_session'); // Clear corrupted data
+                return null;
+            }
         }
 
         function getMatchSchedule(matchId, fallbackDate) {
@@ -2457,33 +2452,10 @@
         const REMOVAL_COOLDOWN = 2000; // 2 seconds between removal attempts
 
         async function removeTeam(teamId, tableId, slot) {
-            // Input validation
-            if (!teamId || typeof teamId !== 'string') {
-                showNotification('Invalid team identifier provided.', 'error');
-                return;
-            }
-
-            // Sanitize inputs to prevent XSS
-            teamId = teamId.replace(/[<>\"']/g, '');
-
-            if (!teamId.trim()) {
+            if (!teamId) {
                 showNotification('No team to remove from this slot.', 'warning');
                 return;
             }
-
-            // Validate tournament slug
-            if (!tournamentSlug || typeof tournamentSlug !== 'string') {
-                showNotification('Invalid tournament identifier.', 'error');
-                return;
-            }
-
-            // Rate limiting check
-            const now = Date.now();
-            if (now - lastRemovalAttempt < REMOVAL_COOLDOWN) {
-                showNotification('Please wait before attempting another removal.', 'warning');
-                return;
-            }
-            lastRemovalAttempt = now;
 
             // Check admin access first
             const isAdmin = await checkAdminAccess();
@@ -2492,33 +2464,16 @@
                 return;
             }
 
-            // Find team details for confirmation dialog
-            const participants = tournamentData.participants || [];
-            const team = participants.find(p => (p._id || p.id) === teamId);
-
+            const team = (tournamentData.participants || []).find(p => (p._id || p.id) === teamId);
             if (!team) {
-                showNotification('Team not found in tournament participants.', 'error');
+                showNotification('Team not found in tournament data.', 'error');
                 return;
             }
 
             const teamName = team.teamName || 'Unknown Team';
 
-            // Additional validation - ensure team ID matches expected format
-            if (!/^[a-fA-F0-9]{24}$/.test(teamId) && !/^[a-zA-Z0-9_-]+$/.test(teamId)) {
-                showNotification('Invalid team identifier format.', 'error');
-                return;
-            }
-
-            // Store removal details for confirmation
-            pendingRemoval = {
-                teamId: teamId,
-                tableId: tableId,
-                slot: slot,
-                teamName: teamName,
-                timestamp: Date.now()
-            };
-
-            // Show confirmation modal
+            // Store details for confirmation
+            pendingRemoval = { teamId, tableId, slot, teamName, timestamp: Date.now() };
             showConfirmationModal(teamName, tournamentData.title || 'Tournament');
         }
 
@@ -2586,20 +2541,18 @@
                     deleteBtn.classList.add('removing');
                 }
 
-                // Get auth token for admin API call
-                const authToken = getCookie('auth_token');
+                const session = getSession();
+                const authToken = session ? session.token : null;
                 if (!authToken) {
-                    throw new Error('Authentication required');
+                    throw new Error('Authentication token not found. Please log in again.');
                 }
 
-                // Make API call to remove team from tournament using admin endpoint
+                // Make API call to remove team from tournament using the correct admin endpoint
                 const response = await fetch(`${API_BASE_URL}/api/tournaments/${tournamentSlug}/participants/${teamId}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${authToken}`,
                         'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-Timestamp': Date.now().toString()
                     }
                 });
 
@@ -2613,14 +2566,9 @@
                 // Close modal
                 closeConfirmationModal();
 
-                // Show success message with team name
-                showNotification(result.message || 'Team removed successfully from the tournament', 'success');
+                showNotification(result.message || 'Team removed successfully!', 'success');
 
-                // Update UI immediately without full reload
-                removeParticipantFromUI(teamId, teamName);
-                updateParticipantCounts(result.data.tournament.remainingParticipants);
-
-                // Reload the tournament data to reflect changes (fallback)
+                // Reload data to reflect the change
                 await loadTournamentBrackets();
 
             } catch (error) {
