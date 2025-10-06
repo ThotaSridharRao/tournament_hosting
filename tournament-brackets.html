@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="navbar.css">
     <!-- jsPDF for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
@@ -28,6 +27,259 @@
             --radius: 12px;
         }
 
+        /* =========================MODERN NAVBAR STYLES========================= */
+        .nav-normal {
+            background: rgba(13, 10, 26, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1.2rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+            transform: translateY(0);
+        }
+
+        .nav-normal.nav-hidden {
+            transform: translateY(-100%);
+        }
+
+        .nav-normal.nav-scrolled {
+            background: rgba(13, 10, 26, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0;
+            list-style: none;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            position: relative;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            padding: 0.6rem 1.2rem;
+            display: block;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: white;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-request {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
+            color: white;
+        }
+
+        .btn-request:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(15, 133, 211, 0.3);
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        #user-menu {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .user-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .menu-icon {
+            width: 24px;
+            height: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .menu-icon span {
+            width: 100%;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle.active .menu-icon span:nth-child(1) {
+            transform: rotate(45deg) translate(7px, 7px);
+        }
+
+        .menu-toggle.active .menu-icon span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active .menu-icon span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 968px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-center {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                height: 100vh;
+                width: 85%;
+                max-width: 350px;
+                flex-direction: column;
+                background: rgba(15, 15, 15, 0.98);
+                backdrop-filter: blur(20px);
+                padding: 6rem 2rem 2rem;
+                gap: 0;
+                transition: right 0.3s ease;
+                border-left: 1px solid rgba(255, 255, 255, 0.1);
+                align-items: flex-start;
+                overflow-y: auto;
+            }
+
+            .nav-center.active {
+                right: 0;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 0;
+            }
+
+            .nav-links li {
+                width: 100%;
+            }
+
+            .nav-links a {
+                padding: 1rem 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .auth-buttons {
+                flex-direction: column;
+                width: 100%;
+                gap: 1rem;
+                margin-top: 2rem;
+                padding-top: 2rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .user-info {
+                width: 100%;
+                justify-content: center;
+            }
+
+            #user-menu {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                gap: 1rem;
+            }
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg-dark);
@@ -35,6 +287,8 @@
             margin: 0;
             padding: 0;
             min-height: 100vh;
+            padding-top: 80px;
+            /* Account for fixed navbar */
         }
 
         .container {
@@ -163,24 +417,7 @@
             padding: 3rem;
         }
 
-        .back-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--primary-color);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--radius);
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--ease);
-            margin-bottom: 2rem;
-        }
 
-        .back-button:hover {
-            background: var(--accent-secondary);
-            transform: translateY(-2px);
-        }
 
 
 
@@ -564,19 +801,49 @@
             border-bottom: none;
         }
 
-        /* Qualifier table 6-column layout styling */
+        /* Default table styling for finals (5-column layout) */
         .match-table th:nth-child(1),
         .match-table td:nth-child(1),
-        .match-table th:nth-child(4),
-        .match-table td:nth-child(4) {
+        .match-table th:nth-child(3),
+        .match-table td:nth-child(3) {
             width: 60px;
             text-align: center;
         }
 
         .match-table th:nth-child(2),
         .match-table td:nth-child(2),
+        .match-table th:nth-child(4),
+        .match-table td:nth-child(4) {
+            width: auto;
+            text-align: left;
+            min-width: 200px;
+        }
+
         .match-table th:nth-child(5),
         .match-table td:nth-child(5) {
+            width: auto;
+        }
+
+        /* Add border between the two sections for better visual separation */
+        .match-table th:nth-child(2),
+        .match-table td:nth-child(2) {
+            border-right: 2px solid var(--primary-color);
+            padding-right: 1rem;
+        }
+
+        /* Qualifier table 6-column layout styling - override for qualifier tables */
+        .match-table.qualifier-table th:nth-child(1),
+        .match-table.qualifier-table td:nth-child(1),
+        .match-table.qualifier-table th:nth-child(4),
+        .match-table.qualifier-table td:nth-child(4) {
+            width: 60px;
+            text-align: center;
+        }
+
+        .match-table.qualifier-table th:nth-child(2),
+        .match-table.qualifier-table td:nth-child(2),
+        .match-table.qualifier-table th:nth-child(5),
+        .match-table.qualifier-table td:nth-child(5) {
             width: 180px;
             max-width: 180px;
             overflow: hidden;
@@ -584,25 +851,32 @@
             white-space: nowrap;
         }
 
-        .match-table th:nth-child(3),
-        .match-table td:nth-child(3),
-        .match-table th:nth-child(6),
-        .match-table td:nth-child(6) {
+        .match-table.qualifier-table th:nth-child(3),
+        .match-table.qualifier-table td:nth-child(3),
+        .match-table.qualifier-table th:nth-child(6),
+        .match-table.qualifier-table td:nth-child(6) {
             width: auto;
             text-align: left;
             min-width: 200px;
         }
 
-        .match-table th:nth-child(7),
-        .match-table td:nth-child(7) {
+        .match-table.qualifier-table th:nth-child(7),
+        .match-table.qualifier-table td:nth-child(7) {
             width: auto;
         }
 
-        /* Add border between the two sections for better visual separation */
-        .match-table th:nth-child(3),
-        .match-table td:nth-child(3) {
+        /* Add border between the two sections for qualifier tables */
+        .match-table.qualifier-table th:nth-child(3),
+        .match-table.qualifier-table td:nth-child(3) {
             border-right: 2px solid var(--primary-color);
             padding-right: 1rem;
+        }
+
+        /* Reset border for finals table */
+        .match-table.qualifier-table th:nth-child(2),
+        .match-table.qualifier-table td:nth-child(2) {
+            border-right: none;
+            padding-right: inherit;
         }
 
         .match-number {
@@ -754,11 +1028,19 @@
                 font-size: 0.9rem;
             }
 
-            /* Adjust column widths for mobile */
+            /* Adjust column widths for mobile - finals table (5-column) */
             .match-table th:nth-child(1),
             .match-table td:nth-child(1),
-            .match-table th:nth-child(4),
-            .match-table td:nth-child(4) {
+            .match-table th:nth-child(3),
+            .match-table td:nth-child(3) {
+                width: 40px;
+            }
+
+            /* Adjust column widths for mobile - qualifier table (6-column) */
+            .match-table.qualifier-table th:nth-child(1),
+            .match-table.qualifier-table td:nth-child(1),
+            .match-table.qualifier-table th:nth-child(4),
+            .match-table.qualifier-table td:nth-child(4) {
                 width: 40px;
             }
 
@@ -1007,28 +1289,44 @@
                 font-size: 0.85rem;
             }
 
-            /* Reduce column widths further for 6-column layout */
+            /* Reduce column widths further for finals table (5-column) */
             .match-table th:nth-child(1),
             .match-table td:nth-child(1),
+            .match-table th:nth-child(3),
+            .match-table td:nth-child(3) {
+                width: 30px;
+            }
+
+            .match-table th:nth-child(2),
+            .match-table td:nth-child(2),
             .match-table th:nth-child(4),
             .match-table td:nth-child(4) {
+                width: auto;
+                min-width: 120px;
+            }
+
+            /* Reduce column widths further for qualifier table (6-column) */
+            .match-table.qualifier-table th:nth-child(1),
+            .match-table.qualifier-table td:nth-child(1),
+            .match-table.qualifier-table th:nth-child(4),
+            .match-table.qualifier-table td:nth-child(4) {
                 width: 30px;
             }
 
             /* Adjust team name columns for mobile */
-            .match-table th:nth-child(2),
-            .match-table td:nth-child(2),
-            .match-table th:nth-child(5),
-            .match-table td:nth-child(5) {
+            .match-table.qualifier-table th:nth-child(2),
+            .match-table.qualifier-table td:nth-child(2),
+            .match-table.qualifier-table th:nth-child(5),
+            .match-table.qualifier-table td:nth-child(5) {
                 width: 100px;
                 max-width: 100px;
             }
 
             /* Captain columns on mobile */
-            .match-table th:nth-child(3),
-            .match-table td:nth-child(3),
-            .match-table th:nth-child(6),
-            .match-table td:nth-child(6) {
+            .match-table.qualifier-table th:nth-child(3),
+            .match-table.qualifier-table td:nth-child(3),
+            .match-table.qualifier-table th:nth-child(6),
+            .match-table.qualifier-table td:nth-child(6) {
                 width: auto;
                 min-width: 120px;
             }
@@ -1064,11 +1362,38 @@
 </head>
 
 <body>
+    <nav class="nav-normal">
+        <div class="nav-container">
+            <a href="index.html" class="logo">GamingNexus</a>
+            <div class="nav-center" id="normalNav">
+                <ul class="nav-links">
+                    <li><a href="tournaments.html">Tournaments</a></li>
+                    <li><a href="tournament-brackets.html">Brackets</a></li>
+                </ul>
+                <div class="auth-buttons" id="normalAuth">
+                    <div id="guest-menu">
+                        <a href="auth.html" class="btn btn-request">Join Us</a>
+                    </div>
+                    <div id="user-menu" style="display: none;">
+                        <div class="user-info">
+                            <div class="user-avatar" id="user-avatar">U</div>
+                            <span class="user-name" id="navbar-username">User</span>
+                        </div>
+                        <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
+                    </div>
+                </div>
+            </div>
+            <button class="menu-toggle" id="normalMenuToggle">
+                <div class="menu-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </button>
+        </div>
+    </nav>
+
     <div class="container">
-        <a href="javascript:history.back()" class="back-button">
-            <i class="fas fa-arrow-left"></i>
-            Back to Admin Dashboard
-        </a>
 
         <div class="header">
             <h1 class="tournament-title" id="tournament-title">Loading Tournament...</h1>
@@ -1134,6 +1459,94 @@
         let currentSlide = 0;
         let totalSlides = 0;
 
+        // Consolidated session function - checks both storage types with validation
+        function getSessionData() {
+            const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+            if (!session) {
+                return null;
+            }
+            try {
+                const parsedSession = JSON.parse(session);
+                // Ensure the session object has the expected structure
+                if (parsedSession && parsedSession.token && parsedSession.user) {
+                    return parsedSession;
+                }
+                return null;
+            } catch (error) {
+                console.error('Error parsing session data:', error);
+                // Clear corrupted data from both storages
+                localStorage.removeItem('nexus_session');
+                sessionStorage.removeItem('nexus_session');
+                return null;
+            }
+        }
+
+        function checkUserAuthentication() {
+            const sessionData = getSessionData();
+            const guestMenu = document.getElementById('guest-menu');
+            const userMenu = document.getElementById('user-menu');
+            const user = sessionData?.user;
+
+            if (user) {
+                const username = user.username || (user.email ? user.email.split('@')[0] : 'User');
+                const userInitials = username.substring(0, 2).toUpperCase();
+
+                // Update navbar elements
+                const navbarUsername = document.getElementById('navbar-username');
+                const userAvatar = document.getElementById('user-avatar');
+
+                if (navbarUsername) {
+                    navbarUsername.textContent = username;
+                }
+                if (userAvatar) {
+                    userAvatar.textContent = userInitials;
+                }
+
+                // Show/hide menus
+                if (guestMenu) guestMenu.style.display = 'none';
+                if (userMenu) userMenu.style.display = 'flex';
+            } else {
+                // Show guest menu, hide user menu
+                if (guestMenu) guestMenu.style.display = 'block';
+                if (userMenu) userMenu.style.display = 'none';
+            }
+        }
+
+        // Mobile menu toggle for navbar
+        function initializeMobileMenu() {
+            const normalMenuToggle = document.getElementById('normalMenuToggle');
+            const normalNav = document.getElementById('normalNav');
+
+            if (normalMenuToggle && normalNav) {
+                normalMenuToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    normalMenuToggle.classList.toggle('active');
+                    normalNav.classList.toggle('active');
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.nav-normal') && normalNav.classList.contains('active')) {
+                        normalNav.classList.remove('active');
+                        normalMenuToggle.classList.remove('active');
+                    }
+                });
+            }
+        }
+
+        // Initialize navbar authentication state
+        function initializeNavbar() {
+            checkUserAuthentication();
+            initializeMobileMenu();
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('nexus_session');
+                sessionStorage.removeItem('nexus_session');
+                window.location.href = 'auth.html';
+            }
+        }
 
         // Get tournament slug from URL
         const urlParams = new URLSearchParams(window.location.search);
@@ -1141,6 +1554,7 @@
         console.log('Tournament Slug:', tournamentSlug);
 
         if (!tournamentSlug) {
+            initializeNavbar();
             document.getElementById('brackets-container').innerHTML = `
                 <div class="no-brackets">
                     <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem; color: #ffc107;"></i>
@@ -1149,8 +1563,11 @@
                 </div>
             `;
         } else {
+            initializeNavbar();
             loadTournamentBrackets();
         }
+
+        // ... rest of your functions remain unchanged ...
 
         async function loadTournamentBrackets() {
             try {
@@ -1632,7 +2049,8 @@
             html += `</div>`;
 
             // Start Table
-            html += `<table class="match-table" id="${tableId}">`;
+            const tableClass = tableConfig.type === 'qualifier' ? 'match-table qualifier-table' : 'match-table';
+            html += `<table class="${tableClass}" id="${tableId}">`;
 
             // Build table based on type
             if (tableConfig.type === 'qualifier') {
@@ -2012,7 +2430,7 @@
 
         async function checkAdminAccess() {
             try {
-                const session = getSession();
+                const session = getSessionData();
                 // Check if the user's role is 'admin' directly from the session data.
                 return session && session.user && session.user.role === 'admin';
             } catch (error) {
@@ -2021,25 +2439,7 @@
             }
         }
 
-        function getSession() {
-            const sessionData = localStorage.getItem('nexus_session');
-            if (!sessionData) {
-                console.warn('No session data found in localStorage.');
-                return null;
-            }
-            try {
-                const session = JSON.parse(sessionData);
-                // Ensure the session object has the expected structure
-                if (session && session.token && session.user) {
-                    return session;
-                }
-                return null;
-            } catch (error) {
-                console.error('Error parsing session data:', error);
-                localStorage.removeItem('nexus_session'); // Clear corrupted data
-                return null;
-            }
-        }
+
 
         function getMatchSchedule(matchId, fallbackDate) {
             // Check for schedule events
@@ -2621,7 +3021,7 @@
                     deleteBtn.classList.add('removing');
                 }
 
-                const session = getSession();
+                const session = getSessionData();
                 const authToken = session ? session.token : null;
                 if (!authToken) {
                     throw new Error('Authentication token not found. Please log in again.');
