@@ -503,6 +503,10 @@
             display: flex;
         }
 
+        .match-table.delete-mode .delete-column {
+            display: table-cell !important;
+        }
+
         .match-table.delete-mode tr:hover {
             background: rgba(220, 53, 69, 0.1);
         }
@@ -825,8 +829,138 @@
             }
 
             .match-table.delete-mode .match-teams {
-                max-width: 120px; /* Reduce width when delete buttons are visible */
+                max-width: 120px;
+                /* Reduce width when delete buttons are visible */
             }
+        }
+
+        /* Confirmation Modal Styles */
+        .delete-confirmation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: var(--panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            z-index: 1001;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #dc3545;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: var(--ease);
+        }
+
+        .modal-close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-body p {
+            margin: 0 0 1rem 0;
+            line-height: 1.5;
+        }
+
+        .warning-text {
+            color: #ffc107;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .cancel-btn {
+            background: var(--panel);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--ease);
+        }
+
+        .cancel-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .confirm-btn {
+            background: #dc3545;
+            border: 1px solid #dc3545;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--ease);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .confirm-btn:hover:not(:disabled) {
+            background: #c82333;
+            border-color: #c82333;
+        }
+
+        .confirm-btn:disabled {
+            background: #6c757d;
+            border-color: #6c757d;
+            cursor: not-allowed;
         }
 
         /* Extra small devices (phones < 480px) */
@@ -837,7 +971,8 @@
             }
 
             .carousel-btn span {
-                display: none; /* Hide "Previous" and "Next" text */
+                display: none;
+                /* Hide "Previous" and "Next" text */
             }
 
             .carousel-indicator {
@@ -868,6 +1003,29 @@
 
             .brackets-container {
                 padding: 0.5rem;
+            }
+
+            /* Modal responsive adjustments */
+            .modal-content {
+                width: 95%;
+                margin: 1rem;
+            }
+
+            .modal-header,
+            .modal-body,
+            .modal-actions {
+                padding: 1rem;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .cancel-btn,
+            .confirm-btn {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -910,13 +1068,38 @@
                 Download Brackets PDF
             </button>
         </div>
+
+        <!-- Confirmation Dialog Modal -->
+        <div class="delete-confirmation-modal" id="deleteConfirmationModal" style="display: none;">
+            <div class="modal-overlay" onclick="closeConfirmationModal()"></div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Confirm Team Removal</h3>
+                    <button class="modal-close-btn" onclick="closeConfirmationModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to remove <strong id="teamNameToRemove">Team Name</strong> from <strong
+                            id="tournamentNameToRemove">Tournament Name</strong>?</p>
+                    <p class="warning-text">This action will cancel their registration and cannot be undone.</p>
+                </div>
+                <div class="modal-actions">
+                    <button class="cancel-btn" onclick="closeConfirmationModal()">Cancel</button>
+                    <button class="confirm-btn" id="confirmRemoveBtn" onclick="confirmTeamRemoval()">
+                        <i class="fas fa-trash"></i>
+                        Remove Team
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         const API_BASE_URL = 'https://t2-237c.onrender.com';
         let tournamentData = null;
         let matchesData = [];
-        
+
         // Carousel variables
         let currentSlide = 0;
         let totalSlides = 0;
@@ -1123,7 +1306,7 @@
             document.getElementById('tournament-stats').style.display = 'grid';
         }
 
-        function displayBrackets() {
+        async function displayBrackets() {
             const participants = tournamentData.participants || [];
             const container = document.getElementById('brackets-container');
 
@@ -1142,6 +1325,16 @@
 
             // Handle all tournament formats dynamically
             displayTournamentBrackets(participants, container, format);
+
+            // Check admin access and hide/show delete buttons accordingly
+            const isAdmin = await checkAdminAccess();
+            if (!isAdmin) {
+                // Hide all delete buttons for non-admin users
+                const deleteButtons = document.querySelectorAll('.delete-teams-btn');
+                deleteButtons.forEach(btn => {
+                    btn.style.display = 'none';
+                });
+            }
         }
 
         function displayTournamentBrackets(participants, container, format) {
@@ -1168,16 +1361,16 @@
                     html += `<div class="qualifier-carousel">`;
                     html += `<div class="carousel-container">`;
                     html += `<div class="carousel-slides" id="carousel-slides">`;
-                    
+
                     // Create all qualifier tables as slides
                     stage.tables.forEach((table, tableIndex) => {
                         html += `<div class="carousel-slide">`;
                         html += createMatchTable(table, participants, stageIndex, tableIndex);
                         html += `</div>`;
                     });
-                    
+
                     html += `</div></div>`; // Close carousel-slides and carousel-container
-                    
+
                     // Add navigation controls
                     html += `<div class="carousel-controls">`;
                     html += `<button class="carousel-btn" id="prev-btn" onclick="previousSlide()" disabled>
@@ -1188,7 +1381,7 @@
                                 <span>Next</span> <i class="fas fa-chevron-right"></i>
                             </button>`;
                     html += `</div>`;
-                    
+
                     html += `</div>`; // Close qualifier-carousel
                 } else {
                     // For finalists or other stages, display normally
@@ -1377,25 +1570,25 @@
             const qualifierTeams = participants.slice(startIndex, endIndex);
 
             html += `<div class="match-header-controls">`;
-            
+
             if (tableConfig.type === 'qualifier') {
                 html += `<span class="match-count">${qualifierTeams.length}/${groupSize} Teams</span>`;
             } else {
                 html += `<span class="match-count">${tableConfig.totalMatches} ${tableConfig.totalMatches === 1 ? 'Match' : 'Matches'}</span>`;
             }
-            
+
             // Add plus icon for admin to set schedule
             html += `<button class="add-schedule-btn" onclick="setMatchSchedule('${tableId}', '${tableConfig.name}')" title="Set Match Schedule">
                         <i class="fas fa-plus"></i>
                      </button>`;
-            
-            // Add delete button for qualifier tables
-            if (tableConfig.type === 'qualifier') {
+
+            // Add delete button for all participant tables (admin only)
+            if (tableConfig.type === 'qualifier' || tableConfig.type === 'final') {
                 html += `<button class="delete-teams-btn" onclick="toggleDeleteMode('${tableId}')" title="Remove Teams">
                             <i class="fas fa-trash"></i>
                          </button>`;
             }
-            
+
             // Display existing schedule if available
             const existingSchedule = getMatchSchedule(tableId);
             if (existingSchedule) {
@@ -1403,7 +1596,7 @@
             } else {
                 html += `<span class="match-schedule" id="schedule-${tableId}" style="display: none;"></span>`;
             }
-            
+
             html += `</div>`;
             html += `</div>`;
 
@@ -1437,7 +1630,7 @@
                 }
                 html += `</tbody>`;
             } else if (tableConfig.type === 'final') {
-                html += `<thead><tr><th>S.No</th><th>Team Name</th><th>S.No</th><th>Team Name</th></tr></thead>`;
+                html += `<thead><tr><th>S.No</th><th>Team Name</th><th>S.No</th><th>Team Name</th><th class="delete-column" style="display: none;">Action</th></tr></thead>`;
                 html += `<tbody>`;
 
                 // Check if we have finalists data
@@ -1453,12 +1646,33 @@
                     // First team (left side)
                     const team1 = finalists[i];
                     html += `<td class="match-number">${i + 1}</td>`;
-                    html += `<td class="match-teams">${team1 ? (team1.teamName || team1.name || 'Unnamed Team') : '<em>TBD</em>'}</td>`;
+                    if (team1) {
+                        html += `<td class="match-teams" data-team-id="${team1._id || team1.id || ''}">
+                                    <strong>${team1.teamName || team1.name || 'Unnamed Team'}</strong>
+                                    <button class="team-delete-btn" onclick="removeTeam('${team1._id || team1.id}', '${tableId}', ${i + 1})" title="Remove Team">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                 </td>`;
+                    } else {
+                        html += `<td class="match-teams"><em>TBD</em></td>`;
+                    }
 
                     // Second team (right side)
                     const team2 = finalists[i + 1];
                     html += `<td class="match-number">${i + 2}</td>`;
-                    html += `<td class="match-teams">${team2 ? (team2.teamName || team2.name || 'Unnamed Team') : '<em>TBD</em>'}</td>`;
+                    if (team2) {
+                        html += `<td class="match-teams" data-team-id="${team2._id || team2.id || ''}">
+                                    <strong>${team2.teamName || team2.name || 'Unnamed Team'}</strong>
+                                    <button class="team-delete-btn" onclick="removeTeam('${team2._id || team2.id}', '${tableId}', ${i + 2})" title="Remove Team">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                 </td>`;
+                    } else {
+                        html += `<td class="match-teams"><em>TBD</em></td>`;
+                    }
+
+                    // Delete action column (hidden by default)
+                    html += `<td class="delete-column" style="display: none;"></td>`;
 
                     html += `</tr>`;
                 }
@@ -1880,7 +2094,7 @@
                         doc.setFontSize(14);
                         doc.setTextColor(15, 133, 211);
                         doc.text(table.name, 20, currentY);
-                        
+
                         // Add schedule information if available
                         const tableId = `stage-${stageIndex}-table-${tableIndex}`;
                         const schedule = getMatchSchedule(tableId);
@@ -2089,7 +2303,7 @@
 
             // Confirmation
             const confirmed = confirm(`Confirm schedule for "${tableName}":\n\n${displaySchedule}\n\nThis will be saved and visible in the tournament brackets.`);
-            
+
             if (confirmed) {
                 saveMatchSchedule(tableId, displaySchedule);
                 updateScheduleDisplay(tableId, displaySchedule);
@@ -2160,7 +2374,7 @@
 
         // Call loadMatchSchedules after tournament data is loaded
         const originalLoadTournamentBrackets = loadTournamentBrackets;
-        loadTournamentBrackets = async function() {
+        loadTournamentBrackets = async function () {
             await originalLoadTournamentBrackets();
             // Small delay to ensure DOM is updated
             setTimeout(loadMatchSchedules, 100);
@@ -2195,23 +2409,23 @@
             const prevBtn = document.getElementById('prev-btn');
             const nextBtn = document.getElementById('next-btn');
             const indicator = document.getElementById('slide-indicator');
-            
+
             if (carouselSlides) {
                 carouselSlides.style.transform = `translateX(-${currentSlide * 100}%)`;
             }
-            
+
             // Update button states
             if (prevBtn) prevBtn.disabled = currentSlide === 0;
             if (nextBtn) nextBtn.disabled = currentSlide === totalSlides - 1;
-            
+
             // Update indicator
             if (indicator) indicator.textContent = `Match ${currentSlide + 1} of ${totalSlides}`;
         }
 
         // Initialize carousel after brackets are loaded
         const originalDisplayBrackets = displayBrackets;
-        displayBrackets = function() {
-            originalDisplayBrackets();
+        displayBrackets = async function () {
+            await originalDisplayBrackets();
             setTimeout(initializeCarousel, 100);
         };
 
@@ -2219,10 +2433,10 @@
         function toggleDeleteMode(tableId) {
             const table = document.getElementById(tableId);
             const deleteBtn = document.querySelector(`button[onclick="toggleDeleteMode('${tableId}')"]`);
-            
+
             if (table && deleteBtn) {
                 const isDeleteMode = table.classList.contains('delete-mode');
-                
+
                 if (isDeleteMode) {
                     // Exit delete mode
                     table.classList.remove('delete-mode');
@@ -2237,55 +2451,271 @@
             }
         }
 
+        // Global variables for modal confirmation and rate limiting
+        let pendingRemoval = null;
+        let lastRemovalAttempt = 0;
+        const REMOVAL_COOLDOWN = 2000; // 2 seconds between removal attempts
+
         async function removeTeam(teamId, tableId, slot) {
-            if (!teamId) {
-                alert('No team to remove from this slot.');
+            // Input validation
+            if (!teamId || typeof teamId !== 'string') {
+                showNotification('Invalid team identifier provided.', 'error');
                 return;
             }
 
-            const confirmRemoval = confirm('Are you sure you want to remove this team from the tournament? This will cancel their registration and cannot be undone.');
-            
-            if (!confirmRemoval) {
+            // Sanitize inputs to prevent XSS
+            teamId = teamId.replace(/[<>\"']/g, '');
+
+            if (!teamId.trim()) {
+                showNotification('No team to remove from this slot.', 'warning');
                 return;
             }
+
+            // Validate tournament slug
+            if (!tournamentSlug || typeof tournamentSlug !== 'string') {
+                showNotification('Invalid tournament identifier.', 'error');
+                return;
+            }
+
+            // Rate limiting check
+            const now = Date.now();
+            if (now - lastRemovalAttempt < REMOVAL_COOLDOWN) {
+                showNotification('Please wait before attempting another removal.', 'warning');
+                return;
+            }
+            lastRemovalAttempt = now;
+
+            // Check admin access first
+            const isAdmin = await checkAdminAccess();
+            if (!isAdmin) {
+                showNotification('Admin access required to remove participants', 'error');
+                return;
+            }
+
+            // Find team details for confirmation dialog
+            const participants = tournamentData.participants || [];
+            const team = participants.find(p => (p._id || p.id) === teamId);
+
+            if (!team) {
+                showNotification('Team not found in tournament participants.', 'error');
+                return;
+            }
+
+            const teamName = team.teamName || 'Unknown Team';
+
+            // Additional validation - ensure team ID matches expected format
+            if (!/^[a-fA-F0-9]{24}$/.test(teamId) && !/^[a-zA-Z0-9_-]+$/.test(teamId)) {
+                showNotification('Invalid team identifier format.', 'error');
+                return;
+            }
+
+            // Store removal details for confirmation
+            pendingRemoval = {
+                teamId: teamId,
+                tableId: tableId,
+                slot: slot,
+                teamName: teamName,
+                timestamp: Date.now()
+            };
+
+            // Show confirmation modal
+            showConfirmationModal(teamName, tournamentData.title || 'Tournament');
+        }
+
+        function showConfirmationModal(teamName, tournamentName) {
+            document.getElementById('teamNameToRemove').textContent = teamName;
+            document.getElementById('tournamentNameToRemove').textContent = tournamentName;
+            document.getElementById('deleteConfirmationModal').style.display = 'flex';
+
+            // Focus on cancel button for accessibility
+            document.querySelector('.cancel-btn').focus();
+
+            // Add keyboard event listeners
+            document.addEventListener('keydown', handleModalKeydown);
+        }
+
+        function handleModalKeydown(event) {
+            if (event.key === 'Escape') {
+                closeConfirmationModal();
+            } else if (event.key === 'Enter') {
+                event.preventDefault();
+                confirmTeamRemoval();
+            }
+        }
+
+        function closeConfirmationModal() {
+            document.getElementById('deleteConfirmationModal').style.display = 'none';
+            pendingRemoval = null;
+
+            // Remove keyboard event listeners
+            document.removeEventListener('keydown', handleModalKeydown);
+
+            // Reset modal button state
+            const confirmBtn = document.getElementById('confirmRemoveBtn');
+            confirmBtn.disabled = false;
+            confirmBtn.innerHTML = '<i class="fas fa-trash"></i> Remove Team';
+        }
+
+        async function confirmTeamRemoval() {
+            if (!pendingRemoval) {
+                closeConfirmationModal();
+                return;
+            }
+
+            // Validate pending removal hasn't expired (5 minute timeout)
+            const CONFIRMATION_TIMEOUT = 5 * 60 * 1000; // 5 minutes
+            if (Date.now() - pendingRemoval.timestamp > CONFIRMATION_TIMEOUT) {
+                showNotification('Confirmation expired. Please try again.', 'warning');
+                closeConfirmationModal();
+                return;
+            }
+
+            const { teamId, tableId, slot, teamName } = pendingRemoval;
 
             try {
-                // Show loading state
+                // Show loading state in modal
+                const confirmBtn = document.getElementById('confirmRemoveBtn');
+                confirmBtn.disabled = true;
+                confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Removing...';
+
+                // Show loading state on delete button
                 const deleteBtn = document.querySelector(`tr[data-team-id="${teamId}"] .team-delete-btn`);
                 if (deleteBtn) {
                     deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                     deleteBtn.disabled = true;
+                    deleteBtn.classList.add('removing');
                 }
 
-                // Make API call to remove team from tournament
-                const response = await fetch(`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}/participants/${teamId}`, {
+                // Get auth token for admin API call
+                const authToken = getCookie('auth_token');
+                if (!authToken) {
+                    throw new Error('Authentication required');
+                }
+
+                // Make API call to remove team from tournament using admin endpoint
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${tournamentSlug}/participants/${teamId}`, {
                     method: 'DELETE',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-Timestamp': Date.now().toString()
                     }
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to remove team from tournament');
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || 'Failed to remove team from tournament');
                 }
 
-                // Show success message
-                showNotification('Team removed successfully from the tournament', 'success');
+                const result = await response.json();
 
-                // Reload the tournament data to reflect changes
+                // Close modal
+                closeConfirmationModal();
+
+                // Show success message with team name
+                showNotification(result.message || 'Team removed successfully from the tournament', 'success');
+
+                // Update UI immediately without full reload
+                removeParticipantFromUI(teamId, teamName);
+                updateParticipantCounts(result.data.tournament.remainingParticipants);
+
+                // Reload the tournament data to reflect changes (fallback)
                 await loadTournamentBrackets();
 
             } catch (error) {
                 console.error('Error removing team:', error);
-                showNotification('Failed to remove team. Please try again.', 'error');
-                
-                // Reset button state on error
+
+                // Check if it's a network error and offer retry
+                if (error.message.includes('Failed to fetch') || error.message.includes('Network')) {
+                    showNotificationWithRetry(
+                        'Network error occurred. Please check your connection and try again.',
+                        'error',
+                        () => confirmTeamRemoval()
+                    );
+                } else if (error.message.includes('Authentication') || error.message.includes('401')) {
+                    showNotification('Authentication expired. Please refresh the page and try again.', 'error');
+                } else if (error.message.includes('403') || error.message.includes('Forbidden')) {
+                    showNotification('Access denied. Admin privileges required.', 'error');
+                } else {
+                    showNotification(error.message || 'Failed to remove team. Please try again.', 'error');
+                }
+
+                // Reset modal button state
+                const confirmBtn = document.getElementById('confirmRemoveBtn');
+                confirmBtn.disabled = false;
+                confirmBtn.innerHTML = '<i class="fas fa-trash"></i> Remove Team';
+
+                // Reset delete button state on error
                 const deleteBtn = document.querySelector(`tr[data-team-id="${teamId}"] .team-delete-btn`);
                 if (deleteBtn) {
                     deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
                     deleteBtn.disabled = false;
+                    deleteBtn.classList.remove('removing');
                 }
             }
+        }
+
+        function removeParticipantFromUI(teamId, teamName) {
+            // Remove participant row from display
+            const teamRow = document.querySelector(`tr[data-team-id="${teamId}"]`);
+            if (teamRow) {
+                teamRow.style.transition = 'opacity 0.3s ease';
+                teamRow.style.opacity = '0';
+                setTimeout(() => {
+                    teamRow.remove();
+                    checkForEmptyTables();
+                }, 300);
+            }
+        }
+
+        function updateParticipantCounts(newCount) {
+            // Update participant count displays
+            const countElements = document.querySelectorAll('.match-count');
+            countElements.forEach(element => {
+                const currentText = element.textContent;
+                const parts = currentText.split('/');
+                if (parts.length === 2) {
+                    element.textContent = `${newCount}/${parts[1]}`;
+                }
+            });
+
+            // Update tournament statistics
+            const statElements = document.querySelectorAll('.stat-number');
+            statElements.forEach(element => {
+                const parentCard = element.closest('.stat-card');
+                if (parentCard && parentCard.querySelector('.stat-label').textContent.includes('Participants')) {
+                    element.textContent = newCount;
+                }
+            });
+        }
+
+        function checkForEmptyTables() {
+            // Check if any tables are now empty and show appropriate message
+            const tables = document.querySelectorAll('.match-table');
+            tables.forEach(table => {
+                const rows = table.querySelectorAll('tbody tr');
+                const hasTeams = Array.from(rows).some(row => {
+                    const teamCell = row.querySelector('.match-teams');
+                    return teamCell && !teamCell.textContent.includes('TBD') && !teamCell.textContent.includes('Empty');
+                });
+
+                if (!hasTeams && rows.length > 0) {
+                    // Add empty state message
+                    const tbody = table.querySelector('tbody');
+                    if (tbody && !tbody.querySelector('.empty-state')) {
+                        const emptyRow = document.createElement('tr');
+                        emptyRow.className = 'empty-state';
+                        emptyRow.innerHTML = `
+                            <td colspan="100%" style="text-align: center; padding: 2rem; color: var(--text-secondary); font-style: italic;">
+                                <i class="fas fa-users-slash" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                                No teams in this section
+                            </td>
+                        `;
+                        tbody.appendChild(emptyRow);
+                    }
+                }
+            });
         }
 
         function showNotification(message, type = 'info') {
@@ -2333,6 +2763,71 @@
                     }
                 }, 300);
             }, 4000);
+        }
+
+        function showNotificationWithRetry(message, type, retryCallback) {
+            // Create notification element with retry button
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                color: white;
+                background: ${type === 'error' ? '#ef4444' : '#10b981'};
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 10001;
+                max-width: 400px;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                font-weight: 600;
+            `;
+
+            notification.innerHTML = `
+                <div style="flex: 1;">
+                    <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
+                    ${message}
+                </div>
+                <button class="retry-btn" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); 
+                               color: white; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; 
+                               font-size: 0.9rem; transition: background 0.3s ease; font-weight: 600;">
+                    <i class="fas fa-redo"></i> Retry
+                </button>
+                <button class="close-btn" style="background: none; border: none; color: white; cursor: pointer; 
+                               font-size: 1.2rem; padding: 0.25rem;">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            // Add event listeners
+            notification.querySelector('.retry-btn').addEventListener('click', () => {
+                notification.remove();
+                retryCallback();
+            });
+
+            notification.querySelector('.close-btn').addEventListener('click', () => {
+                notification.remove();
+            });
+
+            // Add hover effects
+            const retryBtn = notification.querySelector('.retry-btn');
+            retryBtn.addEventListener('mouseover', () => {
+                retryBtn.style.background = 'rgba(255,255,255,0.3)';
+            });
+            retryBtn.addEventListener('mouseout', () => {
+                retryBtn.style.background = 'rgba(255,255,255,0.2)';
+            });
+
+            document.body.appendChild(notification);
+
+            // Auto-remove notification after 10 seconds (longer for retry notifications)
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 10000);
         }
     </script>
 </body>
