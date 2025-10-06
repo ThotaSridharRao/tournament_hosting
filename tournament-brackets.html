@@ -443,6 +443,88 @@
             gap: 0.5rem;
         }
 
+        .add-schedule-btn,
+        .delete-teams-btn {
+            background: var(--accent-secondary);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: var(--ease);
+        }
+
+        .add-schedule-btn:hover {
+            background: #7c5fd3;
+            transform: scale(1.1);
+        }
+
+        .delete-teams-btn {
+            background: #dc3545;
+        }
+
+        .delete-teams-btn:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+
+        .delete-teams-btn.active {
+            background: #c82333;
+            box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+        }
+
+        .team-delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: var(--ease);
+            margin-left: 0.5rem;
+        }
+
+        .team-delete-btn:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+
+        .match-table.delete-mode .team-delete-btn {
+            display: flex;
+        }
+
+        .match-table.delete-mode tr:hover {
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        .match-table.delete-mode {
+            border: 2px solid rgba(220, 53, 69, 0.3);
+        }
+
+        .match-table.delete-mode .match-table-header {
+            background: rgba(220, 53, 69, 0.1);
+        }
+
+        .team-delete-btn.removing {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .team-delete-btn.removing:hover {
+            background: #6c757d;
+            transform: none;
+        }
+
         .match-schedule {
             background: rgba(93, 63, 211, 0.2);
             color: var(--accent-secondary);
@@ -732,6 +814,18 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
+                position: relative;
+            }
+
+            /* Mobile delete button adjustments */
+            .team-delete-btn {
+                width: 18px;
+                height: 18px;
+                font-size: 0.6rem;
+            }
+
+            .match-table.delete-mode .match-teams {
+                max-width: 120px; /* Reduce width when delete buttons are visible */
             }
         }
 
@@ -1295,6 +1389,13 @@
                         <i class="fas fa-plus"></i>
                      </button>`;
             
+            // Add delete button for qualifier tables
+            if (tableConfig.type === 'qualifier') {
+                html += `<button class="delete-teams-btn" onclick="toggleDeleteMode('${tableId}')" title="Remove Teams">
+                            <i class="fas fa-trash"></i>
+                         </button>`;
+            }
+            
             // Display existing schedule if available
             const existingSchedule = getMatchSchedule(tableId);
             if (existingSchedule) {
@@ -1311,21 +1412,27 @@
 
             // Build table based on type
             if (tableConfig.type === 'qualifier') {
-                html += `<thead><tr><th>S.No</th><th>Team Name</th><th>Captain</th></tr></thead>`;
+                html += `<thead><tr><th>S.No</th><th>Team Name</th><th>Captain</th><th class="delete-column" style="display: none;">Action</th></tr></thead>`;
                 html += `<tbody>`;
 
                 // Create slots for this qualifier and fill with teams
                 for (let slot = 1; slot <= groupSize; slot++) {
                     const team = qualifierTeams[slot - 1];
-                    html += `<tr>`;
+                    html += `<tr data-team-id="${team ? team._id || team.id : ''}" data-slot="${slot}">`;
                     html += `<td class="match-number">${slot}</td>`;
                     if (team) {
-                        html += `<td class="match-teams"><strong>${team.teamName || 'Unnamed Team'}</strong></td>`;
+                        html += `<td class="match-teams">
+                                    <strong>${team.teamName || 'Unnamed Team'}</strong>
+                                    <button class="team-delete-btn" onclick="removeTeam('${team._id || team.id}', '${tableId}', ${slot})" title="Remove Team">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                 </td>`;
                         html += `<td class="team-captain">${team.captainEmail || 'No Captain Email'}</td>`;
                     } else {
                         html += `<td class="match-teams"><em>Open Slot</em></td>`;
                         html += `<td class="team-captain">-</td>`;
                     }
+                    html += `<td class="delete-column" style="display: none;"></td>`;
                     html += `</tr>`;
                 }
                 html += `</tbody>`;
@@ -2107,6 +2214,126 @@
             originalDisplayBrackets();
             setTimeout(initializeCarousel, 100);
         };
+
+        // Delete functionality
+        function toggleDeleteMode(tableId) {
+            const table = document.getElementById(tableId);
+            const deleteBtn = document.querySelector(`button[onclick="toggleDeleteMode('${tableId}')"]`);
+            
+            if (table && deleteBtn) {
+                const isDeleteMode = table.classList.contains('delete-mode');
+                
+                if (isDeleteMode) {
+                    // Exit delete mode
+                    table.classList.remove('delete-mode');
+                    deleteBtn.classList.remove('active');
+                    deleteBtn.title = 'Remove Teams';
+                } else {
+                    // Enter delete mode
+                    table.classList.add('delete-mode');
+                    deleteBtn.classList.add('active');
+                    deleteBtn.title = 'Exit Delete Mode';
+                }
+            }
+        }
+
+        async function removeTeam(teamId, tableId, slot) {
+            if (!teamId) {
+                alert('No team to remove from this slot.');
+                return;
+            }
+
+            const confirmRemoval = confirm('Are you sure you want to remove this team from the tournament? This will cancel their registration and cannot be undone.');
+            
+            if (!confirmRemoval) {
+                return;
+            }
+
+            try {
+                // Show loading state
+                const deleteBtn = document.querySelector(`tr[data-team-id="${teamId}"] .team-delete-btn`);
+                if (deleteBtn) {
+                    deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    deleteBtn.disabled = true;
+                }
+
+                // Make API call to remove team from tournament
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/slug/${tournamentSlug}/participants/${teamId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to remove team from tournament');
+                }
+
+                // Show success message
+                showNotification('Team removed successfully from the tournament', 'success');
+
+                // Reload the tournament data to reflect changes
+                await loadTournamentBrackets();
+
+            } catch (error) {
+                console.error('Error removing team:', error);
+                showNotification('Failed to remove team. Please try again.', 'error');
+                
+                // Reset button state on error
+                const deleteBtn = document.querySelector(`tr[data-team-id="${teamId}"] .team-delete-btn`);
+                if (deleteBtn) {
+                    deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+                    deleteBtn.disabled = false;
+                }
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                max-width: 300px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                transition: all 0.3s ease;
+            `;
+
+            // Set background color based on type
+            switch (type) {
+                case 'success':
+                    notification.style.background = '#10b981';
+                    break;
+                case 'error':
+                    notification.style.background = '#ef4444';
+                    break;
+                case 'warning':
+                    notification.style.background = '#f59e0b';
+                    break;
+                default:
+                    notification.style.background = '#3b82f6';
+            }
+
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            // Auto remove after 4 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
     </script>
 </body>
 
