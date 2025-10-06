@@ -212,7 +212,12 @@
             color: white;
         }
 
-
+        #user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            /* Add this line */
+        }
 
 
 
@@ -679,6 +684,37 @@
             background-color: #6c757d !important;
         }
 
+        /* Tab styling */
+        .nav-tabs {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-tabs .nav-link {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            border-radius: 8px 8px 0 0;
+            margin-right: 0.5rem;
+            transition: all 0.3s var(--ease);
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--text-primary);
+            border-color: var(--border-color);
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            background: rgba(10, 250, 217, 0.1);
+            border-color: var(--primary-color);
+            border-bottom-color: transparent;
+        }
+
+        .tab-content {
+            padding-top: 1rem;
+        }
+
         /* Responsive design */
         @media (max-width: 768px) {
             .stats-card {
@@ -700,6 +736,11 @@
 
             .table-responsive {
                 font-size: 0.875rem;
+            }
+
+            .nav-tabs .nav-link {
+                font-size: 0.875rem;
+                padding: 0.5rem 0.75rem;
             }
         }
     </style>
@@ -774,21 +815,55 @@
                 </div>
             </div>
 
-            <!-- Hosted Tournaments Section -->
+            <!-- Tournament Tabs -->
             <div class="row">
                 <div class="col-12">
                     <div class="card tournament-card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5>My Hosted Tournaments</h5>
-                            <a href="create-tournament.html" class="btn btn-primary btn-sm">
-                                <i class="fas fa-plus me-1"></i>Create Tournament
-                            </a>
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <ul class="nav nav-tabs card-header-tabs" id="tournamentTabs" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active" id="hosted-tab" data-bs-toggle="tab"
+                                                data-bs-target="#hosted" type="button" role="tab" aria-controls="hosted"
+                                                aria-selected="true">
+                                                <i class="fas fa-crown me-1"></i>Hosted Tournaments
+                                            </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="joined-tab" data-bs-toggle="tab"
+                                                data-bs-target="#joined" type="button" role="tab" aria-controls="joined"
+                                                aria-selected="false">
+                                                <i class="fas fa-users me-1"></i>Joined Tournaments
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <a href="create-tournament.html" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-plus me-1"></i>Create Tournament
+                                </a>
+                            </div>
                         </div>
                         <div class="card-body">
-                            <div id="tournamentsContainer">
-                                <div class="text-center text-muted py-5">
-                                    <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                                    <p>Loading tournaments...</p>
+                            <div class="tab-content" id="tournamentTabContent">
+                                <!-- Hosted Tournaments Tab -->
+                                <div class="tab-pane fade show active" id="hosted" role="tabpanel"
+                                    aria-labelledby="hosted-tab">
+                                    <div id="hostedTournamentsContainer">
+                                        <div class="text-center text-muted py-5">
+                                            <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                                            <p>Loading hosted tournaments...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Joined Tournaments Tab -->
+                                <div class="tab-pane fade" id="joined" role="tabpanel" aria-labelledby="joined-tab">
+                                    <div id="joinedTournamentsContainer">
+                                        <div class="text-center text-muted py-5">
+                                            <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
+                                            <p>Loading joined tournaments...</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1348,12 +1423,12 @@
             }
         }
 
-        // Display tournaments in the table
-        function displayTournaments(tournaments) {
-            const container = document.getElementById('tournamentsContainer');
+        // Display hosted tournaments in the table
+        function displayHostedTournaments(tournaments) {
+            const container = document.getElementById('hostedTournamentsContainer');
 
             if (!container) {
-                console.error('tournamentsContainer element not found');
+                console.error('hostedTournamentsContainer element not found');
                 return;
             }
 
@@ -1361,7 +1436,7 @@
                 container.innerHTML = `
                     <div class="text-center text-muted py-5">
                         <i class="fas fa-trophy fa-3x mb-3"></i>
-                        <h5>No tournaments found</h5>
+                        <h5>No hosted tournaments found</h5>
                         <p>You haven't created any tournaments yet. Use the "Create Tournament" button above to get started!</p>
                     </div>
                 `;
@@ -1452,12 +1527,118 @@
             container.innerHTML = tableHTML;
         }
 
+        // Display joined tournaments in the table
+        function displayJoinedTournaments(tournaments) {
+            const container = document.getElementById('joinedTournamentsContainer');
+
+            if (!container) {
+                console.error('joinedTournamentsContainer element not found');
+                return;
+            }
+
+            if (tournaments.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-users fa-3x mb-3"></i>
+                        <h5>No joined tournaments found</h5>
+                        <p>You haven't joined any tournaments yet. Browse available tournaments to participate!</p>
+                        <a href="tournaments.html" class="btn btn-primary mt-2">
+                            <i class="fas fa-search me-1"></i>Browse Tournaments
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Create table layout
+            let tableHTML = `
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Tournament Name</th>
+                                <th>Game</th>
+                                <th>Status</th>
+                                <th>Organizer</th>
+                                <th>Your Team</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            // Add tournament rows
+            tournaments.forEach(tournament => {
+                const tournamentName = tournament.title || 'Tournament';
+                const game = tournament.game || 'N/A';
+                const status = tournament.status || 'draft';
+                const organizer = tournament.organizer?.username || tournament.organizer?.email || 'Unknown';
+                const tournamentId = tournament._id || tournament.id || '';
+
+                // Get user's team info from the tournament
+                const userTeam = tournament.userTeam || tournament.teamName || 'N/A';
+
+                // Status badge styling
+                let statusClass = 'badge bg-secondary';
+                switch (status) {
+                    case 'active':
+                        statusClass = 'badge bg-success';
+                        break;
+                    case 'live':
+                        statusClass = 'badge bg-primary';
+                        break;
+                    case 'completed':
+                        statusClass = 'badge bg-info';
+                        break;
+                    case 'cancelled':
+                        statusClass = 'badge bg-danger';
+                        break;
+                }
+
+                tableHTML += `
+                    <tr>
+                        <td>
+                            <strong>${tournamentName}</strong>
+                        </td>
+                        <td>${game}</td>
+                        <td>
+                            <span class="${statusClass}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>
+                        </td>
+                        <td>${organizer}</td>
+                        <td>${userTeam}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-primary" onclick="viewTournament('${tournamentId}')" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-info" onclick="viewBrackets('${tournamentId}')" title="View Brackets">
+                                    <i class="fas fa-sitemap"></i>
+                                </button>
+                                <button class="btn btn-outline-warning" onclick="leaveTournament('${tournamentId}', '${tournamentName}')" title="Leave Tournament">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = tableHTML;
+        }
+
         // Dashboard stats removed - no longer needed
 
         // Load dashboard data
         async function loadDashboardData() {
             const data = await fetchTournamentData();
-            displayTournaments(data.hosted);
+            displayHostedTournaments(data.hosted);
+            displayJoinedTournaments(data.joined);
             updateDashboardStats(data);
         }
 
@@ -1484,7 +1665,8 @@
         // Refresh tournaments
         async function refreshTournaments() {
             const data = await fetchTournamentData(true); // Force refresh
-            displayTournaments(data.hosted);
+            displayHostedTournaments(data.hosted);
+            displayJoinedTournaments(data.joined);
             updateDashboardStats(data);
 
             // Also refresh all dropdowns
@@ -1511,6 +1693,51 @@
         function manageTournament(tournamentId) {
             // Redirect to tournament management page
             window.location.href = `manage-tournament.html?id=${tournamentId}`;
+        }
+
+        function viewBrackets(tournamentId) {
+            // Redirect to tournament brackets page
+            window.open(`tournament-brackets-view.html?id=${tournamentId}`, '_blank');
+        }
+
+        // Leave tournament with confirmation
+        async function leaveTournament(tournamentId, tournamentName) {
+            const confirmMessage = `Are you sure you want to leave "${tournamentName}"?\n\nThis action will:\n• Remove your team from the tournament\n• Cancel your registration\n• You may lose any entry fees paid\n\nType "LEAVE" to confirm:`;
+
+            const userInput = prompt(confirmMessage);
+
+            if (userInput !== 'LEAVE') {
+                if (userInput !== null) {
+                    showAlert('Tournament leave cancelled - confirmation text did not match', 'info');
+                }
+                return;
+            }
+
+            try {
+                showAlert('Leaving tournament...', 'info');
+
+                const sessionData = getSessionData();
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${tournamentId}/leave`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${sessionData.token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    showAlert(`Successfully left "${tournamentName}"`, 'success');
+                    // Refresh the tournaments list
+                    await refreshTournaments();
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to leave tournament');
+                }
+
+            } catch (error) {
+                console.error('Error leaving tournament:', error);
+                showAlert(`Failed to leave tournament: ${error.message}`, 'danger');
+            }
         }
 
         // Download tournament participants data as PDF
@@ -2515,7 +2742,7 @@
 
             // Load dashboard data if user is authenticated
             if (isAuthenticated()) {
-                loadDashboardDataWithUpdate();
+                loadDashboardData();
 
                 // Setup form submissions...
                 const updateForm = document.getElementById('updateTournamentForm');
