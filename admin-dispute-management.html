@@ -1063,6 +1063,9 @@
         <h1 class="hero-title">Dispute Management Center</h1>
         <p class="hero-subtitle">Manage and resolve user disputes, support tickets, and maintain platform integrity with
           comprehensive admin tools.</p>
+        <div id="connectionStatus" style="margin-top: 1rem;">
+          <!-- Status will be updated by JavaScript -->
+        </div>
       </div>
     </section>
 
@@ -1142,14 +1145,7 @@
               </select>
             </div>
 
-            <div class="filter-group">
-              <label for="assignedFilter">Assigned To</label>
-              <select id="assignedFilter" onchange="applyFilters()">
-                <option value="">All Assignments</option>
-                <option value="unassigned">Unassigned</option>
-                <option value="me">Assigned to Me</option>
-              </select>
-            </div>
+
 
             <div class="search-bar">
               <input type="text" id="searchInput" placeholder="Search tickets by ID, subject, or description..."
@@ -1367,8 +1363,11 @@
 
           currentTickets = [...disputes, ...supportTickets];
 
-          // If no tickets from API, use sample data
-          if (currentTickets.length === 0) {
+          // If we got real data from API, show success message
+          if (currentTickets.length > 0) {
+            console.log('Successfully loaded tickets from API:', currentTickets.length);
+            showNotification(`Loaded ${currentTickets.length} ticket(s) from server`, 'success');
+          } else {
             throw new Error('No tickets from API');
           }
 
@@ -1380,6 +1379,7 @@
 
         renderTickets();
         updateStats();
+        updateConnectionStatus('connected');
 
       } catch (error) {
         console.error('Error loading tickets:', error);
@@ -1387,9 +1387,33 @@
         currentTickets = getSampleTickets();
         renderTickets();
         updateStats();
+        updateConnectionStatus('demo');
         showNotification('Using demo data - backend not connected', 'info');
       } finally {
         hideLoading();
+      }
+    }
+
+    function updateConnectionStatus(mode) {
+      const statusElement = document.getElementById('connectionStatus');
+      if (!statusElement) return;
+
+      if (mode === 'connected') {
+        statusElement.innerHTML = `
+          <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: rgba(34, 197, 94, 0.2); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 20px; color: #4ade80; font-size: 0.9rem;">
+            <i class="fas fa-wifi"></i>
+            <span>Connected to Live Data</span>
+            <small style="opacity: 0.8;">(Actions may be read-only if backend endpoints are not fully implemented)</small>
+          </div>
+        `;
+      } else if (mode === 'demo') {
+        statusElement.innerHTML = `
+          <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 20px; color: #60a5fa; font-size: 0.9rem;">
+            <i class="fas fa-flask"></i>
+            <span>Demo Mode</span>
+            <small style="opacity: 0.8;">(Using sample data - changes are local only)</small>
+          </div>
+        `;
       }
     }
 
@@ -1458,7 +1482,6 @@
       const ticketType = document.getElementById('ticketType').value;
       const status = document.getElementById('statusFilter').value;
       const priority = document.getElementById('priorityFilter').value;
-      const assigned = document.getElementById('assignedFilter').value;
       const search = document.getElementById('searchInput').value.toLowerCase();
 
       if (ticketType) {
@@ -1471,12 +1494,6 @@
 
       if (priority) {
         filtered = filtered.filter(ticket => ticket.priority === priority);
-      }
-
-      if (assigned === 'unassigned') {
-        filtered = filtered.filter(ticket => !ticket.assignedTo);
-      } else if (assigned === 'me') {
-        filtered = filtered.filter(ticket => ticket.assignedTo === adminEmail);
       }
 
       if (search) {
@@ -1542,7 +1559,6 @@
                         <span class="priority-badge ${priorityClass}">
                             <i class="fas fa-flag"></i> ${ticket.priority || 'medium'}
                         </span>
-                        ${ticket.assignedTo || ticket.assigned_to ? `<span><i class="fas fa-user-tie"></i> ${ticket.assignedTo || ticket.assigned_to}</span>` : ''}
                     </div>
                     
                     <div class="ticket-description">
@@ -1553,11 +1569,6 @@
                         <button class="btn-action btn-view" onclick="viewTicket('${ticketId}')">
                             <i class="fas fa-eye"></i> View
                         </button>
-                        ${!(ticket.assignedTo || ticket.assigned_to) ? `
-                            <button class="btn-action btn-assign" onclick="assignTicket('${ticketId}')">
-                                <i class="fas fa-user-plus"></i> Assign to Me
-                            </button>
-                        ` : ''}
                         ${ticket.status !== 'resolved' && ticket.status !== 'closed' ? `
                             <button class="btn-action btn-resolve" onclick="resolveTicket('${ticketId}')">
                                 <i class="fas fa-check"></i> Resolve
@@ -1670,10 +1681,7 @@
                         </select>
                     </div>
                     
-                    <div class="form-group">
-                        <label>Assigned To</label>
-                        <input type="text" id="modalAssigned" value="${ticket.assignedTo || ticket.assigned_to || ''}" placeholder="Enter admin email">
-                    </div>
+
                     
                     <div class="form-group">
                         <label>Description</label>
@@ -1682,7 +1690,18 @@
                     
                     <div class="form-group">
                         <label>Resolution Notes</label>
-                        <textarea id="modalResolution" placeholder="Add resolution notes...">${ticket.resolution || ''}</textarea>
+                        ${ticket.status === 'resolved' && ticket.resolution ? `
+                            <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 8px; padding: 1rem; margin-bottom: 0.5rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: #4ade80; font-weight: 600;">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Resolution Explanation</span>
+                                </div>
+                                <div style="color: var(--text-primary); line-height: 1.6;">
+                                    ${ticket.resolution}
+                                </div>
+                            </div>
+                        ` : ''}
+                        <textarea id="modalResolution" placeholder="Add resolution notes..." ${ticket.status === 'resolved' ? 'readonly' : ''}>${ticket.resolution || ''}</textarea>
                     </div>
                     
                     <div class="form-group">
@@ -1706,43 +1725,7 @@
       }
     }
 
-    async function assignTicket(ticketId) {
-      try {
-        // Handle different possible field names for ticket ID
-        const ticket = currentTickets.find(t =>
-          (t.ticketId === ticketId) ||
-          (t.ticket_id === ticketId) ||
-          (t.id === ticketId)
-        );
 
-        if (!ticket) {
-          showNotification('Ticket not found', 'error');
-          return;
-        }
-
-        const updateData = {
-          assignedTo: adminEmail,
-          status: 'in_progress'
-        };
-
-        const actualTicketId = ticket.ticketId || ticket.ticket_id || ticket.id;
-        const endpoint = ticket.type === 'dispute'
-          ? `/api/admin/disputes/${actualTicketId}`
-          : `/api/admin/support/tickets/${actualTicketId}`;
-
-        await fetchWithAuth(endpoint, {
-          method: 'PATCH',
-          body: JSON.stringify(updateData)
-        });
-
-        showNotification('Ticket assigned successfully', 'success');
-        await loadTickets();
-
-      } catch (error) {
-        console.error('Error assigning ticket:', error);
-        showNotification('Failed to assign ticket. This might be a demo - functionality not fully connected to backend.', 'error');
-      }
-    }
 
     async function resolveTicket(ticketId) {
       try {
@@ -1758,13 +1741,22 @@
           return;
         }
 
-        const resolution = prompt('Enter resolution notes:');
-        if (!resolution) return;
+        // Show a better prompt for resolution explanation
+        const resolution = prompt(
+          `Resolving ticket: ${ticket.subject || ticket.title || 'No Subject'}\n\n` +
+          `Please explain what was causing the issue and how it was resolved:\n` +
+          `(This explanation will be visible to the user)`
+        );
+        
+        if (!resolution || resolution.trim() === '') {
+          showNotification('Resolution explanation is required', 'error');
+          return;
+        }
 
+        // Prepare update data according to backend expectations
         const updateData = {
           status: 'resolved',
-          resolution: resolution,
-          assignedTo: ticket.assignedTo || ticket.assigned_to || adminEmail
+          resolution: resolution.trim()
         };
 
         const actualTicketId = ticket.ticketId || ticket.ticket_id || ticket.id;
@@ -1772,6 +1764,7 @@
           ? `/api/admin/disputes/${actualTicketId}`
           : `/api/admin/support/tickets/${actualTicketId}`;
 
+        // Send update to backend
         await fetchWithAuth(endpoint, {
           method: 'PATCH',
           body: JSON.stringify(updateData)
@@ -1782,7 +1775,35 @@
 
       } catch (error) {
         console.error('Error resolving ticket:', error);
-        showNotification('Failed to resolve ticket. This might be a demo - functionality not fully connected to backend.', 'error');
+        
+        // In demo mode or when API fails, update locally
+        const actualTicketId = ticket.ticketId || ticket.ticket_id || ticket.id;
+        const ticketIndex = currentTickets.findIndex(t => 
+          (t.ticketId === actualTicketId) || 
+          (t.ticket_id === actualTicketId) || 
+          (t.id === actualTicketId)
+        );
+        
+        if (ticketIndex !== -1) {
+          // Update the ticket locally
+          currentTickets[ticketIndex] = { 
+            ...currentTickets[ticketIndex], 
+            status: 'resolved',
+            resolution: resolution.trim(),
+            resolvedAt: new Date().toISOString(),
+            resolved_at: new Date().toISOString(),
+            assignedTo: adminEmail,
+            assigned_to: adminEmail
+          };
+          
+          // Re-render the tickets
+          renderTickets();
+          updateStats();
+          
+          showNotification('Ticket resolved locally (demo mode - backend not available)', 'success');
+        } else {
+          showNotification('Failed to resolve ticket - ticket not found', 'error');
+        }
       }
     }
 
@@ -1793,7 +1814,6 @@
         const updateData = {
           status: document.getElementById('modalStatus').value,
           priority: document.getElementById('modalPriority').value,
-          assignedTo: document.getElementById('modalAssigned').value || null,
           resolution: document.getElementById('modalResolution').value || null
         };
 
