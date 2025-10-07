@@ -409,7 +409,7 @@
         .form-group textarea {
             width: 100%;
             padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.1);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             color: var(--text-primary);
@@ -418,12 +418,56 @@
             font-family: inherit;
         }
 
+        /* Enhanced styling for select elements */
+        .form-group select {
+            background: rgba(255, 255, 255, 0.15);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F0F0F0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1rem;
+            padding-right: 3rem;
+        }
+
+        .form-group select:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(10, 250, 217, 0.5);
+        }
+
+        .form-group select option {
+            background: var(--panel);
+            color: var(--text-primary);
+            padding: 0.5rem;
+            border: none;
+        }
+
+        .form-group select option:hover,
+        .form-group select option:checked {
+            background: rgba(10, 250, 217, 0.2);
+            color: var(--text-primary);
+        }
+
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(10, 250, 217, 0.1);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .form-group input:hover,
+        .form-group textarea:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(10, 250, 217, 0.3);
+        }
+
+        /* Placeholder styling */
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(240, 240, 240, 0.5);
+            opacity: 1;
         }
 
         .form-group textarea {
@@ -1034,7 +1078,7 @@
             form.addEventListener('submit', handleFormSubmit);
         }
 
-        function handleFormSubmit(e) {
+        async function handleFormSubmit(e) {
             e.preventDefault();
             
             const submitBtn = e.target.querySelector('.submit-btn');
@@ -1044,57 +1088,152 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
             
-            // Get form data
-            const formData = new FormData(e.target);
-            
-            // Generate ticket ID
-            const ticketId = 'TKT-' + Date.now().toString().slice(-6);
-            
-            // Create ticket object
-            const ticketData = {
-                id: ticketId,
-                issueType: formData.get('issueType'),
-                priority: formData.get('priority'),
-                subject: formData.get('subject'),
-                description: formData.get('description'),
-                status: 'open',
-                createdAt: new Date().toISOString(),
-                userId: getCurrentUserId()
-            };
-            
-            // Simulate API call
-            setTimeout(() => {
-                // Save ticket to localStorage (simulate backend)
-                saveTicketToStorage(ticketData);
+            try {
+                // Get form data
+                const formData = new FormData(e.target);
                 
-                // Show success message
-                showTicketSuccess(ticketData.id);
+                // Validate required fields
+                const issueType = formData.get('issueType');
+                const priority = formData.get('priority');
+                const subject = formData.get('subject');
+                const description = formData.get('description');
                 
+                if (!issueType || !priority || !subject || !description) {
+                    throw new Error('Please fill in all required fields');
+                }
+                
+                if (subject.length < 5) {
+                    throw new Error('Subject must be at least 5 characters long');
+                }
+                
+                if (description.length < 10) {
+                    throw new Error('Description must be at least 10 characters long');
+                }
+                
+                // Create ticket object for API
+                const ticketData = {
+                    issueType: issueType,
+                    priority: priority,
+                    subject: subject.trim(),
+                    description: description.trim(),
+                    tournamentId: formData.get('tournamentId') || null,
+                    attachments: []
+                };
+                
+                // Submit to backend API
+                const response = await fetch('/api/tickets/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include', // Include cookies for authentication
+                    body: JSON.stringify(ticketData)
+                });
+                
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    // Handle API errors
+                    if (result.errors && Array.isArray(result.errors)) {
+                        throw new Error(result.errors.join(', '));
+                    } else if (result.message) {
+                        throw new Error(result.message);
+                    } else {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+                }
+                
+                if (result.success && result.ticketId) {
+                    // Show success message
+                    showTicketSuccess(result.ticketId, result.data);
+                    
+                    // Reload tickets
+                    loadUserTickets();
+                } else {
+                    throw new Error(result.message || 'Failed to create ticket');
+                }
+                
+            } catch (error) {
+                console.error('Error submitting ticket:', error);
+                
+                // Show error message
+                showErrorMessage(error.message || 'Failed to submit ticket. Please try again.');
+                
+            } finally {
                 // Reset button
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = originalText;
-                
-                // Reload tickets
-                loadUserTickets();
-            }, 2000);
+            }
         }
 
-        function saveTicketToStorage(ticketData) {
-            const tickets = JSON.parse(localStorage.getItem('support_tickets') || '[]');
-            tickets.push(ticketData);
-            localStorage.setItem('support_tickets', JSON.stringify(tickets));
-        }
-
-        function showTicketSuccess(ticketId) {
+        function showTicketSuccess(ticketId, ticketData = null) {
             const form = document.getElementById('complaintForm');
             const success = document.getElementById('ticketSuccess');
             const ticketIdSpan = document.getElementById('ticketId');
             
             if (form && success && ticketIdSpan) {
                 ticketIdSpan.textContent = ticketId;
+                
+                // Update success message with additional info if available
+                if (ticketData) {
+                    const successMessage = success.querySelector('p:nth-of-type(2)');
+                    if (successMessage && ticketData.estimatedResolution) {
+                        const resolutionDate = new Date(ticketData.estimatedResolution);
+                        const formattedDate = resolutionDate.toLocaleDateString() + ' at ' + resolutionDate.toLocaleTimeString();
+                        successMessage.innerHTML = `Our support team will review your request and respond by ${formattedDate}.`;
+                    }
+                }
+                
                 form.style.display = 'none';
                 success.style.display = 'block';
+                
+                // Scroll to success message
+                success.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
+        }
+
+        function showErrorMessage(message) {
+            // Create or update error message element
+            let errorDiv = document.getElementById('form-error-message');
+            
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.id = 'form-error-message';
+                errorDiv.style.cssText = `
+                    background: rgba(239, 68, 68, 0.1);
+                    border: 1px solid rgba(239, 68, 68, 0.3);
+                    color: #ef4444;
+                    padding: 1rem;
+                    border-radius: 8px;
+                    margin-bottom: 1rem;
+                    font-size: 0.9rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                `;
+                
+                const form = document.getElementById('complaintForm');
+                if (form) {
+                    form.insertBefore(errorDiv, form.firstChild);
+                }
+            }
+            
+            errorDiv.innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>${message}</span>
+            `;
+            
+            errorDiv.style.display = 'flex';
+            
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                if (errorDiv) {
+                    errorDiv.style.display = 'none';
+                }
+            }, 10000);
+            
+            // Scroll to error message
+            errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         function resetForm() {
@@ -1109,59 +1248,325 @@
         }
 
         // Tickets functionality
-        function loadUserTickets() {
+        async function loadUserTickets() {
             const ticketsGrid = document.getElementById('ticketsGrid');
             if (!ticketsGrid) return;
             
-            const userId = getCurrentUserId();
-            const allTickets = JSON.parse(localStorage.getItem('support_tickets') || '[]');
-            const userTickets = allTickets.filter(ticket => ticket.userId === userId);
+            // Show loading state
+            ticketsGrid.innerHTML = `
+                <div class="no-tickets">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <h3>Loading tickets...</h3>
+                    <p>Please wait while we fetch your support tickets.</p>
+                </div>
+            `;
             
-            if (userTickets.length === 0) {
+            try {
+                const userId = getCurrentUserId();
+                if (!userId || userId === 'guest') {
+                    ticketsGrid.innerHTML = `
+                        <div class="no-tickets">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <h3>Please log in</h3>
+                            <p>You need to be logged in to view your support tickets.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Fetch tickets from API
+                const response = await fetch(`/api/tickets/user/${userId}?limit=20`, {
+                    method: 'GET',
+                    credentials: 'include', // Include cookies for authentication
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        ticketsGrid.innerHTML = `
+                            <div class="no-tickets">
+                                <i class="fas fa-sign-in-alt"></i>
+                                <h3>Authentication required</h3>
+                                <p>Please log in to view your support tickets.</p>
+                            </div>
+                        `;
+                        return;
+                    }
+                    throw new Error(`Failed to load tickets: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (!result.success) {
+                    throw new Error(result.message || 'Failed to load tickets');
+                }
+                
+                const userTickets = result.data?.tickets || [];
+                
+                if (userTickets.length === 0) {
+                    ticketsGrid.innerHTML = `
+                        <div class="no-tickets">
+                            <i class="fas fa-inbox"></i>
+                            <h3>No tickets found</h3>
+                            <p>You haven't submitted any support tickets yet. Create your first ticket above!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Display tickets
+                ticketsGrid.innerHTML = userTickets.map(ticket => createTicketCard(ticket)).join('');
+                
+            } catch (error) {
+                console.error('Error loading tickets:', error);
                 ticketsGrid.innerHTML = `
                     <div class="no-tickets">
-                        <i class="fas fa-inbox"></i>
-                        <h3>No tickets found</h3>
-                        <p>You haven't submitted any support tickets yet, or please log in to view your tickets.</p>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Error loading tickets</h3>
+                        <p>${error.message || 'Failed to load tickets. Please try again later.'}</p>
+                        <button class="btn-secondary" onclick="loadUserTickets()" style="margin-top: 1rem;">
+                            <i class="fas fa-refresh"></i> Try Again
+                        </button>
                     </div>
                 `;
-                return;
             }
-            
-            // Sort tickets by creation date (newest first)
-            userTickets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-            
-            ticketsGrid.innerHTML = userTickets.map(ticket => createTicketCard(ticket)).join('');
         }
 
         function createTicketCard(ticket) {
-            const createdDate = new Date(ticket.createdAt).toLocaleDateString();
-            const createdTime = new Date(ticket.createdAt).toLocaleTimeString();
+            // Handle both API format and legacy format
+            const ticketId = ticket.ticketId || ticket.id || 'Unknown';
+            const createdAt = ticket.createdAt || ticket.created_at;
+            const updatedAt = ticket.updatedAt || ticket.updated_at;
+            const category = ticket.category || ticket.issueType || 'other';
             
-            // Simulate some tickets having replies
-            const hasReply = Math.random() > 0.6; // 40% chance of having a reply
-            const replyContent = hasReply ? generateSampleReply(ticket) : '';
+            const createdDate = createdAt ? new Date(createdAt).toLocaleDateString() : 'Unknown';
+            const createdTime = createdAt ? new Date(createdAt).toLocaleTimeString() : '';
+            const updatedDate = updatedAt ? new Date(updatedAt).toLocaleDateString() : createdDate;
+            
+            // Check if ticket has messages/replies
+            const messages = ticket.messages || [];
+            const hasReply = messages.length > 0;
+            const replyContent = hasReply ? generateReplyContent(messages) : '';
+            
+            // Format priority display
+            const priorityDisplay = ticket.priority ? ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1) : 'Medium';
+            const categoryDisplay = category.charAt(0).toUpperCase() + category.slice(1).replace(/([A-Z])/g, ' $1');
             
             return `
-                <div class="ticket-card">
+                <div class="ticket-card" data-ticket-id="${ticketId}">
                     <div class="ticket-header">
                         <div class="ticket-info">
-                            <h3>${ticket.subject}</h3>
+                            <h3>${ticket.subject || 'No Subject'}</h3>
                             <div class="ticket-meta">
-                                <span><i class="fas fa-ticket-alt"></i> ${ticket.id}</span>
+                                <span><i class="fas fa-ticket-alt"></i> ${ticketId}</span>
                                 <span><i class="fas fa-calendar"></i> ${createdDate} ${createdTime}</span>
-                                <span><i class="fas fa-tag"></i> ${ticket.issueType}</span>
-                                <span><i class="fas fa-exclamation-circle"></i> ${ticket.priority}</span>
+                                <span><i class="fas fa-tag"></i> ${categoryDisplay}</span>
+                                <span><i class="fas fa-exclamation-circle"></i> ${priorityDisplay}</span>
+                                ${updatedAt && updatedAt !== createdAt ? `<span><i class="fas fa-clock"></i> Updated ${updatedDate}</span>` : ''}
                             </div>
                         </div>
-                        <div class="ticket-status status-${ticket.status}">
-                            ${ticket.status.replace('-', ' ')}
+                        <div class="ticket-status status-${ticket.status || 'open'}">
+                            ${(ticket.status || 'open').replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                         </div>
                     </div>
                     <div class="ticket-description">
-                        ${ticket.description}
+                        ${ticket.description || 'No description provided.'}
                     </div>
                     ${replyContent}
+                    <div class="ticket-actions" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                        <button class="btn-secondary" onclick="viewTicketDetails('${ticketId}')" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                            <i class="fas fa-eye"></i> View Details
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateReplyContent(messages) {
+            if (!messages || messages.length === 0) return '';
+            
+            // Show only the latest message
+            const latestMessage = messages[messages.length - 1];
+            const messageDate = latestMessage.timestamp ? new Date(latestMessage.timestamp).toLocaleString() : 'Recently';
+            const senderName = latestMessage.senderRole === 'admin' ? 'Support Team' : 'You';
+            
+            return `
+                <div class="ticket-reply">
+                    <div class="reply-header">
+                        <span class="reply-author">${senderName}</span>
+                        <span class="reply-date">${messageDate}</span>
+                    </div>
+                    <div class="reply-content">
+                        ${latestMessage.content || 'No content'}
+                    </div>
+                    ${messages.length > 1 ? `<div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-secondary);"><i class="fas fa-comments"></i> ${messages.length} messages total</div>` : ''}
+                </div>
+            `;
+        }
+
+        async function viewTicketDetails(ticketId) {
+            try {
+                // Show loading state
+                const modal = createTicketModal();
+                modal.querySelector('.modal-content').innerHTML = `
+                    <div style="text-align: center; padding: 2rem;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary-color);"></i>
+                        <p style="margin-top: 1rem;">Loading ticket details...</p>
+                    </div>
+                `;
+                
+                // Fetch ticket details
+                const response = await fetch(`/api/tickets/${ticketId}`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load ticket details: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (!result.success) {
+                    throw new Error(result.message || 'Failed to load ticket details');
+                }
+                
+                // Display ticket details
+                displayTicketDetails(result.data, modal);
+                
+            } catch (error) {
+                console.error('Error loading ticket details:', error);
+                alert('Failed to load ticket details: ' + error.message);
+            }
+        }
+
+        function createTicketModal() {
+            // Remove existing modal if any
+            const existingModal = document.getElementById('ticket-modal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Create modal
+            const modal = document.createElement('div');
+            modal.id = 'ticket-modal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                padding: 1rem;
+            `;
+            
+            modal.innerHTML = `
+                <div class="modal-content" style="
+                    background: var(--panel);
+                    border-radius: var(--radius);
+                    max-width: 800px;
+                    width: 100%;
+                    max-height: 90vh;
+                    overflow-y: auto;
+                    position: relative;
+                    border: 1px solid var(--border-color);
+                ">
+                    <button onclick="this.closest('#ticket-modal').remove()" style="
+                        position: absolute;
+                        top: 1rem;
+                        right: 1rem;
+                        background: none;
+                        border: none;
+                        color: var(--text-secondary);
+                        font-size: 1.5rem;
+                        cursor: pointer;
+                        z-index: 1;
+                    ">&times;</button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Close on background click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+            
+            return modal;
+        }
+
+        function displayTicketDetails(ticket, modal) {
+            const createdDate = ticket.createdAt ? new Date(ticket.createdAt).toLocaleString() : 'Unknown';
+            const updatedDate = ticket.updatedAt ? new Date(ticket.updatedAt).toLocaleString() : createdDate;
+            const messages = ticket.messages || [];
+            
+            const messagesHtml = messages.length > 0 ? 
+                messages.map(msg => `
+                    <div class="ticket-reply" style="margin-bottom: 1rem;">
+                        <div class="reply-header">
+                            <span class="reply-author">${msg.senderRole === 'admin' ? 'Support Team' : 'You'}</span>
+                            <span class="reply-date">${msg.timestamp ? new Date(msg.timestamp).toLocaleString() : 'Recently'}</span>
+                        </div>
+                        <div class="reply-content">${msg.content || 'No content'}</div>
+                    </div>
+                `).join('') : 
+                '<p style="color: var(--text-secondary); font-style: italic;">No messages yet.</p>';
+            
+            modal.querySelector('.modal-content').innerHTML = `
+                <div style="padding: 2rem;">
+                    <h2 style="margin-bottom: 1rem; color: var(--text-primary);">${ticket.subject || 'Ticket Details'}</h2>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                        <div>
+                            <strong>Ticket ID:</strong><br>
+                            <span style="font-family: monospace; color: var(--primary-color);">${ticket.ticketId || 'Unknown'}</span>
+                        </div>
+                        <div>
+                            <strong>Status:</strong><br>
+                            <span class="ticket-status status-${ticket.status || 'open'}">${(ticket.status || 'open').replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
+                        </div>
+                        <div>
+                            <strong>Priority:</strong><br>
+                            <span>${(ticket.priority || 'medium').charAt(0).toUpperCase() + (ticket.priority || 'medium').slice(1)}</span>
+                        </div>
+                        <div>
+                            <strong>Category:</strong><br>
+                            <span>${(ticket.category || 'other').charAt(0).toUpperCase() + (ticket.category || 'other').slice(1)}</span>
+                        </div>
+                        <div>
+                            <strong>Created:</strong><br>
+                            <span>${createdDate}</span>
+                        </div>
+                        <div>
+                            <strong>Last Updated:</strong><br>
+                            <span>${updatedDate}</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <strong>Description:</strong>
+                        <div style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 8px; margin-top: 0.5rem; line-height: 1.6;">
+                            ${ticket.description || 'No description provided.'}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <strong>Messages (${messages.length}):</strong>
+                        <div style="margin-top: 1rem; max-height: 300px; overflow-y: auto;">
+                            ${messagesHtml}
+                        </div>
+                    </div>
                 </div>
             `;
         }
@@ -1200,36 +1605,84 @@
             `;
         }
 
-        function searchTickets() {
+        async function searchTickets() {
             const searchInput = document.getElementById('ticketSearch');
-            const searchTerm = searchInput.value.trim().toLowerCase();
+            const searchTerm = searchInput.value.trim();
             
             if (!searchTerm) {
                 loadUserTickets();
                 return;
             }
             
-            const userId = getCurrentUserId();
-            const allTickets = JSON.parse(localStorage.getItem('support_tickets') || '[]');
-            const userTickets = allTickets.filter(ticket => 
-                ticket.userId === userId && 
-                (ticket.id.toLowerCase().includes(searchTerm) || 
-                 ticket.subject.toLowerCase().includes(searchTerm) ||
-                 ticket.description.toLowerCase().includes(searchTerm))
-            );
-            
             const ticketsGrid = document.getElementById('ticketsGrid');
-            if (userTickets.length === 0) {
+            
+            // Show loading state
+            ticketsGrid.innerHTML = `
+                <div class="no-tickets">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <h3>Searching tickets...</h3>
+                    <p>Please wait while we search your tickets.</p>
+                </div>
+            `;
+            
+            try {
+                const userId = getCurrentUserId();
+                if (!userId || userId === 'guest') {
+                    ticketsGrid.innerHTML = `
+                        <div class="no-tickets">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <h3>Please log in</h3>
+                            <p>You need to be logged in to search your tickets.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Search tickets via API
+                const response = await fetch(`/api/tickets/user/${userId}?search=${encodeURIComponent(searchTerm)}&limit=50`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Search failed: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (!result.success) {
+                    throw new Error(result.message || 'Search failed');
+                }
+                
+                const searchResults = result.data?.tickets || [];
+                
+                if (searchResults.length === 0) {
+                    ticketsGrid.innerHTML = `
+                        <div class="no-tickets">
+                            <i class="fas fa-search"></i>
+                            <h3>No matching tickets found</h3>
+                            <p>No tickets found matching "${searchTerm}". Try different search terms or <button onclick="loadUserTickets()" style="background:none;border:none;color:var(--primary-color);cursor:pointer;text-decoration:underline;">browse all tickets</button>.</p>
+                        </div>
+                    `;
+                } else {
+                    ticketsGrid.innerHTML = searchResults.map(ticket => createTicketCard(ticket)).join('');
+                }
+                
+            } catch (error) {
+                console.error('Error searching tickets:', error);
                 ticketsGrid.innerHTML = `
                     <div class="no-tickets">
-                        <i class="fas fa-search"></i>
-                        <h3>No matching tickets found</h3>
-                        <p>Try adjusting your search terms or browse all tickets.</p>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Search error</h3>
+                        <p>${error.message || 'Failed to search tickets. Please try again.'}</p>
+                        <button class="btn-secondary" onclick="loadUserTickets()" style="margin-top: 1rem;">
+                            <i class="fas fa-arrow-left"></i> Back to All Tickets
+                        </button>
                     </div>
                 `;
-            } else {
-                userTickets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                ticketsGrid.innerHTML = userTickets.map(ticket => createTicketCard(ticket)).join('');
             }
         }
 
