@@ -997,14 +997,58 @@
     </main>
 
     <script>
-        // Session management
+        // Session management (consistent with other pages)
         function getSessionData() {
-            return JSON.parse(localStorage.getItem('sessionData') || '{}');
+            const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+            try {
+                return session ? JSON.parse(session) : null;
+            } catch (error) {
+                return null;
+            }
         }
 
         function getCurrentUserId() {
             const sessionData = getSessionData();
-            return sessionData?.userId || 'guest';
+            return sessionData?.user?.id || sessionData?.user?.email || 'guest';
+        }
+
+        function isAuthenticated() {
+            const sessionData = getSessionData();
+            return sessionData && sessionData.token && sessionData.user;
+        }
+
+        function getAuthToken() {
+            const sessionData = getSessionData();
+            return sessionData ? sessionData.token : null;
+        }
+
+        // API helper function (consistent with other pages)
+        async function fetchWithAuth(url, options = {}) {
+            const token = getAuthToken();
+            
+            // Use the same API base URL pattern as other pages
+            const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
+            const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://gamingnexus.onrender.com';
+            
+            const headers = {
+                'Content-Type': 'application/json',
+                ...options.headers
+            };
+
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
+            
+            const response = await fetch(`${API_BASE_URL}${url}`, {
+                ...options,
+                headers
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            return await response.json();
         }
 
         // Initialize page
@@ -1028,31 +1072,57 @@
             }, 1500);
         });
 
-        // Navbar functionality
-        function initializeNavbar() {
+        // Navbar functionality (consistent with other pages)
+        function checkUserAuthentication() {
             const sessionData = getSessionData();
             const guestMenu = document.getElementById('guest-menu');
             const userMenu = document.getElementById('user-menu');
-            const userAvatar = document.getElementById('user-avatar');
-            const username = document.getElementById('navbar-username');
+            const user = sessionData?.user;
 
-            if (sessionData.isLoggedIn) {
-                guestMenu.style.display = 'none';
-                userMenu.style.display = 'flex';
-                if (sessionData.username) {
-                    username.textContent = sessionData.username;
-                    userAvatar.textContent = sessionData.username.charAt(0).toUpperCase();
+            if (user) {
+                const username = user.username || user.email.split('@')[0];
+                const userInitials = username.substring(0, 2).toUpperCase();
+
+                // Update navbar elements
+                const navbarUsername = document.getElementById('navbar-username');
+                const userAvatar = document.getElementById('user-avatar');
+
+                if (navbarUsername) {
+                    navbarUsername.textContent = username;
                 }
-            }
 
-            // Mobile menu toggle
-            const menuToggle = document.getElementById('normalMenuToggle');
-            const navCenter = document.getElementById('normalNav');
-            
-            if (menuToggle) {
-                menuToggle.addEventListener('click', () => {
-                    navCenter.classList.toggle('active');
-                    menuToggle.classList.toggle('active');
+                if (userAvatar) {
+                    userAvatar.textContent = userInitials;
+                }
+
+                if (userMenu) userMenu.style.display = 'flex';
+                if (guestMenu) guestMenu.style.display = 'none';
+            } else {
+                if (userMenu) userMenu.style.display = 'none';
+                if (guestMenu) guestMenu.style.display = 'flex';
+            }
+        }
+
+        function initializeNavbar() {
+            checkUserAuthentication();
+
+            // Mobile menu toggle (consistent with other pages)
+            const normalMenuToggle = document.getElementById('normalMenuToggle');
+            const normalNav = document.getElementById('normalNav');
+
+            if (normalMenuToggle && normalNav) {
+                normalMenuToggle.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    normalMenuToggle.classList.toggle('active');
+                    normalNav.classList.toggle('active');
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.nav-normal') && normalNav.classList.contains('active')) {
+                        normalNav.classList.remove('active');
+                        normalMenuToggle.classList.remove('active');
+                    }
                 });
             }
 
@@ -1068,8 +1138,11 @@
         }
 
         function handleLogout() {
-            localStorage.removeItem('sessionData');
-            window.location.href = 'index.html';
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('nexus_session');
+                sessionStorage.removeItem('nexus_session');
+                window.location.href = 'index.html';
+            }
         }
 
         // Form functionality
@@ -1080,6 +1153,13 @@
 
         async function handleFormSubmit(e) {
             e.preventDefault();
+            
+            // Check authentication first
+            if (!isAuthenticated()) {
+                alert('Please log in to submit a support ticket.');
+                window.location.href = 'auth.html';
+                return;
+            }
             
             const submitBtn = e.target.querySelector('.submit-btn');
             const originalText = submitBtn.innerHTML;
@@ -1121,25 +1201,19 @@
                 };
                 
                 // Submit to backend API
-                const response = await fetch('/api/tickets/create', {
+                const result = await fetchWithAuth('/api/support/ticket', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include', // Include cookies for authentication
                     body: JSON.stringify(ticketData)
                 });
                 
-                const result = await response.json();
-                
-                if (!response.ok) {
+                if (!result.success) {
                     // Handle API errors
                     if (result.errors && Array.isArray(result.errors)) {
                         throw new Error(result.errors.join(', '));
                     } else if (result.message) {
                         throw new Error(result.message);
                     } else {
-                        throw new Error(`Server error: ${response.status}`);
+                        throw new Error('Failed to create ticket');
                     }
                 }
                 
@@ -1274,30 +1348,20 @@
                     return;
                 }
                 
-                // Fetch tickets from API
-                const response = await fetch(`/api/tickets/user/${userId}?limit=20`, {
-                    method: 'GET',
-                    credentials: 'include', // Include cookies for authentication
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                if (!response.ok) {
-                    if (response.status === 401) {
-                        ticketsGrid.innerHTML = `
-                            <div class="no-tickets">
-                                <i class="fas fa-sign-in-alt"></i>
-                                <h3>Authentication required</h3>
-                                <p>Please log in to view your support tickets.</p>
-                            </div>
-                        `;
-                        return;
-                    }
-                    throw new Error(`Failed to load tickets: ${response.status}`);
+                // Check if user is authenticated
+                if (!isAuthenticated()) {
+                    ticketsGrid.innerHTML = `
+                        <div class="no-tickets">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <h3>Please log in</h3>
+                            <p>You need to be logged in to view your support tickets.</p>
+                        </div>
+                    `;
+                    return;
                 }
-                
-                const result = await response.json();
+
+                // Fetch tickets from API
+                const result = await fetchWithAuth('/api/support/tickets');
                 
                 if (!result.success) {
                     throw new Error(result.message || 'Failed to load tickets');
@@ -1418,9 +1482,7 @@
                 `;
                 
                 // Fetch ticket details
-                const response = await fetch(`/api/tickets/${ticketId}`, {
-                    method: 'GET',
-                    credentials: 'include',
+                const result = await fetchWithAuth(`/api/support/tickets/${ticketId}`);
                     headers: {
                         'Content-Type': 'application/json'
                     }
@@ -1638,10 +1700,20 @@
                     return;
                 }
                 
+                // Check if user is authenticated
+                if (!isAuthenticated()) {
+                    ticketsGrid.innerHTML = `
+                        <div class="no-tickets">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <h3>Please log in</h3>
+                            <p>You need to be logged in to search your tickets.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
                 // Search tickets via API
-                const response = await fetch(`/api/tickets/user/${userId}?search=${encodeURIComponent(searchTerm)}&limit=50`, {
-                    method: 'GET',
-                    credentials: 'include',
+                const result = await fetchWithAuth(`/api/support/tickets?search=${encodeURIComponent(searchTerm)}&limit=50`);
                     headers: {
                         'Content-Type': 'application/json'
                     }
