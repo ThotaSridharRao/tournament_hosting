@@ -835,6 +835,200 @@
       min-height: 120px;
     }
 
+    /* Attachments Styles */
+    .attachments-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .attachment-item {
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      transition: all var(--ease);
+    }
+
+    .attachment-item:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+    }
+
+    .attachment-preview {
+      position: relative;
+      cursor: pointer;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+    }
+
+    .attachment-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform var(--ease);
+    }
+
+    .attachment-preview:hover img {
+      transform: scale(1.05);
+    }
+
+    .attachment-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity var(--ease);
+      color: white;
+      font-size: 0.9rem;
+    }
+
+    .attachment-preview:hover .attachment-overlay {
+      opacity: 1;
+    }
+
+    .attachment-overlay i {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .attachment-file {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      cursor: pointer;
+      transition: background var(--ease);
+    }
+
+    .attachment-file:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .file-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary-color);
+      border-radius: 8px;
+      color: var(--bg-dark);
+    }
+
+    .file-icon i {
+      font-size: 1.2rem;
+    }
+
+    .file-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .file-name {
+      color: var(--text-primary);
+      font-weight: 500;
+      font-size: 0.9rem;
+      word-break: break-word;
+    }
+
+    .file-size {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    /* Image Modal Styles */
+    .image-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 3000;
+      backdrop-filter: blur(5px);
+    }
+
+    .image-modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .image-modal-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .image-modal-header {
+      background: var(--panel);
+      padding: 1rem 2rem;
+      border-radius: 8px 8px 0 0;
+      border: 1px solid var(--border-color);
+      border-bottom: none;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .image-modal-title {
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .image-modal-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 50%;
+      transition: all var(--ease);
+    }
+
+    .image-modal-close:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+    }
+
+    .image-modal-body {
+      background: var(--panel);
+      border: 1px solid var(--border-color);
+      border-radius: 0 0 8px 8px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 100%;
+      max-height: calc(90vh - 80px);
+      overflow: hidden;
+    }
+
+    .image-modal-body img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
     .modal-actions {
       padding: 1rem 2rem 2rem;
       display: flex;
@@ -1202,6 +1396,19 @@
     </div>
   </div>
 
+  <!-- Image Modal -->
+  <div class="image-modal" id="imageModal">
+    <div class="image-modal-content">
+      <div class="image-modal-header">
+        <h3 class="image-modal-title" id="imageModalTitle">Image Preview</h3>
+        <button class="image-modal-close" onclick="closeImageModal()">&times;</button>
+      </div>
+      <div class="image-modal-body">
+        <img id="imageModalImg" src="" alt="Preview">
+      </div>
+    </div>
+  </div>
+
   <script>
     // Global variables
     let currentTickets = [];
@@ -1536,6 +1743,66 @@
       }
     }
 
+    // Attachment handling functions
+    function getFileIcon(fileType) {
+      if (!fileType) return 'fa-file';
+      
+      if (fileType.startsWith('image/')) return 'fa-image';
+      if (fileType === 'application/pdf') return 'fa-file-pdf';
+      if (fileType.includes('word')) return 'fa-file-word';
+      if (fileType.includes('excel') || fileType.includes('spreadsheet')) return 'fa-file-excel';
+      if (fileType === 'text/plain') return 'fa-file-alt';
+      if (fileType.includes('zip') || fileType.includes('rar')) return 'fa-file-archive';
+      
+      return 'fa-file';
+    }
+
+    function formatFileSize(bytes) {
+      if (!bytes || bytes === 0) return '0 Bytes';
+      
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Image modal functions
+    function openImageModal(imageUrl, imageName) {
+      const modal = document.getElementById('imageModal');
+      const modalImg = document.getElementById('imageModalImg');
+      const modalTitle = document.getElementById('imageModalTitle');
+      
+      modalImg.src = imageUrl;
+      modalImg.alt = imageName;
+      modalTitle.textContent = imageName || 'Image Preview';
+      
+      modal.classList.add('active');
+      
+      // Close modal when clicking outside the image
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          closeImageModal();
+        }
+      });
+      
+      // Close modal with Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+          closeImageModal();
+        }
+      });
+    }
+
+    function closeImageModal() {
+      const modal = document.getElementById('imageModal');
+      modal.classList.remove('active');
+      
+      // Remove event listeners
+      modal.removeEventListener('click', closeImageModal);
+      document.removeEventListener('keydown', closeImageModal);
+    }
+
     function createTicketCard(ticket) {
       const priorityClass = `priority-${ticket.priority || 'medium'}`;
       const statusClass = `status-${(ticket.status || 'open').replace('_', '-')}`;
@@ -1694,6 +1961,37 @@
                         <label>Description</label>
                         <textarea readonly>${ticket.description || 'No description provided'}</textarea>
                     </div>
+                    
+                    ${ticket.attachments && ticket.attachments.length > 0 ? `
+                        <div class="form-group">
+                            <label>Attachments (${ticket.attachments.length})</label>
+                            <div class="attachments-grid">
+                                ${ticket.attachments.map(attachment => `
+                                    <div class="attachment-item">
+                                        ${attachment.fileType && attachment.fileType.startsWith('image/') ? `
+                                            <div class="attachment-preview" onclick="openImageModal('${attachment.url}', '${attachment.originalName || 'Image'}')">
+                                                <img src="${attachment.url}" alt="${attachment.originalName || 'Attachment'}" loading="lazy">
+                                                <div class="attachment-overlay">
+                                                    <i class="fas fa-search-plus"></i>
+                                                    <span>Click to view</span>
+                                                </div>
+                                            </div>
+                                        ` : `
+                                            <div class="attachment-file" onclick="window.open('${attachment.url}', '_blank')">
+                                                <div class="file-icon">
+                                                    <i class="fas ${getFileIcon(attachment.fileType)}"></i>
+                                                </div>
+                                                <div class="file-info">
+                                                    <span class="file-name">${attachment.originalName || 'File'}</span>
+                                                    <span class="file-size">${formatFileSize(attachment.fileSize)}</span>
+                                                </div>
+                                            </div>
+                                        `}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
                     
                     <div class="form-group">
                         <label>Resolution Notes</label>

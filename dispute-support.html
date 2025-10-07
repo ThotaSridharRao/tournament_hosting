@@ -139,11 +139,14 @@
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: white;
+            display: flex;
+            align-items: center;
             text-decoration: none;
-            letter-spacing: -0.5px;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
         }
 
         .nav-center {
@@ -488,6 +491,94 @@
         .form-group textarea {
             resize: vertical;
             min-height: 120px;
+        }
+
+        /* File Upload Styles */
+        .file-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--ease);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--primary-color);
+            background: rgba(10, 250, 217, 0.1);
+        }
+
+        .file-upload-area.dragover {
+            border-color: var(--primary-color);
+            background: rgba(10, 250, 217, 0.15);
+            transform: scale(1.02);
+        }
+
+        .upload-content i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .upload-content p {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .upload-content small {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .file-preview {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        .file-item i {
+            color: var(--primary-color);
+        }
+
+        .file-item .file-name {
+            color: var(--text-primary);
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-item .file-size {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .file-item .remove-file {
+            background: none;
+            border: none;
+            color: var(--error-color);
+            cursor: pointer;
+            padding: 0.2rem;
+            border-radius: 3px;
+            transition: all var(--ease);
+        }
+
+        .file-item .remove-file:hover {
+            background: rgba(239, 68, 68, 0.2);
         }
 
         .submit-btn {
@@ -899,7 +990,9 @@
     <!-- Navigation -->
     <nav class="nav-normal">
         <div class="nav-container">
-            <a href="index.html" class="logo">GamingNexus</a>
+            <a href="index.html" class="logo">
+                <img src="ug.png" alt="GamingNexus" style="height: 40px; width: auto;">
+            </a>
             <div class="nav-center" id="normalNav">
                 <ul class="nav-links">
                     <li><a href="tournaments.html">Tournaments</a></li>
@@ -988,9 +1081,23 @@
                                 required></textarea>
                         </div>
 
-                        <button type="submit" class="submit-btn">
-                            <i class="fas fa-paper-plane"></i>
-                            Submit Ticket
+                        <div class="form-group">
+                            <label for="attachments">Attachments (Optional)</label>
+                            <input type="file" id="attachments" name="attachments" multiple
+                                accept="image/*,.pdf,.doc,.docx,.txt" style="display: none;">
+                            <div class="file-upload-area" onclick="document.getElementById('attachments').click()">
+                                <div class="upload-content">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Click to upload files or drag and drop</p>
+                                    <small>Supported: Images, PDF, DOC, DOCX, TXT (Max 5MB each)</small>
+                                </div>
+                            </div>
+                            <div id="file-preview" class="file-preview"></div>
+                        </div>
+
+                        <button type="submit" class="submit-btn"></button>
+                        <i class="fas fa-paper-plane"></i>
+                        Submit Ticket
                         </button>
                     </form>
 
@@ -1232,6 +1339,122 @@
         function initializeForm() {
             const form = document.getElementById('complaintForm');
             form.addEventListener('submit', handleFormSubmit);
+            initializeFileUpload();
+        }
+
+        function initializeFileUpload() {
+            const fileInput = document.getElementById('attachments');
+            const uploadArea = document.querySelector('.file-upload-area');
+            const filePreview = document.getElementById('file-preview');
+            let selectedFiles = [];
+
+            // File input change handler
+            fileInput.addEventListener('change', function (e) {
+                handleFiles(e.target.files);
+            });
+
+            // Drag and drop handlers
+            uploadArea.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', function (e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', function (e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                handleFiles(e.dataTransfer.files);
+            });
+
+            function handleFiles(files) {
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+                    'application/pdf', 'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    'text/plain'];
+
+                Array.from(files).forEach(file => {
+                    // Check file size
+                    if (file.size > maxSize) {
+                        showErrorMessage(`File "${file.name}" is too large. Maximum size is 5MB.`);
+                        return;
+                    }
+
+                    // Check file type
+                    if (!allowedTypes.includes(file.type)) {
+                        showErrorMessage(`File "${file.name}" is not supported. Please use images, PDF, DOC, DOCX, or TXT files.`);
+                        return;
+                    }
+
+                    // Check if file already exists
+                    if (selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                        showErrorMessage(`File "${file.name}" is already selected.`);
+                        return;
+                    }
+
+                    // Add file to selection
+                    selectedFiles.push(file);
+                    updateFilePreview();
+                });
+            }
+
+            function updateFilePreview() {
+                filePreview.innerHTML = '';
+
+                selectedFiles.forEach((file, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+
+                    const fileIcon = getFileIcon(file.type);
+                    const fileSize = formatFileSize(file.size);
+
+                    fileItem.innerHTML = `
+                        <i class="${fileIcon}"></i>
+                        <span class="file-name" title="${file.name}">${file.name}</span>
+                        <span class="file-size">(${fileSize})</span>
+                        <button type="button" class="remove-file" onclick="removeFile(${index})" title="Remove file">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+
+                    filePreview.appendChild(fileItem);
+                });
+
+                // Update the file input files (for form submission)
+                updateFileInput();
+            }
+
+            function updateFileInput() {
+                const dt = new DataTransfer();
+                selectedFiles.forEach(file => dt.items.add(file));
+                fileInput.files = dt.files;
+            }
+
+            // Global function to remove files
+            window.removeFile = function (index) {
+                selectedFiles.splice(index, 1);
+                updateFilePreview();
+            };
+
+            function getFileIcon(fileType) {
+                if (fileType.startsWith('image/')) return 'fas fa-image';
+                if (fileType === 'application/pdf') return 'fas fa-file-pdf';
+                if (fileType.includes('word')) return 'fas fa-file-word';
+                if (fileType === 'text/plain') return 'fas fa-file-alt';
+                return 'fas fa-file';
+            }
+
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
         }
 
         async function handleFormSubmit(e) {
@@ -1273,6 +1496,30 @@
                     throw new Error('Description must be at least 10 characters long');
                 }
 
+                // Handle file uploads first if any
+                const attachments = [];
+                const fileInput = document.getElementById('attachments');
+
+                if (fileInput.files.length > 0) {
+                    // Upload files to Cloudinary
+                    for (let i = 0; i < fileInput.files.length; i++) {
+                        const file = fileInput.files[i];
+                        try {
+                            const uploadResult = await uploadToCloudinary(file);
+                            attachments.push({
+                                url: uploadResult.secure_url,
+                                publicId: uploadResult.public_id,
+                                originalName: file.name,
+                                fileType: file.type,
+                                fileSize: file.size
+                            });
+                        } catch (uploadError) {
+                            console.error('File upload error:', uploadError);
+                            throw new Error(`Failed to upload file "${file.name}". Please try again.`);
+                        }
+                    }
+                }
+
                 // Create ticket object for API
                 const ticketData = {
                     issueType: issueType,
@@ -1280,7 +1527,7 @@
                     subject: subject.trim(),
                     description: description.trim(),
                     tournamentId: formData.get('tournamentId') || null,
-                    attachments: []
+                    attachments: attachments
                 };
 
                 // Submit to backend API
@@ -1391,6 +1638,33 @@
 
             // Scroll to error message
             errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Cloudinary upload function
+        async function uploadToCloudinary(file) {
+            // TODO: Replace these with your actual Cloudinary configuration
+            const cloudName = 'your-cloud-name'; // Replace with your Cloudinary cloud name
+            const uploadPreset = 'support-tickets'; // Replace with your upload preset
+
+            // You can also get these from environment variables or a config endpoint
+            // const cloudName = await getCloudinaryConfig('cloudName');
+            // const uploadPreset = await getCloudinaryConfig('uploadPreset');
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', uploadPreset);
+            formData.append('folder', 'support-tickets');
+
+            const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('Upload failed');
+            }
+
+            return await response.json();
         }
 
         function resetForm() {
@@ -1554,7 +1828,7 @@
             const subject = ticket.subject || 'No Subject';
             const description = ticket.description || 'No description provided.';
             const status = ticket.status || 'open';
-            
+
             // Check if admin has provided resolution
             const resolution = ticket.resolution || null;
             const isResolved = status === 'resolved' && resolution;
@@ -1771,7 +2045,7 @@
             const description = ticket.description || 'No description provided.';
             const status = ticket.status || 'open';
             const resolution = ticket.resolution || null;
-            
+
             // Simple status display
             const statusDisplay = status.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
             const isResolved = status === 'resolved' && resolution;
@@ -1949,6 +2223,41 @@
                 });
             }
         });
+
+        // Reset form function
+        function resetForm() {
+            const form = document.getElementById('complaintForm');
+            const success = document.getElementById('ticketSuccess');
+            const filePreview = document.getElementById('file-preview');
+            const fileInput = document.getElementById('attachments');
+
+            if (form && success) {
+                // Reset form fields
+                form.reset();
+
+                // Clear file selection
+                if (fileInput) {
+                    fileInput.value = '';
+                }
+
+                // Clear file preview
+                if (filePreview) {
+                    filePreview.innerHTML = '';
+                }
+
+                // Clear selected files array if it exists
+                if (typeof selectedFiles !== 'undefined') {
+                    selectedFiles = [];
+                }
+
+                // Hide success message and show form
+                success.style.display = 'none';
+                form.style.display = 'block';
+
+                // Scroll to form
+                form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
     </script>
 </body>
 
