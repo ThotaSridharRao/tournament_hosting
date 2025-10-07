@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tournament Brackets - View | GamingNexus</title>
+  <title>Tournament Brackets - View | Uni Games</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -1009,7 +1009,9 @@
 <body>
   <nav class="nav-normal">
     <div class="nav-container">
-        <a href="index.html" class="logo">GamingNexus</a>
+        <a href="index.html" class="logo">
+            <img src="ug.png" alt="Uni Games" style="height: 80px; width: auto;">
+        </a>
         <div class="nav-center" id="normalNav">
             <ul class="nav-links">
                 <li><a href="tournaments.html">Tournaments</a></li>
@@ -1099,7 +1101,7 @@
 
         // Update page title and info
         document.getElementById('tournament-title').textContent = tournamentData.title;
-        document.title = `${tournamentData.title} - Brackets | GamingNexus`;
+        document.title = `${tournamentData.title} - Brackets | Uni Games`;
 
         // Display tournament info
         displayTournamentInfo();

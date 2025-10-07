@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="page-title">Tournament Details | GamingNexus</title>
+  <title id="page-title">Tournament Details | Uni Games</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
@@ -1140,9 +1140,12 @@
   </div>
 
   <nav class="nav-normal">
-    <div class="nav-container"><a href="index.html" class="logo">GamingNexus</a>
+    <div class="nav-container"><a href="index.html" class="logo">
+        <img src="ug.png" alt="Uni Games" style="height: 80px; width: auto;">
+      </a>
       <div class="nav-center" id="normalNav">
         <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
           <li><a href="tournaments.html">Tournaments</a></li>
           <li><a href="tournament-brackets.html">Brackets</a></li>
         </ul>
@@ -1323,7 +1326,7 @@
               <i class="fas fa-plus"></i>
             </button>
             <div class="faq-answer">
-              <p>All you need is a GamingNexus account and the game you want to compete in! Check the specific
+              <p>All you need is a Uni Games account and the game you want to compete in! Check the specific
                 tournament rules for any additional requirements, but generally, it's that simple to start your
                 competitive journey.</p>
             </div>
@@ -1368,7 +1371,10 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-column footer-brand">
-          <a href="index.html" class="brand">GamingNexus</a>
+          <a href="index.html" class="brand" style="display: flex; align-items: center; gap: 0.5rem;">
+            <img src="ug.png" alt="Uni Games" style="height: 40px; width: auto;">
+            Uni Games
+          </a>
           <p>The ultimate destination for competitive gaming.</p>
           <div class="social-links">
             <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
@@ -1402,7 +1408,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 GamingNexus. All rights reserved.</p>
+        <p>&copy; 2025 Uni Games. All rights reserved.</p>
       </div>
     </div>
   </footer>
@@ -1789,7 +1795,7 @@
         heroSection.style.backgroundImage = `url('${imageUrl}')`;
       }
 
-      document.getElementById('page-title').textContent = `${tournament.title} | GamingNexus`;
+      document.getElementById('page-title').textContent = `${tournament.title} | Uni Games`;
       document.getElementById('tournament-title').textContent = tournament.title;
       // REMOVED: tournament-subtitle content update
 
