@@ -494,42 +494,37 @@
         }
 
         /* File Upload Styles */
-        .file-upload-area {
-            border: 2px dashed var(--border-color);
+        .file-upload-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 2rem;
-            text-align: center;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
             cursor: pointer;
             transition: all var(--ease);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .file-upload-area:hover {
-            border-color: var(--primary-color);
-            background: rgba(10, 250, 217, 0.1);
-        }
-
-        .file-upload-area.dragover {
-            border-color: var(--primary-color);
-            background: rgba(10, 250, 217, 0.15);
-            transform: scale(1.02);
-        }
-
-        .upload-content i {
-            font-size: 2rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .upload-content p {
-            color: var(--text-primary);
             margin-bottom: 0.5rem;
-            font-weight: 500;
         }
 
-        .upload-content small {
+        .file-upload-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .file-upload-btn i {
+            color: var(--primary-color);
+        }
+
+        .file-help-text {
+            display: block;
             color: var(--text-secondary);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
         }
 
         .file-preview {
@@ -1085,19 +1080,18 @@
                             <label for="attachments">Attachments (Optional)</label>
                             <input type="file" id="attachments" name="attachments" multiple
                                 accept="image/*,.pdf,.doc,.docx,.txt" style="display: none;">
-                            <div class="file-upload-area" onclick="document.getElementById('attachments').click()">
-                                <div class="upload-content">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                    <p>Click to upload files or drag and drop</p>
-                                    <small>Supported: Images, PDF, DOC, DOCX, TXT (Max 5MB each)</small>
-                                </div>
-                            </div>
+                            <button type="button" class="file-upload-btn" onclick="document.getElementById('attachments').click()">
+                                <i class="fas fa-paperclip"></i>
+                                Choose Files
+                            </button>
+                            <small class="file-help-text">Supported: Images, PDF, DOC, DOCX, TXT (Max 5MB each)</small>
                             <div id="file-preview" class="file-preview"></div>
                         </div>
 
-                        <button type="submit" class="submit-btn"></button>
-                        <i class="fas fa-paper-plane"></i>
-                        Submit Ticket
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            Submit Ticket
+                        </button>
                         </button>
                     </form>
 
@@ -1344,30 +1338,12 @@
 
         function initializeFileUpload() {
             const fileInput = document.getElementById('attachments');
-            const uploadArea = document.querySelector('.file-upload-area');
             const filePreview = document.getElementById('file-preview');
             let selectedFiles = [];
 
             // File input change handler
             fileInput.addEventListener('change', function (e) {
                 handleFiles(e.target.files);
-            });
-
-            // Drag and drop handlers
-            uploadArea.addEventListener('dragover', function (e) {
-                e.preventDefault();
-                uploadArea.classList.add('dragover');
-            });
-
-            uploadArea.addEventListener('dragleave', function (e) {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-            });
-
-            uploadArea.addEventListener('drop', function (e) {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-                handleFiles(e.dataTransfer.files);
             });
 
             function handleFiles(files) {
