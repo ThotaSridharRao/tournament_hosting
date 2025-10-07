@@ -1299,42 +1299,42 @@
       }, 1000);
     }
 
-    // Sample ticket data for demo purposes
+    // Sample ticket data for demo purposes (using backend field names - snake_case)
     function getSampleTickets() {
       return [
         {
-          ticketId: 'TKT-001',
+          ticket_id: 'TKT-001',
           type: 'dispute',
           subject: 'Tournament payment issue',
           description: 'I refreshed the tournaments page and now nothing is loading. I do not see any tournaments there.',
-          userEmail: 'user@example.com',
+          user_email: 'user@example.com',
           status: 'open',
           priority: 'high',
-          createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
-          assignedTo: null
+          created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+          assigned_to: null
         },
         {
-          ticketId: 'TKT-002',
+          ticket_id: 'TKT-002',
           type: 'support',
           subject: 'Account verification problem',
           description: 'Unable to verify my account after multiple attempts.',
-          userEmail: 'player2@example.com',
+          user_email: 'player2@example.com',
           status: 'in_progress',
           priority: 'medium',
-          createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-          assignedTo: 'admin@gamingnexus.com'
+          created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+          assigned_to: 'admin@gamingnexus.com'
         },
         {
-          ticketId: 'TKT-003',
+          ticket_id: 'TKT-003',
           type: 'dispute',
           subject: 'Unfair tournament result',
           description: 'The tournament result was not fair, requesting review.',
-          userEmail: 'competitor@example.com',
+          user_email: 'competitor@example.com',
           status: 'resolved',
           priority: 'low',
-          createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
-          assignedTo: 'admin@gamingnexus.com',
-          resolvedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+          created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days ago
+          assigned_to: 'admin@gamingnexus.com',
+          resolved_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
           resolution: 'Reviewed tournament logs, result was correct.'
         }
       ];
@@ -1497,15 +1497,22 @@
       }
 
       if (search) {
-        filtered = filtered.filter(ticket =>
-          ticket.ticketId?.toLowerCase().includes(search) ||
-          ticket.subject?.toLowerCase().includes(search) ||
-          ticket.title?.toLowerCase().includes(search) ||
-          ticket.description?.toLowerCase().includes(search)
-        );
+        filtered = filtered.filter(ticket => {
+          const ticketId = ticket.ticketId || ticket.ticket_id || ticket.id || '';
+          const subject = ticket.subject || ticket.title || '';
+          const description = ticket.description || '';
+          
+          return ticketId.toLowerCase().includes(search) ||
+                 subject.toLowerCase().includes(search) ||
+                 description.toLowerCase().includes(search);
+        });
       }
 
-      return filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      return filtered.sort((a, b) => {
+        const dateA = new Date(b.createdAt || b.created_at || b.timestamp || 0);
+        const dateB = new Date(a.createdAt || a.created_at || a.timestamp || 0);
+        return dateA - dateB;
+      });
     }
 
     // Add formatDate function
