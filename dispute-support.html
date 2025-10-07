@@ -1405,36 +1405,30 @@
         }
 
         // Tickets functionality
-        // Sample ticket data for demo purposes
+        // Sample ticket data for demo purposes (using database field names)
         function getSampleUserTickets() {
             return [
                 {
-                    ticketId: 'SUP-001',
+                    ticket_id: 'SUP-001',
                     subject: 'Tournament page not loading',
                     description: 'I refreshed the tournaments page and now nothing is loading. I do not see any tournaments there.',
                     category: 'technical',
                     priority: 'high',
                     status: 'open',
-                    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
-                    userEmail: 'user@example.com'
+                    created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+                    user_email: 'user@example.com'
                 },
                 {
-                    ticketId: 'SUP-002',
-                    subject: 'Account verification issue',
-                    description: 'Unable to verify my account after multiple attempts. The verification email is not arriving.',
-                    category: 'account',
+                    ticket_id: 'SUP-002',
+                    subject: 'Payment issue resolved',
+                    description: 'I completed the payment but the registration is not showing.',
+                    category: 'payment',
                     priority: 'medium',
-                    status: 'in_progress',
-                    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
-                    updatedAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(), // 12 hours ago
-                    userEmail: 'user@example.com',
-                    messages: [
-                        {
-                            content: 'We are looking into your verification issue. Please check your spam folder.',
-                            senderRole: 'admin',
-                            timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString()
-                        }
-                    ]
+                    status: 'resolved',
+                    created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
+                    updated_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+                    user_email: 'user@example.com',
+                    resolution: 'We found the issue with the payment processing system. Your registration has been activated and you should now see it in your dashboard. The payment was successfully processed.'
                 }
             ];
         }
@@ -1555,53 +1549,52 @@
         }
 
         function createTicketCard(ticket) {
-            // Handle multiple possible field names for ticket ID
-            const ticketId = ticket.ticketId || ticket.ticket_id || ticket.id || `TEMP-${Date.now()}`;
+            // Handle database field names (snake_case from backend)
+            const ticketId = ticket.ticket_id || ticket.ticketId || ticket.id || 'Unknown';
+            const subject = ticket.subject || 'No Subject';
+            const description = ticket.description || 'No description provided.';
+            const status = ticket.status || 'open';
+            
+            // Check if admin has provided resolution
+            const resolution = ticket.resolution || null;
+            const isResolved = status === 'resolved' && resolution;
 
-            // Handle different possible field names for dates
-            const createdAt = ticket.createdAt || ticket.created_at || ticket.timestamp;
-            const updatedAt = ticket.updatedAt || ticket.updated_at;
-
-            // Handle different possible field names for category
-            const category = ticket.category || ticket.issueType || ticket.issue_type || 'other';
-
-            // Handle user identification
-            const userEmail = ticket.userEmail || ticket.user_email || ticket.email || 'Current User';
-
-            const createdDate = createdAt ? new Date(createdAt).toLocaleDateString() : 'Unknown';
-            const createdTime = createdAt ? new Date(createdAt).toLocaleTimeString() : '';
-            const updatedDate = updatedAt ? new Date(updatedAt).toLocaleDateString() : createdDate;
-
-            // Check if ticket has messages/replies
-            const messages = ticket.messages || [];
-            const hasReply = messages.length > 0;
-            const replyContent = hasReply ? generateReplyContent(messages) : '';
-
-            // Format priority display
-            const priorityDisplay = ticket.priority ? ticket.priority.charAt(0).toUpperCase() + ticket.priority.slice(1) : 'Medium';
-            const categoryDisplay = category.charAt(0).toUpperCase() + category.slice(1).replace(/([A-Z])/g, ' $1');
+            // Simple status display
+            const statusDisplay = status.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
             return `
                 <div class="ticket-card" data-ticket-id="${ticketId}">
                     <div class="ticket-header">
                         <div class="ticket-info">
-                            <h3>${ticket.subject || 'No Subject'}</h3>
+                            <h3>${subject}</h3>
                             <div class="ticket-meta">
-                                <span><i class="fas fa-ticket-alt"></i> ${ticketId}</span>
-                                <span><i class="fas fa-calendar"></i> ${createdDate} ${createdTime}</span>
-                                <span><i class="fas fa-tag"></i> ${categoryDisplay}</span>
-                                <span><i class="fas fa-exclamation-circle"></i> ${priorityDisplay}</span>
-                                ${updatedAt && updatedAt !== createdAt ? `<span><i class="fas fa-clock"></i> Updated ${updatedDate}</span>` : ''}
+                                <span><i class="fas fa-ticket-alt"></i> ID: ${ticketId}</span>
                             </div>
                         </div>
-                        <div class="ticket-status status-${ticket.status || 'open'}">
-                            ${(ticket.status || 'open').replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                        <div class="ticket-status status-${status}">
+                            ${statusDisplay}
                         </div>
                     </div>
+                    
                     <div class="ticket-description">
-                        ${ticket.description || 'No description provided.'}
+                        <strong>Your Issue:</strong><br>
+                        ${description}
                     </div>
-                    ${replyContent}
+                    
+                    ${isResolved ? `
+                        <div class="admin-response">
+                            <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: #4ade80; font-weight: 600;">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Admin Response</span>
+                                </div>
+                                <div style="color: var(--text-primary); line-height: 1.6;">
+                                    ${resolution}
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+                    
                     <div class="ticket-actions" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
                         <button class="btn-secondary" onclick="viewTicketDetails('${ticketId}')" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
                             <i class="fas fa-eye"></i> View Details
@@ -1772,66 +1765,60 @@
         }
 
         function displayTicketDetails(ticket, modal) {
-            const createdDate = ticket.createdAt ? new Date(ticket.createdAt).toLocaleString() : 'Unknown';
-            const updatedDate = ticket.updatedAt ? new Date(ticket.updatedAt).toLocaleString() : createdDate;
-            const messages = ticket.messages || [];
-
-            const messagesHtml = messages.length > 0 ?
-                messages.map(msg => `
-                    <div class="ticket-reply" style="margin-bottom: 1rem;">
-                        <div class="reply-header">
-                            <span class="reply-author">${msg.senderRole === 'admin' ? 'Support Team' : 'You'}</span>
-                            <span class="reply-date">${msg.timestamp ? new Date(msg.timestamp).toLocaleString() : 'Recently'}</span>
-                        </div>
-                        <div class="reply-content">${msg.content || 'No content'}</div>
-                    </div>
-                `).join('') :
-                '<p style="color: var(--text-secondary); font-style: italic;">No messages yet.</p>';
+            // Handle database field names (snake_case from backend)
+            const ticketId = ticket.ticket_id || ticket.ticketId || 'Unknown';
+            const subject = ticket.subject || 'No Subject';
+            const description = ticket.description || 'No description provided.';
+            const status = ticket.status || 'open';
+            const resolution = ticket.resolution || null;
+            
+            // Simple status display
+            const statusDisplay = status.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            const isResolved = status === 'resolved' && resolution;
 
             modal.querySelector('.modal-content').innerHTML = `
                 <div style="padding: 2rem;">
-                    <h2 style="margin-bottom: 1rem; color: var(--text-primary);">${ticket.subject || 'Ticket Details'}</h2>
+                    <h2 style="margin-bottom: 1rem; color: var(--text-primary);">${subject}</h2>
                     
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
-                        <div>
-                            <strong>Ticket ID:</strong><br>
-                            <span style="font-family: monospace; color: var(--primary-color);">${ticket.ticketId || 'Unknown'}</span>
-                        </div>
-                        <div>
-                            <strong>Status:</strong><br>
-                            <span class="ticket-status status-${ticket.status || 'open'}">${(ticket.status || 'open').replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span>
-                        </div>
-                        <div>
-                            <strong>Priority:</strong><br>
-                            <span>${(ticket.priority || 'medium').charAt(0).toUpperCase() + (ticket.priority || 'medium').slice(1)}</span>
-                        </div>
-                        <div>
-                            <strong>Category:</strong><br>
-                            <span>${(ticket.category || 'other').charAt(0).toUpperCase() + (ticket.category || 'other').slice(1)}</span>
-                        </div>
-                        <div>
-                            <strong>Created:</strong><br>
-                            <span>${createdDate}</span>
-                        </div>
-                        <div>
-                            <strong>Last Updated:</strong><br>
-                            <span>${updatedDate}</span>
+                    <div style="margin-bottom: 2rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <span><strong>Ticket ID:</strong> <code style="color: var(--primary-color);">${ticketId}</code></span>
+                            <span class="ticket-status status-${status}" style="padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem;">${statusDisplay}</span>
                         </div>
                     </div>
                     
                     <div style="margin-bottom: 2rem;">
-                        <strong>Description:</strong>
+                        <strong>Your Issue:</strong>
                         <div style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 8px; margin-top: 0.5rem; line-height: 1.6;">
-                            ${ticket.description || 'No description provided.'}
+                            ${description}
                         </div>
                     </div>
                     
-                    <div>
-                        <strong>Messages (${messages.length}):</strong>
-                        <div style="margin-top: 1rem; max-height: 300px; overflow-y: auto;">
-                            ${messagesHtml}
+                    ${isResolved ? `
+                        <div style="margin-bottom: 2rem;">
+                            <div style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); border-radius: 8px; padding: 1rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: #4ade80; font-weight: 600;">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Admin Response</span>
+                                </div>
+                                <div style="color: var(--text-primary); line-height: 1.6;">
+                                    ${resolution}
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    ` : `
+                        <div style="margin-bottom: 2rem;">
+                            <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 1rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; color: #60a5fa; font-weight: 600;">
+                                    <i class="fas fa-clock"></i>
+                                    <span>Status</span>
+                                </div>
+                                <div style="color: var(--text-primary);">
+                                    Your ticket is being reviewed by our support team. You'll receive an update once it's resolved.
+                                </div>
+                            </div>
+                        </div>
+                    `}
                 </div>
             `;
         }
