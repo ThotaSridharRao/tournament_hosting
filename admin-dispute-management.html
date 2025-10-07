@@ -174,6 +174,12 @@
       align-items: center;
     }
 
+    #user-menu {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
     .btn {
       padding: 0.6rem 1.2rem;
       border-radius: 6px;
@@ -202,6 +208,7 @@
       background: rgba(255, 255, 255, 0.1);
       color: rgba(255, 255, 255, 0.8);
       border: 1px solid rgba(255, 255, 255, 0.2);
+      margin-left: 1rem;
     }
 
     .btn-logout:hover {
@@ -1359,12 +1366,12 @@
           })) : [];
 
           currentTickets = [...disputes, ...supportTickets];
-          
+
           // If no tickets from API, use sample data
           if (currentTickets.length === 0) {
             throw new Error('No tickets from API');
           }
-          
+
         } catch (apiError) {
           console.log('API not available, using sample data for demo');
           currentTickets = getSampleTickets();
@@ -1419,7 +1426,7 @@
       const emptyState = document.getElementById('emptyState');
 
       let filteredTickets = filterTickets();
-      
+
       console.log('Rendering tickets:', filteredTickets.length, 'tickets found');
 
       if (filteredTickets.length === 0) {
@@ -1487,11 +1494,11 @@
     // Add formatDate function
     function formatDate(dateString) {
       if (!dateString) return 'N/A';
-      
+
       try {
         const date = new Date(dateString);
         if (isNaN(date.getTime())) return 'Invalid Date';
-        
+
         return date.toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'short',
@@ -1509,13 +1516,13 @@
       const priorityClass = `priority-${ticket.priority || 'medium'}`;
       const statusClass = `status-${(ticket.status || 'open').replace('_', '-')}`;
       const typeIcon = ticket.type === 'dispute' ? 'fas fa-gavel' : 'fas fa-headset';
-      
+
       // Handle different possible field names for user identification
       const userIdentifier = ticket.userEmail || ticket.reporterEmail || ticket.user_email || ticket.reporter_email || ticket.email || 'Unknown User';
-      
+
       // Handle different possible field names for ticket ID
       const ticketId = ticket.ticketId || ticket.ticket_id || ticket.id || 'N/A';
-      
+
       // Handle created date
       const createdDate = ticket.createdAt || ticket.created_at || ticket.timestamp || new Date().toISOString();
 
@@ -1600,19 +1607,19 @@
     async function viewTicket(ticketId) {
       try {
         // Handle different possible field names for ticket ID
-        const ticket = currentTickets.find(t => 
-          (t.ticketId === ticketId) || 
-          (t.ticket_id === ticketId) || 
+        const ticket = currentTickets.find(t =>
+          (t.ticketId === ticketId) ||
+          (t.ticket_id === ticketId) ||
           (t.id === ticketId)
         );
-        
+
         if (!ticket) {
           showNotification('Ticket not found', 'error');
           return;
         }
 
         currentTicket = ticket;
-        
+
         // Handle different possible field names
         const actualTicketId = ticket.ticketId || ticket.ticket_id || ticket.id || 'N/A';
         const userIdentifier = ticket.userEmail || ticket.reporterEmail || ticket.user_email || ticket.reporter_email || ticket.email || 'Unknown User';
@@ -1702,12 +1709,12 @@
     async function assignTicket(ticketId) {
       try {
         // Handle different possible field names for ticket ID
-        const ticket = currentTickets.find(t => 
-          (t.ticketId === ticketId) || 
-          (t.ticket_id === ticketId) || 
+        const ticket = currentTickets.find(t =>
+          (t.ticketId === ticketId) ||
+          (t.ticket_id === ticketId) ||
           (t.id === ticketId)
         );
-        
+
         if (!ticket) {
           showNotification('Ticket not found', 'error');
           return;
@@ -1740,12 +1747,12 @@
     async function resolveTicket(ticketId) {
       try {
         // Handle different possible field names for ticket ID
-        const ticket = currentTickets.find(t => 
-          (t.ticketId === ticketId) || 
-          (t.ticket_id === ticketId) || 
+        const ticket = currentTickets.find(t =>
+          (t.ticketId === ticketId) ||
+          (t.ticket_id === ticketId) ||
           (t.id === ticketId)
         );
-        
+
         if (!ticket) {
           showNotification('Ticket not found', 'error');
           return;
@@ -1807,21 +1814,21 @@
       } catch (error) {
         console.error('Error updating ticket:', error);
         showNotification('Failed to update ticket. This might be a demo - functionality not fully connected to backend.', 'error');
-        
+
         // In demo mode, update the local data
-        const ticketIndex = currentTickets.findIndex(t => 
-          (t.ticketId === actualTicketId) || 
-          (t.ticket_id === actualTicketId) || 
+        const ticketIndex = currentTickets.findIndex(t =>
+          (t.ticketId === actualTicketId) ||
+          (t.ticket_id === actualTicketId) ||
           (t.id === actualTicketId)
         );
-        
+
         if (ticketIndex !== -1) {
           currentTickets[ticketIndex] = { ...currentTickets[ticketIndex], ...updateData };
           renderTickets();
           updateStats();
           showNotification('Ticket updated locally (demo mode)', 'success');
         }
-        
+
         closeModal();
       }
     }

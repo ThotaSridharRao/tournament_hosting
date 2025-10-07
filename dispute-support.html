@@ -179,6 +179,12 @@
             align-items: center;
         }
 
+        #user-menu {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
         .btn {
             padding: 0.6rem 1.2rem;
             border-radius: 6px;
@@ -207,6 +213,7 @@
             background: rgba(255, 255, 255, 0.1);
             color: rgba(255, 255, 255, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-left: 1rem;
         }
 
         .btn-logout:hover {
@@ -794,6 +801,7 @@
                 flex-direction: column;
                 width: 100%;
                 gap: 1rem;
+                gap: 1rem;
             }
         }
 
@@ -1093,12 +1101,12 @@
             try {
                 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
                 const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
-                
+
                 console.log('Testing API connection to:', API_BASE_URL);
-                
+
                 const response = await fetch(`${API_BASE_URL}/health`);
                 console.log('Health check response:', response.status);
-                
+
                 if (response.ok) {
                     const data = await response.json();
                     console.log('API is healthy:', data);
@@ -1114,7 +1122,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             // Test API connection first
             testApiConnection();
-            
+
             // Initialize navbar
             initializeNavbar();
 
@@ -1422,7 +1430,7 @@
                     userTickets = result.data || [];
                 } catch (apiError) {
                     console.error('API Error:', apiError);
-                    
+
                     // If API is not available, show a helpful message
                     if (apiError.message.includes('404')) {
                         ticketsGrid.innerHTML = `
@@ -1437,7 +1445,7 @@
                         `;
                         return;
                     }
-                    
+
                     throw apiError; // Re-throw other errors
                 }
 
