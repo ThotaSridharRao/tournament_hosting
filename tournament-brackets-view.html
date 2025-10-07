@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="navbar.css">
 
 
   <style>
@@ -36,316 +35,257 @@
       /* Account for fixed navbar */
     }
     
-    /* =========================
-   NAVBAR STYLES (Complete)
-   ========================= */
-
-    /* General Header Styles */
-    header.site-header {
-      position: fixed;
-      inset: 0 0 auto 0;
-      background: rgba(26, 26, 26, 0.5);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      z-index: 1200;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      height: 60px;
+   /* =========================MODERN NAVBAR STYLES========================= */
+    .nav-normal {
+        background: rgba(13, 10, 26, 0.1);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 1.2rem 2rem;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+        transform: translateY(0);
     }
 
-    .header-container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 2rem;
-      height: 100%;
-      max-width: 1400px;
-      margin: 0 auto;
+    .nav-normal.nav-hidden {
+        transform: translateY(-100%);
     }
 
-    .brand {
-      font-weight: 700;
-      font-size: 1.5rem;
-      color: var(--copy, var(--text-primary));
-      text-decoration: none;
+    .nav-normal.nav-scrolled {
+        background: rgba(13, 10, 26, 0.3);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
     }
 
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
+    .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
     }
 
-    /* Navigation Styles */
-    .primary {
-      display: flex;
-      align-items: center;
+    .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        text-decoration: none;
+        letter-spacing: -0.5px;
+    }
+
+    .nav-center {
+        display: flex;
+        align-items: center;
+        gap: 2.5rem;
     }
 
     .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 2rem;
+        display: flex;
+        gap: 0;
+        list-style: none;
+        align-items: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-links li {
+        position: relative;
     }
 
     .nav-links a {
-      color: var(--copy, #F0F0F0);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.95rem;
-      transition: color 0.3s ease;
-      padding: 0.5rem 0;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        padding: 0.6rem 1.2rem;
+        display: block;
     }
 
-    .nav-links a:hover {
-      color: var(--accent-2, #0AFAD9);
-    }
-
+    .nav-links a:hover,
     .nav-links a.active {
-      color: var(--accent-2, #0AFAD9);
-      font-weight: 600;
+        color: white;
     }
 
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-left: 2rem;
-      padding-left: 2rem;
-      border-left: 1px solid rgba(255, 255, 255, 0.2);
+    .auth-buttons {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
     }
 
-    .header-cta {
-      background: linear-gradient(135deg, var(--accent-secondary), var(--primary-color));
-      color: #fff;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .header-cta:hover {
-      opacity: 0.8;
-      filter: brightness(0.9);
-    }
-
-    /* Profile Dropdown (Desktop) */
-    .profile-dropdown {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .profile-icon {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-primary);
-      cursor: pointer;
-      border-radius: 50%;
-      transition: all 0.3s ease;
-      font-size: 1.5rem;
-    }
-
-    .profile-icon:hover {
-      color: var(--primary-color);
-      background: rgba(10, 250, 217, 0.1);
-      transform: scale(1.1);
-    }
-
-    .profile-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      cursor: pointer;
-      padding: 0.5rem;
-    }
-
-    .profile-icon {
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-primary);
-      border-radius: 50%;
-      transition: all 0.3s ease;
-      font-size: 1.5rem;
-    }
-
-    .profile-icon:hover {
-      color: var(--primary-color);
-      background: rgba(10, 250, 217, 0.1);
-      transform: scale(1.1);
-    }
-
-    .profile-username {
-      font-weight: 600;
-      font-size: 0.95rem;
-      color: var(--text-primary);
-    }
-
-    /* Hamburger & Mobile Nav Panel */
-    .hamburger {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--text-primary);
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-
-    .mobile-nav {
-      position: fixed;
-      top: 0;
-      right: -100%;
-      width: 300px;
-      height: 100vh;
-      max-height: 100vh;
-      background: var(--panel);
-      z-index: 2000;
-      transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-      box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
-      padding-top: 60px;
-      padding-bottom: 0;
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-      box-sizing: border-box;
-    }
-
-    .mobile-nav.is-open {
-      right: 0;
-    }
-
-    .mobile-nav-close {
-      position: absolute;
-      top: 1rem;
-      right: 1.5rem;
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      font-size: 1.75rem;
-      cursor: pointer;
-      line-height: 1;
-      transition: color 0.2s ease, transform 0.3s ease;
-    }
-
-    .mobile-nav-close:hover {
-      color: var(--text-primary);
-      transform: rotate(90deg);
-    }
-
-    /* Mobile Navigation Links Styling */
-    .mobile-nav-links {
-      padding: 1rem;
-      margin-top: 1rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      flex: 1;
-      overflow-y: auto;
-      min-height: 0;
-    }
-
-    .mobile-nav-links a {
-      color: var(--text-secondary);
-      text-decoration: none;
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      font-weight: 600;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .mobile-nav-links a:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-primary);
-    }
-
-    .mobile-nav-links a i {
-      color: var(--primary-color);
-    }
-
-    /* Mobile Navigation Bottom Actions */
-    .mobile-nav-bottom-actions {
-      margin-top: auto;
-      padding: 1rem 1.5rem 1.5rem 1.5rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-shrink: 0;
-      min-height: auto;
-    }
-
-    /* Mobile Navigation Buttons - Standardized */
-    .mobile-host-btn,
-    .mobile-join-btn,
-    .mobile-logout-btn {
-      display: inline-flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      gap: 0.5rem !important;
-      padding: 0.75rem 1rem !important;
-      border: none !important;
-      border-radius: 6px !important;
-      text-decoration: none !important;
-      font-weight: 600 !important;
-      font-size: 0.85rem !important;
-      line-height: 1.2 !important;
-      transition: all 0.3s ease !important;
-      cursor: pointer !important;
-      font-family: inherit !important;
-      flex: 1 !important;
-      min-height: 40px !important;
-      max-height: 40px !important;
-      box-sizing: border-box !important;
-    }
-
-    .mobile-host-btn {
-      background: #ffffff !important;
-      color: #000000 !important;
-    }
-
-    .mobile-join-btn {
-      background: linear-gradient(135deg, var(--accent-secondary), var(--primary-color)) !important;
-      color: #ffffff !important;
-    }
-
-    .mobile-logout-btn {
-      background: rgba(255, 0, 0, 0.1) !important;
-      color: #ff6b6b !important;
-      border: 1px solid rgba(255, 107, 107, 0.3) !important;
-    }
-
-    /* Responsive Media Queries */
-    @media (max-width: 768px) {
-      .primary {
-        display: none;
-      }
-
-      .nav-actions {
-        display: none;
-      }
-
-      .hamburger {
+    .btn {
+        padding: 0.6rem 1.2rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
         display: inline-flex;
         align-items: center;
-        justify-content: center;
-      }
+        gap: 0.5rem;
     }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2rem;
+    .btn-request {
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
+        color: white;
+    }
+
+    .btn-request:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(15, 133, 211, 0.3);
+    }
+
+    .btn-logout {
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-logout:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    #user-menu {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-secondary) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .user-name {
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+
+    .menu-icon {
+        width: 24px;
+        height: 20px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .menu-icon span {
+        width: 100%;
+        height: 2px;
+        background: white;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+
+    .menu-toggle.active .menu-icon span:nth-child(1) {
+        transform: rotate(45deg) translate(7px, 7px);
+    }
+
+    .menu-toggle.active .menu-icon span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .menu-toggle.active .menu-icon span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+    }
+
+    /* Mobile Styles */
+    @media (max-width: 968px) {
+        .menu-toggle {
+            display: block;
+        }
+
+        .nav-center {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            height: 100vh;
+            width: 85%;
+            max-width: 350px;
+            flex-direction: column;
+            background: rgba(15, 15, 15, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 6rem 2rem 2rem;
+            gap: 0;
+            transition: right 0.3s ease;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: flex-start;
+            overflow-y: auto;
+        }
+
+        .nav-center.active {
+            right: 0;
+        }
+
+        .nav-links {
+            flex-direction: column;
+            width: 100%;
+            gap: 0;
+        }
+
+        .nav-links li {
+            width: 100%;
+        }
+
+        .nav-links a {
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .auth-buttons {
+            flex-direction: column;
+            width: 100%;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-info {
+            width: 100%;
+            justify-content: center;
+        }
+
+        #user-menu {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 1rem;
+        }
     }
 
     @media (max-width: 768px) {
@@ -1067,35 +1007,36 @@
 </head>
 
 <body>
-  <header class="site-header" role="banner">
-    <div class="header-container">
-      <a href="index.html" class="brand" aria-hidden="false">GamingNexus</a>
-      <div class="header-right">
-        <nav class="primary" role="navigation" aria-label="Primary">
-          <div class="nav-links" role="menubar">
-            <a href="tournaments.html" role="menuitem">Tournaments</a>
-            <a href="javascript:history.back()" role="menuitem">Tournament Details</a>
-          </div>
-        </nav>
-        <div class="nav-actions">
-          <div id="guest-menu">
-            <button class="header-cta" onclick="redirectToAuth()">Join Us</button>
-          </div>
-          <div id="user-menu" style="display: none;">
-            <div class="profile-info" onclick="window.location.href='userdashboard.html'">
-              <div class="profile-icon">
-                <i class="fas fa-user-circle"></i>
-              </div>
-              <div class="profile-username" id="navbar-username">User</div>
+  <nav class="nav-normal">
+    <div class="nav-container">
+        <a href="index.html" class="logo">GamingNexus</a>
+        <div class="nav-center" id="normalNav">
+            <ul class="nav-links">
+                <li><a href="tournaments.html">Tournaments</a></li>
+                <li><a href="tournament-brackets.html" class="active">Brackets</a></li>
+            </ul>
+            <div class="auth-buttons" id="normalAuth">
+                <div id="guest-menu">
+                    <a href="auth.html" class="btn btn-request">Join Us</a>
+                </div>
+                <div id="user-menu" style="display: none;">
+                    <div class="user-info">
+                        <div class="user-avatar" id="user-avatar">U</div>
+                        <span class="user-name" id="navbar-username">User</span>
+                    </div>
+                    <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
+                </div>
             </div>
-          </div>
         </div>
-        <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
-          <i class="fas fa-bars"></i>
+        <button class="menu-toggle" id="normalMenuToggle">
+            <div class="menu-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </button>
-      </div>
     </div>
-  </header>
+</nav>
 
   <div id="mobile-nav" class="mobile-nav" hidden>
   </div>
@@ -1949,179 +1890,93 @@
   // SESSION & NAVBAR MANAGEMENT
   // =========================
   
-      function redirectToAuth(tab = 'register') {
-        const returnUrl = encodeURIComponent(window.location.href);
-        window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
-      }
-  
-      function getSessionData() {
+     // Consolidated session function
+    function getSessionData() {
         const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+        if (!session) return null;
         try {
-          return session ? JSON.parse(session) : null;
+            const parsedSession = JSON.parse(session);
+            if (parsedSession && parsedSession.token && parsedSession.user) {
+                return parsedSession;
+            }
+            return null;
         } catch (error) {
-          return null;
+            console.error('Error parsing session data:', error);
+            localStorage.removeItem('nexus_session');
+            sessionStorage.removeItem('nexus_session');
+            return null;
         }
-      }
-  
-      function logout() {
-        localStorage.removeItem('nexus_session');
-        sessionStorage.removeItem('nexus_session');
-        window.location.href = 'index.html';
-      }
-  
-      async function fetchUserData() {
+    }
+
+    function checkUserAuthentication() {
         const sessionData = getSessionData();
-        if (!sessionData || !sessionData.token) return null;
-  
-        if (sessionData.user && sessionData.user.id) {
-          return sessionData.user;
-        }
-  
-        try {
-          const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${sessionData.token}`,
-              'Content-Type': 'application/json'
-            }
-          });
-  
-          if (response.ok) {
-            const result = await response.json();
-            if (result.success && result.data.user) {
-              const updatedSession = {
-                ...sessionData,
-                user: result.data.user
-              };
-              localStorage.setItem('nexus_session', JSON.stringify(updatedSession));
-              return result.data.user;
-            }
-          }
-        } catch (error) {
-          console.log('Failed to fetch user data:', error);
-        }
-  
-        return sessionData.user;
-      }
-  
-      async function checkUserAuthentication() {
         const guestMenu = document.getElementById('guest-menu');
         const userMenu = document.getElementById('user-menu');
+        const user = sessionData?.user;
+
+        if (user) {
+            const username = user.username || (user.email ? user.email.split('@')[0] : 'User');
+            const userInitials = username.substring(0, 2).toUpperCase();
+
+            const navbarUsername = document.getElementById('navbar-username');
+            const userAvatar = document.getElementById('user-avatar');
+
+            if (navbarUsername) navbarUsername.textContent = username;
+            if (userAvatar) userAvatar.textContent = userInitials;
+
+            if (guestMenu) guestMenu.style.display = 'none';
+            if (userMenu) userMenu.style.display = 'flex';
+        } else {
+            if (guestMenu) guestMenu.style.display = 'block';
+            if (userMenu) userMenu.style.display = 'none';
+        }
+    }
+
+    function initializeMobileMenu() {
+        const normalMenuToggle = document.getElementById('normalMenuToggle');
+        const normalNav = document.getElementById('normalNav');
+
+        if (normalMenuToggle && normalNav) {
+            normalMenuToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                normalMenuToggle.classList.toggle('active');
+                normalNav.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.nav-normal') && normalNav.classList.contains('active')) {
+                    normalNav.classList.remove('active');
+                    normalMenuToggle.classList.remove('active');
+                }
+            });
+        }
+    }
+
+    function handleLogout() {
+        if (confirm('Are you sure you want to logout?')) {
+            localStorage.removeItem('nexus_session');
+            sessionStorage.removeItem('nexus_session');
+            window.location.href = 'auth.html';
+        }
+    }
+
+    function redirectToAuth(tab = 'register') {
+        const returnUrl = encodeURIComponent(window.location.href);
+        window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        checkUserAuthentication();
+        initializeMobileMenu();
         
-        const user = await fetchUserData();
-  
-        if (user) {
-          const navbarUsername = document.getElementById('navbar-username');
-          if (navbarUsername) {
-            navbarUsername.textContent = user.username || user.email.split('@')[0];
-          }
-          if (guestMenu) guestMenu.style.display = 'none';
-          if (userMenu) userMenu.style.display = 'flex';
-        } else {
-          if (guestMenu) guestMenu.style.display = 'flex';
-          if (userMenu) userMenu.style.display = 'none';
+    });
+    // Add to DOMContentLoaded or after navbar initialization
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        if (link.href === window.location.href) {
+            link.classList.add('active');
         }
-      }
-  
-      async function setupMobileNav() {
-        const mobileNavContainer = document.getElementById('mobile-nav');
-        const user = await fetchUserData();
-  
-        const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
-  
-        const navLinksHTML = `
-          <div class="mobile-nav-links">
-            <a href="tournaments.html">
-              <i class="fas fa-trophy"></i>
-              Browse Tournaments
-            </a>
-            <a href="userdashboard.html">
-              <i class="fas fa-tachometer-alt"></i>
-              Dashboard
-            </a>
-            <a href="index.html">
-              <i class="fas fa-home"></i>
-              Home
-            </a>
-          </div>
-        `;
-  
-        let userProfileHTML = '';
-        let bottomActionsHTML = '';
-  
-        if (user) {
-          const username = user.username || user.email.split('@')[0];
-          const userId = user.id || user._id || 'N/A';
-  
-          userProfileHTML = `
-            <div class="profile-header">
-              <div class="profile-photo"><i class="fas fa-user"></i></div>
-              <div class="profile-info">
-                <div class="profile-username">${username}</div>
-                <div class="profile-userid">ID: ${userId}</div>
-              </div>
-            </div>
-          `;
-  
-          bottomActionsHTML = `
-            <div class="mobile-nav-bottom-actions">
-              <a href="userdashboard.html" class="mobile-host-btn">
-                <i class="fas fa-plus-circle"></i> Host
-              </a>
-              <button class="mobile-logout-btn" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i> Logout
-              </button>
-            </div>
-          `;
-        } else {
-          bottomActionsHTML = `
-            <div class="mobile-nav-bottom-actions">
-              <button class="mobile-join-btn" onclick="redirectToAuth()">
-                <i class="fas fa-user-plus"></i> Join Us
-              </button>
-            </div>
-          `;
-        }
-  
-        mobileNavContainer.innerHTML = `
-          ${closeButtonHTML}
-          ${userProfileHTML}
-          ${navLinksHTML}
-          ${bottomActionsHTML}
-        `;
-      }
-  
-      // Initialize navbar on page load
-      document.addEventListener('DOMContentLoaded', async () => {
-        const hamburger = document.querySelector('.hamburger');
-        const mobileNav = document.getElementById('mobile-nav');
-  
-        if (hamburger && mobileNav) {
-          hamburger.addEventListener('click', () => {
-            const isOpen = mobileNav.classList.toggle('is-open');
-            hamburger.setAttribute('aria-expanded', isOpen);
-          });
-  
-          document.addEventListener('click', (event) => {
-            if (!mobileNav.classList.contains('is-open')) return;
-            const closeButton = event.target.closest('.mobile-nav-close');
-            if (closeButton) {
-              mobileNav.classList.remove('is-open');
-              hamburger.setAttribute('aria-expanded', 'false');
-              return;
-            }
-            const isClickInsideNav = event.target.closest('#mobile-nav');
-            const isClickOnHamburger = event.target.closest('.hamburger');
-            if (!isClickInsideNav && !isClickOnHamburger) {
-              mobileNav.classList.remove('is-open');
-              hamburger.setAttribute('aria-expanded', 'false');
-            }
-          });
-        }
-  
-        await checkUserAuthentication();
-        await setupMobileNav();
-      });
+    });
   </script>
 
 </body>
