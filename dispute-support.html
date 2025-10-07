@@ -3,1599 +3,1247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dispute Resolution & Support - GamingNexus</title>
-    
-    <!-- Fonts -->
+    <title>Dispute Support - GamingNexus</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
-    
     <style>
-        /* =========================
-           Theme variables (Cyberpunk) - Matching index.html
-           ========================= */
+        /* =========================THEME VARIABLES========================= */
         :root {
-            --primary-color: #0AFAD9;      /* Electric Cyan */
-            --bg-dark: #0D0A1A;            /* Dark Matter Black */
-            --accent-secondary: #5D3FD3;   /* Deep Indigo */
-            --panel: #161329;              /* Dark Indigo Panel */
-            --text-primary: #F0F0F0;       /* Starlight White */
+            --primary-color: #0AFAD9;
+            --bg-dark: #0D0A1A;
+            --accent-secondary: #5D3FD3;
+            --panel: #161329;
+            --text-primary: #F0F0F0;
             --text-secondary: rgba(240, 240, 240, 0.7);
             --border-color: rgba(10, 250, 217, 0.2);
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
             --ease: 0.3s ease;
-
-            /* Legacy variables for compatibility */
-            --copy: var(--text-primary);
-            --muted: var(--text-secondary);
-            --accent: var(--accent-secondary);
-            --accent-2: var(--primary-color);
             --radius: 12px;
-            --container: 1400px;
         }
 
-        /* Enhanced easing curves for smoother animations */
-        :root {
-            --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-            --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
-            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-            --spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        /* Respect reduced motion preferences */
-        @media (prefers-reduced-motion: reduce) {
-            :root {
-                --ease: 0ms;
-            }
-            * {
-                transition-duration: 0ms !important;
-                animation-duration: 0ms !important;
-                animation-iteration-count: 1 !important;
-            }
-        }
-
-        /* =========================
-           Base resets & accessibility - Matching index.html
-           ========================= */
-        *,
-        *::before,
-        *::after {
+        /* =========================BASE STYLES========================= */
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
 
-        html,
         body {
-            height: 100%;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-dark);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
             color: var(--text-primary);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
             line-height: 1.6;
-            -webkit-text-size-adjust: 100%;
             overflow-x: hidden;
-            font-size: 16px;
-            position: relative;
-        }
-
-        /* Background gradient effect like index.html */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background:
-                radial-gradient(circle at 15% 85%, rgba(10, 250, 217, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 85% 25%, rgba(93, 63, 211, 0.1) 0%, transparent 40%);
-            z-index: -1;
-            animation: pulse 15s infinite ease-in-out;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; }
-        }
-
-        /* =========================
-           Custom Scrollbar Styles - Matching index.html
-           ========================= */
-        ::-webkit-scrollbar-track {
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-dark);
-        }
-
-        ::-webkit-scrollbar {
-            width: 10px;
-            background-color: var(--bg-dark);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background-color: var(--panel);
-            border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background-color: var(--accent-secondary);
-        }
-
-        /* Firefox scrollbar */
-        * {
-            scrollbar-width: thin;
-            scrollbar-color: var(--panel) var(--bg-dark);
-        }
-
-        /* =========================
-           NAVBAR STYLES (From index.html)
-           ========================= */
-        header.site-header {
-            position: fixed;
-            inset: 0 0 auto 0;
-            background: rgba(26, 26, 26, 0.5);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            z-index: 1200;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            height: 60px;
-        }
-
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 2rem;
-            height: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: var(--copy);
-            text-decoration: none;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        /* =========================
-           Main Content Styles
-           ========================= */
-        .main-content {
-            margin-top: 80px;
-            padding: 2rem;
-            min-height: calc(100vh - 80px);
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 2rem;
         }
 
-        /* =========================
-           Dashboard Layout
-           ========================= */
-        .dashboard-container {
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 0.5rem;
+            }
+        }
+
+        /* =========================SCROLLBAR STYLES========================= */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
             background: var(--panel);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            margin: 2rem auto;
-            max-width: 1200px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-            position: relative;
+            border-radius: 4px;
         }
 
-        .dashboard-container::before {
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(10, 250, 217, 0.3);
+        }
+
+        /* =========================LOADER ANIMATION========================= */
+        #loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        #loader-wrapper.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        nav,
+        main {
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        body.loaded nav,
+        body.loaded main {
+            opacity: 1;
+        }
+
+        /* =========================NAVBAR STYLES========================= */
+        .nav-normal {
+            background: rgba(13, 10, 26, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1.2rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all var(--ease);
+        }
+
+        .nav-normal.nav-scrolled {
+            background: rgba(13, 10, 26, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all var(--ease);
+            padding: 0.6rem 1.2rem;
+            display: block;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all var(--ease);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-request {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
+            color: white;
+        }
+
+        .btn-request:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(15, 133, 211, 0.3);
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .user-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .menu-icon {
+            width: 24px;
+            height: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .menu-icon span {
+            width: 100%;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+            transition: all var(--ease);
+        }
+
+        /* =========================HERO SECTION========================= */
+        .hero-section {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(13, 10, 26, 0.9) 0%, rgba(22, 19, 41, 0.8) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
-            opacity: 0.6;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(10, 250, 217, 0.1) 0%, transparent 70%);
+            pointer-events: none;
         }
 
-        .dashboard-header {
-            background: linear-gradient(135deg, var(--accent-secondary), var(--primary-color));
-            color: var(--text-primary);
-            padding: 2rem;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .dashboard-header h1 {
-            margin: 0 0 0.5rem 0;
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .dashboard-header p {
-            margin: 0;
-            color: rgba(240, 240, 240, 0.9);
-        }
-
-        /* =========================
-           Stats Section
-           ========================= */
-        .stats-section {
-            padding: 2rem;
-            background: var(--panel);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stats-card {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            text-align: center;
-            transition: all 0.3s var(--ease);
-        }
-
-        .stats-card:hover {
-            border-color: var(--primary-color);
-            box-shadow: 0 4px 15px rgba(10, 250, 217, 0.1);
-        }
-
-        .stats-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .stats-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        /* =========================
-           Tab Content Styles
-           ========================= */
-        .tab-content {
-            padding: 2rem;
-            background: var(--panel);
-        }
-
-        .tab-section {
-            min-height: 400px;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .section-header h4 {
-            color: var(--text-primary);
-            font-weight: 700;
-            margin: 0;
-        }
-
-        .tickets-container {
-            min-height: 300px;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem 2rem;
-            color: var(--text-secondary);
-        }
-
-        .empty-state i {
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .empty-state h5 {
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-        }
-
-        .empty-state p {
-            color: var(--text-secondary);
-            max-width: 400px;
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
             margin: 0 auto;
         }
 
-        /* =========================
-           Cards & Components
-           ========================= */
-        .dispute-card, .support-card, .card {
-            background: var(--panel);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            transition: all 0.3s var(--ease-out-quart);
+        .hero-icon {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
             margin-bottom: 1.5rem;
-            overflow: hidden;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .dispute-card:hover, .support-card:hover, .card:hover {
-            border-color: var(--primary-color);
-            box-shadow: 0 8px 30px rgba(10, 250, 217, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .card-header {
-            background: rgba(0, 0, 0, 0.3);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 1.5rem;
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        .card-body {
-            padding: 1.5rem;
-            color: var(--text-primary);
-        }
-
-        .card-title {
-            color: var(--text-primary);
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        /* =========================
-           Status Badges
-           ========================= */
-        .status-badge {
-            font-size: 0.8rem;
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 600;
-        }
-
-        .priority-high { 
-            background: rgba(220, 53, 69, 0.2); 
-            color: #dc3545; 
-            border: 1px solid #dc3545;
-        }
-        .priority-urgent { 
-            background: rgba(253, 126, 20, 0.2); 
-            color: #fd7e14; 
-            border: 1px solid #fd7e14;
-        }
-        .priority-normal { 
-            background: rgba(10, 250, 217, 0.2); 
-            color: var(--primary-color); 
-            border: 1px solid var(--primary-color);
-        }
-        .priority-low { 
-            background: rgba(108, 117, 125, 0.2); 
-            color: #6c757d; 
-            border: 1px solid #6c757d;
-        }
-
-        /* =========================
-           Forms & Inputs
-           ========================= */
-        .form-control, .form-select {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-primary);
-            padding: 0.75rem 1rem;
-            transition: all 0.3s var(--ease);
-        }
-
-        .form-control:focus, .form-select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(10, 250, 217, 0.2);
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        .form-control::placeholder {
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
             color: var(--text-secondary);
+            margin-bottom: 3rem;
+            line-height: 1.7;
         }
 
-        .form-label {
-            color: var(--text-primary);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .form-text {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-
-        /* =========================
-           Buttons
-           ========================= */
-        .btn-primary {
-            background: var(--primary-color);
-            border: none;
-            border-radius: 8px;
-            color: var(--bg-dark);
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            transition: all 0.3s var(--ease-out-quart);
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-color);
-            filter: brightness(1.1);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(10, 250, 217, 0.3);
-        }
-
-        .btn-warning {
-            background: rgba(253, 126, 20, 0.2);
-            border: 1px solid #fd7e14;
-            color: #fd7e14;
-            border-radius: 8px;
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            transition: all 0.3s var(--ease);
-        }
-
-        .btn-warning:hover {
-            background: #fd7e14;
-            color: var(--bg-dark);
-        }
-
-        .btn-info {
-            background: rgba(10, 250, 217, 0.2);
-            border: 1px solid var(--primary-color);
-            color: var(--primary-color);
-            border-radius: 8px;
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            transition: all 0.3s var(--ease);
-        }
-
-        .btn-info:hover {
-            background: var(--primary-color);
-            color: var(--bg-dark);
-        }
-
-        /* =========================
-           Tabs
-           ========================= */
-        .nav-tabs {
-            background: rgba(0, 0, 0, 0.2);
-            border: none;
-            padding: 0.5rem;
-            margin: 0 0 2rem 0;
-            border-radius: var(--radius);
-        }
-
-        .nav-tabs .nav-link {
-            border: none;
-            color: var(--text-secondary);
-            font-weight: 600;
-            padding: 1rem 1.5rem;
-            margin: 0 0.25rem;
-            border-radius: 8px;
-            transition: all 0.3s var(--ease-out-quart);
-            background: none;
-        }
-
-        .nav-tabs .nav-link.active {
-            background: var(--primary-color);
-            color: var(--bg-dark);
-            box-shadow: 0 4px 15px rgba(10, 250, 217, 0.3);
-        }
-
-        .nav-tabs .nav-link:not(.active):hover {
-            color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        /* =========================
-           Specific Components
-           ========================= */
-        .message-thread {
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .message-item {
-            margin-bottom: 1rem;
-            padding: 0.75rem;
-            border-radius: 8px;
-            background: rgba(0, 0, 0, 0.3);
-            border-left: 3px solid var(--primary-color);
-        }
-
-        .message-admin {
-            border-left-color: #28a745;
-            background: rgba(40, 167, 69, 0.1);
-        }
-
-        .evidence-item {
-            display: inline-block;
-            margin: 0.25rem;
-            padding: 0.5rem;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            text-decoration: none;
-            color: var(--text-primary);
-            transition: all 0.3s var(--ease);
-        }
-
-        .evidence-item:hover {
-            background: rgba(0, 0, 0, 0.3);
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
-
-        .create-ticket-form {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .ticket-stats {
-            background: linear-gradient(135deg, var(--accent-secondary), var(--primary-color));
-            color: var(--text-primary);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border: 1px solid var(--border-color);
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
         }
 
         .stat-item {
             text-align: center;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
         }
 
         .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
             display: block;
-            color: var(--text-primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
         }
 
         .stat-label {
             font-size: 0.9rem;
-            opacity: 0.9;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* =========================SECTION HEADERS========================= */
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* =========================COMPLAINT SECTION========================= */
+        .complaint-section {
+            padding: 5rem 2rem;
+            background: var(--bg-dark);
+        }
+
+        .complaint-form-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .complaint-form {
+            background: var(--panel);
+            padding: 3rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all var(--ease);
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(10, 250, 217, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.2rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--ease);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(10, 250, 217, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* =========================SUCCESS MESSAGE========================= */
+        .ticket-success {
+            background: var(--panel);
+            padding: 3rem;
+            border-radius: var(--radius);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            text-align: center;
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: var(--success-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .ticket-success h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .ticket-success p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .ticket-id {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            background: rgba(10, 250, 217, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .btn-secondary {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--ease);
+            margin-top: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: var(--bg-dark);
+        }
+
+        /* =========================REPLIES SECTION========================= */
+        .replies-section {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, rgba(22, 19, 41, 0.3) 0%, rgba(13, 10, 26, 0.8) 100%);
+        }
+
+        .tickets-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 1rem;
+            background: var(--panel);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            padding: 1rem 1.5rem;
+            background: var(--primary-color);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all var(--ease);
+        }
+
+        .search-bar button:hover {
+            background: rgba(10, 250, 217, 0.8);
+        }
+
+        .tickets-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .ticket-card {
+            background: var(--panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: all var(--ease);
+        }
+
+        .ticket-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .ticket-info h3 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .ticket-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+
+        .ticket-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-open {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        .status-in-progress {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        .status-resolved {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+        }
+
+        .status-closed {
+            background: rgba(107, 114, 128, 0.2);
+            color: #9ca3af;
+        }
+
+        .ticket-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .ticket-reply {
+            background: rgba(10, 250, 217, 0.05);
+            border-left: 3px solid var(--primary-color);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            margin-top: 1rem;
+        }
+
+        .reply-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .reply-author {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .reply-date {
             color: var(--text-secondary);
         }
 
-        /* =========================
-           Text Colors
-           ========================= */
-        .text-muted {
-            color: var(--text-secondary) !important;
+        .reply-content {
+            color: var(--text-primary);
+            line-height: 1.6;
         }
 
-        .text-primary {
-            color: var(--primary-color) !important;
+        .no-tickets {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
         }
 
-        .text-warning {
-            color: #fd7e14 !important;
+        .no-tickets i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
         }
 
-        .text-info {
-            color: var(--primary-color) !important;
+        .no-tickets h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
         }
 
-        /* =========================
-           Responsive Design
-           ========================= */
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 1rem;
-                margin-top: 70px;
+        /* =========================MOBILE RESPONSIVE========================= */
+        @media (max-width: 968px) {
+            .menu-toggle {
+                display: block;
             }
 
-            .header-container {
-                padding: 0 1rem;
-            }
-
-            .dashboard-container {
-                margin: 1rem auto;
-                border-radius: 8px;
-            }
-
-            .dashboard-header {
-                padding: 1.5rem 1rem;
-            }
-
-            .dashboard-header h1 {
-                font-size: 1.5rem;
-            }
-
-            .stats-section {
-                padding: 1rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-            }
-
-            .tab-content {
-                padding: 1rem;
-            }
-
-            .nav-tabs .nav-link {
-                font-size: 0.875rem;
-                padding: 0.75rem 1rem;
-            }
-
-            .section-header {
+            .nav-center {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                height: 100vh;
+                width: 85%;
+                max-width: 350px;
                 flex-direction: column;
-                gap: 1rem;
-                align-items: stretch;
+                background: rgba(15, 15, 15, 0.98);
+                backdrop-filter: blur(20px);
+                padding: 6rem 2rem 2rem;
+                gap: 0;
+                transition: right var(--ease);
+                border-left: 1px solid rgba(255, 255, 255, 0.1);
+                align-items: flex-start;
+                overflow-y: auto;
             }
 
-            .section-header h4 {
-                text-align: center;
+            .nav-center.active {
+                right: 0;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 0;
+            }
+
+            .nav-links li {
+                width: 100%;
+            }
+
+            .nav-links a {
+                padding: 1rem 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .auth-buttons {
+                flex-direction: column;
+                width: 100%;
+                gap: 1rem;
+                margin-top: 2rem;
+                padding-top: 2rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .user-info {
+                width: 100%;
+                justify-content: center;
+            }
+
+            #user-menu {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 6rem 1rem 3rem;
+            }
+
+            .hero-stats {
+                gap: 1rem;
+            }
+
+            .stat-item {
+                padding: 0.8rem 1rem;
+            }
+
+            .complaint-section {
+                padding: 3rem 1rem;
+            }
+
+            .complaint-form-wrapper {
+                max-width: 100%;
+                margin: 0;
+            }
+
+            .complaint-form {
+                padding: 2rem 1.5rem;
+                margin: 0 0.5rem;
+            }
+
+            .ticket-success {
+                padding: 2rem 1.5rem;
+                margin: 0 0.5rem;
+            }
+
+            .ticket-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .search-bar {
+                flex-direction: column;
+                max-width: 100%;
             }
         }
 
         @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
+            .hero-stats {
+                flex-direction: column;
+                align-items: center;
             }
 
-            .nav-tabs {
-                flex-wrap: wrap;
+            .complaint-section {
+                padding: 2rem 0.5rem;
             }
 
-            .nav-tabs .nav-link {
-                flex: 1;
-                text-align: center;
-                margin-bottom: 0.25rem;
+            .complaint-form {
+                padding: 1.5rem 1rem;
+                margin: 0;
+            }
+
+            .ticket-success {
+                padding: 1.5rem 1rem;
+                margin: 0;
+            }
+
+            .ticket-meta {
+                flex-direction: column;
+                gap: 0.5rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Loader -->
+    <div id="loader-wrapper">
+        <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie"
+            style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+    </div>
+
     <!-- Navigation -->
-    <header class="site-header" role="banner">
-        <div class="header-container">
-            <a href="index.html" class="brand" aria-hidden="false">GamingNexus</a>
-            <div class="header-right">
-                <nav class="primary" role="navigation" aria-label="Primary">
-                    <div class="nav-links" role="menubar">
-                        <a href="index.html" role="menuitem">Home</a>
-                        <a href="tournaments.html" role="menuitem">Tournaments</a>
-                        <a href="userdashboard.html" role="menuitem">Dashboard</a>
-                        <a href="dispute-support.html" role="menuitem" class="active">Support</a>
-                    </div>
-                </nav>
-                <div class="nav-actions">
-                    <div class="profile-dropdown">
-                        <div class="profile-icon" id="profile-icon">
-                            <i class="fas fa-user-circle"></i>
-                        </div>
-                        <div class="profile-modal" id="profile-modal">
-                            <div class="profile-header">
-                                <div class="profile-photo"><i class="fas fa-user"></i></div>
-                                <div class="profile-info">
-                                    <div class="profile-username" id="userEmail">Loading...</div>
-                                </div>
-                            </div>
-                            <div class="profile-actions">
-                                <a href="userdashboard.html" class="profile-action">
-                                    <i class="fas fa-tachometer-alt"></i>
-                                    <span>Dashboard</span>
-                                </a>
-                                <button class="profile-action logout-action" onclick="logout()">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                    <span>Logout</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <div class="main-content">
-        <div class="container">
-            <!-- Dashboard Container -->
-            <div class="dashboard-container">
-                <!-- Header -->
-                <div class="dashboard-header">
-                    <h1><i class="fas fa-headset me-3"></i>Support & Dispute Center</h1>
-                    <p class="mb-0">Get help with tournament issues or submit support requests</p>
-                </div>
-
-                <!-- Statistics Cards -->
-                <div class="stats-section">
-                    <div class="stats-grid">
-                        <div class="stats-card">
-                            <div class="stats-number" id="totalTickets">0</div>
-                            <div class="stats-label">Total Tickets</div>
-                        </div>
-                        <div class="stats-card">
-                            <div class="stats-number" id="openTickets">0</div>
-                            <div class="stats-label">Open Tickets</div>
-                        </div>
-                        <div class="stats-card">
-                            <div class="stats-number" id="resolvedTickets">0</div>
-                            <div class="stats-label">Resolved</div>
-                        </div>
-                        <div class="stats-card">
-                            <div class="stats-number" id="avgResponseTime">0h</div>
-                            <div class="stats-label">Avg Response</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Navigation Tabs -->
-                <ul class="nav nav-tabs" id="supportTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="disputes-tab" data-bs-toggle="tab" data-bs-target="#disputes" type="button" role="tab">
-                            <i class="fas fa-exclamation-triangle me-2"></i>Dispute Tickets
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="support-tab" data-bs-toggle="tab" data-bs-target="#support" type="button" role="tab">
-                            <i class="fas fa-question-circle me-2"></i>Support Tickets
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="create-tab" data-bs-toggle="tab" data-bs-target="#create" type="button" role="tab">
-                            <i class="fas fa-plus me-2"></i>Create Ticket
-                        </button>
-                    </li>
+    <nav class="nav-normal">
+        <div class="nav-container">
+            <a href="index.html" class="logo">GamingNexus</a>
+            <div class="nav-center" id="normalNav">
+                <ul class="nav-links">
+                    <li><a href="tournaments.html">Tournaments</a></li>
+                    <li><a href="javascript:history.back()">Back</a></li>
                 </ul>
-
-                <!-- Tab Content -->
-                <div class="tab-content" id="supportTabContent">
-                    <!-- Dispute Tickets Tab -->
-                    <div class="tab-pane fade show active" id="disputes" role="tabpanel">
-                        <div class="tab-section">
-                            <div class="section-header">
-                                <h4>Your Dispute Tickets</h4>
-                                <button class="btn btn-outline-primary" onclick="refreshDisputes()">
-                                    <i class="fas fa-sync-alt me-2"></i>Refresh
-                                </button>
-                            </div>
-                            <div class="tickets-container" id="disputesList">
-                                <div class="empty-state">
-                                    <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
-                                    <h5>No dispute tickets yet</h5>
-                                    <p>Create a dispute ticket if you have issues with tournaments or organizers</p>
-                                </div>
-                            </div>
-                        </div>
+                <div class="auth-buttons" id="normalAuth">
+                    <div id="guest-menu">
+                        <a href="auth.html" class="btn btn-request">Join Us</a>
                     </div>
-
-                    <!-- Support Tickets Tab -->
-                    <div class="tab-pane fade" id="support" role="tabpanel">
-                        <div class="tab-section">
-                            <div class="section-header">
-                                <h4>Your Support Tickets</h4>
-                                <button class="btn btn-outline-primary" onclick="refreshSupport()">
-                                    <i class="fas fa-sync-alt me-2"></i>Refresh
-                                </button>
-                            </div>
-                            <div class="tickets-container" id="supportList">
-                                <div class="empty-state">
-                                    <i class="fas fa-question-circle fa-3x mb-3"></i>
-                                    <h5>No support tickets yet</h5>
-                                    <p>Create a support ticket if you need help with technical issues or have questions</p>
-                                </div>
-                            </div>
+                    <div id="user-menu" style="display: none;">
+                        <div class="user-info">
+                            <div class="user-avatar" id="user-avatar">U</div>
+                            <span class="user-name" id="navbar-username">User</span>
                         </div>
-                    </div>
-
-            <!-- Create Ticket Tab -->
-            <div class="tab-pane fade" id="create" role="tabpanel">
-                <div class="create-ticket-form">
-                    <h4 class="mb-4">Create New Ticket</h4>
-                    
-                    <!-- Ticket Type Selection -->
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="card h-100 ticket-type-card" onclick="selectTicketType('dispute')">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-                                    <h5>Dispute Ticket</h5>
-                                    <p class="text-muted">Report issues with tournaments, organizers, or request refunds</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card h-100 ticket-type-card" onclick="selectTicketType('support')">
-                                <div class="card-body text-center">
-                                    <i class="fas fa-question-circle fa-3x text-info mb-3"></i>
-                                    <h5>Support Ticket</h5>
-                                    <p class="text-muted">Get help with technical issues, account problems, or general questions</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Dispute Form -->
-                    <div id="disputeForm" class="ticket-form" style="display: none;">
-                        <h5 class="mb-3">Create Dispute Ticket</h5>
-                        <form id="createDisputeForm">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="disputeTournament" class="form-label">Tournament *</label>
-                                    <select class="form-select" id="disputeTournament" required>
-                                        <option value="">Select Tournament</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="disputeType" class="form-label">Dispute Type *</label>
-                                    <select class="form-select" id="disputeType" required>
-                                        <option value="">Select Type</option>
-                                        <option value="refund_request">Refund Request</option>
-                                        <option value="organizer_misconduct">Organizer Misconduct</option>
-                                        <option value="tournament_cancellation">Tournament Cancellation</option>
-                                        <option value="technical_issue">Technical Issue</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="disputePriority" class="form-label">Priority</label>
-                                    <select class="form-select" id="disputePriority">
-                                        <option value="normal">Normal</option>
-                                        <option value="high">High</option>
-                                        <option value="urgent">Urgent</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="disputeTitle" class="form-label">Title *</label>
-                                    <input type="text" class="form-control" id="disputeTitle" required maxlength="100">
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="disputeDescription" class="form-label">Description *</label>
-                                <textarea class="form-control" id="disputeDescription" rows="5" required maxlength="2000" 
-                                    placeholder="Please provide detailed information about your dispute..."></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="disputeEvidence" class="form-label">Evidence (URLs)</label>
-                                <textarea class="form-control" id="disputeEvidence" rows="3" 
-                                    placeholder="Provide URLs to screenshots, videos, or other evidence (one per line)"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-warning">
-                                <i class="fas fa-exclamation-triangle me-2"></i>Create Dispute Ticket
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- Support Form -->
-                    <div id="supportForm" class="ticket-form" style="display: none;">
-                        <h5 class="mb-3">Create Support Ticket</h5>
-                        <form id="createSupportForm">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="supportCategory" class="form-label">Category *</label>
-                                    <select class="form-select" id="supportCategory" required>
-                                        <option value="">Select Category</option>
-                                        <option value="technical">Technical Issue</option>
-                                        <option value="payment">Payment Problem</option>
-                                        <option value="tournament">Tournament Question</option>
-                                        <option value="account">Account Issue</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="supportPriority" class="form-label">Priority</label>
-                                    <select class="form-select" id="supportPriority">
-                                        <option value="normal">Normal</option>
-                                        <option value="high">High</option>
-                                        <option value="urgent">Urgent</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="supportSubject" class="form-label">Subject *</label>
-                                <input type="text" class="form-control" id="supportSubject" required maxlength="100">
-                            </div>
-                            <div class="mb-3">
-                                <label for="supportDescription" class="form-label">Description *</label>
-                                <textarea class="form-control" id="supportDescription" rows="5" required maxlength="2000" 
-                                    placeholder="Please describe your issue or question in detail..."></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="supportTags" class="form-label">Tags (optional)</label>
-                                <input type="text" class="form-control" id="supportTags" 
-                                    placeholder="Enter tags separated by commas (e.g., payment, mobile, bug)">
-                            </div>
-                            <button type="submit" class="btn btn-info">
-                                <i class="fas fa-question-circle me-2"></i>Create Support Ticket
-                            </button>
-                        </form>
+                        <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
                     </div>
                 </div>
             </div>
+            <button class="menu-toggle" id="normalMenuToggle">
+                <div class="menu-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
-            </div>
+            </button>
         </div>
-    </div>
+    </nav>
 
-    <!-- Ticket Detail Modal -->
-    <div class="modal fade" id="ticketModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="ticketModalTitle">Ticket Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-icon">
+                    <i class="fas fa-headset"></i>
                 </div>
-                <div class="modal-body" id="ticketModalBody">
-                    <!-- Ticket details will be loaded here -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="addMessageBtn" onclick="showAddMessage()">
-                        <i class="fas fa-comment me-2"></i>Add Message
-                    </button>
-                </div>
+                <h1 class="hero-title">Dispute Support Center</h1>
+                <p class="hero-subtitle">Having issues with a tournament or need assistance? Our tech support team is here to help you resolve any problems quickly and efficiently.</p>
+
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Add Message Modal -->
-    <div class="modal fade" id="addMessageModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add Message</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <!-- Complaint Form Section -->
+        <section class="complaint-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Submit a Support Ticket</h2>
+                    <p>Describe your issue in detail and we'll get back to you as soon as possible.</p>
                 </div>
-                <div class="modal-body">
-                    <form id="addMessageForm">
-                        <div class="mb-3">
-                            <label for="messageText" class="form-label">Message *</label>
-                            <textarea class="form-control" id="messageText" rows="4" required 
-                                placeholder="Type your message here..."></textarea>
+                
+                <div class="complaint-form-wrapper">
+                    <form id="complaintForm" class="complaint-form">
+                        <div class="form-group">
+                            <label for="issueType">Issue Type</label>
+                            <select id="issueType" name="issueType" required>
+                                <option value="">Select issue type</option>
+                                <option value="tournament">Tournament Related</option>
+                                <option value="payment">Payment Issues</option>
+                                <option value="technical">Technical Problems</option>
+                                <option value="account">Account Issues</option>
+                                <option value="other">Other</option>
+                            </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="messageAttachments" class="form-label">Attachments (URLs)</label>
-                            <textarea class="form-control" id="messageAttachments" rows="2" 
-                                placeholder="Provide URLs to attachments (one per line)"></textarea>
+
+                        <div class="form-group">
+                            <label for="priority">Priority Level</label>
+                            <select id="priority" name="priority" required>
+                                <option value="">Select priority</option>
+                                <option value="low">Low - General inquiry</option>
+                                <option value="medium">Medium - Moderate issue</option>
+                                <option value="high">High - Urgent problem</option>
+                                <option value="critical">Critical - System down</option>
+                            </select>
                         </div>
+
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" placeholder="Brief description of your issue" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Detailed Description</label>
+                            <textarea id="description" name="description" placeholder="Please provide as much detail as possible about your issue..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            Submit Ticket
+                        </button>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="submitMessage()">
-                        <i class="fas fa-paper-plane me-2"></i>Send Message
-                    </button>
+
+                    <!-- Success Message -->
+                    <div id="ticketSuccess" class="ticket-success">
+                        <div class="success-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3>Ticket Submitted Successfully!</h3>
+                        <p>Your support ticket has been created with ID: <span id="ticketId" class="ticket-id">#TKT-000000</span></p>
+                        <p>Our support team will review your request and respond within 2 hours.</p>
+                        <button class="btn-secondary" onclick="resetForm()">Submit Another Ticket</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        </div>
-    </div>
+        </section>
+
+        <!-- Replies Section -->
+        <section class="replies-section">
+            <div class="tickets-container">
+                <div class="section-header">
+                    <h2>Your Support Tickets</h2>
+                    <p>Track the status of your submitted tickets and view responses from our support team.</p>
+                </div>
+
+                <div class="search-bar">
+                    <input type="text" id="ticketSearch" placeholder="Search tickets by ID or subject...">
+                    <button onclick="searchTickets()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+
+                <div id="ticketsGrid" class="tickets-grid">
+                    <!-- Tickets will be loaded here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
     <script>
-        let currentTicketId = null;
-        let currentTicketType = null;
+        // Session management
+        function getSessionData() {
+            return JSON.parse(localStorage.getItem('sessionData') || '{}');
+        }
+
+        function getCurrentUserId() {
+            const sessionData = getSessionData();
+            return sessionData?.userId || 'guest';
+        }
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            checkAuth();
-            loadUserTournaments();
-            loadTicketStats();
-            loadDisputes();
-            loadSupport();
+            // Initialize navbar
+            initializeNavbar();
+            
+            // Load user tickets
+            loadUserTickets();
+
+            // Initialize form
+            initializeForm();
+
+            // Hide loader and show content
+            setTimeout(() => {
+                const loader = document.getElementById('loader-wrapper');
+                if (loader) {
+                    loader.classList.add('hidden');
+                }
+                document.body.classList.add('loaded');
+            }, 1500);
         });
 
-        // Authentication check
-        function checkAuth() {
-            // Check for session data in localStorage/sessionStorage (matching user dashboard)
-            const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+        // Navbar functionality
+        function initializeNavbar() {
+            const sessionData = getSessionData();
+            const guestMenu = document.getElementById('guest-menu');
+            const userMenu = document.getElementById('user-menu');
+            const userAvatar = document.getElementById('user-avatar');
+            const username = document.getElementById('navbar-username');
+
+            if (sessionData.isLoggedIn) {
+                guestMenu.style.display = 'none';
+                userMenu.style.display = 'flex';
+                if (sessionData.username) {
+                    username.textContent = sessionData.username;
+                    userAvatar.textContent = sessionData.username.charAt(0).toUpperCase();
+                }
+            }
+
+            // Mobile menu toggle
+            const menuToggle = document.getElementById('normalMenuToggle');
+            const navCenter = document.getElementById('normalNav');
             
-            if (!session) {
-                // Redirect to auth with return URL
-                const returnUrl = encodeURIComponent(window.location.href);
-                window.location.href = `auth.html?tab=login&returnUrl=${returnUrl}`;
-                return false;
-            }
-            
-            try {
-                const sessionData = JSON.parse(session);
-                const user = sessionData?.data?.user || sessionData?.user;
-                
-                if (!user) {
-                    // Invalid session, redirect to auth
-                    localStorage.removeItem('nexus_session');
-                    sessionStorage.removeItem('nexus_session');
-                    const returnUrl = encodeURIComponent(window.location.href);
-                    window.location.href = `auth.html?tab=login&returnUrl=${returnUrl}`;
-                    return false;
-                }
-                
-                // Update user email display
-                const userEmailElement = document.getElementById('userEmail');
-                if (userEmailElement) {
-                    userEmailElement.textContent = user.email;
-                }
-                
-                return true;
-            } catch (error) {
-                // Invalid session format, redirect to auth
-                localStorage.removeItem('nexus_session');
-                sessionStorage.removeItem('nexus_session');
-                const returnUrl = encodeURIComponent(window.location.href);
-                window.location.href = `auth.html?tab=login&returnUrl=${returnUrl}`;
-                return false;
-            }
-        }
-
-        // Session helper - get auth token from localStorage/sessionStorage
-        function getAuthToken() {
-            const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
-            if (!session) return null;
-            
-            try {
-                const sessionData = JSON.parse(session);
-                return sessionData.token || sessionData.data?.token || 'demo-token';
-            } catch (error) {
-                return null;
-            }
-        }
-
-        // Load user tournaments for dispute form
-        async function loadUserTournaments() {
-            try {
-                const authToken = getAuthToken();
-                const response = await fetch('/api/user-tournaments', {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
+            if (menuToggle) {
+                menuToggle.addEventListener('click', () => {
+                    navCenter.classList.toggle('active');
+                    menuToggle.classList.toggle('active');
                 });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    const select = document.getElementById('disputeTournament');
-                    select.innerHTML = '<option value="">Select Tournament</option>';
-                    
-                    data.data.forEach(tournament => {
-                        const option = document.createElement('option');
-                        option.value = tournament._id;
-                        option.textContent = tournament.title;
-                        select.appendChild(option);
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading tournaments:', error);
             }
-        }
 
-        // Load ticket statistics
-        async function loadTicketStats() {
-            try {
-                const authToken = getAuthToken();
-                
-                // Load dispute tickets
-                const disputeResponse = await fetch('/api/disputes', {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-                
-                // Load support tickets
-                const supportResponse = await fetch('/api/support/tickets', {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-                
-                let totalTickets = 0;
-                let openTickets = 0;
-                let resolvedTickets = 0;
-                
-                if (disputeResponse.ok) {
-                    const disputeData = await disputeResponse.json();
-                    if (disputeData.success) {
-                        totalTickets += disputeData.data.length;
-                        openTickets += disputeData.data.filter(t => t.status === 'open').length;
-                        resolvedTickets += disputeData.data.filter(t => t.status === 'resolved').length;
-                    }
-                }
-                
-                if (supportResponse.ok) {
-                    const supportData = await supportResponse.json();
-                    if (supportData.success) {
-                        totalTickets += supportData.data.length;
-                        openTickets += supportData.data.filter(t => t.status === 'open').length;
-                        resolvedTickets += supportData.data.filter(t => t.status === 'resolved').length;
-                    }
-                }
-                
-                document.getElementById('totalTickets').textContent = totalTickets;
-                document.getElementById('openTickets').textContent = openTickets;
-                document.getElementById('resolvedTickets').textContent = resolvedTickets;
-                document.getElementById('avgResponseTime').textContent = '24h'; // Placeholder
-                
-            } catch (error) {
-                console.error('Error loading ticket stats:', error);
-            }
-        }
-
-        // Load dispute tickets
-        async function loadDisputes() {
-            try {
-                const authToken = getAuthToken();
-                const response = await fetch('/api/disputes', {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-                
-                const disputesList = document.getElementById('disputesList');
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success && data.data.length > 0) {
-                        disputesList.innerHTML = data.data.map(dispute => createDisputeCard(dispute)).join('');
-                    } else {
-                        disputesList.innerHTML = `
-                            <div class="col-12">
-                                <div class="text-center py-5">
-                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                                    <h5 class="text-muted">No dispute tickets found</h5>
-                                    <p class="text-muted">You haven't created any dispute tickets yet.</p>
-                                </div>
-                            </div>
-                        `;
-                    }
+            // Navbar scroll effect
+            window.addEventListener('scroll', () => {
+                const navbar = document.querySelector('.nav-normal');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('nav-scrolled');
                 } else {
-                    throw new Error('Failed to load disputes');
+                    navbar.classList.remove('nav-scrolled');
                 }
-            } catch (error) {
-                console.error('Error loading disputes:', error);
-                document.getElementById('disputesList').innerHTML = `
-                    <div class="col-12">
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Error loading dispute tickets. Please try again.
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        // Load support tickets
-        async function loadSupport() {
-            try {
-                const authToken = getAuthToken();
-                const response = await fetch('/api/support/tickets', {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-                
-                const supportList = document.getElementById('supportList');
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success && data.data.length > 0) {
-                        supportList.innerHTML = data.data.map(ticket => createSupportCard(ticket)).join('');
-                    } else {
-                        supportList.innerHTML = `
-                            <div class="col-12">
-                                <div class="text-center py-5">
-                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                                    <h5 class="text-muted">No support tickets found</h5>
-                                    <p class="text-muted">You haven't created any support tickets yet.</p>
-                                </div>
-                            </div>
-                        `;
-                    }
-                } else {
-                    throw new Error('Failed to load support tickets');
-                }
-            } catch (error) {
-                console.error('Error loading support tickets:', error);
-                document.getElementById('supportList').innerHTML = `
-                    <div class="col-12">
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Error loading support tickets. Please try again.
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        // Create dispute card HTML
-        function createDisputeCard(dispute) {
-            const statusColor = getStatusColor(dispute.status);
-            const priorityClass = `priority-${dispute.priority}`;
-            const createdDate = new Date(dispute.created_at).toLocaleDateString();
-            
-            return `
-                <div class="col-md-6 mb-3">
-                    <div class="card dispute-card ${priorityClass}" onclick="viewTicket('${dispute._id}', 'dispute')">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h6 class="card-title mb-0">${dispute.title}</h6>
-                                <span class="badge ${statusColor} status-badge">${dispute.status}</span>
-                            </div>
-                            <p class="card-text text-muted small mb-2">${dispute.description.substring(0, 100)}...</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted">
-                                    <i class="fas fa-calendar me-1"></i>${createdDate}
-                                </small>
-                                <span class="badge bg-secondary">${dispute.dispute_type}</span>
-                            </div>
-                            <div class="mt-2">
-                                <span class="badge bg-light text-dark">${dispute.priority} priority</span>
-                                ${dispute.messages && dispute.messages.length > 0 ? 
-                                    `<span class="badge bg-info">${dispute.messages.length} messages</span>` : ''}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Create support card HTML
-        function createSupportCard(ticket) {
-            const statusColor = getStatusColor(ticket.status);
-            const createdDate = new Date(ticket.created_at).toLocaleDateString();
-            
-            return `
-                <div class="col-md-6 mb-3">
-                    <div class="card support-card" onclick="viewTicket('${ticket._id}', 'support')">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h6 class="card-title mb-0">${ticket.subject}</h6>
-                                <span class="badge ${statusColor} status-badge">${ticket.status}</span>
-                            </div>
-                            <p class="card-text text-muted small mb-2">${ticket.description.substring(0, 100)}...</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <small class="text-muted">
-                                    <i class="fas fa-calendar me-1"></i>${createdDate}
-                                </small>
-                                <span class="badge bg-secondary">${ticket.category}</span>
-                            </div>
-                            <div class="mt-2">
-                                <span class="badge bg-light text-dark">${ticket.priority} priority</span>
-                                ${ticket.messages && ticket.messages.length > 0 ? 
-                                    `<span class="badge bg-info">${ticket.messages.length} messages</span>` : ''}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Get status color
-        function getStatusColor(status) {
-            switch (status) {
-                case 'open': return 'bg-primary';
-                case 'in_progress': return 'bg-warning';
-                case 'resolved': return 'bg-success';
-                case 'closed': return 'bg-secondary';
-                default: return 'bg-secondary';
-            }
-        }
-
-        // Select ticket type
-        function selectTicketType(type) {
-            // Remove active class from all cards
-            document.querySelectorAll('.ticket-type-card').forEach(card => {
-                card.classList.remove('border-primary');
             });
-            
-            // Add active class to selected card
-            event.currentTarget.classList.add('border-primary');
-            
-            // Show appropriate form
-            document.getElementById('disputeForm').style.display = type === 'dispute' ? 'block' : 'none';
-            document.getElementById('supportForm').style.display = type === 'support' ? 'block' : 'none';
         }
 
-        // Create dispute ticket
-        document.getElementById('createDisputeForm').addEventListener('submit', async function(e) {
+        function handleLogout() {
+            localStorage.removeItem('sessionData');
+            window.location.href = 'index.html';
+        }
+
+        // Form functionality
+        function initializeForm() {
+            const form = document.getElementById('complaintForm');
+            form.addEventListener('submit', handleFormSubmit);
+        }
+
+        function handleFormSubmit(e) {
             e.preventDefault();
             
-            const formData = {
-                tournament_id: document.getElementById('disputeTournament').value,
-                dispute_type: document.getElementById('disputeType').value,
-                priority: document.getElementById('disputePriority').value,
-                title: document.getElementById('disputeTitle').value,
-                description: document.getElementById('disputeDescription').value,
-                evidence: document.getElementById('disputeEvidence').value.split('\n').filter(url => url.trim())
+            const submitBtn = e.target.querySelector('.submit-btn');
+            const originalText = submitBtn.innerHTML;
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            
+            // Get form data
+            const formData = new FormData(e.target);
+            
+            // Generate ticket ID
+            const ticketId = 'TKT-' + Date.now().toString().slice(-6);
+            
+            // Create ticket object
+            const ticketData = {
+                id: ticketId,
+                issueType: formData.get('issueType'),
+                priority: formData.get('priority'),
+                subject: formData.get('subject'),
+                description: formData.get('description'),
+                status: 'open',
+                createdAt: new Date().toISOString(),
+                userId: getCurrentUserId()
             };
             
-            try {
-                const authToken = getAuthToken();
-                const response = await fetch(`/api/tournaments/${formData.tournament_id}/dispute`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify(formData)
-                });
+            // Simulate API call
+            setTimeout(() => {
+                // Save ticket to localStorage (simulate backend)
+                saveTicketToStorage(ticketData);
                 
-                if (response.ok) {
-                    const data = await response.json();
-                    alert('Dispute ticket created successfully!');
-                    document.getElementById('createDisputeForm').reset();
-                    loadDisputes();
-                    loadTicketStats();
-                    // Switch to disputes tab
-                    document.getElementById('disputes-tab').click();
-                } else {
-                    throw new Error('Failed to create dispute ticket');
-                }
-            } catch (error) {
-                console.error('Error creating dispute:', error);
-                alert('Error creating dispute ticket. Please try again.');
-            }
-        });
+                // Show success message
+                showTicketSuccess(ticketData.id);
+                
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+                
+                // Reload tickets
+                loadUserTickets();
+            }, 2000);
+        }
 
-        // Create support ticket
-        document.getElementById('createSupportForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = {
-                category: document.getElementById('supportCategory').value,
-                priority: document.getElementById('supportPriority').value,
-                subject: document.getElementById('supportSubject').value,
-                description: document.getElementById('supportDescription').value,
-                tags: document.getElementById('supportTags').value.split(',').map(tag => tag.trim()).filter(tag => tag)
-            };
-            
-            try {
-                const authToken = getAuthToken();
-                const response = await fetch('/api/support/ticket', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify(formData)
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    alert('Support ticket created successfully!');
-                    document.getElementById('createSupportForm').reset();
-                    loadSupport();
-                    loadTicketStats();
-                    // Switch to support tab
-                    document.getElementById('support-tab').click();
-                } else {
-                    throw new Error('Failed to create support ticket');
-                }
-            } catch (error) {
-                console.error('Error creating support ticket:', error);
-                alert('Error creating support ticket. Please try again.');
-            }
-        });
+        function saveTicketToStorage(ticketData) {
+            const tickets = JSON.parse(localStorage.getItem('support_tickets') || '[]');
+            tickets.push(ticketData);
+            localStorage.setItem('support_tickets', JSON.stringify(tickets));
+        }
 
-        // View ticket details
-        async function viewTicket(ticketId, type) {
-            currentTicketId = ticketId;
-            currentTicketType = type;
+        function showTicketSuccess(ticketId) {
+            const form = document.getElementById('complaintForm');
+            const success = document.getElementById('ticketSuccess');
+            const ticketIdSpan = document.getElementById('ticketId');
             
-            try {
-                const authToken = getAuthToken();
-                const endpoint = type === 'dispute' ? `/api/disputes/${ticketId}` : `/api/support/tickets/${ticketId}`;
-                
-                const response = await fetch(endpoint, {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        displayTicketDetails(data.data, type);
-                        new bootstrap.Modal(document.getElementById('ticketModal')).show();
-                    }
-                } else {
-                    throw new Error('Failed to load ticket details');
-                }
-            } catch (error) {
-                console.error('Error loading ticket details:', error);
-                alert('Error loading ticket details. Please try again.');
+            if (form && success && ticketIdSpan) {
+                ticketIdSpan.textContent = ticketId;
+                form.style.display = 'none';
+                success.style.display = 'block';
             }
         }
 
-        // Display ticket details in modal
-        function displayTicketDetails(ticket, type) {
-            const title = type === 'dispute' ? ticket.title : ticket.subject;
-            const description = ticket.description;
-            const status = ticket.status;
-            const priority = ticket.priority;
-            const createdDate = new Date(ticket.created_at).toLocaleDateString();
+        function resetForm() {
+            const form = document.getElementById('complaintForm');
+            const success = document.getElementById('ticketSuccess');
             
-            document.getElementById('ticketModalTitle').textContent = title;
-            
-            let detailsHtml = `
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <strong>Status:</strong> <span class="badge ${getStatusColor(status)}">${status}</span>
-                    </div>
-                    <div class="col-md-6">
-                        <strong>Priority:</strong> <span class="badge bg-light text-dark">${priority}</span>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <strong>Created:</strong> ${createdDate}
-                    </div>
-                    <div class="col-md-6">
-                        <strong>Type:</strong> ${type === 'dispute' ? ticket.dispute_type : ticket.category}
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <strong>Description:</strong>
-                    <p class="mt-2">${description}</p>
-                </div>
-            `;
-            
-            // Add evidence for disputes
-            if (type === 'dispute' && ticket.evidence && ticket.evidence.length > 0) {
-                detailsHtml += `
-                    <div class="mb-3">
-                        <strong>Evidence:</strong>
-                        <div class="mt-2">
-                            ${ticket.evidence.map(url => `<a href="${url}" target="_blank" class="evidence-item"><i class="fas fa-external-link-alt me-1"></i>Evidence</a>`).join('')}
-                        </div>
-                    </div>
-                `;
+            if (form && success) {
+                form.style.display = 'block';
+                success.style.display = 'none';
+                form.reset();
             }
-            
-            // Add tags for support tickets
-            if (type === 'support' && ticket.tags && ticket.tags.length > 0) {
-                detailsHtml += `
-                    <div class="mb-3">
-                        <strong>Tags:</strong>
-                        <div class="mt-2">
-                            ${ticket.tags.map(tag => `<span class="badge bg-secondary me-1">${tag}</span>`).join('')}
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // Add messages thread
-            if (ticket.messages && ticket.messages.length > 0) {
-                detailsHtml += `
-                    <div class="mb-3">
-                        <strong>Messages:</strong>
-                        <div class="message-thread mt-2">
-                            ${ticket.messages.map(message => `
-                                <div class="message-item ${message.sender_role === 'admin' ? 'message-admin' : ''}">
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <strong>${message.sender_email}</strong>
-                                        <small class="text-muted">${new Date(message.timestamp).toLocaleString()}</small>
-                                    </div>
-                                    <p class="mb-0">${message.message}</p>
-                                    ${message.attachments && message.attachments.length > 0 ? 
-                                        `<div class="mt-2">${message.attachments.map(url => `<a href="${url}" target="_blank" class="evidence-item"><i class="fas fa-paperclip me-1"></i>Attachment</a>`).join('')}</div>` : ''}
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            }
-            
-            document.getElementById('ticketModalBody').innerHTML = detailsHtml;
         }
 
-        // Show add message modal
-        function showAddMessage() {
-            new bootstrap.Modal(document.getElementById('addMessageModal')).show();
-        }
-
-        // Submit message
-        async function submitMessage() {
-            const messageText = document.getElementById('messageText').value;
-            const attachments = document.getElementById('messageAttachments').value.split('\n').filter(url => url.trim());
+        // Tickets functionality
+        function loadUserTickets() {
+            const ticketsGrid = document.getElementById('ticketsGrid');
+            if (!ticketsGrid) return;
             
-            if (!messageText.trim()) {
-                alert('Please enter a message');
+            const userId = getCurrentUserId();
+            const allTickets = JSON.parse(localStorage.getItem('support_tickets') || '[]');
+            const userTickets = allTickets.filter(ticket => ticket.userId === userId);
+            
+            if (userTickets.length === 0) {
+                ticketsGrid.innerHTML = `
+                    <div class="no-tickets">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No tickets found</h3>
+                        <p>You haven't submitted any support tickets yet, or please log in to view your tickets.</p>
+                    </div>
+                `;
                 return;
             }
             
-            try {
-                const authToken = getAuthToken();
-                const endpoint = currentTicketType === 'dispute' ? 
-                    `/api/disputes/${currentTicketId}/message` : 
-                    `/api/support/tickets/${currentTicketId}/message`;
-                
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({
-                        message: messageText,
-                        attachments: attachments
-                    })
-                });
-                
-                if (response.ok) {
-                    alert('Message added successfully!');
-                    document.getElementById('addMessageForm').reset();
-                    bootstrap.Modal.getInstance(document.getElementById('addMessageModal')).hide();
-                    // Refresh ticket details
-                    viewTicket(currentTicketId, currentTicketType);
-                } else {
-                    throw new Error('Failed to add message');
+            // Sort tickets by creation date (newest first)
+            userTickets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            ticketsGrid.innerHTML = userTickets.map(ticket => createTicketCard(ticket)).join('');
+        }
+
+        function createTicketCard(ticket) {
+            const createdDate = new Date(ticket.createdAt).toLocaleDateString();
+            const createdTime = new Date(ticket.createdAt).toLocaleTimeString();
+            
+            // Simulate some tickets having replies
+            const hasReply = Math.random() > 0.6; // 40% chance of having a reply
+            const replyContent = hasReply ? generateSampleReply(ticket) : '';
+            
+            return `
+                <div class="ticket-card">
+                    <div class="ticket-header">
+                        <div class="ticket-info">
+                            <h3>${ticket.subject}</h3>
+                            <div class="ticket-meta">
+                                <span><i class="fas fa-ticket-alt"></i> ${ticket.id}</span>
+                                <span><i class="fas fa-calendar"></i> ${createdDate} ${createdTime}</span>
+                                <span><i class="fas fa-tag"></i> ${ticket.issueType}</span>
+                                <span><i class="fas fa-exclamation-circle"></i> ${ticket.priority}</span>
+                            </div>
+                        </div>
+                        <div class="ticket-status status-${ticket.status}">
+                            ${ticket.status.replace('-', ' ')}
+                        </div>
+                    </div>
+                    <div class="ticket-description">
+                        ${ticket.description}
+                    </div>
+                    ${replyContent}
+                </div>
+            `;
+        }
+
+        function generateSampleReply(ticket) {
+            const replies = [
+                {
+                    author: "Tech Support Team",
+                    content: "Thank you for contacting us. We've received your ticket and our team is currently investigating the issue. We'll update you as soon as we have more information.",
+                    date: new Date(Date.now() - Math.random() * 86400000).toLocaleString()
+                },
+                {
+                    author: "Senior Support Agent",
+                    content: "We've identified the issue and are working on a solution. This should be resolved within the next 24 hours. We appreciate your patience.",
+                    date: new Date(Date.now() - Math.random() * 43200000).toLocaleString()
+                },
+                {
+                    author: "Technical Team",
+                    content: "The issue has been resolved. Please try again and let us know if you continue to experience any problems. Thank you for your report!",
+                    date: new Date(Date.now() - Math.random() * 21600000).toLocaleString()
                 }
-            } catch (error) {
-                console.error('Error adding message:', error);
-                alert('Error adding message. Please try again.');
-            }
+            ];
+            
+            const reply = replies[Math.floor(Math.random() * replies.length)];
+            
+            return `
+                <div class="ticket-reply">
+                    <div class="reply-header">
+                        <span class="reply-author"><i class="fas fa-user-tie"></i> ${reply.author}</span>
+                        <span class="reply-date">${reply.date}</span>
+                    </div>
+                    <div class="reply-content">
+                        ${reply.content}
+                    </div>
+                </div>
+            `;
         }
 
-        // Refresh functions
-        function refreshDisputes() {
-            loadDisputes();
-            loadTicketStats();
-        }
-
-        function refreshSupport() {
-            loadSupport();
-            loadTicketStats();
-        }
-
-        // Logout function
-        function logout() {
-            localStorage.removeItem('nexus_session');
-            sessionStorage.removeItem('nexus_session');
-            window.location.href = 'auth.html';
-        }
-
-        // Style for ticket type cards
-        const style = document.createElement('style');
-        style.textContent = `
-            .ticket-type-card {
-                cursor: pointer;
-                transition: all 0.3s ease;
-                border: 2px solid transparent;
+        function searchTickets() {
+            const searchInput = document.getElementById('ticketSearch');
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            
+            if (!searchTerm) {
+                loadUserTickets();
+                return;
             }
             
-            .ticket-type-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            }
+            const userId = getCurrentUserId();
+            const allTickets = JSON.parse(localStorage.getItem('support_tickets') || '[]');
+            const userTickets = allTickets.filter(ticket => 
+                ticket.userId === userId && 
+                (ticket.id.toLowerCase().includes(searchTerm) || 
+                 ticket.subject.toLowerCase().includes(searchTerm) ||
+                 ticket.description.toLowerCase().includes(searchTerm))
+            );
             
-            .ticket-type-card.border-primary {
-                border-color: #007bff !important;
-                background-color: #f8f9ff;
+            const ticketsGrid = document.getElementById('ticketsGrid');
+            if (userTickets.length === 0) {
+                ticketsGrid.innerHTML = `
+                    <div class="no-tickets">
+                        <i class="fas fa-search"></i>
+                        <h3>No matching tickets found</h3>
+                        <p>Try adjusting your search terms or browse all tickets.</p>
+                    </div>
+                `;
+            } else {
+                userTickets.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                ticketsGrid.innerHTML = userTickets.map(ticket => createTicketCard(ticket)).join('');
             }
-        `;
-        document.head.appendChild(style);
+        }
+
+        // Allow search on Enter key
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('ticketSearch');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        searchTickets();
+                    }
+                });
+            }
+        });
     </script>
 </body>
 </html>
