@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In | Uni Games</title>
+  <title>Host Registration | Uni Games</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -89,7 +89,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 3rem 1rem;
+      padding: 1.5rem 1rem;
     }
 
     body::before {
@@ -111,41 +111,10 @@
       50% { opacity: 1; }
     }
 
-    /* Header */
-    .site-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      background: rgba(13, 10, 26, 0.7);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border-color);
-      transition: all 0.3s var(--ease-out-quart);
-    }
-
-    .back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 1.25rem 2rem;
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.95rem;
-      transition: all 0.3s var(--ease);
-    }
-
-    .back-btn:hover {
-      color: var(--primary-color);
-      transform: translateX(-5px);
-    }
-
     /* Auth Container */
     .auth-container {
       width: 100%;
-      max-width: 450px;
+      max-width: 500px;
       margin: 0 auto;
       background: var(--panel);
       border: 1px solid var(--border-color);
@@ -169,7 +138,7 @@
     /* Auth Header */
     .auth-header {
       text-align: center;
-      padding: 2.5rem 2rem 1.5rem;
+      padding: 1.5rem 2rem 1rem;
       border-bottom: 1px solid var(--border-color);
     }
     
@@ -185,82 +154,54 @@
       font-size: 0.95rem;
     }
 
-    /* Auth Tabs */
-    .auth-tabs {
-      display: flex;
-      margin: 1.5rem 2rem;
-      border-radius: var(--radius-sm);
-      padding: 5px;
-      background: rgba(0,0,0,0.2);
-      border: 1px solid var(--border-color);
-    }
-
-    .auth-tab {
-      flex: 1;
-      padding: 0.7rem 1.2rem;
-      text-align: center;
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      font-weight: 600;
-      font-size: 0.95rem;
-      cursor: pointer;
-      border-radius: 6px;
-      transition: all 0.3s var(--ease-out-quart);
-    }
-
-    .auth-tab.active {
-      background: var(--primary-color);
-      color: var(--bg-dark);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .auth-tab:not(.active):hover {
-      color: var(--text-primary);
-    }
-
     /* Auth Form */
     .auth-form {
-      padding: 0 2rem 2rem;
+      padding: 1.5rem 2rem;
     }
 
     .form-group {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
 
     .form-label {
       display: block;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.4rem;
       font-weight: 600;
       color: var(--text-secondary);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
-    .form-input {
+    .form-input, .form-select, .form-textarea {
       width: 100%;
-      padding: 0.9rem 1.1rem;
+      padding: 0.7rem 1rem;
       background: rgba(0,0,0,0.2);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-sm);
       color: var(--text-primary);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       transition: all 0.3s var(--ease);
+      font-family: inherit;
     }
 
-    .form-input:focus {
+    .form-textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
       outline: none;
       border-color: var(--primary-color);
       box-shadow: 0 0 0 3px rgba(10, 250, 217, 0.2);
     }
 
-    .form-input::placeholder {
+    .form-input::placeholder, .form-textarea::placeholder {
       color: var(--text-secondary);
     }
     
     .form-hint {
         display: block;
-        margin-top: 0.5rem;
-        font-size: 0.8rem;
+        margin-top: 0.3rem;
+        font-size: 0.75rem;
         color: var(--text-secondary);
     }
 
@@ -296,7 +237,7 @@
       display: flex;
       align-items: flex-start;
       gap: 0.75rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
 
     .checkbox {
@@ -347,12 +288,11 @@
         transform: translate(-50%, -50%) scale(1);
     }
 
-
     .checkbox-label {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       color: var(--text-secondary);
       cursor: pointer;
-      line-height: 1.5;
+      line-height: 1.4;
     }
 
     .checkbox-label a {
@@ -369,15 +309,16 @@
     /* Submit Button */
     .submit-btn {
       width: 100%;
-      padding: 0.9rem 1.5rem;
+      padding: 0.8rem 1.5rem;
       background: var(--primary-color);
       border: none;
       border-radius: var(--radius-sm);
       color: var(--bg-dark);
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.95rem;
       cursor: pointer;
       transition: all 0.3s var(--ease-out-quart);
+      margin-top: 0.5rem;
     }
 
     .submit-btn:hover {
@@ -396,8 +337,8 @@
     /* Footer Links */
     .auth-footer {
       text-align: center;
-      padding: 1rem 2rem 2rem;
-      font-size: 0.9rem;
+      padding: 1rem 2rem 1.5rem;
+      font-size: 0.85rem;
       color: var(--text-secondary);
     }
 
@@ -417,9 +358,9 @@
     .error-message,
     .success-message {
       border-radius: var(--radius-sm);
-      padding: 0.9rem 1.25rem;
-      margin: 0 2rem 1.5rem;
-      font-size: 0.9rem;
+      padding: 0.7rem 1rem;
+      margin: 0 2rem 1rem;
+      font-size: 0.85rem;
       font-weight: 500;
       display: none;
       border: 1px solid;
@@ -479,164 +420,93 @@
     <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
   </div>
 
-
   <main class="auth-main">
     <div class="auth-container">
       <div class="auth-header">
-        <h1 class="auth-title" id="auth-title">Welcome Back</h1>
-        <p class="auth-subtitle" id="auth-subtitle">Sign in to your account to continue</p>
-      </div>
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="login-tab" onclick="switchTab('login')">Sign In</button>
-        <button class="auth-tab" id="register-tab" onclick="switchTab('register')">Sign Up</button>
+        <h1 class="auth-title">Become a Host</h1>
+        <p class="auth-subtitle">Register to host tournaments and manage events</p>
       </div>
       
       <div class="error-message" id="error-message"></div>
       <div class="success-message" id="success-message"></div>
       
-      <!-- Login Form -->
-      <form class="auth-form" id="login-form">
+      <!-- Host Registration Form -->
+      <form class="auth-form" id="host-form">
         <div class="form-group">
-          <label class="form-label" for="login-email">Email Address</label>
-          <input type="email" id="login-email" name="email" class="form-input" placeholder="you@domain.com"
-            required>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="login-password">Password</label>
-          <div class="password-group">
-            <input type="password" id="login-password" name="password" class="form-input"
-              placeholder="••••••••" required>
-            <button type="button" class="password-toggle" onclick="togglePassword('login-password')">
-              <i class="fas fa-eye" id="login-password-icon"></i>
-            </button>
-          </div>
-        </div>
-        <button type="submit" class="submit-btn" id="login-submit-btn">
-          Sign In
-        </button>
-      </form>
-      
-      <!-- Register Form -->
-      <form class="auth-form" id="register-form" style="display: none;">
-        <div class="form-group">
-          <label class="form-label" for="register-username">Username</label>
-          <input type="text" id="register-username" name="username" class="form-input"
+          <label class="form-label" for="host-username">Username</label>
+          <input type="text" id="host-username" name="username" class="form-input"
             placeholder="Choose a unique username" required minlength="3" maxlength="20" pattern="[a-zA-Z0-9_]+">
           <small class="form-hint">3-20 characters, letters, numbers, and underscores</small>
         </div>
+        
         <div class="form-group">
-          <label class="form-label" for="register-email">Email Address</label>
-          <input type="email" id="register-email" name="email" class="form-input"
+          <label class="form-label" for="host-email">Email Address</label>
+          <input type="email" id="host-email" name="email" class="form-input"
             placeholder="you@domain.com" required>
         </div>
+        
         <div class="form-group">
-          <label class="form-label" for="register-password">Password</label>
+          <label class="form-label" for="host-password">Password</label>
           <div class="password-group">
-            <input type="password" id="register-password" name="password" class="form-input"
+            <input type="password" id="host-password" name="password" class="form-input"
               placeholder="Minimum 6 characters" required>
-            <button type="button" class="password-toggle" onclick="togglePassword('register-password')">
-              <i class="fas fa-eye" id="register-password-icon"></i>
+            <button type="button" class="password-toggle" onclick="togglePassword('host-password')">
+              <i class="fas fa-eye" id="host-password-icon"></i>
             </button>
           </div>
         </div>
+        
+
+        
+        <div class="form-group">
+          <label class="form-label" for="contact-phone">Contact Phone</label>
+          <input type="tel" id="contact-phone" name="contact_phone" class="form-input"
+            placeholder="+1 (555) 123-4567" required>
+        </div>
+        
+
+        
         <div class="checkbox-group">
           <label class="checkbox">
             <input type="checkbox" id="terms-agreement" name="terms" required>
             <span class="checkmark"></span>
           </label>
           <label class="checkbox-label" for="terms-agreement">
-            I agree to the <a href="#" class="auth-link">Terms of Service</a> and <a href="#"
+            I agree to the <a href="#" class="auth-link">Host Terms of Service</a> and <a href="#"
               class="auth-link">Privacy Policy</a>
           </label>
         </div>
-        <button type="submit" class="submit-btn" id="register-submit-btn">
-          Create Account
+        
+        <div class="checkbox-group">
+          <label class="checkbox">
+            <input type="checkbox" id="verification-agreement" name="verification" required>
+            <span class="checkmark"></span>
+          </label>
+          <label class="checkbox-label" for="verification-agreement">
+            I understand that my application will be reviewed and verified before approval
+          </label>
+        </div>
+        
+        <button type="submit" class="submit-btn" id="host-submit-btn">
+          Submit Host Application
         </button>
       </form>
 
       <div class="auth-footer">
-        <p id="auth-footer-text">
-          Don't have an account? <a href="#" class="auth-link" onclick="switchTab('register'); return false;">Sign up here</a>
-        </p>
-        <p id="host-registration-link" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); display: none;">
-          Want to host tournaments? <a href="host-registration.html" class="auth-link">Register as a Host</a>
+        <p>
+          Already have an account? <a href="auth.html" class="auth-link">Sign in here</a>
         </p>
       </div>
     </div>
   </main>
 
   <script>
-    let currentTab = 'login';
     const isLocal = window.location.hostname === 'localhost' || 
                    window.location.hostname === '127.0.0.1' || 
                    window.location.protocol === 'file:';
     const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
 
     // --- Helper Functions ---
-
-    function originalSwitchTab(tab) {
-        const loginTab = document.getElementById('login-tab');
-        const registerTab = document.getElementById('register-tab');
-        const loginForm = document.getElementById('login-form');
-        const registerForm = document.getElementById('register-form');
-        const authTitle = document.getElementById('auth-title');
-        const authSubtitle = document.getElementById('auth-subtitle');
-        const authFooterText = document.getElementById('auth-footer-text');
-        const hostRegistrationLink = document.getElementById('host-registration-link');
-        
-        loginTab.classList.toggle('active', tab === 'login');
-        registerTab.classList.toggle('active', tab === 'register');
-
-        if (tab === 'login') {
-            authTitle.textContent = 'Welcome Back';
-            authSubtitle.textContent = 'Sign in to your account to continue';
-            authFooterText.innerHTML = 'Don\'t have an account? <a href="#" class="auth-link" onclick="switchTab(\'register\'); return false;">Sign up here</a>';
-            hostRegistrationLink.style.display = 'none';
-        } else {
-            authTitle.textContent = 'Create Account';
-            authSubtitle.textContent = 'Join Uni Games and start your journey';
-            authFooterText.innerHTML = 'Already have an account? <a href="#" class="auth-link" onclick="switchTab(\'login\'); return false;">Sign in here</a>';
-            hostRegistrationLink.style.display = 'block';
-        }
-        
-        hideMessage();
-        currentTab = tab;
-    }
-
-    function switchTab(tab) {
-      if (currentTab === tab) return;
-      const currentForm = currentTab === 'login' ? document.getElementById('login-form') : document.getElementById('register-form');
-      const nextForm = tab === 'login' ? document.getElementById('login-form') : document.getElementById('register-form');
-
-      currentForm.style.opacity = '0';
-      currentForm.style.transform = 'translateY(-10px)';
-
-      setTimeout(() => {
-        currentForm.style.display = 'none';
-        nextForm.style.display = 'block';
-
-        originalSwitchTab(tab);
-
-        nextForm.style.opacity = '0';
-        nextForm.style.transform = 'translateY(10px)';
-
-        setTimeout(() => {
-          nextForm.style.opacity = '1';
-          nextForm.style.transform = 'translateY(0)';
-
-          const firstInput = nextForm.querySelector('.form-input');
-          if (firstInput) firstInput.focus();
-        }, 50);
-      }, 200);
-    };
-
-    function addTabTransitions() {
-      const loginForm = document.getElementById('login-form');
-      const registerForm = document.getElementById('register-form');
-      loginForm.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
-      registerForm.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
-    }
-
     function togglePassword(inputId) {
       const input = document.getElementById(inputId);
       const icon = document.getElementById(inputId + '-icon');
@@ -679,6 +549,10 @@
       return password.length >= 6;
     }
 
+    function validatePhone(phone) {
+      return /^[\+]?[1-9][\d]{0,15}$/.test(phone.replace(/[\s\-\(\)]/g, ''));
+    }
+
     function validateInput(input) {
       let isValid = true;
       const value = input.value.trim();
@@ -690,6 +564,8 @@
       } else if (input.id.includes('password') && value && !validatePassword(value)) {
         isValid = false;
       } else if (input.id.includes('username') && value && !validateUsername(value)) {
+        isValid = false;
+      } else if (input.type === 'tel' && value && !validatePhone(value)) {
         isValid = false;
       }
 
@@ -706,7 +582,7 @@
     }
 
     function addInputValidation() {
-      const inputs = document.querySelectorAll('.form-input');
+      const inputs = document.querySelectorAll('.form-input, .form-select, .form-textarea');
       inputs.forEach(input => {
         input.addEventListener('blur', function () {
           validateInput(this);
@@ -718,118 +594,44 @@
       });
     }
 
-    // --- URL Parameter Handling ---
-    function handleUrlParams() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const error = urlParams.get('error');
-      const success = urlParams.get('success');
-      const tabParam = urlParams.get('tab');
-      
-      if (error) {
-        let errorMessage = 'An error occurred';
-        switch(error) {
-          case 'invalid_credentials':
-            errorMessage = 'Invalid email or password';
-            break;
-          case 'email_exists':
-            errorMessage = 'Email already exists';
-            break;
-        }
-        showError(errorMessage);
-      }
-      
-      if (success && success === 'registration_successful') {
-        showSuccess('Registration successful! You can now sign in.');
-        switchTab('login');
-      }
-      
-      if (tabParam === 'register') {
-        switchTab('register');
-      }
-    }
-    
-    // --- Authentication Logic ---
-    async function handleLogin(event) {
+    // --- Host Registration Logic ---
+    async function handleHostRegistration(event) {
       event.preventDefault();
-      const email = document.getElementById('login-email').value.trim();
-      const password = document.getElementById('login-password').value;
       
-      if (!validateEmail(email) || !password) {
-        showError('Please enter a valid email and password.');
-        return;
-      }
+      const formData = {
+        username: document.getElementById('host-username').value.trim(),
+        email: document.getElementById('host-email').value.trim(),
+        password: document.getElementById('host-password').value,
+        contact_phone: document.getElementById('contact-phone').value.trim(),
+        role: 'host'
+      };
       
-      setLoading(true);
-      
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-        
-        const result = await response.json();
-        
-        // Debug logging
-        console.log('DEBUG: Login response:', result);
-        console.log('DEBUG: Response status:', response.status);
-        console.log('DEBUG: Result success:', result.success);
-        console.log('DEBUG: Result data:', result.data);
-        console.log('DEBUG: Redirect path:', result.redirect_path);
-        
-        if (response.ok && result.success && result.data && result.data.token) {
-          // NEW CODE
-          const session = {
-            token: result.data.token,
-            user: result.data.user
-          };
-          localStorage.setItem('nexus_session', JSON.stringify(session));
-          showSuccess('Login successful! Redirecting...');
-          // Check for return URL in query parameters, but prioritize admin redirect
-          const urlParams = new URLSearchParams(window.location.search);
-          const returnUrl = urlParams.get('returnUrl');
-          
-          // If user is admin, always redirect to admin dashboard regardless of returnUrl
-          let redirectUrl;
-          if (result.data.user.role === 'admin') {
-            redirectUrl = result.redirect_path || 'admin-dashboard.html';
-          } else {
-            redirectUrl = returnUrl ? decodeURIComponent(returnUrl) : (result.redirect_path || 'index.html');
-          }
-          
-          console.log('DEBUG: Final redirect URL:', redirectUrl);
-          setTimeout(() => { window.location.href = redirectUrl; }, 1500);
-        } else {
-          showError(result.message || 'Login failed. Please check your credentials.');
-        }
-      } catch (error) {
-        showError('Connection error. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    }
-    
-    async function handleRegister(event) {
-      event.preventDefault();
-      const username = document.getElementById('register-username').value.trim();
-      const email = document.getElementById('register-email').value.trim();
-      const password = document.getElementById('register-password').value;
       const termsAgreed = document.getElementById('terms-agreement').checked;
+      const verificationAgreed = document.getElementById('verification-agreement').checked;
 
-      if (!validateUsername(username)) {
+      // Validation
+      if (!validateUsername(formData.username)) {
         showError('Username must be 3-20 characters (letters, numbers, underscores).');
         return;
       }
-      if (!validateEmail(email)) {
+      if (!validateEmail(formData.email)) {
         showError('Please enter a valid email address.');
         return;
       }
-      if (!validatePassword(password)) {
+      if (!validatePassword(formData.password)) {
         showError('Password must be at least 6 characters long.');
         return;
       }
-       if (!termsAgreed) {
-        showError('You must agree to the Terms of Service and Privacy Policy.');
+      if (!validatePhone(formData.contact_phone)) {
+        showError('Please enter a valid phone number.');
+        return;
+      }
+      if (!termsAgreed) {
+        showError('You must agree to the Host Terms of Service and Privacy Policy.');
+        return;
+      }
+      if (!verificationAgreed) {
+        showError('You must acknowledge the verification process.');
         return;
       }
       
@@ -839,19 +641,18 @@
         const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, email, password })
+          body: JSON.stringify(formData)
         });
         
         const result = await response.json();
 
-        if (response.ok) {
-          showSuccess('Registration successful! Please sign in.');
+        if (response.ok && result.success) {
+          showSuccess('Host registration successful! You can now sign in with your credentials.');
           setTimeout(() => {
-            switchTab('login');
-            document.getElementById('login-email').value = email;
-          }, 2000);
+            window.location.href = 'auth.html?tab=login';
+          }, 2500);
         } else {
-          showError(result.message || 'Registration failed. Please try again.');
+          showError(result.message || 'Host registration failed. Please try again.');
         }
       } catch (error) {
         showError('Connection error. Please try again later.');
@@ -861,40 +662,29 @@
     }
     
     function setLoading(isLoading) {
-      const loginBtn = document.getElementById('login-submit-btn');
-      const registerBtn = document.getElementById('register-submit-btn');
+      const submitBtn = document.getElementById('host-submit-btn');
       const loader = document.getElementById('loader-wrapper');
       
       if (isLoading) {
-        loginBtn.disabled = true;
-        registerBtn.disabled = true;
+        submitBtn.disabled = true;
         loader.classList.add('visible');
       } else {
-        loginBtn.disabled = false;
-        registerBtn.disabled = false;
+        submitBtn.disabled = false;
         loader.classList.remove('visible');
       }
     }
 
     // --- Initialization ---
     document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('login-form').addEventListener('submit', handleLogin);
-      document.getElementById('register-form').addEventListener('submit', handleRegister);
+      document.getElementById('host-form').addEventListener('submit', handleHostRegistration);
       
-      handleUrlParams();
       addInputValidation();
-      addTabTransitions();
 
       setTimeout(() => {
-          if (currentTab === 'login') {
-            document.getElementById('login-email').focus();
-          } else {
-            document.getElementById('register-username').focus();
-          }
+        document.getElementById('host-username').focus();
       }, 200);
     });
   </script>
 </body>
 
 </html>
-
