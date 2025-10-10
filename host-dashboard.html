@@ -390,6 +390,14 @@
             await window.tournamentManagement.init();
             break;
           
+          case 'wallet':
+            if (window.walletManagement) {
+              window.walletManagement.destroy();
+            }
+            window.walletManagement = new WalletManagement();
+            await window.walletManagement.init();
+            break;
+          
           default:
             // Placeholder for other sections
             contentArea.innerHTML = `
@@ -443,6 +451,9 @@
         
         // Load tournament management component
         await loadScript('dashboard-assets/js/components/tournament-management.js');
+        
+        // Load wallet management component
+        await loadScript('dashboard-assets/js/components/wallet-management.js');
         
         console.log('External scripts loaded successfully');
       } catch (error) {
