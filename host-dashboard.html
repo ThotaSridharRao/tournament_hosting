@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Host Dashboard | Uni Games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="dashboard-assets/css/components.css">
+
+  <script>
+    // Tailwind CSS Configuration
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'cyber-cyan': '#0AFAD9',
+            'cyber-indigo': '#5D3FD3',
+            'dark-matter': '#0D0A1A',
+            'dark-panel': '#161329',
+            'panel-hover': '#1f1c3a',
+            'starlight': '#F0F0F0',
+            'starlight-muted': 'rgba(240, 240, 240, 0.7)',
+            'cyber-border': 'rgba(10, 250, 217, 0.2)',
+          },
+          fontFamily: {
+            'inter': ['Inter', 'system-ui', 'sans-serif'],
+          },
+          animation: {
+            'pulse-cyber': 'pulse-cyber 15s infinite ease-in-out',
+            'fade-in': 'fade-in 0.6s ease-out',
+            'slide-in': 'slide-in 0.3s ease-out',
+          },
+          keyframes: {
+            'pulse-cyber': {
+              '0%, 100%': { opacity: '0.7' },
+              '50%': { opacity: '1' },
+            },
+            'fade-in': {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            'slide-in': {
+              '0%': { transform: 'translateX(-100%)' },
+              '100%': { transform: 'translateX(0)' },
+            },
+          },
+          backdropBlur: {
+            'cyber': '20px',
+          },
+        },
+      },
+      darkMode: 'class',
+    }
+  </script>
+
+  <style>
+    /* Custom scrollbar styles */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #161329;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #5D3FD3;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #0AFAD9;
+    }
+
+    /* Glassmorphism effect */
+    .glass {
+      background: rgba(22, 19, 41, 0.8);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(10, 250, 217, 0.2);
+    }
+
+    /* Cyber glow effect */
+    .cyber-glow {
+      box-shadow: 0 0 20px rgba(10, 250, 217, 0.3);
+    }
+
+    /* Background gradient animation */
+    .bg-cyber-gradient {
+      background: 
+        radial-gradient(circle at 15% 85%, rgba(10, 250, 217, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 85% 25%, rgba(93, 63, 211, 0.1) 0%, transparent 40%);
+      animation: pulse-cyber 15s infinite ease-in-out;
+    }
+  </style>
+</head>
+
+<body class="bg-dark-matter text-starlight font-inter overflow-x-hidden">
+  <!-- Loading Animation -->
+  <div id="loader-wrapper" class="fixed inset-0 bg-dark-matter/90 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-500">
+    <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie" 
+      style="width: 300px; height: 300px" autoplay loop></dotlottie-wc>
+  </div>
+
+  <!-- Background Gradient -->
+  <div class="fixed inset-0 bg-cyber-gradient -z-10"></div>
+
+  <!-- Main Container -->
+  <div class="flex h-screen">
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="w-64 bg-dark-panel/80 backdrop-blur-cyber border-r border-cyber-border transition-transform duration-300 transform lg:translate-x-0 -translate-x-full fixed lg:relative z-40 h-full">
+      <!-- Sidebar Header -->
+      <div class="p-6 border-b border-cyber-border">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-cyber-cyan to-cyber-indigo rounded-full flex items-center justify-center">
+            <span class="text-dark-matter font-bold text-sm" id="host-avatar-text">H</span>
+          </div>
+          <div>
+            <h3 class="font-semibold text-starlight" id="host-name">Host Name</h3>
+            <span class="text-xs text-starlight-muted" id="host-status">Verified Host</span>
+          </div>
+        </div>
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" class="mt-4 w-full flex items-center justify-center space-x-2 px-3 py-2 bg-dark-matter/50 rounded-lg border border-cyber-border hover:border-cyber-cyan transition-colors">
+          <i class="fas fa-moon text-cyber-cyan"></i>
+          <span class="text-sm">Dark Mode</span>
+        </button>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="p-4">
+        <ul class="space-y-2">
+          <li>
+            <a href="#dashboard" class="nav-item active flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
+              <i class="fas fa-tachometer-alt text-cyber-cyan group-hover:text-cyber-cyan"></i>
+              <span class="font-medium">Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="#tournaments" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
+              <i class="fas fa-trophy text-starlight-muted group-hover:text-cyber-cyan"></i>
+              <span class="font-medium text-starlight-muted group-hover:text-starlight">Tournaments</span>
+              <span class="ml-auto bg-cyber-indigo text-xs px-2 py-1 rounded-full">3</span>
+            </a>
+          </li>
+          <li>
+            <a href="#wallet" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
+              <i class="fas fa-wallet text-starlight-muted group-hover:text-cyber-cyan"></i>
+              <span class="font-medium text-starlight-muted group-hover:text-starlight">Wallet</span>
+            </a>
+          </li>
+          <li>
+            <a href="#schedule" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
+              <i class="fas fa-calendar-alt text-starlight-muted group-hover:text-cyber-cyan"></i>
+              <span class="font-medium text-starlight-muted group-hover:text-starlight">Schedule</span>
+            </a>
+          </li>
+          <li>
+            <a href="#analytics" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
+              <i class="fas fa-chart-line text-starlight-muted group-hover:text-cyber-cyan"></i>
+              <span class="font-medium text-starlight-muted group-hover:text-starlight">Analytics</span>
+            </a>
+          </li>
+          <li>
+            <a href="#settings" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
+              <i class="fas fa-cog text-starlight-muted group-hover:text-cyber-cyan"></i>
+              <span class="font-medium text-starlight-muted group-hover:text-starlight">Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-cyber-border">
+        <button class="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg border border-red-500/30 hover:bg-red-500/30 transition-colors">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden"></div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col overflow-hidden">
+      <!-- Top Header -->
+      <header class="bg-dark-panel/80 backdrop-blur-cyber border-b border-cyber-border px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-cyber-cyan/10 transition-colors">
+              <i class="fas fa-bars text-starlight"></i>
+            </button>
+            <div>
+              <h1 class="text-2xl font-bold text-starlight" id="page-title">Dashboard</h1>
+              <p class="text-sm text-starlight-muted" id="page-subtitle">Welcome back! Here's your tournament overview.</p>
+            </div>
+          </div>
+          
+          <!-- Header Actions -->
+          <div class="flex items-center space-x-4">
+            <!-- Notifications will be added dynamically -->
+            
+            <!-- Quick Actions -->
+            <button id="header-new-tournament" class="px-4 py-2 bg-cyber-cyan text-dark-matter rounded-lg font-semibold hover:bg-cyber-cyan/90 transition-colors">
+              <i class="fas fa-plus mr-2"></i>
+              New Tournament
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dynamic Content Area -->
+      <div class="flex-1 overflow-auto p-6">
+        <div id="content-area" class="max-w-7xl mx-auto">
+          <!-- Dashboard content will be loaded here -->
+          <div class="animate-fade-in">
+            <div class="text-center py-20">
+              <i class="fas fa-rocket text-6xl text-cyber-cyan mb-4"></i>
+              <h2 class="text-2xl font-bold mb-2">Host Dashboard Loading...</h2>
+              <p class="text-starlight-muted">Setting up your tournament management interface</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // API Configuration
+    const isLocal = window.location.hostname === 'localhost' || 
+                   window.location.hostname === '127.0.0.1' || 
+                   window.location.protocol === 'file:';
+    const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
+
+    // Dashboard State Management
+    class DashboardState {
+      constructor() {
+        this.currentSection = 'dashboard';
+        this.hostData = null;
+        this.tournaments = [];
+        this.notifications = [];
+        this.theme = localStorage.getItem('theme') || 'dark';
+      }
+
+      setCurrentSection(section) {
+        this.currentSection = section;
+        this.updateNavigation();
+        this.updatePageTitle(section);
+      }
+
+      updateNavigation() {
+        document.querySelectorAll('.nav-item').forEach(item => {
+          item.classList.remove('active', 'bg-cyber-cyan/20', 'border-cyber-cyan');
+          const icon = item.querySelector('i');
+          const text = item.querySelector('span');
+          icon.classList.remove('text-cyber-cyan');
+          icon.classList.add('text-starlight-muted');
+          text.classList.remove('text-starlight');
+          text.classList.add('text-starlight-muted');
+        });
+
+        const activeItem = document.querySelector(`[href="#${this.currentSection}"]`);
+        if (activeItem) {
+          activeItem.classList.add('active', 'bg-cyber-cyan/20', 'border-cyber-cyan');
+          const icon = activeItem.querySelector('i');
+          const text = activeItem.querySelector('span');
+          icon.classList.add('text-cyber-cyan');
+          icon.classList.remove('text-starlight-muted');
+          text.classList.add('text-starlight');
+          text.classList.remove('text-starlight-muted');
+        }
+      }
+
+      updatePageTitle(section) {
+        const titles = {
+          dashboard: { title: 'Dashboard', subtitle: 'Welcome back! Here\'s your tournament overview.' },
+          tournaments: { title: 'Tournaments', subtitle: 'Manage your tournaments and participants.' },
+          wallet: { title: 'Wallet', subtitle: 'Track your earnings and manage withdrawals.' },
+          schedule: { title: 'Schedule', subtitle: 'View upcoming matches and events.' },
+          analytics: { title: 'Analytics', subtitle: 'Analyze your performance and insights.' },
+          settings: { title: 'Settings', subtitle: 'Manage your account and preferences.' }
+        };
+
+        const pageData = titles[section] || titles.dashboard;
+        document.getElementById('page-title').textContent = pageData.title;
+        document.getElementById('page-subtitle').textContent = pageData.subtitle;
+      }
+
+      toggleTheme() {
+        this.theme = this.theme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('theme', this.theme);
+        document.documentElement.classList.toggle('dark', this.theme === 'dark');
+        
+        const themeBtn = document.getElementById('theme-toggle');
+        const icon = themeBtn.querySelector('i');
+        const text = themeBtn.querySelector('span');
+        
+        if (this.theme === 'dark') {
+          icon.className = 'fas fa-moon text-cyber-cyan';
+          text.textContent = 'Dark Mode';
+        } else {
+          icon.className = 'fas fa-sun text-cyber-cyan';
+          text.textContent = 'Light Mode';
+        }
+      }
+    }
+
+    // Initialize Dashboard
+    const dashboardState = new DashboardState();
+
+    // Mobile Menu Functionality
+    function initializeMobileMenu() {
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+
+      mobileMenuBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+      });
+
+      overlay.addEventListener('click', () => {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      });
+    }
+
+    // Navigation Event Listeners
+    function initializeNavigation() {
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const section = item.getAttribute('href').substring(1);
+          dashboardState.setCurrentSection(section);
+          
+          // Close mobile menu if open
+          document.getElementById('sidebar').classList.add('-translate-x-full');
+          document.getElementById('sidebar-overlay').classList.add('hidden');
+          
+          // Load section content (placeholder for now)
+          loadSectionContent(section);
+        });
+      });
+    }
+
+    // Theme Toggle
+    function initializeThemeToggle() {
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        dashboardState.toggleTheme();
+      });
+      
+      // Set initial theme
+      document.documentElement.classList.toggle('dark', dashboardState.theme === 'dark');
+    }
+
+    // Load Section Content
+    async function loadSectionContent(section) {
+      const contentArea = document.getElementById('content-area');
+      
+      // Show loading state
+      contentArea.innerHTML = `
+        <div class="flex items-center justify-center py-20">
+          <div class="loading-spinner"></div>
+          <span class="ml-3 text-starlight-muted">Loading ${section}...</span>
+        </div>
+      `;
+
+      try {
+        switch (section) {
+          case 'dashboard':
+            if (window.dashboardOverview) {
+              window.dashboardOverview.destroy();
+            }
+            window.dashboardOverview = new DashboardOverview();
+            await window.dashboardOverview.init();
+            break;
+          
+          case 'tournaments':
+            if (window.tournamentManagement) {
+              window.tournamentManagement.destroy();
+            }
+            window.tournamentManagement = new TournamentManagement();
+            await window.tournamentManagement.init();
+            break;
+          
+          default:
+            // Placeholder for other sections
+            contentArea.innerHTML = `
+              <div class="animate-fade-in">
+                <div class="text-center py-20">
+                  <i class="fas fa-${getSectionIcon(section)} text-6xl text-cyber-cyan mb-4"></i>
+                  <h2 class="text-2xl font-bold mb-2">${section.charAt(0).toUpperCase() + section.slice(1)} Section</h2>
+                  <p class="text-starlight-muted">This section is under development</p>
+                </div>
+              </div>
+            `;
+        }
+      } catch (error) {
+        console.error(`Failed to load ${section} section:`, error);
+        contentArea.innerHTML = `
+          <div class="text-center py-20">
+            <i class="fas fa-exclamation-triangle text-6xl text-red-400 mb-4"></i>
+            <h2 class="text-2xl font-bold mb-2 text-starlight">Failed to Load ${section.charAt(0).toUpperCase() + section.slice(1)}</h2>
+            <p class="text-starlight-muted mb-4">There was an error loading this section.</p>
+            <button onclick="loadSectionContent('${section}')" class="btn-primary">
+              Try Again
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function getSectionIcon(section) {
+      const icons = {
+        dashboard: 'tachometer-alt',
+        tournaments: 'trophy',
+        wallet: 'wallet',
+        schedule: 'calendar-alt',
+        analytics: 'chart-line',
+        settings: 'cog'
+      };
+      return icons[section] || 'rocket';
+    }
+
+    // Load external scripts
+    async function loadExternalScripts() {
+      try {
+        // Load API client
+        await loadScript('dashboard-assets/js/utils/api-client.js');
+        
+        // Load dashboard overview component
+        await loadScript('dashboard-assets/js/components/dashboard-overview.js');
+        
+        // Load notifications panel component
+        await loadScript('dashboard-assets/js/components/notifications-panel.js');
+        
+        // Load tournament management component
+        await loadScript('dashboard-assets/js/components/tournament-management.js');
+        
+        console.log('External scripts loaded successfully');
+      } catch (error) {
+        console.error('Failed to load external scripts:', error);
+      }
+    }
+
+    // Load script utility
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    }
+
+    // Initialize Dashboard
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Hide loader after a short delay
+      setTimeout(() => {
+        document.getElementById('loader-wrapper').classList.add('opacity-0', 'pointer-events-none');
+      }, 1500);
+
+      // Initialize components
+      initializeMobileMenu();
+      initializeNavigation();
+      initializeThemeToggle();
+      
+      // Load external scripts
+      await loadExternalScripts();
+      
+      // Set initial state
+      dashboardState.setCurrentSection('dashboard');
+      
+      // Initialize notifications panel
+      if (window.NotificationsPanel) {
+        window.notificationsPanel = new NotificationsPanel();
+        await window.notificationsPanel.init();
+      }
+      
+      // Bind header new tournament button
+      document.getElementById('header-new-tournament')?.addEventListener('click', () => {
+        // Switch to tournaments section if not already there
+        if (dashboardState.currentSection !== 'tournaments') {
+          dashboardState.setCurrentSection('tournaments');
+          loadSectionContent('tournaments').then(() => {
+            // Show create modal after tournaments section loads
+            setTimeout(() => {
+              if (window.tournamentManagement) {
+                window.tournamentManagement.showCreateModal();
+              }
+            }, 100);
+          });
+        } else {
+          // Already in tournaments section, just show modal
+          if (window.tournamentManagement) {
+            window.tournamentManagement.showCreateModal();
+          }
+        }
+      });
+      
+      // Load initial dashboard content
+      await loadSectionContent('dashboard');
+      
+      console.log('Host Dashboard initialized successfully!');
+    });
+  </script>
+</body>
+
+</html>
