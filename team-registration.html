@@ -7,6 +7,7 @@
     <title>Team Registration | Uni Games</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" type="image/png" href="ug.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
@@ -86,407 +87,264 @@
             scrollbar-color: var(--panel) var(--bg-dark);
         }
 
-        /* Header and Navigation Styles */
-        header.site-header {
-            position: fixed;
-            inset: 0 0 auto 0;
-            background: rgba(26, 26, 26, 0.5);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            z-index: 1200;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            height: 60px;
-        }
+        /* =========================
+   NAVBAR STYLES (Modern Design)
+   ========================= */
+.nav-normal {
+  background: rgba(13, 10, 26, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0.5rem 2rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+  transform: translateY(0);
+}
 
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 2rem;
-            height: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+.nav-normal.nav-hidden {
+  transform: translateY(-100%);
+}
 
-        .brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: var(--copy);
-            text-decoration: none;
-        }
+.nav-normal.nav-scrolled {
+  background: rgba(13, 10, 26, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+}
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
 
-        /* Navigation Styles */
-        .primary {
-            display: flex;
-            align-items: center;
-        }
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  text-decoration: none;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+}
 
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
+.logo img {
+  height: 80px;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
 
-        .nav-links a {
-            color: var(--copy, #F0F0F0);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.3s ease;
-            padding: 0.5rem 0;
-        }
+.nav-center {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
 
-        .nav-links a:hover {
-            color: var(--accent-2, #0AFAD9);
-        }
+.nav-links {
+  display: flex;
+  gap: 0;
+  list-style: none;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
 
-        .nav-links a.active {
-            color: var(--accent-2, #0AFAD9);
-            font-weight: 600;
-        }
+.nav-links li {
+  position: relative;
+}
 
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-left: 2rem;
-            padding-left: 2rem;
-            border-left: 1px solid rgba(255, 255, 255, 0.2);
-        }
+.nav-links a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  padding: 0.6rem 1.2rem;
+  display: block;
+}
 
-        .header-cta {
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            color: #fff;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+.nav-links a:hover {
+  color: white;
+}
 
-        .header-cta:hover {
-            opacity: 0.8;
-            filter: brightness(0.9);
-        }
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
 
-        /* Profile Dropdown (Desktop) */
-        .profile-dropdown {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+.btn {
+  padding: 0.65rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
 
-        .profile-icon {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--copy);
-            cursor: pointer;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            font-size: 1.5rem;
-        }
+.btn-request {
+  background: white;
+  color: #0a0a0a;
+}
 
-        .profile-icon:hover {
-            color: var(--accent);
-            background: rgba(255, 69, 0, 0.1);
-            transform: scale(1.1);
-        }
+.btn-request:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+}
 
-        .profile-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
+.btn-logout {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
 
-        .profile-icon {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--copy);
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            font-size: 1.5rem;
-        }
+.btn-logout:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
 
-        .profile-icon:hover {
-            color: var(--accent);
-            background: rgba(10, 250, 217, 0.1);
-            transform: scale(1.1);
-        }
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
 
-        .profile-username {
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: var(--copy);
-        }
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-secondary) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
 
-        /* Hamburger & Mobile Nav Panel */
-        .hamburger {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--copy);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
+.user-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
 
-        .mobile-nav {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 300px;
-            height: 100vh;
-            background: var(--panel);
-            z-index: 2000;
-            transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
-            padding-top: 60px;
-            padding-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            border-radius: 0 0 0 15px;
-            overflow-y: auto;
-            box-sizing: border-box;
-        }
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
 
-        .mobile-nav.is-open {
-            right: 0;
-        }
+.menu-icon {
+  width: 24px;
+  height: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 
-        .mobile-nav-close {
-            position: absolute;
-            top: 0.75rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            color: var(--muted);
-            font-size: 1.5rem;
-            cursor: pointer;
-            line-height: 1;
-            transition: color 0.2s ease, transform 0.3s ease;
-        }
+.menu-icon span {
+  width: 100%;
+  height: 2px;
+  background: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
 
-        .mobile-nav-close:hover {
-            color: var(--copy);
-            transform: rotate(90deg);
-        }
+.menu-toggle.active .menu-icon span:nth-child(1) {
+  transform: rotate(45deg) translate(7px, 7px);
+}
 
-        .mobile-nav .guest-view {
-            padding: 1rem;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.75rem;
-            margin-top: 0.5rem;
-        }
+.menu-toggle.active .menu-icon span:nth-child(2) {
+  opacity: 0;
+}
 
-        .mobile-nav .guest-view i {
-            font-size: 2rem;
-            color: var(--accent);
-        }
+.menu-toggle.active .menu-icon span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
 
-        .mobile-nav .guest-view p {
-            color: var(--muted);
-            line-height: 1.6;
-        }
+/* Mobile Styles */
+@media (max-width: 968px) {
+  .menu-toggle {
+    display: block;
+  }
 
-        /* Mobile Navigation Links Styling */
-        .mobile-nav-links {
-            padding: 0.5rem;
-            margin-top: 0.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
+  .nav-center {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    height: 100vh;
+    width: 85%;
+    max-width: 350px;
+    flex-direction: column;
+    background: rgba(15, 15, 15, 0.98);
+    backdrop-filter: blur(20px);
+    padding: 6rem 2rem 2rem;
+    gap: 0;
+    transition: right 0.3s ease;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    align-items: flex-start;
+    overflow-y: auto;
+  }
 
-        .mobile-nav-links a {
-            color: var(--muted);
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
+  .nav-center.active {
+    right: 0;
+  }
 
-        .mobile-nav-links a:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--copy);
-        }
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+    gap: 0;
+  }
 
-        .mobile-nav-links a i {
-            margin-right: 0.5rem;
-            color: var(--accent-2, #0AFAD9);
-        }
+  .nav-links li {
+    width: 100%;
+  }
 
-        /* Mobile User Profile Section */
-        .mobile-user-profile {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1.5rem 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
+  .nav-links a {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
 
-        .mobile-user-profile .profile-photo {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #0AFAD9, #5D3FD3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #000;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
+  .auth-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
 
-        .mobile-user-profile .profile-info {
-            flex: 1;
-        }
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
 
-        .mobile-user-profile .profile-username {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--copy);
-        }
+  .user-info {
+    width: 100%;
+    justify-content: center;
+  }
 
-        .mobile-user-profile .profile-userid {
-            font-size: 0.8rem;
-            color: var(--muted);
-            margin-top: 0.25rem;
-        }
-
-        /* Mobile Navigation Links */
-        .mobile-nav-link {
-            display: flex !important;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
-            color: var(--muted);
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .mobile-nav-link:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--copy);
-        }
-
-        .mobile-nav-link i {
-            font-size: 1rem;
-            color: var(--accent-2, #0AFAD9);
-            width: 20px;
-            text-align: center;
-        }
-
-        /* Mobile Navigation Bottom Actions */
-        .mobile-nav-bottom-actions {
-            padding: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: auto;
-            display: flex;
-            gap: 0.8rem;
-            justify-content: center;
-            align-items: center;
-            flex-shrink: 0;
-        }
-
-        .mobile-host-btn {
-            display: inline-flex !important;
-            align-items: center !important;
-            gap: 0.4rem !important;
-            padding: 0.6rem 1rem !important;
-            background: #ffffff !important;
-            color: #000000 !important;
-            border: none !important;
-            border-radius: 6px !important;
-            text-decoration: none !important;
-            font-weight: 600 !important;
-            font-size: 0.9rem !important;
-            transition: all 0.3s ease !important;
-            cursor: pointer !important;
-            flex: 1 !important;
-            justify-content: center !important;
-            min-height: 40px !important;
-        }
-
-        .mobile-host-btn:hover {
-            opacity: 0.8 !important;
-            filter: brightness(0.9) !important;
-        }
-
-        .mobile-logout-btn {
-            display: inline-flex !important;
-            align-items: center !important;
-            gap: 0.4rem !important;
-            padding: 0.6rem 1rem !important;
-            background: rgba(255, 0, 0, 0.1) !important;
-            color: #ff6b6b !important;
-            border: 1px solid rgba(255, 107, 107, 0.3) !important;
-            border-radius: 6px !important;
-            font-weight: 600 !important;
-            font-size: 0.9rem !important;
-            cursor: pointer !important;
-            transition: all 0.3s ease !important;
-            flex: 1 !important;
-            justify-content: center !important;
-            min-height: 40px !important;
-        }
-
-        .mobile-logout-btn:hover {
-            background: rgba(255, 0, 0, 0.2) !important;
-            border-color: rgba(255, 107, 107, 0.5) !important;
-        }
-
-        .mobile-join-btn {
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            gap: 0.4rem !important;
-            padding: 0.6rem 1rem !important;
-            background: linear-gradient(135deg, var(--accent, #5D3FD3), var(--accent-2, #0AFAD9)) !important;
-            color: #ffffff !important;
-            border: none !important;
-            border-radius: 6px !important;
-            text-decoration: none !important;
-            font-weight: 600 !important;
-            font-size: 0.9rem !important;
-            cursor: pointer !important;
-            transition: all 0.3s ease !important;
-            width: 100% !important;
-            margin-top: 0.5rem !important;
-        }
-
-        .mobile-join-btn:hover {
-            opacity: 0.8;
-            filter: brightness(0.9);
-        }
-
-        .guest-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            width: 100%;
-            margin-top: 1rem;
-        }
+  #user-menu {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+  }
+}
 
         /* Payment Status Modal Styles */
         .payment-status-modal {
@@ -1267,13 +1125,39 @@
                 Uni Games
             </a>
             <div class="header-right">
-                <nav class="primary" role="navigation" aria-label="Primary">
-                    <div class="nav-links" role="menubar">
-                        <a href="tournaments.html" role="menuitem">Tournaments</a>
-                        <a href="userdashboard.html" role="menuitem">My Dashboard</a>
-                        <a href="index.html" role="menuitem">Home</a>
+                <nav class="nav-normal">
+                    <div class="nav-container">
+                        <a href="index.html" class="logo">
+                        <img src="ug.png" alt="Uni Games">
+                        </a>
+                        <div class="nav-center" id="normalNav">
+                        <ul class="nav-links">
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="tournaments.html">Tournaments</a></li>
+                            <li><a href="tournament-brackets.html">Brackets</a></li>
+                        </ul>
+                        <div class="auth-buttons" id="normalAuth">
+                            <div id="guest-menu">
+                            <a href="auth.html" class="btn btn-request">Join Us</a>
+                            </div>
+                            <div id="user-menu" style="display: none;">
+                            <div class="user-info">
+                                <div class="user-avatar" id="user-avatar">U</div>
+                                <span class="user-name" id="navbar-username">User</span>
+                            </div>
+                            <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
+                            </div>
+                        </div>
+                        </div>
+                        <button class="menu-toggle" id="normalMenuToggle">
+                        <div class="menu-icon">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        </button>
                     </div>
-                </nav>
+                    </nav>
                 <div class="nav-actions">
                     <div id="guest-menu">
                         <button class="header-cta" onclick="redirectToAuth('register')">Join Us</button>
@@ -1965,115 +1849,98 @@
             const sessionData = getSessionData();
             const guestMenu = document.getElementById('guest-menu');
             const userMenu = document.getElementById('user-menu');
-            const user = sessionData?.data?.user || sessionData?.user;
+            const user = sessionData?.user;
 
             if (user) {
+                const username = user.username || user.email.split('@')[0];
+                const userInitials = username.substring(0, 2).toUpperCase();
+
                 const navbarUsername = document.getElementById('navbar-username');
-                if (navbarUsername) {
-                    navbarUsername.textContent = user.username || user.email.split('@')[0];
-                }
+                const userAvatar = document.getElementById('user-avatar');
+
+                if (navbarUsername) navbarUsername.textContent = username;
+                if (userAvatar) userAvatar.textContent = userInitials;
+
                 if (guestMenu) guestMenu.style.display = 'none';
                 if (userMenu) userMenu.style.display = 'flex';
             } else {
-                if (guestMenu) guestMenu.style.display = 'flex';
+                if (guestMenu) guestMenu.style.display = 'block';
                 if (userMenu) userMenu.style.display = 'none';
             }
         }
 
-        function setupMobileNav() {
-            const sessionData = getSessionData();
-            const mobileNavContainer = document.getElementById('mobile-nav');
-            const user = sessionData?.data?.user || sessionData?.user;
+        
 
-            const closeButtonHTML = `<button class="mobile-nav-close" aria-label="Close menu"><i class="fas fa-times"></i></button>`;
+        // Initialize modern navbar
+        const normalMenuToggle = document.getElementById('normalMenuToggle');
+        const normalNav = document.getElementById('normalNav');
 
-            let userSectionHTML = '';
-            let navLinksHTML = '';
-            let bottomActionsHTML = '';
+        if (normalMenuToggle && normalNav) {
+        normalMenuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            normalMenuToggle.classList.toggle('active');
+            normalNav.classList.toggle('active');
+        });
 
-            if (user) {
-                // Logged-in user view - matches tournaments page design
-                const username = user.username || user.email.split('@')[0];
-                const userId = user.id || 'demo-user';
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav-normal') && normalNav.classList.contains('active')) {
+            normalNav.classList.remove('active');
+            normalMenuToggle.classList.remove('active');
+            }
+        });
+        }
 
-                userSectionHTML = `
-                    <div class="mobile-user-profile">
-                        <div class="profile-photo"><i class="fas fa-user"></i></div>
-                        <div class="profile-info">
-                            <div class="profile-username">${username}</div>
-                            <div class="profile-userid">ID: ${userId}</div>
-                        </div>
-                    </div>
-                `;
+        function handleLogout() {
+        if (confirm('Are you sure you want to logout?')) {
+            localStorage.removeItem('nexus_session');
+            sessionStorage.removeItem('nexus_session');
+            window.location.href = 'auth.html';
+        }
+        }
 
-                // Navigation links with icons
-                navLinksHTML = `
-                    <div class="mobile-nav-links">
-                        <a href="userdashboard.html" class="mobile-nav-link">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <span>Dashboard</span>
-                        </a>
-                        <a href="tournaments.html" class="mobile-nav-link">
-                            <i class="fas fa-trophy"></i>
-                            <span>Browse Tournaments</span>
-                        </a>
-                        <a href="userdashboard.html" class="mobile-nav-link">
-                            <i class="fas fa-list"></i>
-                            <span>My Tournaments</span>
-                        </a>
-                    </div>
-                `;
+        // Smart Navbar Scroll Behavior
+        function initSmartNavbar() {
+        const navbar = document.querySelector('.nav-normal');
+        if (!navbar) return;
 
-                // Bottom action buttons
-                bottomActionsHTML = `
-                    <div class="mobile-nav-bottom-actions">
-                        <a href="userdashboard.html?tab=create" class="mobile-host-btn">
-                            <i class="fas fa-plus-circle"></i>
-                            Host
-                        </a>
-                        <button class="mobile-logout-btn" onclick="logout()">
-                            <i class="fas fa-sign-out-alt"></i>
-                            Logout
-                        </button>
-                    </div>
-                `;
+        let lastScrollY = window.scrollY;
+        let ticking = false;
+
+        function updateNavbar() {
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY > 50) {
+            navbar.classList.add('nav-scrolled');
             } else {
-                // Guest view
-                userSectionHTML = `
-                    <div class="guest-view">
-                        <i class="fas fa-gamepad"></i>
-                        <p>Join the arena to compete, win prizes, and track your stats!</p>
-                        <div class="guest-actions">
-                            <a href="create-tournament.html" class="mobile-host-btn">
-                                <i class="fas fa-plus-circle"></i> Host Tournament
-                            </a>
-                            <button class="mobile-join-btn" onclick="redirectToAuth('register')">Join Us Now</button>
-                        </div>
-                    </div>
-                `;
-
-                navLinksHTML = `
-                    <div class="mobile-nav-links">
-                        <a href="tournaments.html" class="mobile-nav-link">
-                            <i class="fas fa-trophy"></i>
-                            <span>Browse Tournaments</span>
-                        </a>
-                        <a href="index.html" class="mobile-nav-link">
-                            <i class="fas fa-home"></i>
-                            <span>Home</span>
-                        </a>
-                    </div>
-                `;
+            navbar.classList.remove('nav-scrolled');
             }
 
-            // Combine the parts into the final HTML for the panel
-            mobileNavContainer.innerHTML = `
-                ${closeButtonHTML}
-                ${userSectionHTML}
-                ${navLinksHTML}
-                ${bottomActionsHTML}
-            `;
+            if (currentScrollY > 100) {
+            if (currentScrollY > lastScrollY && currentScrollY > 200) {
+                navbar.classList.add('nav-hidden');
+            } else {
+                navbar.classList.remove('nav-hidden');
+            }
+            } else {
+            navbar.classList.remove('nav-hidden');
+            }
+
+            lastScrollY = currentScrollY;
+            ticking = false;
         }
+
+        function requestTick() {
+            if (!ticking) {
+            requestAnimationFrame(updateNavbar);
+            ticking = true;
+            }
+        }
+
+        window.addEventListener('scroll', requestTick, { passive: true });
+        updateNavbar();
+        }
+
+        initSmartNavbar();
 
         document.addEventListener('DOMContentLoaded', async () => {
             await testApiConnection();
