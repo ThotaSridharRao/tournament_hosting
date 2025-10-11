@@ -176,7 +176,7 @@
 
       <!-- Sidebar Footer -->
       <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-cyber-border">
-        <button class="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg border border-red-500/30 hover:bg-red-500/30 transition-colors">
+        <button id="logout-btn" class="w-full flex items-center justify-center ...">
           <i class="fas fa-sign-out-alt"></i>
           <span>Logout</span>
         </button>
@@ -486,6 +486,8 @@
       
       // Load external scripts
       await loadExternalScripts();
+
+      await loadHostProfile(); // Fetch and display host info
       
       // Set initial state
       dashboardState.setCurrentSection('dashboard');
@@ -522,6 +524,29 @@
       
       console.log('Host Dashboard initialized successfully!');
     });
+
+    // Add this function inside the main <script> tag
+
+    async function loadHostProfile() {
+        try {
+            // Use the apiClient to fetch profile data
+            const response = await window.apiClient.getHostProfile();
+            if (response.success && response.data) {
+                const host = response.data;
+                const hostName = (host.firstName && host.lastName) ? `${host.firstName} ${host.lastName}` : host.username;
+                const avatarText = hostName.charAt(0).toUpperCase();
+
+                // Update the sidebar elements
+                document.getElementById('host-name').textContent = hostName;
+                document.getElementById('host-avatar-text').textContent = avatarText;
+            }
+        } catch (error) {
+            console.error('Failed to load host profile:', error);
+            // Fallback to default values if API fails
+            document.getElementById('host-name').textContent = 'Host';
+            document.getElementById('host-avatar-text').textContent = 'H';
+        }
+    }
   </script>
 </body>
 

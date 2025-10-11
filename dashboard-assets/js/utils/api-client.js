@@ -35,6 +35,8 @@ class ApiClient {
   clearToken() {
     this.token = null;
     localStorage.removeItem('auth_token');
+    // Also remove user_data on logout
+    localStorage.removeItem('user_data');
   }
 
   /**
@@ -58,13 +60,11 @@ class ApiClient {
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
     
-    // Use a mutable config object
     let config = {
       headers: this.getHeaders(),
       ...options,
     };
     
-    // For FormData, let the browser set the Content-Type header
     if (options.body instanceof FormData) {
       delete config.headers['Content-Type'];
     }
@@ -87,7 +87,13 @@ class ApiClient {
             errorData
           );
         }
-
+        
+        // Handle responses that might not have a body (like CSV download)
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("text/csv")) {
+            return response.blob();
+        }
+        
         if (response.status === 204) {
             return { success: true, data: null };
         }
@@ -108,7 +114,7 @@ class ApiClient {
   }
 
   async get(endpoint, params = {}) {
-    const queryString = new URLSearchParams(params).toString();
+    const queryString = new URLSearchParams(Object.entries(params).filter(([_, v]) => v != null)).toString();
     const url = queryString ? `${endpoint}?${queryString}` : endpoint;
     return this.request(url, { method: 'GET' });
   }
@@ -133,6 +139,13 @@ class ApiClient {
     });
   }
 
+  async patch(endpoint, data = {}) {
+    return this.request(endpoint, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+    });
+  }
+
   async delete(endpoint) {
     return this.request(endpoint, { method: 'DELETE' });
   }
@@ -147,8 +160,15 @@ class ApiClient {
     return this.get('/api/host/dashboard/metrics');
   }
 
+  async getRecentTournaments() {
+    return this.get('/api/host/tournaments/recent');
+  }
+  
+  async getHostProfile() {
+    return this.get('/api/host/profile');
+  }
+
   async getTournaments(params = {}) {
-    // <-- CHANGED
     return this.get('/api/host/tournaments', params);
   }
 
@@ -159,36 +179,27 @@ class ApiClient {
              formData.append(key, tournamentData[key]);
         }
     }
-    // <-- CHANGED to point to the correct creation endpoint that accepts FormData
     return this.post('/api/tournaments', formData);
   }
 
   async updateTournament(tournamentId, tournamentData) {
-    // <-- CHANGED
     return this.put(`/api/host/tournaments/${tournamentId}`, tournamentData);
   }
 
   async deleteTournament(tournamentId) {
-    // <-- CHANGED
     return this.delete(`/api/host/tournaments/${tournamentId}`);
   }
 
- // In dashboard-assets/js/utils/api-client.js
-
-  /**
-   * Get tournament participants
-   */
   async getTournamentParticipants(tournamentId) {
-    // <-- CHANGED
     return this.get(`/api/host/tournaments/${tournamentId}/participants`);
   }
 
-  /**
-   * Approve/reject participant
-   */
   async updateParticipantStatus(tournamentId, participantId, status) {
-    // <-- CHANGED
     return this.put(`/api/host/tournaments/${tournamentId}/participants/${participantId}/status`, { status });
+  }
+
+  async exportParticipantsCSV(tournamentId) {
+    return this.request(`/api/host/tournaments/${tournamentId}/export/csv`, { method: 'GET' });
   }
   
   async getWalletInfo() {
@@ -202,13 +213,28 @@ class ApiClient {
   async requestWithdrawal(withdrawalData) {
     return this.post('/api/host/wallet/withdraw', withdrawalData);
   }
-  
-  async generateInviteLink(tournamentId) {
-    // <-- CHANGED to use the new host-specific path
-    return this.post(`/api/host/tournaments/${tournamentId}/invite-link`);
+
+  // --- ANALYTICS ---
+  async getRevenueAnalytics(days = 90) {
+    return this.get('/api/host/analytics/revenue', { days });
+  }
+
+  async getParticipantAnalytics(days = 90) {
+    return this.get('/api/host/analytics/participants', { days });
+  }
+
+  // --- NOTIFICATIONS ---
+  async getNotifications(params = {}) {
+    return this.get('/api/notifications', params);
   }
   
-  // Other methods (getSchedule, getAnalytics, getProfile, etc.) remain the same
+  async markNotificationRead(notificationId) {
+    return this.patch(`/api/notifications/${notificationId}/read`);
+  }
+  
+  async markAllNotificationsRead() {
+    return this.patch('/api/notifications/read-all');
+  }
 }
 
 /**
