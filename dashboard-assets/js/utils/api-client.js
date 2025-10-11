@@ -173,12 +173,22 @@ class ApiClient {
     return this.delete(`/api/host/tournaments/${tournamentId}`);
   }
 
+ // In dashboard-assets/js/utils/api-client.js
+
+  /**
+   * Get tournament participants
+   */
   async getTournamentParticipants(tournamentId) {
+    // <-- CHANGED
     return this.get(`/api/host/tournaments/${tournamentId}/participants`);
   }
 
+  /**
+   * Approve/reject participant
+   */
   async updateParticipantStatus(tournamentId, participantId, status) {
-    return this.put(`/api/host/tournaments/${tournamentId}/participants/${participantId}`, { status });
+    // <-- CHANGED
+    return this.put(`/api/host/tournaments/${tournamentId}/participants/${participantId}/status`, { status });
   }
   
   async getWalletInfo() {
