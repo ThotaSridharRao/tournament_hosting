@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tournaments - Uni Games</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="icon" type="image/png" href="ug.png">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -621,7 +622,7 @@
     .tournament-badge {
       position: absolute;
       top: 1rem;
-      left: 1rem;
+      right: 1rem;
       background: rgba(255, 215, 0, 0.9);
       color: #000;
       padding: 0.25rem 0.75rem;
@@ -764,55 +765,77 @@
 
     /* Footer Styles */
     footer.site-footer {
-      padding: 2.5rem 1rem;
-      background: #070707;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: var(--panel);
+      padding: 5rem 2rem 2rem;
+      text-align: center;
+      border-top: 1px solid var(--border-color);
     }
 
     .footer-grid {
+      max-width: 1200px;
+      margin: 0 auto 3rem auto;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 2rem;
-      margin-bottom: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2.5rem;
+      text-align: left;
     }
 
     .footer-column h4 {
-      color: var(--copy);
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      font-size: 1.2rem;
       font-weight: 700;
-      margin-bottom: 1rem;
     }
 
-    .footer-column ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .footer-column ul li {
-      margin-bottom: 0.5rem;
-    }
-
-    .footer-column ul a {
-      color: var(--muted);
+    .footer-column ul a,
+    .footer-column p {
+      color: var(--text-secondary);
       text-decoration: none;
-      transition: color 0.3s ease;
+      transition: all 0.3s ease;
+      display: block;
+      margin-bottom: 0.75rem;
+      font-size: 1rem;
     }
 
     .footer-column ul a:hover {
-      color: var(--accent);
+      color: var(--primary-color);
     }
 
-    .footer-bottom {
-      text-align: center;
-      margin-top: 1.25rem;
-      padding-top: 1.25rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      color: var(--muted);
+    .footer-brand .brand {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      text-decoration: none;
     }
 
     .footer-brand p {
-      color: var(--muted);
-      margin-top: 0.5rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .social-links a {
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      color: var(--primary-color);
+      transform: translateY(-3px);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border-color);
+      padding-top: 2rem;
+      opacity: 0.7;
+      font-size: 1rem;
     }
 
     /* Responsive */
@@ -820,7 +843,11 @@
       .footer-grid {
         grid-template-columns: 1fr;
         text-align: center;
-        gap: 1.5rem;
+        gap: 2rem;
+      }
+
+      .social-links {
+        justify-content: center;
       }
 
       .tournaments-grid,
@@ -1337,15 +1364,21 @@
     </section>
   </main>
 
-  <footer class="site-footer">""
+  <footer class="site-footer">
     <div class="container">
       <div class="footer-grid">
         <div class="footer-column footer-brand">
-          <h4><a href="index.html" style="color: var(--copy); text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
-            <img src="ug.png" alt="Uni Games" style="height: 40px; width: auto;">
+          <a href="index.html" class="brand" style="display: flex; align-items: center; gap: 0.5rem;">
+            <img src="ug.png" alt="Uni Games" style="height: 60px; width: auto;">
             Uni Games
-          </a></h4>
+          </a>
           <p>The ultimate destination for competitive gaming.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+          </div>
         </div>
         <div class="footer-column">
           <h4>Tournaments</h4>
@@ -1353,7 +1386,7 @@
             <li><a href="tournaments.html">Browse All</a></li>
             <li><a href="tournaments.html?filter=live">Live Matches</a></li>
             <li><a href="tournaments.html?filter=upcoming">Upcoming</a></li>
-            <li><a href="tournaments.html?filter=registration_open">Registration Open</a></li>
+            <li><a href="tournaments.html?filter=completed">Past Results</a></li>
           </ul>
         </div>
         <div class="footer-column">
@@ -1368,7 +1401,6 @@
           <h4>Company</h4>
           <ul>
             <li><a href="#">About</a></li>
-            <li><a href="auth.html?tab=login&returnUrl=tournaments.html">Sign In</a></li>
             <li><a href="#">Contact</a></li>
           </ul>
         </div>
@@ -1743,21 +1775,25 @@
             const isRegistered = await checkUserRegistrationStatus(slug);
 
             if (isRegistered) {
-              registerBtn.innerHTML = '<i class="fas fa-check-circle"></i> Registered';
-              registerBtn.className = 'btn-primary btn-success';
-              registerBtn.disabled = true;
-              registerBtn.onclick = null;
+              // Clear existing buttons
+              actionDiv.innerHTML = '';
 
-              // Add brackets button for registered users
-              const bracketsBtn = document.createElement('button');
+              // Add "Registered" button (disabled, green)
+              const registeredBtn = document.createElement('button');
+              registeredBtn.className = 'btn-primary btn-success';
+              registeredBtn.innerHTML = '<i class="fas fa-check-circle"></i> Registered';
+              registeredBtn.disabled = true;
+              registeredBtn.style.cursor = 'default';
+
+              // Add "View Brackets" button
+              const bracketsBtn = document.createElement('a');
+              bracketsBtn.href = `tournament-brackets-view.html?slug=${slug}`;
               bracketsBtn.className = 'btn-secondary';
               bracketsBtn.innerHTML = '<i class="fas fa-sitemap"></i> View Brackets';
-              bracketsBtn.onclick = () => {
-                window.location.href = `tournament-brackets-view.html?slug=${slug}`;
-              };
 
-              // Insert brackets button after the registered button
-              registerBtn.parentNode.insertBefore(bracketsBtn, registerBtn.nextSibling);
+              // Append both buttons
+              actionDiv.appendChild(registeredBtn);
+              actionDiv.appendChild(bracketsBtn);
             }
           } catch (error) {
             console.error(`Error checking registration for ${slug}:`, error);
