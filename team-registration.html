@@ -1050,10 +1050,22 @@
         }
 
         .btn:disabled {
-            opacity: 0.5;
+            opacity: 1;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-primary:disabled {
+            background: linear-gradient(135deg, rgba(100, 100, 100, 0.3), rgba(80, 80, 80, 0.3)) !important;
+            color: rgba(255, 255, 255, 0.5) !important;
+            border: 2px solid rgba(255, 255, 255, 0.15) !important;
+        }
+
+        .btn-secondary:disabled {
+            background: rgba(100, 100, 100, 0.2) !important;
+            color: rgba(255, 255, 255, 0.4) !important;
+            border: 2px solid rgba(255, 255, 255, 0.1) !important;
         }
 
         .add-player-btn {
@@ -1333,27 +1345,6 @@
             .player-form {
                 grid-template-columns: 1fr;
             }
-        }
-        .btn:disabled {
-    opacity: 1;
-    cursor: not-allowed;
-    transform: none !important;
-    box-shadow: none !important;
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: rgba(255, 255, 255, 0.4) !important;
-    border: 2px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-.btn-primary:disabled {
-    background: linear-gradient(135deg, rgba(100, 100, 100, 0.3), rgba(80, 80, 80, 0.3)) !important;
-    color: rgba(255, 255, 255, 0.5) !important;
-    border: 2px solid rgba(255, 255, 255, 0.15) !important;
-}
-
-        .btn-primary:disabled {
-            background: linear-gradient(135deg, rgba(100, 100, 100, 0.3), rgba(80, 80, 80, 0.3)) !important;
-            color: rgba(255, 255, 255, 0.5) !important;
-            border: 2px solid rgba(255, 255, 255, 0.15) !important;
         }
 
         @media (max-width: 768px) {
