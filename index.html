@@ -818,6 +818,26 @@
       text-align: left;
       justify-content: center;
     }
+    @media (max-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: left;
+        gap: 2rem;
+      }
+
+      /* Hide the Tournaments, Community, and Company columns on mobile */
+      .footer-column:not(.footer-brand) {
+        display: none;
+      }
+
+      .social-links {
+        justify-content: flex-start;
+      }
+      
+      .footer-brand .brand {
+        justify-content: flex-start;
+      }
+    }
 
     @media (max-width: 768px) {
       .game-card {
@@ -1768,28 +1788,9 @@
         const tournaments = await fetchTournaments();
         populateTournamentsGrid(tournaments);
       } catch (error) {
-        console.error('Error loading tournaments:', error.message);
-        
-        // Show error in tournaments section
-        if (grid) {
-          grid.innerHTML = `
-            <div class="section-loader">
-              <i class="fas fa-exclamation-triangle" style="font-size: 2.5rem; color: #ffc107; margin-bottom: 1rem;"></i>
-              <p style="color: var(--text-primary); font-size: 1rem; margin-bottom: 1rem;">Unable to load tournaments</p>
-              <button onclick="retryLoadTournaments()" style="
-                padding: 0.75rem 1.5rem; 
-                background: var(--primary-color); 
-                color: var(--bg-dark); 
-                border: none; 
-                border-radius: 6px; 
-                font-weight: 600; 
-                cursor: pointer;
-              ">
-                <i class="fas fa-sync-alt"></i> Retry
-              </button>
-            </div>
-          `;
-        }
+        console.error('Error loading tournaments:', error);
+        // Keep showing the loading spinner - don't hide it or show error
+        // The loading spinner will continue spinning until tournaments load successfully
       }
     }
 
