@@ -2010,7 +2010,39 @@
         }
 
         initSmartNavbar();
+        function setupMobileNav() {
+            const hamburger = document.querySelector('.hamburger');
+            const mobileNav = document.getElementById('mobile-nav');
 
+            if (!hamburger || !mobileNav) return;
+
+            function closeMobileNav() {
+                mobileNav.classList.remove('is-open');
+                hamburger.setAttribute('aria-expanded', 'false');
+            }
+
+            hamburger.addEventListener('click', () => {
+                const isOpen = mobileNav.classList.toggle('is-open');
+                hamburger.setAttribute('aria-expanded', isOpen);
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!mobileNav.classList.contains('is-open')) return;
+                
+                const closeButton = event.target.closest('.mobile-nav-close');
+                if (closeButton) {
+                    closeMobileNav();
+                    return;
+                }
+                
+                const isClickInsideNav = event.target.closest('#mobile-nav');
+                const isClickOnHamburger = event.target.closest('.hamburger');
+                
+                if (!isClickInsideNav && !isClickOnHamburger) {
+                    closeMobileNav();
+                }
+            });
+        }
         document.addEventListener('DOMContentLoaded', async () => {
             await testApiConnection();
             await loadTournamentData();
