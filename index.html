@@ -1336,6 +1336,36 @@
       min-height: 450px;
     }
 
+    /* Section Loader Styles */
+    .section-loader {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem;
+      min-height: 300px;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(10, 250, 217, 0.2);
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .section-loader p {
+      margin-top: 1rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
     /* Custom Scrollbar Styles */
     ::-webkit-scrollbar-track {
       border: 1px solid var(--border-color);
@@ -1519,10 +1549,6 @@
           <i class="fas fa-trophy"></i>
           See All Tournaments
         </a>
-        <a href="create-tournament.html" class="btn btn-primary tournament-btn">
-          <i class="fas fa-plus-circle"></i>
-          Host Your Tournament
-        </a>
       </div>
 
       <div id="tournaments-grid" class="tournaments-grid">
@@ -1534,7 +1560,7 @@
     <section id="news" class="section news-section fade-in-element">
       <h2 class="news-title">News</h2>
       <div class="news-grid">
-        <a href="#" class="news-card">
+        <a href="article1.html" class="news-card">
           <img src="https://placehold.co/600x400/161329/F0F0F0?text=News+1" alt="News 1">
           <div class="news-content">
             <div>
@@ -1544,7 +1570,7 @@
             </div>
           </div>
         </a>
-        <a href="#" class="news-card">
+        <a href="article2.html" class="news-card">
           <img src="https://placehold.co/600x400/161329/F0F0F0?text=News+2" alt="News 2">
           <div class="news-content">
             <div>
@@ -1554,7 +1580,7 @@
             </div>
           </div>
         </a>
-        <a href="#" class="news-card">
+        <a href="article3.html" class="news-card">
           <img src="https://placehold.co/600x400/161329/F0F0F0?text=News+3" alt="News 3">
           <div class="news-content">
             <div>
@@ -1675,7 +1701,6 @@
     // API Functions (Page-specific)
     async function fetchTournaments() {
       try {
-        console.log('Fetching tournaments from:', `${API_BASE_URL}/api/tournaments`);
         const response = await fetch(`${API_BASE_URL}/api/tournaments`, {
           method: 'GET',
           headers: {
@@ -1688,7 +1713,6 @@
         }
 
         const result = await response.json();
-        console.log('Tournaments fetched successfully:', result.data?.length || 0, 'tournaments');
         return result.data || [];
       } catch (error) {
         console.error('Error fetching tournaments:', error.message);
@@ -1697,30 +1721,30 @@
     }
 
     async function populateAllSections() {
+      // Show section loader in tournaments grid
+      const grid = document.getElementById('tournaments-grid');
+      if (grid) {
+        grid.innerHTML = `
+          <div class="section-loader">
+            <div class="spinner"></div>
+            <p>Loading tournaments...</p>
+          </div>
+        `;
+      }
+
       try {
-        // Fetch and render tournaments - this will throw error if backend is down
         const tournaments = await fetchTournaments();
         populateTournamentsGrid(tournaments);
-
-        // ✅ Only hide loader AFTER tournaments are successfully loaded
-        const loader = document.getElementById('loader-wrapper');
-        if (loader) {
-          loader.classList.add('hidden');
-        }
-        document.body.classList.add('loaded');
-
       } catch (error) {
-        console.error('Backend is not available:', error.message);
-
-        // Show error message instead of loading the page
-        const loader = document.getElementById('loader-wrapper');
-        if (loader) {
-          loader.innerHTML = `
-            <div style="text-align: center; color: var(--text-primary);">
-              <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ffc107; margin-bottom: 1rem;"></i>
-              <h3>Backend Server Unavailable</h3>
-              <p>Unable to connect to the server. Please try again later.</p>
-              <button onclick="window.location.reload()" style="
+        console.error('Error loading tournaments:', error.message);
+        
+        // Show error in tournaments section
+        if (grid) {
+          grid.innerHTML = `
+            <div class="section-loader">
+              <i class="fas fa-exclamation-triangle" style="font-size: 2.5rem; color: #ffc107; margin-bottom: 1rem;"></i>
+              <p style="color: var(--text-primary); font-size: 1rem; margin-bottom: 1rem;">Unable to load tournaments</p>
+              <button onclick="retryLoadTournaments()" style="
                 padding: 0.75rem 1.5rem; 
                 background: var(--primary-color); 
                 color: var(--bg-dark); 
@@ -1728,16 +1752,18 @@
                 border-radius: 6px; 
                 font-weight: 600; 
                 cursor: pointer;
-                margin-top: 1rem;
               ">
                 <i class="fas fa-sync-alt"></i> Retry
               </button>
             </div>
           `;
         }
-
-        // Don't hide loader or mark as loaded - keep showing the error state
       }
+    }
+
+    // Add retry function
+    function retryLoadTournaments() {
+      populateAllSections();
     }
 
 
@@ -1819,7 +1845,8 @@
       if (window.innerWidth >= 1280) return 5;
       if (window.innerWidth >= 1024) return 4;
       if (window.innerWidth >= 768) return 3;
-      return 2;
+      if (window.innerWidth >= 600) return 2;
+      return 1; // Show only 1 card on mobile screens
     }
 
     function updateCarousel() {
@@ -1882,34 +1909,18 @@
     }
 
     window.addEventListener('load', () => {
-      if (navigator.onLine) {
-        populateAllSections(); // Only loads page if backend responds successfully
-      } else {
-        console.error('No internet connection detected.');
+      // Hide main loader after 1.5 seconds regardless of backend status
+      setTimeout(() => {
         const loader = document.getElementById('loader-wrapper');
         if (loader) {
-          loader.innerHTML = `
-            <div style="text-align: center; color: var(--text-primary);">
-              <i class="fas fa-wifi" style="font-size: 3rem; color: #dc3545; margin-bottom: 1rem;"></i>
-              <h3>No Internet Connection</h3>
-              <p>Please check your internet connection and try again.</p>
-              <button onclick="window.location.reload()" style="
-                padding: 0.75rem 1.5rem; 
-                background: var(--primary-color); 
-                color: var(--bg-dark); 
-                border: none; 
-                border-radius: 6px; 
-                font-weight: 600; 
-                cursor: pointer;
-                margin-top: 1rem;
-              ">
-                <i class="fas fa-sync-alt"></i> Retry
-              </button>
-            </div>
-          `;
+          loader.classList.add('hidden');
         }
-      }
+        document.body.classList.add('loaded');
+      }, 1500);
 
+      // Start loading tournaments (will show section loader)
+      populateAllSections();
+      
       animateOnScroll();
       updateCarousel();
     });
@@ -2020,23 +2031,14 @@
     }
 
     function checkUserAuthentication() {
-      console.log('🔍 checkUserAuthentication() called');
-
       const sessionData = getSessionData();
       const guestMenu = document.getElementById('guest-menu');
       const userMenu = document.getElementById('user-menu');
       const user = sessionData?.user;
 
-      console.log('📊 Session data:', sessionData);
-      console.log('👤 User data:', user);
-      console.log('🎯 Guest menu element:', guestMenu);
-      console.log('🎯 User menu element:', userMenu);
-
       if (user) {
         const username = user.username || user.email.split('@')[0];
         const userInitials = username.substring(0, 2).toUpperCase();
-
-        console.log('✅ User authenticated:', username);
 
         // Update navbar elements
         const navbarUsername = document.getElementById('navbar-username');
@@ -2044,36 +2046,28 @@
 
         if (navbarUsername) {
           navbarUsername.textContent = username;
-          console.log('✅ Updated navbar username:', username);
         }
 
         if (userAvatar) {
           userAvatar.textContent = userInitials;
-          console.log('✅ Updated user avatar:', userInitials);
         }
 
         // Show user menu, hide guest menu
         if (guestMenu) {
           guestMenu.style.display = 'none';
-          console.log('✅ Hidden guest menu');
         }
         if (userMenu) {
           userMenu.style.display = 'flex';
-          console.log('✅ Shown user menu');
         }
 
         isLoggedIn = true;
       } else {
-        console.log('❌ User not authenticated');
-
         // Show guest menu, hide user menu
         if (guestMenu) {
           guestMenu.style.display = 'flex';
-          console.log('✅ Shown guest menu');
         }
         if (userMenu) {
           userMenu.style.display = 'none';
-          console.log('✅ Hidden user menu');
         }
 
         isLoggedIn = false;
@@ -2119,21 +2113,13 @@
       });
     });
 
-    // Manual test function - can be called from browser console
-    window.testAuth = function () {
-      console.log('=== MANUAL AUTH TEST ===');
-      checkUserAuthentication();
-    };
-
     // Keep-alive functionality to prevent backend from sleeping
     function keepBackendAlive() {
       fetch('https://t2-237c.onrender.com/health')
         .then(response => response.json())
         .then(data => {
-          console.log('Backend keep-alive ping successful:', data.timestamp);
         })
         .catch(error => {
-          console.log('Backend keep-alive ping failed:', error);
         });
     }
 
