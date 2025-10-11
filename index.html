@@ -768,6 +768,7 @@
     .tournament-actions {
       display: flex;
       justify-content: center;
+      align-items: center;
       gap: 1.5rem;
       margin-bottom: 4rem;
       flex-wrap: wrap;
@@ -776,6 +777,7 @@
     .tournament-btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 0.5rem;
       padding: 1rem 2rem;
       border-radius: 8px;
@@ -815,6 +817,36 @@
       margin: 0 auto;
       text-align: left;
       justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      .game-card {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        padding: 0 1rem;
+      }
+
+      .game-card img {
+        max-height: 500px;
+        min-height: 400px;
+      }
+
+      .games-carousel-wrapper {
+        padding: 0 3rem;
+      }
+
+      .carousel-nav-btn {
+        width: 35px;
+        height: 35px;
+      }
+
+      .prev-btn {
+        left: 0;
+      }
+
+      .next-btn {
+        right: 0;
+      }
     }
 
     /* Tournaments Grid - Updated to match tournaments.html design */
