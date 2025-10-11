@@ -599,17 +599,13 @@
             align-items: start;
         }
 
-        .registration-form,
-        .tournament-info {
+        .registration-form {
             background: var(--panel);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 2rem;
-            transition: box-shadow 0.3s ease;
-        }
-
-        .registration-form:hover {
-            box-shadow: 0 0 15px rgba(10, 250, 217, 0.1);
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .tournament-info {
@@ -623,18 +619,27 @@
         }
 
         .form-header {
-            margin-bottom: 2rem;
+            padding: 2.5rem 2rem;
+            background: linear-gradient(135deg, rgba(10, 250, 217, 0.1) 0%, rgba(93, 63, 211, 0.1) 100%);
+            border-bottom: 2px solid var(--accent);
+            margin-bottom: 0;
         }
 
         .form-title {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 800;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
         }
 
         .form-subtitle {
-            color: var(--muted);
-            font-size: 1rem;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            font-weight: 500;
         }
 
        .tournament-poster {
@@ -840,14 +845,31 @@
         }
 
         .form-section {
-            margin-bottom: 2rem;
+            padding: 2rem;
+            margin-bottom: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .form-section:last-of-type {
+            border-bottom: none;
         }
 
         .section-title {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--copy);
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(180deg, var(--accent), var(--accent-secondary));
+            border-radius: 2px;
         }
 
         .form-row {
@@ -876,13 +898,14 @@
         .form-group input,
         .form-group select,
         .form-group textarea {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 0.75rem;
-            color: var(--copy);
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 0.875rem 1rem;
+            color: var(--text-primary);
             font-family: inherit;
-            transition: border-color 0.2s ease, background-color 0.2s ease;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
         }
 
         .form-group input:focus,
@@ -890,13 +913,21 @@
         .form-group textarea:focus {
             outline: none;
             border-color: var(--accent);
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(10, 250, 217, 0.05);
+            box-shadow: 0 0 0 3px rgba(10, 250, 217, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(240, 240, 240, 0.4);
         }
 
         .players-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--radius);
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
             padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .player-form {
@@ -905,11 +936,29 @@
             gap: 1rem;
             align-items: end;
             margin-bottom: 1rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 6px;
-            border: 1px solid transparent;
-            transition: border-color 0.3s ease;
+            padding: 1.25rem;
+            background: rgba(10, 250, 217, 0.03);
+            border-radius: 10px;
+            border: 1px solid rgba(10, 250, 217, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .player-form::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--accent), var(--accent-secondary));
+            border-radius: 10px 0 0 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .player-form:hover::before {
+            opacity: 1;
         }
 
         .player-form:last-child {
@@ -917,16 +966,22 @@
         }
 
         .player-form:hover {
-            border-color: rgba(10, 250, 217, 0.1);
+            border-color: rgba(10, 250, 217, 0.3);
+            background: rgba(10, 250, 217, 0.05);
+            transform: translateX(4px);
         }
 
         .captain-badge {
-            background: var(--accent);
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
             color: var(--bg-dark);
-            padding: 0.25rem 0.5rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 700;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(10, 250, 217, 0.3);
+            margin-left: 0.5rem;
         }
 
         /* --- Button Styles --- */
@@ -966,6 +1021,18 @@
             border: 1px solid var(--border-color);
         }
 
+        .btn-primary[type="submit"] {
+            margin: 2rem;
+            width: calc(100% - 4rem);
+            padding: 1.25rem 2rem;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(10, 250, 217, 0.3);
+        }
+
+        .btn-primary[type="submit"]:hover {
+            box-shadow: 0 6px 25px rgba(10, 250, 217, 0.4);
+        }
+
         .btn-secondary:hover {
             background: rgba(255, 255, 255, 0.2);
         }
@@ -983,57 +1050,95 @@
         }
 
         .registration-summary {
-            background: rgba(93, 63, 211, 0.1);
-            border: 1px solid rgba(93, 63, 211, 0.3);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
+            background: linear-gradient(135deg, rgba(93, 63, 211, 0.1) 0%, rgba(10, 250, 217, 0.05) 100%);
+            border: 2px solid rgba(93, 63, 211, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem;
+            box-shadow: 0 4px 15px rgba(93, 63, 211, 0.2);
         }
 
         .registration-summary h4 {
             color: var(--accent-secondary);
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .summary-item {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 0.5rem;
+            align-items: center;
+            padding: 0.75rem 0;
+            font-size: 1rem;
         }
 
-        .summary-total {
-            border-top: 1px solid rgba(93, 63, 211, 0.3);
-            padding-top: 1rem;
-            margin-top: 1rem;
+        .summary-item span:first-child {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .summary-item span:last-child {
+            color: var(--text-primary);
             font-weight: 700;
             font-size: 1.1rem;
         }
 
+        .summary-total {
+            border-top: 2px solid rgba(93, 63, 211, 0.5);
+            padding-top: 1.25rem;
+            margin-top: 1rem;
+            font-weight: 800;
+            font-size: 1.3rem;
+        }
+
+        .summary-total .summary-item span:last-child {
+            color: var(--accent);
+            font-size: 1.5rem;
+            text-shadow: 0 0 10px rgba(10, 250, 217, 0.3);
+        }
+
         .terms-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--radius);
+            background: rgba(239, 68, 68, 0.05);
+            border-radius: 12px;
             padding: 1.5rem;
-            margin-bottom: 2rem;
-            border: 1px solid var(--border-color);
+            margin: 2rem;
+            border: 1px solid rgba(239, 68, 68, 0.2);
         }
 
         .terms-section h4 {
-            color: var(--copy);
+            color: var(--text-primary);
             margin-bottom: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .terms-list {
             list-style: none;
             padding: 0;
+            margin-bottom: 1rem;
         }
 
         .terms-list li {
-            padding: 0.5rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.75rem 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            position: relative;
+            padding-left: 1.5rem;
         }
 
-        .terms-list li:last-child {
-            border-bottom: none;
+        .terms-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--danger);
+            font-weight: bold;
         }
 
         .checkbox-group {
@@ -1049,33 +1154,69 @@
             accent-color: var(--accent);
         }
 
-        /* --- Message Box Styles --- */
         .message-box {
-            border-radius: var(--radius);
-            padding: 1.25rem;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem;
+            font-weight: 500;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 1rem;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid;
+        }
+
+        .message-box::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
         }
 
         .message-box i {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             flex-shrink: 0;
+            margin-top: 0.125rem;
+        }
+
+        .message-box span {
+            flex: 1;
+            line-height: 1.6;
+            font-size: 1rem;
         }
 
         .error-message {
-            color: var(--danger);
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid var(--danger);
+            color: #ff6b6b;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.1) 100%);
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        .error-message::before {
+            background: linear-gradient(180deg, #ef4444, #dc2626);
+        }
+
+        .error-message i {
+            color: #ef4444;
+            filter: drop-shadow(0 0 8px rgba(239, 68, 68, 0.5));
         }
 
         .success-message {
-            color: var(--success);
-            background: rgba(16, 185, 129, 0.15);
-            border: 1px solid var(--success);
+            color: #4ade80;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.1) 100%);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+
+        .success-message::before {
+            background: linear-gradient(180deg, #10b981, #059669);
+        }
+
+        .success-message i {
+            color: #10b981;
+            filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5));
         }
 
         /* --- Loader Styles --- */
