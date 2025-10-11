@@ -182,14 +182,26 @@
 }
 
 .btn {
-  padding: 0.65rem 1.5rem;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  border: none;
-  cursor: pointer;
-  font-size: 0.9rem;
+    padding: 1rem 2rem;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+}
+
+.btn i {
+    flex-shrink: 0;
 }
 
 .btn-request {
@@ -1010,27 +1022,27 @@
             color: var(--bg-dark);
         }
 
+        .btn-primary[type="submit"] {
+            margin: 2rem;
+            width: calc(100% - 4rem);
+            padding: 1.25rem 2rem;
+            font-size: 1.05rem;
+            box-shadow: 0 4px 15px rgba(10, 250, 217, 0.3);
+            min-height: 56px;
+        }
+
         .btn-primary:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(10, 250, 217, 0.2);
         }
 
+        .btn-primary[type="submit"]:hover {
+            box-shadow: 0 6px 25px rgba(10, 250, 217, 0.4);
+        }
         .btn-secondary {
             background: rgba(255, 255, 255, 0.1);
             color: var(--copy);
             border: 1px solid var(--border-color);
-        }
-
-        .btn-primary[type="submit"] {
-            margin: 2rem;
-            width: calc(100% - 4rem);
-            padding: 1.25rem 2rem;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(10, 250, 217, 0.3);
-        }
-
-        .btn-primary[type="submit"]:hover {
-            box-shadow: 0 6px 25px rgba(10, 250, 217, 0.4);
         }
 
         .btn-secondary:hover {
@@ -1047,7 +1059,10 @@
         .add-player-btn {
             width: 100%;
             margin-top: 1rem;
+            padding: 0.875rem 1.5rem;
         }
+
+        
 
         .registration-summary {
             background: linear-gradient(135deg, rgba(93, 63, 211, 0.1) 0%, rgba(10, 250, 217, 0.05) 100%);
@@ -1320,42 +1335,84 @@
             }
         }
         .btn:disabled {
-            opacity: 1;
-            cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
-            background: rgba(255, 255, 255, 0.1) !important;
-            color: rgba(255, 255, 255, 0.4) !important;
-            border: 2px solid rgba(255, 255, 255, 0.1) !important;
-            position: relative;
-            overflow: hidden;
-        }
+    opacity: 1;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+    border: 2px solid rgba(255, 255, 255, 0.1) !important;
+}
 
-        .btn:disabled::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% {
-                left: -100%;
-            }
-            100% {
-                left: 100%;
-            }
-        }
+.btn-primary:disabled {
+    background: linear-gradient(135deg, rgba(100, 100, 100, 0.3), rgba(80, 80, 80, 0.3)) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    border: 2px solid rgba(255, 255, 255, 0.15) !important;
+}
 
         .btn-primary:disabled {
             background: linear-gradient(135deg, rgba(100, 100, 100, 0.3), rgba(80, 80, 80, 0.3)) !important;
             color: rgba(255, 255, 255, 0.5) !important;
             border: 2px solid rgba(255, 255, 255, 0.15) !important;
         }
+
+        @media (max-width: 768px) {
+    .btn-primary[type="submit"] {
+        margin: 1.5rem 1rem;
+        width: calc(100% - 2rem);
+        padding: 1rem 1.5rem;
+        font-size: 1rem;
+    }
+
+    .form-section {
+        padding: 1.5rem 1rem;
+    }
+
+    .registration-summary {
+        margin: 1.5rem 1rem;
+        padding: 1.5rem;
+    }
+
+    .terms-section {
+        margin: 1.5rem 1rem;
+        padding: 1.5rem;
+    }
+
+    .message-box {
+        margin: 1.5rem 1rem;
+        padding: 1rem;
+    }
+
+    .form-header {
+        padding: 2rem 1rem;
+    }
+
+    .form-title {
+        font-size: 1.8rem;
+    }
+
+    .add-player-btn {
+        padding: 0.875rem 1.5rem;
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-primary[type="submit"] {
+        margin: 1rem;
+        width: calc(100% - 2rem);
+        padding: 0.875rem 1.25rem;
+        font-size: 0.95rem;
+    }
+
+    .form-title {
+        font-size: 1.5rem;
+    }
+
+    .form-subtitle {
+        font-size: 0.9rem;
+    }
+}
     </style>
 </head>
 
@@ -1479,7 +1536,7 @@
                         <!-- Tournament rules will be loaded dynamically -->
                     </div>
 
-                    <button type="submit" class="btn btn-primary" style="width: 100%;" id="register-btn">
+                    <button type="submit" class="btn btn-primary" id="register-btn">
                         <i class="fas fa-user-plus"></i> Register Team
                     </button>
                 </form>
