@@ -1671,6 +1671,109 @@
     font-size: 0.85rem;
   }
 }
+/* Info and Prizes Cards Enhanced Responsive */
+@media (max-width: 768px) {
+  .info-card {
+    padding: 1.25rem;
+  }
+
+  .info-card h3 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .info-list {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .info-list li {
+    padding: 0.875rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+  }
+
+  .info-list li:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(10, 250, 217, 0.2);
+  }
+
+  .info-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .info-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: right;
+  }
+}
+
+@media (max-width: 480px) {
+  .info-card {
+    padding: 1rem;
+  }
+
+  .info-card h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.875rem;
+    padding-bottom: 0.625rem;
+  }
+
+  .info-list {
+    gap: 0.625rem;
+  }
+
+  .info-list li {
+    padding: 0.75rem;
+    border-radius: 6px;
+  }
+
+  .info-label {
+    font-size: 0.8rem;
+  }
+
+  .info-value {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .info-card {
+    padding: 0.875rem;
+  }
+
+  .info-card h3 {
+    font-size: 0.9rem;
+  }
+
+  .info-list li {
+    padding: 0.625rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .info-label {
+    font-size: 0.75rem;
+    opacity: 0.7;
+  }
+
+  .info-value {
+    font-size: 0.875rem;
+    text-align: left;
+  }
+}
   </style>
 
   <script>
