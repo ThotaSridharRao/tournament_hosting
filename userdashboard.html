@@ -435,8 +435,9 @@
 
         .tournament-item {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr auto;
+            grid-template-columns: 2fr 1fr auto;
             align-items: center;
+            gap: 1rem;
             padding: 1.25rem;
             background: rgba(0, 0, 0, 0.3);
             border-radius: 10px;
@@ -470,23 +471,23 @@
         }
 
         @media (max-width: 600px) {
-             .tournament-item {
+            .tournament-item {
                 grid-template-columns: 1fr;
                 gap: 0.75rem;
                 text-align: center;
                 padding: 1.25rem 1rem;
-             }
-             .tournament-info {
+            }
+            .tournament-info {
                 align-items: center;
-             }
-             .status-badge {
-                grid-column: 1 / -1;
-                margin: 0.5rem auto;
-             }
-             .view-btn {
-                width: 80%;
+                text-align: center;
+            }
+            .team-role {
+                text-align: center;
+            }
+            .view-btn {
+                width: 100%;
                 margin: 0 auto;
-             }
+            }
         }
 
         .tournament-item:hover {
@@ -1091,8 +1092,8 @@
             const welcomeMessage = document.getElementById('welcome-message');
             const roleInfo = document.getElementById('user-role-info');
 
-            welcomeMessage.textContent = `Welcome, ${user.username || user.email}!`;
-            roleInfo.textContent = `Role: ${user.role.charAt(0).toUpperCase() + user.role.slice(1)} Dashboard.`;
+            welcomeMessage.textContent = `Welcome back, ${user.username || user.email}! 🎮`;
+            roleInfo.textContent = `Track your tournaments, view match schedules, and stay updated with notifications.`;
 
             // 1. Fetch Tournaments
             fetchPlayerTournaments();
@@ -1147,8 +1148,6 @@
             }
 
             listContainer.innerHTML = tournaments.map(t => {
-                const statusClass = t.status.replace(/_/g, '-');
-                const statusText = t.status.replace(/_/g, ' ').toUpperCase();
                 const role = t.team_info.role || 'Player';
                 const teamName = t.team_info.teamName || 'N/A';
 
@@ -1159,8 +1158,7 @@
                             <div class="game">${t.game} | Team: ${teamName}</div>
                         </div>
                         <div class="team-role">Role: ${role.charAt(0).toUpperCase() + role.slice(1)}</div>
-                        <div class="status-badge status-${statusClass}">${statusText}</div>
-                        <a href="tournament-details.html?slug=${t.slug}" class="view-btn">View</a>
+                        <a href="tournament-details.html?slug=${t.slug}" class="view-btn">View Details</a>
                     </div>
                 `;
             }).join('');
