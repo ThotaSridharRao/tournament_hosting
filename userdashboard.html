@@ -1,62 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard - Uni Games</title>
-
-    <!-- Fonts -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="Player Dashboard for Uni Games. Track your tournaments and activities." />
+    <meta name="theme-color" content="#0D0A1A" />
+    <title>Player Dashboard | Uni Games</title>
+    <link rel="icon" type="image/png" href="ug.png">
+    <!-- Fonts & icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity=""
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
+
+
     <style>
         /* =========================
-    Theme variables (Cyberpunk)
-    ========================= */
+           Theme variables (Cyberpunk)
+           ========================= */
         :root {
             --primary-color: #0AFAD9;
+            /* Electric Cyan */
             --bg-dark: #0D0A1A;
+            /* Dark Matter Black */
             --accent-secondary: #5D3FD3;
+            /* Deep Indigo */
             --panel: #161329;
+            /* Dark Indigo Panel */
             --text-primary: #F0F0F0;
+            /* Starlight White */
             --text-secondary: rgba(240, 240, 240, 0.7);
             --border-color: rgba(10, 250, 217, 0.2);
             --ease: 0.3s ease;
-            --copy: var(--text-primary);
-            --muted: var(--text-secondary);
-            --accent: var(--accent-secondary);
-            --accent-2: var(--primary-color);
             --radius: 12px;
             --container: 1400px;
-            --success-color: #28a745;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --info-color: #17a2b8;
-            --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-            --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
-            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-            --spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
-        @media (prefers-reduced-motion: reduce) {
-            :root {
-                --ease: 0ms;
-            }
-
-            * {
-                transition-duration: 0ms !important;
-                animation-duration: 0ms !important;
-                animation-iteration-count: 1 !important;
-            }
-        }
-
-        /* =========================
-    Base resets & accessibility
-    ========================= */
+        /* Base resets & accessibility */
         *,
         *::before,
         *::after {
@@ -68,53 +51,690 @@
             height: 100%;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
         body {
             margin: 0;
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-primary);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
             line-height: 1.6;
-            -webkit-text-size-adjust: 100%;
             overflow-x: hidden;
-            font-size: 16px;
-            position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background:
-                radial-gradient(circle at 15% 85%, rgba(10, 250, 217, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 85% 25%, rgba(93, 63, 211, 0.1) 0%, transparent 40%);
-            z-index: -1;
-            animation: pulse 15s infinite ease-in-out;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 0.7;
-            }
-
-            50% {
-                opacity: 1;
-            }
+            /* PADDING TOP REMOVED - Using padding-top on main */
+            display: flex; /* ADDED: Use Flexbox for sticky footer */
+            flex-direction: column; /* ADDED: Stack content vertically */
         }
 
         /* =========================
-    Loader
-    ========================= */
+       NAVBAR STYLES (Modern Design)
+       ========================= */
+    .nav-normal {
+      background: rgba(13, 10, 26, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 0.5rem 2rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+      transform: translateY(0);
+    }
+
+    .nav-normal.nav-hidden {
+      transform: translateY(-100%);
+    }
+
+    .nav-normal.nav-scrolled {
+      background: rgba(13, 10, 26, 0.3);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 80px;
+      width: auto;
+      margin: 0;
+      padding: 0;
+      display: block;
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0;
+      list-style: none;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links li {
+      position: relative;
+    }
+
+    .nav-links a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      padding: 0.6rem 1.2rem;
+      display: block;
+    }
+
+    /* Active navigation link */
+    .nav-links a.active {
+      color: var(--primary-color);
+      font-weight: 700;
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 0.65rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .btn-request {
+      background: white;
+      color: #0a0a0a;
+    }
+
+    .btn-request:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-secondary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .user-name {
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .menu-icon {
+      width: 24px;
+      height: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .menu-icon span {
+      width: 100%;
+      height: 2px;
+      background: white;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .menu-toggle.active .menu-icon span:nth-child(1) {
+      transform: rotate(45deg) translate(7px, 7px);
+    }
+
+    .menu-toggle.active .menu-icon span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.active .menu-icon span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
+    }
+
+    /* Mobile Styles */
+    @media (max-width: 968px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      .nav-center {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        height: 100vh;
+        width: 85%;
+        max-width: 350px;
+        flex-direction: column;
+        background: rgba(15, 15, 15, 0.98);
+        backdrop-filter: blur(20px);
+        padding: 6rem 2rem 2rem;
+        gap: 0;
+        transition: right 0.3s ease;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        align-items: flex-start;
+        overflow-y: auto;
+      }
+
+      .nav-center.active {
+        right: 0;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+      }
+
+      .nav-links li {
+        width: 100%;
+      }
+
+      .nav-links a {
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .auth-buttons {
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .user-info {
+        width: 100%;
+        justify-content: center;
+      }
+
+      #user-menu {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+      }
+    }
+
+        /* =========================
+           DASHBOARD LAYOUT
+           ========================= */
+        main {
+            padding: 3rem 2rem 5rem;
+            /* min-height: calc(100vh - 120px); REMOVED - replaced by flex-grow */
+            flex-grow: 1; /* ADDED: Allows main content to fill remaining space */
+            padding-top: calc(90px + 3rem); /* ADDED: Push content down below fixed nav */
+        }
+
+        .container {
+            width: min(94%, 1400px);
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            margin-bottom: 3rem;
+            padding: 2.5rem 2rem;
+            background: linear-gradient(135deg, rgba(10, 250, 217, 0.1) 0%, rgba(93, 63, 211, 0.1) 100%);
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-secondary));
+        }
+
+        .dashboard-header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-color), #50FDE5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+
+        .dashboard-header p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .dashboard-section {
+            background: var(--panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-section:hover {
+            box-shadow: 0 8px 30px rgba(10, 250, 217, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(180deg, var(--primary-color), var(--accent-secondary));
+            border-radius: 2px;
+        }
+
+        /* Tournament List Styles */
+        .tournament-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .tournament-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            align-items: center;
+            padding: 1.25rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-secondary);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tournament-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--primary-color), var(--accent-secondary));
+            border-radius: 10px 0 0 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tournament-item:hover::before {
+            opacity: 1;
+        }
+
+        .tournament-item:hover {
+            background: rgba(10, 250, 217, 0.05);
+            border-left-color: var(--primary-color);
+            transform: translateX(4px);
+            box-shadow: 0 4px 15px rgba(10, 250, 217, 0.1);
+        }
+
+        @media (max-width: 600px) {
+             .tournament-item {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+                text-align: center;
+                padding: 1.25rem 1rem;
+             }
+             .tournament-info {
+                align-items: center;
+             }
+             .status-badge {
+                grid-column: 1 / -1;
+                margin: 0.5rem auto;
+             }
+             .view-btn {
+                width: 80%;
+                margin: 0 auto;
+             }
+        }
+
+        .tournament-item:hover {
+            background: rgba(10, 250, 217, 0.05);
+            border-left-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tournament-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .tournament-info .name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .tournament-info .game {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .team-role {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-align: center;
+            letter-spacing: 0.5px;
+            border: 1px solid;
+        }
+
+        .status-ongoing {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+        }
+
+        .status-registration_open {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+            border-color: rgba(34, 197, 94, 0.3);
+            box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+        }
+
+        .status-ended,
+        .status-registration_closed {
+            background: rgba(107, 114, 128, 0.15);
+            color: #9ca3af;
+            border-color: rgba(107, 114, 128, 0.3);
+        }
+
+        .view-btn {
+            background: linear-gradient(135deg, var(--primary-color), #50FDE5);
+            color: var(--bg-dark);
+            padding: 0.65rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 2px 8px rgba(10, 250, 217, 0.3);
+        }
+
+        .view-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(10, 250, 217, 0.4);
+        }
+
+        /* Activity Feed Styles */
+        .activity-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border-left: 3px solid var(--accent-secondary);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .activity-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--primary-color), var(--accent-secondary));
+            border-radius: 10px 0 0 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: rgba(10, 250, 217, 0.05);
+            border-left-color: var(--primary-color);
+            transform: translateX(4px);
+        }
+
+        .activity-item:hover::before {
+            opacity: 1;
+        }
+
+        .activity-item strong {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .activity-time {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+
+        /* =========================
+           FOOTER STYLES (Copied from index.html)
+           ========================= */
+        /* Footer Styles */
+    footer.site-footer {
+      background: #070707;  /* Changed from var(--panel) to black */
+      padding: 5rem 2rem 2rem;
+      text-align: center;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .footer-grid {
+      max-width: 1200px;
+      margin: 0 auto 3rem auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;  /* First column wider for brand */
+      gap: 3rem;
+      text-align: left;
+    }
+
+    .footer-column h4 {
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .footer-column ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-column ul a,
+    .footer-column p {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: block;
+      margin-bottom: 0.75rem;
+      font-size: 1rem;
+}
+
+    .footer-column ul li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-column ul a:hover {
+      color: var(--primary-color);
+    }
+
+    .footer-brand .brand {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .footer-brand p {
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .social-links a {
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      color: var(--primary-color);
+      transform: translateY(-3px);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border-color);
+      padding-top: 2rem;
+      opacity: 0.7;
+      font-size: 1rem;
+    }
+    @media (max-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: left;
+        gap: 2rem;
+      }
+
+      /* Hide the Tournaments, Community, and Company columns on mobile */
+      .footer-column:not(.footer-brand) {
+        display: none;
+      }
+
+      .social-links {
+        justify-content: flex-start;
+      }
+      
+      .footer-brand .brand {
+        justify-content: flex-start;
+      }
+    }
+
+
+        /* =========================
+           LOADER & SCROLLBAR (Copied from index.html)
+           ========================= */
         #loader-wrapper {
             position: fixed;
             top: 0;
@@ -134,279 +754,6 @@
             pointer-events: none;
         }
 
-        /* =========================
-    NAVBAR STYLES (Modern Design)
-    ========================= */
-        .nav-normal {
-            background: rgba(13, 10, 26, 0.1);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 0.5rem 2rem;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
-            transform: translateY(0);
-        }
-
-        .nav-normal.nav-hidden {
-            transform: translateY(-100%);
-        }
-
-        .nav-normal.nav-scrolled {
-            background: rgba(13, 10, 26, 0.3);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: white;
-            text-decoration: none;
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-        }
-
-        .logo img {
-            height: 80px;
-            width: auto;
-            margin: 0;
-            padding: 0;
-            display: block;
-        }
-
-        .nav-center {
-            display: flex;
-            align-items: center;
-            gap: 2.5rem;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 0;
-            list-style: none;
-            align-items: center;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-links li {
-            position: relative;
-        }
-
-        .nav-links a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            padding: 0.6rem 1.2rem;
-            display: block;
-        }
-
-        .nav-links a:hover {
-            color: white;
-        }
-
-        #user-menu {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            /* Add this line */
-        }
-
-
-
-        .auth-buttons {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 0.65rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .btn-request {
-            background: white;
-            color: #0a0a0a;
-        }
-
-        .btn-request:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
-        }
-
-        .btn-logout {
-            background: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        .btn-logout:hover {
-            background: rgba(239, 68, 68, 0.25);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-secondary) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        .user-name {
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-
-        .menu-icon {
-            width: 24px;
-            height: 20px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .menu-icon span {
-            width: 100%;
-            height: 2px;
-            background: white;
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .menu-toggle.active .menu-icon span:nth-child(1) {
-            transform: rotate(45deg) translate(7px, 7px);
-        }
-
-        .menu-toggle.active .menu-icon span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .menu-toggle.active .menu-icon span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
-        }
-
-        /* Mobile Styles */
-        @media (max-width: 968px) {
-            .menu-toggle {
-                display: block;
-            }
-
-            .nav-center {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                height: 100vh;
-                width: 85%;
-                max-width: 350px;
-                flex-direction: column;
-                background: rgba(15, 15, 15, 0.98);
-                backdrop-filter: blur(20px);
-                padding: 6rem 2rem 2rem;
-                gap: 0;
-                transition: right 0.3s ease;
-                border-left: 1px solid rgba(255, 255, 255, 0.1);
-                align-items: flex-start;
-                overflow-y: auto;
-            }
-
-            .nav-center.active {
-                right: 0;
-            }
-
-            .nav-links {
-                flex-direction: column;
-                width: 100%;
-                gap: 0;
-            }
-
-            .nav-links li {
-                width: 100%;
-            }
-
-            .nav-links a {
-                padding: 1rem 0;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            }
-
-
-
-            .auth-buttons {
-                flex-direction: column;
-                width: 100%;
-                gap: 1rem;
-                margin-top: 2rem;
-                padding-top: 2rem;
-                border-top: 1px solid rgba(255, 255, 255, 0.1);
-            }
-
-            .btn {
-                width: 100%;
-                text-align: center;
-            }
-
-            .user-info {
-                width: 100%;
-                justify-content: center;
-            }
-
-            #user-menu {
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                gap: 1rem;
-            }
-        }
-
-        /* =========================
-    Custom Scrollbar Styles
-    ========================= */
         ::-webkit-scrollbar-track {
             border: 1px solid var(--border-color);
             background-color: var(--bg-dark);
@@ -430,339 +777,111 @@
             scrollbar-width: thin;
             scrollbar-color: var(--panel) var(--bg-dark);
         }
+        /* Mobile Responsiveness for Dashboard */
+@media (max-width: 768px) {
+    main {
+        padding: 2rem 1rem 3rem;
+        padding-top: calc(90px + 2rem);
+    }
 
-        /* =========================
-    Main Content Area
-    ========================= */
-        .main-content {
-            margin-top: 90px;
-            /* Space for fixed navbar */
-            padding: 2rem;
-            min-height: calc(100vh - 90px);
-        }
+    .dashboard-header {
+        padding: 2rem 1.5rem;
+    }
 
-        .dashboard-container {
-            background: var(--panel);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-        }
+    .dashboard-header h1 {
+        font-size: 2rem;
+    }
 
-        .welcome-section {
-            text-align: center;
-            padding: 3rem 0;
-        }
+    .dashboard-header p {
+        font-size: 1rem;
+    }
 
-        .welcome-section h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+    .dashboard-grid {
+        gap: 1.5rem;
+    }
 
-        .welcome-section p {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-        }
+    .dashboard-section {
+        padding: 1.5rem;
+    }
 
-        /* Stats Cards */
-        .stats-card {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            text-align: center;
-            transition: all 0.3s var(--ease);
-            margin-bottom: 1rem;
-        }
+    .section-title {
+        font-size: 1.2rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
 
-        .stats-card:hover {
-            border-color: var(--primary-color);
-            box-shadow: 0 4px 15px rgba(10, 250, 217, 0.1);
-        }
+    .section-title::before {
+        height: 20px;
+    }
 
-        .stats-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-        }
+    .tournament-list {
+        gap: 1rem;
+    }
 
-        .stats-card .text-muted {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
+    .tournament-info .name {
+        font-size: 1rem;
+    }
 
-        /* Tournament Cards */
-        .tournament-card,
-        .card {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            transition: all 0.3s var(--ease-out-quart);
-            margin-bottom: 1rem;
-            overflow: hidden;
-        }
+    .tournament-info .game {
+        font-size: 0.8rem;
+    }
 
-        .tournament-card:hover,
-        .card:hover {
-            border-color: var(--primary-color);
-            box-shadow: 0 8px 30px rgba(10, 250, 217, 0.1);
-            transform: translateY(-2px);
-        }
+    .team-role {
+        font-size: 0.85rem;
+    }
 
-        .card-header {
-            background: rgba(0, 0, 0, 0.3);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 1.5rem;
-            color: var(--text-primary);
-            font-weight: 600;
-        }
+    .activity-item {
+        padding: 1rem;
+    }
 
-        .card-body {
-            padding: 1.5rem;
-        }
+    .activity-item strong {
+        font-size: 0.95rem;
+    }
+}
 
-        /* Table styling */
-        .table {
-            color: var(--text-primary);
-        }
+@media (max-width: 480px) {
+    .dashboard-header {
+        padding: 1.5rem 1rem;
+    }
 
-        .table th {
-            background: rgba(0, 0, 0, 0.3);
-            color: var(--text-primary);
-            border-color: var(--border-color);
-            font-weight: 600;
-            padding: 1rem 0.75rem;
-        }
+    .dashboard-header h1 {
+        font-size: 1.75rem;
+    }
 
-        .table td {
-            background: rgba(0, 0, 0, 0.1);
-            color: var(--text-primary);
-            border-color: var(--border-color);
-            padding: 1rem 0.75rem;
-            vertical-align: middle;
-        }
+    .dashboard-section {
+        padding: 1.25rem;
+    }
 
-        .table-hover tbody tr:hover {
-            background: rgba(10, 250, 217, 0.1);
-            color: var(--text-primary);
-        }
+    .section-title {
+        font-size: 1.1rem;
+        line-height: 1.4;
+    }
 
-        /* Button styling */
-        .btn-primary {
-            background: var(--primary-color);
-            border: none;
-            border-radius: 8px;
-            color: var(--bg-dark);
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            transition: all 0.3s var(--ease-out-quart);
-        }
+    .tournament-item {
+        padding: 1rem;
+    }
 
-        .btn-primary:hover {
-            background: var(--primary-color);
-            filter: brightness(1.1);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(10, 250, 217, 0.3);
-        }
+    .view-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
 
-        .btn-outline-primary {
-            border: 1px solid var(--primary-color);
-            color: var(--primary-color);
-            background: transparent;
-        }
-
-        .btn-outline-primary:hover {
-            background: var(--primary-color);
-            color: var(--bg-dark);
-        }
-
-        .btn-outline-secondary {
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            background: transparent;
-        }
-
-        .btn-outline-secondary:hover {
-            background: var(--border-color);
-            color: var(--text-primary);
-        }
-
-        .btn-outline-success {
-            border: 1px solid var(--success-color);
-            color: var(--success-color);
-            background: transparent;
-        }
-
-        .btn-outline-success:hover {
-            background: var(--success-color);
-            color: #fff;
-        }
-
-        .btn-outline-danger {
-            border: 1px solid var(--danger-color);
-            color: var(--danger-color);
-            background: transparent;
-        }
-
-        .btn-outline-danger:hover {
-            background: var(--danger-color);
-            color: #fff;
-        }
-
-        .btn-outline-info {
-            border: 1px solid var(--info-color);
-            color: var(--info-color);
-            background: transparent;
-        }
-
-        .btn-outline-info:hover {
-            background: var(--info-color);
-            color: #fff;
-        }
-
-        .btn-sm {
-            padding: 0.375rem 0.75rem;
-            font-size: 0.875rem;
-        }
-
-        /* Alert styles */
-        .alert {
-            border-radius: 8px;
-            border: none;
-            margin-bottom: 1rem;
-        }
-
-        .alert-success {
-            background: rgba(40, 167, 69, 0.1);
-            color: var(--success-color);
-            border: 1px solid rgba(40, 167, 69, 0.3);
-        }
-
-        .alert-info {
-            background: rgba(23, 162, 184, 0.1);
-            color: var(--info-color);
-            border: 1px solid rgba(23, 162, 184, 0.3);
-        }
-
-        .alert-warning {
-            background: rgba(255, 193, 7, 0.1);
-            color: var(--warning-color);
-            border: 1px solid rgba(255, 193, 7, 0.3);
-        }
-
-        .alert-danger {
-            background: rgba(220, 53, 69, 0.1);
-            color: var(--danger-color);
-            border: 1px solid rgba(220, 53, 69, 0.3);
-        }
-
-        /* Badge styles */
-        .badge {
-            padding: 0.375rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .bg-success {
-            background-color: var(--success-color) !important;
-        }
-
-        .bg-primary {
-            background-color: var(--primary-color) !important;
-            color: var(--bg-dark) !important;
-        }
-
-        .bg-info {
-            background-color: var(--info-color) !important;
-        }
-
-        .bg-danger {
-            background-color: var(--danger-color) !important;
-        }
-
-        .bg-secondary {
-            background-color: #6c757d !important;
-        }
-
-        /* Tab styling */
-        .nav-tabs {
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .nav-tabs .nav-link {
-            background: transparent;
-            border: 1px solid transparent;
-            color: var(--text-secondary);
-            border-radius: 8px 8px 0 0;
-            margin-right: 0.5rem;
-            transition: all 0.3s var(--ease);
-        }
-
-        .nav-tabs .nav-link:hover {
-            color: var(--text-primary);
-            border-color: var(--border-color);
-            background: rgba(0, 0, 0, 0.1);
-        }
-
-        .nav-tabs .nav-link.active {
-            color: var(--primary-color);
-            background: rgba(10, 250, 217, 0.1);
-            border-color: var(--primary-color);
-            border-bottom-color: transparent;
-        }
-
-        .tab-content {
-            padding-top: 1rem;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .stats-card {
-                margin-bottom: 1rem;
-            }
-
-            .card-header {
-                padding: 1rem;
-            }
-
-            .card-header h5 {
-                font-size: 1rem;
-            }
-
-            .btn-group {
-                flex-direction: column;
-                gap: 0.25rem;
-            }
-
-            .table-responsive {
-                font-size: 0.875rem;
-            }
-
-            .nav-tabs .nav-link {
-                font-size: 0.875rem;
-                padding: 0.5rem 0.75rem;
-            }
-        }
+    .status-badge {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.7rem;
+    }
+}
     </style>
 </head>
 
 <body>
+
     <div id="loader-wrapper">
         <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie"
             style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
     </div>
 
-    <!-- Modern Navigation -->
+    <!-- Navigation (Copied from index.html) -->
     <nav class="nav-normal">
         <div class="nav-container">
             <a href="index.html" class="logo">
@@ -770,11 +889,13 @@
             </a>
             <div class="nav-center" id="normalNav">
                 <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
                     <li><a href="tournaments.html">Tournaments</a></li>
-                    <li><a href="tournament-brackets.html">Brackets</a></li>
+                    <li><a href="user-dashboard.html" class="active">My Dashboard</a></li>
+                    <li><a href="dispute-support.html">Support</a></li>
                 </ul>
                 <div class="auth-buttons" id="normalAuth">
-                    <div id="guest-menu">
+                    <div id="guest-menu" style="display: none;">
                         <a href="auth.html" class="btn btn-request">Join Us</a>
                     </div>
                     <div id="user-menu" style="display: none;">
@@ -796,424 +917,119 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="dashboard-container">
-            <div class="welcome-section">
-                <h1>Welcome to Your Dashboard</h1>
-                <p>Your gaming journey starts here. Track tournaments, manage teams, and compete with the best.</p>
+    <main id="main" class="container">
+        <div class="dashboard-header">
+            <h1 id="welcome-message">Welcome Back!</h1>
+            <p id="user-role-info">Your Player Dashboard.</p>
+        </div>
 
-            </div>
-
-            <!-- Overview Stats Section -->
-            <div class="row mb-4">
-                <div class="col-md-4 col-sm-6">
-                    <div class="stats-card">
-                        <div class="stats-number" id="joinedTournaments">0</div>
-                        <div class="text-muted">Joined Tournaments</div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <div class="stats-card">
-                        <div class="stats-number" id="totalTournaments">0</div>
-                        <div class="text-muted">Hosted Tournaments</div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <div class="stats-card">
-                        <div class="stats-number" id="activeTournaments">0</div>
-                        <div class="text-muted">Active Tournaments</div>
-                    </div>
+        <div class="dashboard-grid">
+            <div class="dashboard-section" id="my-tournaments-section">
+                <div class="section-title">My Registered Tournaments (<span id="tournament-count">0</span>)</div>
+                <div class="tournament-list" id="tournament-list">
+                    <p class="text-secondary" style="text-align: center;">
+                        <i class="fas fa-spinner fa-spin"></i> Loading your tournaments...
+                    </p>
                 </div>
             </div>
 
-            <!-- Tournament Tabs -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card tournament-card">
-                        <div class="card-header">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <ul class="nav nav-tabs card-header-tabs" id="tournamentTabs" role="tablist">
-                                        <li class="nav-item" role="presentation">
-                                            <button class="nav-link active" id="hosted-tab" data-bs-toggle="tab"
-                                                data-bs-target="#hosted" type="button" role="tab" aria-controls="hosted"
-                                                aria-selected="true">
-                                                <i class="fas fa-crown me-1"></i>Hosted Tournaments
-                                            </button>
-                                        </li>
-                                        <li class="nav-item" role="presentation">
-                                            <button class="nav-link" id="joined-tab" data-bs-toggle="tab"
-                                                data-bs-target="#joined" type="button" role="tab" aria-controls="joined"
-                                                aria-selected="false">
-                                                <i class="fas fa-users me-1"></i>Joined Tournaments
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <a href="create-tournament.html" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-plus me-1"></i>Create Tournament
-                                </a>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="tab-content" id="tournamentTabContent">
-                                <!-- Hosted Tournaments Tab -->
-                                <div class="tab-pane fade show active" id="hosted" role="tabpanel"
-                                    aria-labelledby="hosted-tab">
-                                    <div id="hostedTournamentsContainer">
-                                        <div class="text-center text-muted py-5">
-                                            <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                                            <p>Loading hosted tournaments...</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Joined Tournaments Tab -->
-                                <div class="tab-pane fade" id="joined" role="tabpanel" aria-labelledby="joined-tab">
-                                    <div id="joinedTournamentsContainer">
-                                        <div class="text-center text-muted py-5">
-                                            <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                                            <p>Loading joined tournaments...</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Update Details Section -->
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="card tournament-card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5>Update Tournament Details</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="updateTournamentSelect" class="form-label">Select Tournament to
-                                        Update</label>
-                                    <select class="form-select" id="updateTournamentSelect"
-                                        onchange="loadTournamentForUpdate()">
-                                        <option value="">Choose a tournament...</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="updateField" class="form-label">Field to Update</label>
-                                    <select class="form-select" id="updateField" onchange="showUpdateForm()">
-                                        <option value="">Select field...</option>
-                                        <option value="title">Tournament Title</option>
-                                        <option value="description">Description</option>
-                                        <option value="status">Status</option>
-                                        <option value="prizePool">Prize Pool</option>
-                                        <option value="maxTeams">Maximum Teams</option>
-                                        <option value="dates">Tournament Dates</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div id="updateFormContainer" style="display: none;">
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    <strong>Selected Tournament:</strong> <span id="selectedTournamentName">None</span>
-                                </div>
-
-                                <form id="updateTournamentForm">
-                                    <div id="updateFieldContainer">
-                                        <!-- Dynamic form fields will be inserted here -->
-                                    </div>
-
-                                    <div class="d-flex justify-content-between mt-3">
-                                        <button type="button" class="btn btn-outline-secondary"
-                                            onclick="cancelUpdate()">
-                                            <i class="fas fa-times me-2"></i>Cancel
-                                        </button>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-save me-2"></i>Update Tournament
-                                            <span class="loading-spinner spinner-border spinner-border-sm ms-2"
-                                                style="display: none;" role="status"></span>
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div id="updatePlaceholder">
-                                <div class="text-center text-muted py-4">
-                                    <i class="fas fa-edit fa-3x mb-3"></i>
-                                    <h6>Update Tournament Details</h6>
-                                    <p>Select a tournament and field to update its details</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tournament Schedule Section -->
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="card tournament-card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5>Update Tournament Schedule</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <label for="scheduleTournamentSelect" class="form-label">Select Tournament to Manage
-                                        Schedule</label>
-                                    <select class="form-select" id="scheduleTournamentSelect"
-                                        onchange="loadTournamentSchedule()">
-                                        <option value="">Choose a tournament...</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div id="scheduleManagementContainer" style="display: none;">
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    <strong>Managing Schedule for:</strong> <span
-                                        id="selectedScheduleTournamentName">None</span>
-                                </div>
-
-                                <!-- Add New Event Form -->
-                                <div class="card mb-4" style="background: rgba(0, 0, 0, 0.1);">
-                                    <div class="card-header">
-                                        <h6><i class="fas fa-plus me-2"></i>Add New Event</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <form id="addEventForm">
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="eventTitle" class="form-label">Event Title *</label>
-                                                    <input type="text" class="form-control" id="eventTitle" required
-                                                        maxlength="100"
-                                                        placeholder="e.g., Registration Opens, Quarter Finals">
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="eventType" class="form-label">Event Type *</label>
-                                                    <select class="form-select" id="eventType" required>
-                                                        <option value="">Select Type</option>
-                                                        <option value="registration">Registration</option>
-                                                        <option value="match">Match/Round</option>
-                                                        <option value="break">Break/Intermission</option>
-                                                        <option value="ceremony">Ceremony</option>
-                                                        <option value="announcement">Announcement</option>
-                                                        <option value="other">Other</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="eventStartTime" class="form-label">Start Time *</label>
-                                                    <input type="datetime-local" class="form-control"
-                                                        id="eventStartTime" required>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="eventEndTime" class="form-label">End Time</label>
-                                                    <input type="datetime-local" class="form-control" id="eventEndTime">
-                                                </div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="eventDescription" class="form-label">Description</label>
-                                                <textarea class="form-control" id="eventDescription" rows="2"
-                                                    maxlength="500"
-                                                    placeholder="Optional event description..."></textarea>
-                                            </div>
-                                            <div class="d-flex justify-content-end">
-                                                <button type="submit" class="btn btn-primary">
-                                                    <i class="fas fa-plus me-2"></i>Add Event
-                                                    <span class="loading-spinner spinner-border spinner-border-sm ms-2"
-                                                        style="display: none;" role="status"></span>
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-
-                                <!-- Existing Events List -->
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h6><i class="fas fa-list me-2"></i>Scheduled Events</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div id="eventsListContainer">
-                                            <div class="text-center text-muted py-4">
-                                                <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                                                <p>Loading events...</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="schedulePlaceholder">
-                                <div class="text-center text-muted py-4">
-                                    <i class="fas fa-calendar-alt fa-3x mb-3"></i>
-                                    <h6>Tournament Schedule Management</h6>
-                                    <p>Select a tournament to manage its schedule and events</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Update Finalists Leaderboard Section -->
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="card tournament-card">
-                        <div class="card-header">
-                            <h5>Update Finalists Leaderboard</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <label for="finalistsTournamentSelect" class="form-label">Select Tournament to
-                                        Update Finalists</label>
-                                    <select class="form-select" id="finalistsTournamentSelect"
-                                        onchange="loadTournamentFinalists()">
-                                        <option value="">Choose a tournament...</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div id="finalistsManagementContainer" style="display: none;">
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    <strong>Managing Finalists for:</strong> <span
-                                        id="selectedFinalistsTournamentName">None</span>
-                                </div>
-
-                                <div class="alert alert-warning">
-                                    <i class="fas fa-exclamation-triangle me-2"></i>
-                                    <strong>Instructions:</strong> Enter the top 16 teams in order of their final
-                                    ranking. Leave empty fields for positions not filled.
-                                </div>
-
-                                <form id="finalistsForm">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <h6 class="mb-3">Positions 1-8</h6>
-                                            <div id="finalistsLeft">
-                                                <!-- Positions 1-8 will be generated here -->
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <h6 class="mb-3">Positions 9-16</h6>
-                                            <div id="finalistsRight">
-                                                <!-- Positions 9-16 will be generated here -->
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex justify-content-between mt-4">
-                                        <button type="button" class="btn btn-outline-secondary"
-                                            onclick="clearFinalists()">
-                                            <i class="fas fa-eraser me-2"></i>Clear All
-                                        </button>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-save me-2"></i>Update Leaderboard
-                                            <span
-                                                class="finalists-loading-spinner spinner-border spinner-border-sm ms-2"
-                                                style="display: none;" role="status"></span>
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div id="finalistsPlaceholder">
-                                <div class="text-center text-muted py-4">
-                                    <i class="fas fa-trophy fa-3x mb-3"></i>
-                                    <h6>Tournament Finalists Management</h6>
-                                    <p>Select a tournament to update its final leaderboard and rankings</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="dashboard-section" id="activity-feed-section">
+                <div class="section-title">Recent Activity & Notifications</div>
+                <div class="activity-feed" id="activity-feed">
+                    <p class="text-secondary" style="text-align: center;">
+                        <i class="fas fa-bell"></i> No recent notifications.
+                    </p>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- Edit Event Modal -->
-    <div class="modal fade" id="editEventModal" tabindex="-1" aria-labelledby="editEventModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content" style="background: var(--panel); border: 1px solid var(--border-color);">
-                <div class="modal-header" style="border-bottom: 1px solid var(--border-color);">
-                    <h5 class="modal-title" id="editEventModalLabel">Edit Event</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editEventForm">
-                        <input type="hidden" id="editEventId">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="editEventTitle" class="form-label">Event Title *</label>
-                                <input type="text" class="form-control" id="editEventTitle" required maxlength="100">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="editEventType" class="form-label">Event Type *</label>
-                                <select class="form-select" id="editEventType" required>
-                                    <option value="">Select Type</option>
-                                    <option value="registration">Registration</option>
-                                    <option value="match">Match/Round</option>
-                                    <option value="break">Break/Intermission</option>
-                                    <option value="ceremony">Ceremony</option>
-                                    <option value="announcement">Announcement</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="editEventStartTime" class="form-label">Start Time *</label>
-                                <input type="datetime-local" class="form-control" id="editEventStartTime" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="editEventEndTime" class="form-label">End Time</label>
-                                <input type="datetime-local" class="form-control" id="editEventEndTime">
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editEventDescription" class="form-label">Description</label>
-                            <textarea class="form-control" id="editEventDescription" rows="2"
-                                maxlength="500"></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer" style="border-top: 1px solid var(--border-color);">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="saveEventChanges()">
-                        <i class="fas fa-save me-2"></i>Save Changes
-                        <span class="edit-loading-spinner spinner-border spinner-border-sm ms-2" style="display: none;"
-                            role="status"></span>
-                    </button>
-                </div>
-            </div>
+    <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-column footer-brand">
+          <a href="index.html" class="brand" style="display: flex; align-items: center; gap: 0.5rem;">
+            <img src="ug.png" alt="Uni Games" style="height: 60px; width: auto;">
+            Uni Games
+          </a>
+          <p>The ultimate destination for competitive gaming.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+          </div>
         </div>
+        <div class="footer-column">
+          <h4>Tournaments</h4>
+          <ul>
+            <li><a href="tournaments.html">Browse All</a></li>
+            <li><a href="tournaments.html?filter=live">Live Matches</a></li>
+            <li><a href="tournaments.html?filter=upcoming">Upcoming</a></li>
+            <li><a href="tournaments.html?filter=completed">Past Results</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Community</h4>
+          <ul>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">Forums</a></li>
+            <li><a href="#">Support</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Uni Games. All rights reserved.</p>
+      </div>
     </div>
+  </footer>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // API Configuration
         const API_BASE_URL = 'https://t2-237c.onrender.com';
 
-        // --- NAVBAR HELPER FUNCTIONS ---
-        function redirectToAuth(tab = 'register') {
-            const returnUrl = encodeURIComponent(window.location.href);
-            window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
+        // --- SESSION & AUTHENTICATION UTILITIES ---
+        function getSessionData() {
+            const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+            if (!session) return null;
+            try {
+                const parsedSession = JSON.parse(session);
+                if (parsedSession && parsedSession.token && parsedSession.user) {
+                    return parsedSession;
+                }
+                return null;
+            } catch (error) {
+                console.error('Error parsing session data:', error);
+                localStorage.removeItem('nexus_session');
+                sessionStorage.removeItem('nexus_session');
+                return null;
+            }
         }
 
-        // Modern Navbar Functions
-        let isLoggedIn = false;
+        function isAuthenticated() {
+            return getSessionData()?.token;
+        }
 
+        function getAuthToken() {
+            return getSessionData()?.token;
+        }
 
+        function getUserInfo() {
+            return getSessionData()?.user;
+        }
 
-        // Handle logout
+        // function redirectToAuth() {
+        //     const returnUrl = encodeURIComponent(window.location.href);
+        //     window.location.href = `auth.html?returnUrl=${returnUrl}`;
+        // }
+
         function handleLogout() {
             if (confirm('Are you sure you want to logout?')) {
                 localStorage.removeItem('nexus_session');
@@ -1222,7 +1038,213 @@
             }
         }
 
-        // Smart Navbar Scroll Behavior
+        function checkUserRoleAndAuth() {
+            const user = getUserInfo();
+
+            if (!isAuthenticated()) {
+                console.warn("Authentication required for dashboard.");
+                redirectToAuth();
+                return null;
+            }
+
+            // Important: Redirect if the user is an admin or host
+            if (user.role === 'admin') {
+                window.location.href = 'admin-dashboard.html';
+                return null;
+            } else if (user.role === 'host') {
+                window.location.href = 'host-dashboard.html';
+                return null;
+            }
+
+            return user;
+        }
+
+        function checkUserAuthentication() {
+            const sessionData = getSessionData();
+            const guestMenu = document.getElementById('guest-menu');
+            const userMenu = document.getElementById('user-menu');
+            const user = sessionData?.user;
+
+            if (user) {
+                const username = user.username || (user.email ? user.email.split('@')[0] : 'User');
+                const userInitials = username.substring(0, 2).toUpperCase();
+
+                const navbarUsername = document.getElementById('navbar-username');
+                const userAvatar = document.getElementById('user-avatar');
+
+                if (navbarUsername) navbarUsername.textContent = username;
+                if (userAvatar) userAvatar.textContent = userInitials;
+
+                if (guestMenu) guestMenu.style.display = 'none';
+                if (userMenu) userMenu.style.display = 'flex';
+            } else {
+                if (guestMenu) guestMenu.style.display = 'flex';
+                if (userMenu) userMenu.style.display = 'none';
+            }
+        }
+
+        // --- DASHBOARD DATA FETCHING ---
+        async function fetchPlayerDashboardData() {
+            const user = checkUserRoleAndAuth();
+            if (!user) return; // Stop if not authenticated or role is redirected
+
+            const welcomeMessage = document.getElementById('welcome-message');
+            const roleInfo = document.getElementById('user-role-info');
+
+            welcomeMessage.textContent = `Welcome, ${user.username || user.email}!`;
+            roleInfo.textContent = `Role: ${user.role.charAt(0).toUpperCase() + user.role.slice(1)} Dashboard.`;
+
+            // 1. Fetch Tournaments
+            fetchPlayerTournaments();
+
+            // 2. Fetch Activities (Notifications)
+            fetchPlayerActivities();
+        }
+
+        async function fetchPlayerTournaments() {
+            const token = getAuthToken();
+            const listContainer = document.getElementById('tournament-list');
+            const countSpan = document.getElementById('tournament-count');
+            
+            listContainer.innerHTML = `<p class="text-secondary" style="text-align: center;">
+                <i class="fas fa-spinner fa-spin"></i> Loading your tournaments...
+            </p>`;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users/me/tournaments/all`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    const tournaments = result.data.joined || [];
+                    renderTournaments(tournaments);
+                    countSpan.textContent = tournaments.length;
+                } else {
+                    listContainer.innerHTML = `<p class="text-secondary" style="text-align: center; color: #ef4444;">
+                        Error loading tournaments: ${result.message || 'Server error.'}
+                    </p>`;
+                    countSpan.textContent = '0';
+                }
+            } catch (error) {
+                console.error("Error fetching player tournaments:", error);
+                listContainer.innerHTML = `<p class="text-secondary" style="text-align: center; color: #ef4444;">
+                    Network error. Could not connect to API.
+                </p>`;
+                countSpan.textContent = '0';
+            }
+        }
+
+        function renderTournaments(tournaments) {
+            const listContainer = document.getElementById('tournament-list');
+
+            if (tournaments.length === 0) {
+                listContainer.innerHTML = `<p class="text-secondary" style="text-align: center;">
+                    You are not registered in any tournaments yet.
+                    <a href="tournaments.html" style="color: var(--primary-color); font-weight: 600;">Find a tournament.</a>
+                </p>`;
+                return;
+            }
+
+            listContainer.innerHTML = tournaments.map(t => {
+                const statusClass = t.status.replace(/_/g, '-');
+                const statusText = t.status.replace(/_/g, ' ').toUpperCase();
+                const role = t.team_info.role || 'Player';
+                const teamName = t.team_info.teamName || 'N/A';
+
+                return `
+                    <div class="tournament-item">
+                        <div class="tournament-info">
+                            <div class="name">${t.title}</div>
+                            <div class="game">${t.game} | Team: ${teamName}</div>
+                        </div>
+                        <div class="team-role">Role: ${role.charAt(0).toUpperCase() + role.slice(1)}</div>
+                        <div class="status-badge status-${statusClass}">${statusText}</div>
+                        <a href="tournament-details.html?slug=${t.slug}" class="view-btn">View</a>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function fetchPlayerActivities() {
+            const token = getAuthToken();
+            const feedContainer = document.getElementById('activity-feed');
+
+            feedContainer.innerHTML = `<p class="text-secondary" style="text-align: center;">
+                <i class="fas fa-spinner fa-spin"></i> Loading activity feed...
+            </p>`;
+
+            try {
+                // Fetch recent activities for the user (limit 10 for dashboard)
+                const response = await fetch(`${API_BASE_URL}/api/activities/user?limit=10`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    const activities = result.data || [];
+                    renderActivities(activities);
+                } else {
+                     feedContainer.innerHTML = `<p class="text-secondary" style="text-align: center; color: #ef4444;">
+                        Error loading activities: ${result.detail || 'Server error.'}
+                    </p>`;
+                }
+            } catch (error) {
+                console.error("Error fetching player activities:", error);
+                feedContainer.innerHTML = `<p class="text-secondary" style="text-align: center; color: #ef4444;">
+                    Network error. Could not load activity feed.
+                </p>`;
+            }
+        }
+
+        function renderActivities(activities) {
+            const feedContainer = document.getElementById('activity-feed');
+
+            if (activities.length === 0) {
+                feedContainer.innerHTML = `<p class="text-secondary" style="text-align: center;">
+                    <i class="fas fa-bell"></i> No recent notifications.
+                </p>`;
+                return;
+            }
+
+            feedContainer.innerHTML = activities.map(a => {
+                const icon = getIconForActivity(a.type);
+                const title = a.title || 'Update';
+                const description = a.description || 'Details unavailable.';
+                const timeAgo = a.timeAgo || new Date(a.timestamp).toLocaleTimeString();
+
+                return `
+                    <div class="activity-item">
+                        <i class="${icon}" style="margin-right: 0.5rem; color: var(--primary-color);"></i>
+                        <strong>${title}</strong>
+                        <span class="activity-time">${timeAgo}</span>
+                        <p style="margin: 0.5rem 0 0; font-size: 0.9rem;">${description}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getIconForActivity(type) {
+            switch (type) {
+                case 'user_registered_tournament':
+                    return 'fas fa-check-circle';
+                case 'tournament_announced':
+                    return 'fas fa-bullhorn';
+                case 'tournament_status_changed':
+                    return 'fas fa-sync-alt';
+                case 'round_started':
+                    return 'fas fa-play';
+                case 'payment_completed':
+                    return 'fas fa-money-check-alt';
+                case 'user_joined':
+                    return 'fas fa-user-plus';
+                default:
+                    return 'fas fa-info-circle';
+            }
+        }
+
+
+        // --- INITIALIZATION ---
         function initSmartNavbar() {
             const navbar = document.querySelector('.nav-normal');
             if (!navbar) return;
@@ -1232,28 +1254,8 @@
 
             function updateNavbar() {
                 const currentScrollY = window.scrollY;
-
-                // Add scrolled class when user has scrolled down
-                if (currentScrollY > 50) {
-                    navbar.classList.add('nav-scrolled');
-                } else {
-                    navbar.classList.remove('nav-scrolled');
-                }
-
-                // Hide/show navbar based on scroll direction
-                if (currentScrollY > 100) { // Only start hiding after scrolling 100px
-                    if (currentScrollY > lastScrollY && currentScrollY > 200) {
-                        // Scrolling down - hide navbar
-                        navbar.classList.add('nav-hidden');
-                    } else {
-                        // Scrolling up - show navbar
-                        navbar.classList.remove('nav-hidden');
-                    }
-                } else {
-                    // Always show navbar when near top
-                    navbar.classList.remove('nav-hidden');
-                }
-
+                if (currentScrollY > 50) navbar.classList.add('nav-scrolled');
+                else navbar.classList.remove('nav-scrolled');
                 lastScrollY = currentScrollY;
                 ticking = false;
             }
@@ -1264,1466 +1266,24 @@
                     ticking = true;
                 }
             }
-
-            // Listen for scroll events
             window.addEventListener('scroll', requestTick, { passive: true });
-
-            // Initial call
             updateNavbar();
         }
 
-        function getSessionData() {
-            const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
-            try {
-                return session ? JSON.parse(session) : null;
-            } catch (error) {
-                return null;
-            }
-        }
 
-        function isAuthenticated() {
-            const sessionData = getSessionData();
-            return sessionData && sessionData.token && sessionData.user;
-        }
-
-        function getAuthToken() {
-            const sessionData = getSessionData();
-            return sessionData ? sessionData.token : null;
-        }
-
-        function requireAuthentication() {
-            if (!isAuthenticated()) {
-                const returnUrl = encodeURIComponent(window.location.href);
-                window.location.href = `auth.html?returnUrl=${returnUrl}`;
-                return false;
-            }
-            return true;
-        }
-
-        function logout() {
-            localStorage.removeItem('nexus_session');
-            sessionStorage.removeItem('nexus_session');
-            window.location.reload();
-        }
-
-        function checkUserAuthentication() {
-            const sessionData = getSessionData();
-            const guestMenu = document.getElementById('guest-menu');
-            const userMenu = document.getElementById('user-menu');
-
-            const user = sessionData?.user;
-
-            if (user) {
-                const username = user.username || user.email.split('@')[0];
-                const userInitials = username.substring(0, 2).toUpperCase();
-
-                // Update navbar elements
-                const navbarUsername = document.getElementById('navbar-username');
-                const userAvatar = document.getElementById('user-avatar');
-
-                if (navbarUsername) {
-                    navbarUsername.textContent = username;
-                }
-
-                if (userAvatar) {
-                    userAvatar.textContent = userInitials;
-                }
-
-                // Show user menu, hide guest menu
-                if (guestMenu) guestMenu.style.display = 'none';
-                if (userMenu) userMenu.style.display = 'flex';
-
-                isLoggedIn = true;
-            } else {
-                // Show guest menu, hide user menu
-                if (guestMenu) guestMenu.style.display = 'block';
-                if (userMenu) userMenu.style.display = 'none';
-
-                isLoggedIn = false;
-            }
-        }
-
-        // Old mobile nav function removed - using new navbar structure
-
-        // --- TOURNAMENT DATA MANAGEMENT ---
-        let tournamentData = {
-            hosted: [],
-            joined: [],
-            loading: false,
-            lastFetch: null
-        };
-
-        // API call wrapper
-        async function apiCall(url, options = {}) {
-            try {
-                const sessionData = getSessionData();
-                if (!sessionData || !sessionData.token) {
-                    throw new Error('Authentication required');
-                }
-
-                const response = await fetch(url, {
-                    method: options.method || 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${sessionData.token}`,
-                        'Content-Type': 'application/json',
-                        ...options.headers
-                    },
-                    ...options
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const result = await response.json();
-                return { success: true, data: result };
-            } catch (error) {
-                console.error('API call failed:', error);
-                return { success: false, error: error.message };
-            }
-        }
-
-        // Fetch tournament data from API
-        async function fetchTournamentData(forceRefresh = false) {
-            // Return cached data if available and not forcing refresh
-            if (!forceRefresh && tournamentData.hosted.length > 0) {
-                return tournamentData;
-            }
-
-            // Prevent multiple simultaneous fetches
-            if (tournamentData.loading) {
-                return tournamentData;
-            }
-
-            tournamentData.loading = true;
-            showLoadingState();
-
-            try {
-                // Use the combined endpoint - single API call instead of two
-                const result = await apiCall(`${API_BASE_URL}/api/users/me/tournaments/all`, {
-                    context: 'Load all tournaments (hosted and joined)'
-                });
-
-                if (result.success && result.data) {
-                    // Update global state with data from combined endpoint
-                    // The API response is wrapped by apiCall, so we need result.data.data
-                    const apiData = result.data.data || result.data;
-                    tournamentData.hosted = apiData.hosted || [];
-                    tournamentData.joined = apiData.joined || [];
-                    tournamentData.counts = apiData.counts || {};
-                    tournamentData.lastFetch = Date.now();
-                } else {
-                    // Fallback to empty arrays if request fails
-                    tournamentData.hosted = [];
-                    tournamentData.joined = [];
-                    tournamentData.counts = {};
-                    const errorMsg = result.error || (result.data && result.data.message) || 'Unknown error';
-                    showAlert('Failed to load tournaments: ' + errorMsg, 'warning');
-                }
-
-                return tournamentData;
-            } catch (error) {
-                console.error('Failed to fetch tournament data:', error);
-                // Fallback to empty arrays on error
-                tournamentData.hosted = [];
-                tournamentData.joined = [];
-                showAlert('Network error: Unable to load tournaments', 'danger');
-                return tournamentData;
-            } finally {
-                tournamentData.loading = false;
-                hideLoadingState();
-            }
-        }
-
-        // Display hosted tournaments in the table
-        function displayHostedTournaments(tournaments) {
-            const container = document.getElementById('hostedTournamentsContainer');
-
-            if (!container) {
-                console.error('hostedTournamentsContainer element not found');
-                return;
-            }
-
-            if (tournaments.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center text-muted py-5">
-                        <i class="fas fa-trophy fa-3x mb-3"></i>
-                        <h5>No hosted tournaments found</h5>
-                        <p>You haven't created any tournaments yet. Use the "Create Tournament" button above to get started!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Create table layout
-            let tableHTML = `
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Tournament Name</th>
-                                <th>Game</th>
-                                <th>Status</th>
-                                <th>Participants</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-
-            // Add tournament rows
-            tournaments.forEach(tournament => {
-                const tournamentName = tournament.title || 'Tournament';
-                const game = tournament.game || 'N/A';
-                const status = tournament.status || 'draft';
-                const participantCount = tournament.participants ? tournament.participants.length : 0;
-                const maxTeams = tournament.maxTeams || 0;
-                const tournamentId = tournament._id || tournament.id || '';
-
-                // Status badge styling
-                let statusClass = 'badge bg-secondary';
-                switch (status) {
-                    case 'active':
-                        statusClass = 'badge bg-success';
-                        break;
-                    case 'live':
-                        statusClass = 'badge bg-primary';
-                        break;
-                    case 'completed':
-                        statusClass = 'badge bg-info';
-                        break;
-                    case 'cancelled':
-                        statusClass = 'badge bg-danger';
-                        break;
-                }
-
-                tableHTML += `
-                    <tr>
-                        <td>
-                            <strong>${tournamentName}</strong>
-                        </td>
-                        <td>${game}</td>
-                        <td>
-                            <span class="${statusClass}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>
-                        </td>
-                        <td>${participantCount}/${maxTeams}</td>
-                        <td>
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-outline-primary" onclick="viewTournament('${tournamentId}')" title="View Details">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="btn btn-outline-secondary" onclick="editTournament('${tournamentId}')" title="Edit Tournament">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-outline-info" onclick="manageTournament('${tournamentId}')" title="Manage">
-                                    <i class="fas fa-cogs"></i>
-                                </button>
-                                <button class="btn btn-outline-success" onclick="downloadTournamentData('${tournamentId}', '${tournamentName}')" title="Download Participants PDF">
-                                    <i class="fas fa-download"></i>
-                                </button>
-                                <button class="btn btn-outline-danger" onclick="deleteTournament('${tournamentId}', '${tournamentName}')" title="Delete Tournament">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            tableHTML += `
-                        </tbody>
-                    </table>
-                </div>
-            `;
-
-            container.innerHTML = tableHTML;
-        }
-
-        // Display joined tournaments in the table
-        function displayJoinedTournaments(tournaments) {
-            const container = document.getElementById('joinedTournamentsContainer');
-
-            if (!container) {
-                console.error('joinedTournamentsContainer element not found');
-                return;
-            }
-
-            if (tournaments.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center text-muted py-5">
-                        <i class="fas fa-users fa-3x mb-3"></i>
-                        <h5>No joined tournaments found</h5>
-                        <p>You haven't joined any tournaments yet. Browse available tournaments to participate!</p>
-                        <a href="tournaments.html" class="btn btn-primary mt-2">
-                            <i class="fas fa-search me-1"></i>Browse Tournaments
-                        </a>
-                    </div>
-                `;
-                return;
-            }
-
-            // Create table layout
-            let tableHTML = `
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Tournament Name</th>
-                                <th>Game</th>
-                                <th>Status</th>
-                                <th>Organizer</th>
-                                <th>Your Team</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
-
-            // Add tournament rows
-            tournaments.forEach(tournament => {
-                const tournamentName = tournament.title || 'Tournament';
-                const game = tournament.game || 'N/A';
-                const status = tournament.status || 'draft';
-                const organizer = tournament.organizer?.username || tournament.organizer?.email || 'Unknown';
-                const tournamentId = tournament._id || tournament.id || '';
-
-                // Get user's team info from the tournament
-                const userTeam = tournament.userTeam || tournament.teamName || 'N/A';
-
-                // Status badge styling
-                let statusClass = 'badge bg-secondary';
-                switch (status) {
-                    case 'active':
-                        statusClass = 'badge bg-success';
-                        break;
-                    case 'live':
-                        statusClass = 'badge bg-primary';
-                        break;
-                    case 'completed':
-                        statusClass = 'badge bg-info';
-                        break;
-                    case 'cancelled':
-                        statusClass = 'badge bg-danger';
-                        break;
-                }
-
-                tableHTML += `
-                    <tr>
-                        <td>
-                            <strong>${tournamentName}</strong>
-                        </td>
-                        <td>${game}</td>
-                        <td>
-                            <span class="${statusClass}">${status.charAt(0).toUpperCase() + status.slice(1)}</span>
-                        </td>
-                        <td>${organizer}</td>
-                        <td>${userTeam}</td>
-                        <td>
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-outline-primary" onclick="viewTournament('${tournamentId}')" title="View Details">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="btn btn-outline-info" onclick="viewBrackets('${tournamentId}')" title="View Brackets">
-                                    <i class="fas fa-sitemap"></i>
-                                </button>
-                                <button class="btn btn-outline-warning" onclick="leaveTournament('${tournamentId}', '${tournamentName}')" title="Leave Tournament">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            tableHTML += `
-                        </tbody>
-                    </table>
-                </div>
-            `;
-
-            container.innerHTML = tableHTML;
-        }
-
-        // Dashboard stats removed - no longer needed
-
-        // Load dashboard data
-        async function loadDashboardData() {
-            const data = await fetchTournamentData();
-            displayHostedTournaments(data.hosted);
-            displayJoinedTournaments(data.joined);
-            updateDashboardStats(data);
-        }
-
-        // Update dashboard stats display
-        function updateDashboardStats(data) {
-            // Use counts from API response if available, otherwise calculate
-            const counts = data.counts || {};
-            const hostedCount = counts.hosted || (data.hosted ? data.hosted.length : 0);
-            const joinedCount = counts.joined || (data.joined ? data.joined.length : 0);
-            const activeCount = counts.active || (data.hosted ? data.hosted.filter(t =>
-                t.status === 'active' || t.status === 'registration_open'
-            ).length : 0);
-
-            // Update stats display
-            const totalElement = document.getElementById('totalTournaments');
-            const joinedElement = document.getElementById('joinedTournaments');
-            const activeElement = document.getElementById('activeTournaments');
-
-            if (totalElement) totalElement.textContent = hostedCount;
-            if (joinedElement) joinedElement.textContent = joinedCount;
-            if (activeElement) activeElement.textContent = activeCount;
-        }
-
-        // Refresh tournaments
-        async function refreshTournaments() {
-            const data = await fetchTournamentData(true); // Force refresh
-            displayHostedTournaments(data.hosted);
-            displayJoinedTournaments(data.joined);
-            updateDashboardStats(data);
-
-            // Also refresh all dropdowns
-            if (data.hosted && data.hosted.length > 0) {
-                populateUpdateDropdown(data.hosted);
-                populateScheduleDropdown(data.hosted);
-                populateFinalistsDropdown(data.hosted);
-            }
-
-            showAlert('Tournaments refreshed successfully!', 'success');
-        }
-
-        // Tournament action handlers
-        function viewTournament(tournamentId) {
-            // Redirect to tournament details page
-            window.open(`tournament-details.html?id=${tournamentId}`, '_blank');
-        }
-
-        function editTournament(tournamentId) {
-            // Redirect to edit tournament page
-            window.location.href = `edit-tournament.html?id=${tournamentId}`;
-        }
-
-        function manageTournament(tournamentId) {
-            // Redirect to tournament management page
-            window.location.href = `manage-tournament.html?id=${tournamentId}`;
-        }
-
-        function viewBrackets(tournamentId) {
-            // Redirect to tournament brackets page
-            window.open(`tournament-brackets-view.html?id=${tournamentId}`, '_blank');
-        }
-
-        // Leave tournament with confirmation
-        async function leaveTournament(tournamentId, tournamentName) {
-            const confirmMessage = `Are you sure you want to leave "${tournamentName}"?\n\nThis action will:\n• Remove your team from the tournament\n• Cancel your registration\n• You may lose any entry fees paid\n\nType "LEAVE" to confirm:`;
-
-            const userInput = prompt(confirmMessage);
-
-            if (userInput !== 'LEAVE') {
-                if (userInput !== null) {
-                    showAlert('Tournament leave cancelled - confirmation text did not match', 'info');
-                }
-                return;
-            }
-
-            try {
-                showAlert('Leaving tournament...', 'info');
-
-                const sessionData = getSessionData();
-                const response = await fetch(`${API_BASE_URL}/api/tournaments/${tournamentId}/leave`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${sessionData.token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    showAlert(`Successfully left "${tournamentName}"`, 'success');
-                    // Refresh the tournaments list
-                    await refreshTournaments();
-                } else {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to leave tournament');
-                }
-
-            } catch (error) {
-                console.error('Error leaving tournament:', error);
-                showAlert(`Failed to leave tournament: ${error.message}`, 'danger');
-            }
-        }
-
-        // Download tournament participants data as PDF
-        async function downloadTournamentData(tournamentId, tournamentName) {
-            try {
-                showAlert('Preparing download...', 'info');
-
-                const sessionData = getSessionData();
-                const response = await fetch(`${API_BASE_URL}/api/user-tournaments/${tournamentId}/export?format=pdf`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${sessionData.token}`
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                // Get the blob data
-                const blob = await response.blob();
-
-                // Create download link
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${tournamentName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_participants.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-
-                showAlert('Participants data downloaded successfully!', 'success');
-
-            } catch (error) {
-                console.error('Error downloading tournament data:', error);
-
-                // Fallback: Generate a simple text file with tournament info
-                try {
-                    const tournament = tournamentData.hosted.find(t => t._id === tournamentId);
-                    if (tournament) {
-                        const participantsList = tournament.participants || [];
-                        let textContent = `Tournament: ${tournament.title}\n`;
-                        textContent += `Game: ${tournament.game}\n`;
-                        textContent += `Total Participants: ${participantsList.length}\n`;
-                        textContent += `Max Teams: ${tournament.maxTeams}\n`;
-                        textContent += `Status: ${tournament.status}\n`;
-                        textContent += `Created: ${new Date().toLocaleDateString()}\n\n`;
-
-                        textContent += "REGISTERED PARTICIPANTS:\n";
-                        textContent += "=".repeat(50) + "\n\n";
-
-                        if (participantsList.length === 0) {
-                            textContent += "No participants registered yet.\n";
-                        } else {
-                            participantsList.forEach((participant, index) => {
-                                textContent += `${index + 1}. Team: ${participant.teamName || 'N/A'}\n`;
-                                textContent += `   Captain: ${participant.captainName || 'N/A'}\n`;
-                                textContent += `   Email: ${participant.captainEmail || 'N/A'}\n`;
-                                textContent += `   Phone: ${participant.phone || 'N/A'}\n`;
-                                textContent += `   Status: ${participant.status || 'N/A'}\n`;
-                                textContent += `   Payment: ${participant.paymentStatus || 'N/A'}\n`;
-
-                                if (participant.players && participant.players.length > 0) {
-                                    textContent += `   Players:\n`;
-                                    participant.players.forEach((player, pIndex) => {
-                                        textContent += `     ${pIndex + 1}. ${player.name || 'N/A'} (${player.email || 'N/A'})\n`;
-                                    });
-                                }
-                                textContent += "\n";
-                            });
-                        }
-
-                        // Create and download text file
-                        const blob = new Blob([textContent], { type: 'text/plain' });
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `${tournamentName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_participants.txt`;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        window.URL.revokeObjectURL(url);
-
-                        showAlert('Participants data downloaded as text file (PDF export not available)', 'warning');
-                    } else {
-                        showAlert('Tournament data not found for download', 'danger');
-                    }
-                } catch (fallbackError) {
-                    console.error('Fallback download failed:', fallbackError);
-                    showAlert('Failed to download tournament data', 'danger');
-                }
-            }
-        }
-
-        // Delete tournament with confirmation
-        async function deleteTournament(tournamentId, tournamentName) {
-            // Show confirmation dialog
-            const confirmMessage = `Are you sure you want to delete "${tournamentName}"?\n\nThis action cannot be undone and will permanently remove:\n• All tournament data\n• Participant registrations\n• Tournament schedule\n• All related information\n\nType "DELETE" to confirm:`;
-
-            const userInput = prompt(confirmMessage);
-
-            if (userInput !== 'DELETE') {
-                if (userInput !== null) {
-                    showAlert('Tournament deletion cancelled - confirmation text did not match', 'info');
-                }
-                return;
-            }
-
-            try {
-                showAlert('Deleting tournament...', 'info');
-
-                const sessionData = getSessionData();
-                const response = await fetch(`${API_BASE_URL}/api/user-tournaments/${tournamentId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${sessionData.token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const result = await response.json();
-
-                if (result.success) {
-                    showAlert(`Tournament "${tournamentName}" deleted successfully!`, 'success');
-
-                    // Refresh tournaments list
-                    await refreshTournaments();
-
-                    // Clear any selected tournament in update/schedule sections
-                    if (selectedTournament && selectedTournament._id === tournamentId) {
-                        cancelUpdate();
-                    }
-
-                    if (selectedScheduleTournament && selectedScheduleTournament._id === tournamentId) {
-                        document.getElementById('scheduleTournamentSelect').value = '';
-                        document.getElementById('scheduleManagementContainer').style.display = 'none';
-                        document.getElementById('schedulePlaceholder').style.display = 'block';
-                        selectedScheduleTournament = null;
-                    }
-                } else {
-                    showAlert('Failed to delete tournament: ' + (result.message || 'Unknown error'), 'danger');
-                }
-
-            } catch (error) {
-                console.error('Error deleting tournament:', error);
-                showAlert('Network error: Unable to delete tournament', 'danger');
-            }
-        }
-
-        // Loading state management
-        function showLoadingState() {
-            const container = document.getElementById('tournamentsContainer');
-            if (container) {
-                container.innerHTML = `
-                    <div class="text-center text-muted py-5">
-                        <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                        <p>Loading tournaments...</p>
-                    </div>
-                `;
-            }
-        }
-
-        function hideLoadingState() {
-            // Loading state will be replaced by actual content
-        }
-
-        // Alert system
-        function showAlert(message, type = 'info') {
-            // Create alert element
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-            alertDiv.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            `;
-
-            // Insert at top of dashboard content
-            const dashboardContainer = document.querySelector('.dashboard-container');
-            if (dashboardContainer) {
-                dashboardContainer.insertBefore(alertDiv, dashboardContainer.firstChild);
-            }
-
-            // Auto-dismiss after 5 seconds
-            setTimeout(() => {
-                if (alertDiv.parentNode) {
-                    alertDiv.remove();
-                }
-            }, 5000);
-        }
-
-        // --- UPDATE TOURNAMENT FUNCTIONALITY ---
-        let selectedTournament = null;
-
-        // Populate tournament dropdown for updates
-        function populateUpdateDropdown(tournaments) {
-            const select = document.getElementById('updateTournamentSelect');
-            if (!select) return;
-
-            // Clear existing options except the first one
-            select.innerHTML = '<option value="">Choose a tournament...</option>';
-
-            tournaments.forEach(tournament => {
-                const option = document.createElement('option');
-                option.value = tournament._id || tournament.id;
-                option.textContent = tournament.title || 'Untitled Tournament';
-                option.dataset.tournament = JSON.stringify(tournament);
-                select.appendChild(option);
-            });
-        }
-
-        // Load selected tournament for update
-        function loadTournamentForUpdate() {
-            const select = document.getElementById('updateTournamentSelect');
-            const selectedOption = select.options[select.selectedIndex];
-
-            if (selectedOption.value) {
-                selectedTournament = JSON.parse(selectedOption.dataset.tournament);
-                document.getElementById('selectedTournamentName').textContent = selectedTournament.title || 'Untitled Tournament';
-
-                // Reset field selection
-                document.getElementById('updateField').value = '';
-                document.getElementById('updateFormContainer').style.display = 'none';
-                document.getElementById('updatePlaceholder').style.display = 'block';
-            } else {
-                selectedTournament = null;
-                document.getElementById('updateFormContainer').style.display = 'none';
-                document.getElementById('updatePlaceholder').style.display = 'block';
-            }
-        }
-
-        // Show update form based on selected field
-        function showUpdateForm() {
-            const fieldSelect = document.getElementById('updateField');
-            const field = fieldSelect.value;
-
-            if (!selectedTournament || !field) {
-                document.getElementById('updateFormContainer').style.display = 'none';
-                document.getElementById('updatePlaceholder').style.display = 'block';
-                return;
-            }
-
-            const container = document.getElementById('updateFieldContainer');
-            let formHTML = '';
-
-            switch (field) {
-                case 'title':
-                    formHTML = `
-                        <div class="mb-3">
-                            <label for="newTitle" class="form-label">New Tournament Title</label>
-                            <input type="text" class="form-control" id="newTitle" value="${selectedTournament.title || ''}" maxlength="100" required>
-                            <div class="form-text">Enter the new title for your tournament</div>
-                        </div>
-                    `;
-                    break;
-
-                case 'description':
-                    formHTML = `
-                        <div class="mb-3">
-                            <label for="newDescription" class="form-label">New Description</label>
-                            <textarea class="form-control" id="newDescription" rows="4" maxlength="2000" required>${selectedTournament.description || ''}</textarea>
-                            <div class="form-text">Update the tournament description</div>
-                        </div>
-                    `;
-                    break;
-
-                case 'status':
-                    formHTML = `
-                        <div class="mb-3">
-                            <label for="newStatus" class="form-label">Tournament Status</label>
-                            <select class="form-select" id="newStatus" required>
-                                <option value="draft" ${selectedTournament.status === 'draft' ? 'selected' : ''}>Draft</option>
-                                <option value="active" ${selectedTournament.status === 'active' ? 'selected' : ''}>Active</option>
-                                <option value="live" ${selectedTournament.status === 'live' ? 'selected' : ''}>Live</option>
-                                <option value="completed" ${selectedTournament.status === 'completed' ? 'selected' : ''}>Completed</option>
-                                <option value="cancelled" ${selectedTournament.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-                            </select>
-                            <div class="form-text">Change the tournament status</div>
-                        </div>
-                    `;
-                    break;
-
-                case 'prizePool':
-                    formHTML = `
-                        <div class="mb-3">
-                            <label for="newPrizePool" class="form-label">Prize Pool (₹)</label>
-                            <input type="number" class="form-control" id="newPrizePool" value="${selectedTournament.prizePool || 0}" min="0" max="100000" required>
-                            <div class="form-text">Update the total prize money</div>
-                        </div>
-                    `;
-                    break;
-
-                case 'maxTeams':
-                    formHTML = `
-                        <div class="mb-3">
-                            <label for="newMaxTeams" class="form-label">Maximum Teams</label>
-                            <input type="number" class="form-control" id="newMaxTeams" value="${selectedTournament.maxTeams || 16}" min="2" max="500" required>
-                            <div class="form-text">Update the maximum number of teams allowed</div>
-                        </div>
-                    `;
-                    break;
-
-                case 'dates':
-                    const formatDateForInput = (dateString) => {
-                        if (!dateString) return '';
-                        const date = new Date(dateString);
-                        return date.toISOString().slice(0, 16);
-                    };
-
-                    formHTML = `
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="newRegistrationStart" class="form-label">Registration Start</label>
-                                <input type="datetime-local" class="form-control" id="newRegistrationStart" 
-                                       value="${formatDateForInput(selectedTournament.registrationStart)}" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="newRegistrationEnd" class="form-label">Registration End</label>
-                                <input type="datetime-local" class="form-control" id="newRegistrationEnd" 
-                                       value="${formatDateForInput(selectedTournament.registrationEnd)}" required>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="newTournamentStart" class="form-label">Tournament Start</label>
-                                <input type="datetime-local" class="form-control" id="newTournamentStart" 
-                                       value="${formatDateForInput(selectedTournament.tournamentStart)}" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="newTournamentEnd" class="form-label">Tournament End</label>
-                                <input type="datetime-local" class="form-control" id="newTournamentEnd" 
-                                       value="${formatDateForInput(selectedTournament.tournamentEnd)}" required>
-                            </div>
-                        </div>
-                    `;
-                    break;
-            }
-
-            container.innerHTML = formHTML;
-            document.getElementById('updateFormContainer').style.display = 'block';
-            document.getElementById('updatePlaceholder').style.display = 'none';
-        }
-
-        // Handle update form submission
-        async function handleUpdateSubmit(e) {
-            e.preventDefault();
-
-            if (!selectedTournament) {
-                showAlert('Please select a tournament to update', 'warning');
-                return;
-            }
-
-            const field = document.getElementById('updateField').value;
-            if (!field) {
-                showAlert('Please select a field to update', 'warning');
-                return;
-            }
-
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const spinner = submitBtn.querySelector('.loading-spinner');
-
-            submitBtn.disabled = true;
-            spinner.style.display = 'inline-block';
-
-            try {
-                const updateData = {};
-
-                // Collect update data based on field
-                switch (field) {
-                    case 'title':
-                        updateData.title = document.getElementById('newTitle').value;
-                        break;
-                    case 'description':
-                        updateData.description = document.getElementById('newDescription').value;
-                        break;
-                    case 'status':
-                        updateData.status = document.getElementById('newStatus').value;
-                        break;
-                    case 'prizePool':
-                        updateData.prizePool = parseInt(document.getElementById('newPrizePool').value);
-                        break;
-                    case 'maxTeams':
-                        updateData.maxTeams = parseInt(document.getElementById('newMaxTeams').value);
-                        break;
-                    case 'dates':
-                        updateData.registrationStart = document.getElementById('newRegistrationStart').value;
-                        updateData.registrationEnd = document.getElementById('newRegistrationEnd').value;
-                        updateData.tournamentStart = document.getElementById('newTournamentStart').value;
-                        updateData.tournamentEnd = document.getElementById('newTournamentEnd').value;
-                        break;
-                }
-
-                const result = await apiCall(`${API_BASE_URL}/api/user-tournaments/${selectedTournament._id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(updateData)
-                });
-
-                if (result.success) {
-                    showAlert('Tournament updated successfully!', 'success');
-
-                    // Refresh tournament data
-                    await refreshTournaments();
-
-                    // Reset form
-                    cancelUpdate();
-                } else {
-                    showAlert('Failed to update tournament: ' + (result.error || 'Unknown error'), 'danger');
-                }
-
-            } catch (error) {
-                console.error('Error updating tournament:', error);
-                showAlert('Network error: Unable to update tournament', 'danger');
-            } finally {
-                submitBtn.disabled = false;
-                spinner.style.display = 'none';
-            }
-        }
-
-        // Cancel update operation
-        function cancelUpdate() {
-            document.getElementById('updateTournamentSelect').value = '';
-            document.getElementById('updateField').value = '';
-            document.getElementById('updateFormContainer').style.display = 'none';
-            document.getElementById('updatePlaceholder').style.display = 'block';
-            selectedTournament = null;
-        }
-
-        // Refresh update section
-        function refreshUpdateSection() {
-            if (tournamentData.hosted && tournamentData.hosted.length > 0) {
-                populateUpdateDropdown(tournamentData.hosted);
-                showAlert('Update section refreshed!', 'info');
-            } else {
-                showAlert('No tournaments available to update', 'warning');
-            }
-        }
-
-        // Modified loadDashboardData to also populate update, schedule, and finalists dropdowns
-        async function loadDashboardDataWithUpdate() {
-            const data = await fetchTournamentData();
-            displayTournaments(data.hosted);
-
-            // Populate all dropdowns
-            if (data.hosted && data.hosted.length > 0) {
-                populateUpdateDropdown(data.hosted);
-                populateScheduleDropdown(data.hosted);
-                populateFinalistsDropdown(data.hosted);
-            }
-        }
-
-        // --- TOURNAMENT SCHEDULE MANAGEMENT ---
-        let selectedScheduleTournament = null;
-        let tournamentEvents = [];
-
-        // Populate tournament dropdown for schedule management
-        function populateScheduleDropdown(tournaments) {
-            const select = document.getElementById('scheduleTournamentSelect');
-            if (!select) return;
-
-            // Clear existing options except the first one
-            select.innerHTML = '<option value="">Choose a tournament...</option>';
-
-            tournaments.forEach(tournament => {
-                const option = document.createElement('option');
-                option.value = tournament._id || tournament.id;
-                option.textContent = tournament.title || 'Untitled Tournament';
-                option.dataset.tournament = JSON.stringify(tournament);
-                select.appendChild(option);
-            });
-        }
-
-        // Load tournament schedule when tournament is selected
-        async function loadTournamentSchedule() {
-            const select = document.getElementById('scheduleTournamentSelect');
-            const selectedOption = select.options[select.selectedIndex];
-
-            if (selectedOption.value) {
-                selectedScheduleTournament = JSON.parse(selectedOption.dataset.tournament);
-                document.getElementById('selectedScheduleTournamentName').textContent = selectedScheduleTournament.title || 'Untitled Tournament';
-
-                // Show schedule management container
-                document.getElementById('scheduleManagementContainer').style.display = 'block';
-                document.getElementById('schedulePlaceholder').style.display = 'none';
-
-                // Load events for this tournament
-                await fetchTournamentEvents(selectedScheduleTournament._id);
-            } else {
-                selectedScheduleTournament = null;
-                document.getElementById('scheduleManagementContainer').style.display = 'none';
-                document.getElementById('schedulePlaceholder').style.display = 'block';
-            }
-        }
-
-        // Fetch tournament events from API
-        async function fetchTournamentEvents(tournamentId) {
-            const container = document.getElementById('eventsListContainer');
-
-            // Show loading state
-            container.innerHTML = `
-                <div class="text-center text-muted py-4">
-                    <i class="fas fa-spinner fa-spin fa-2x mb-3"></i>
-                    <p>Loading events...</p>
-                </div>
-            `;
-
-            try {
-                const result = await apiCall(`${API_BASE_URL}/api/user-tournaments/${tournamentId}/schedule`, {
-                    method: 'GET'
-                });
-
-                if (result.success && result.data) {
-                    tournamentEvents = result.data.events || [];
-                    displayTournamentEvents(tournamentEvents);
-                } else {
-                    // No events found or error
-                    tournamentEvents = [];
-                    displayTournamentEvents([]);
-                }
-            } catch (error) {
-                console.error('Error fetching tournament events:', error);
-                container.innerHTML = `
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-exclamation-triangle fa-2x mb-3 text-warning"></i>
-                        <p>Failed to load events. This might be a new feature not yet implemented on the backend.</p>
-                        <small class="text-muted">You can still add events using the form above.</small>
-                    </div>
-                `;
-                tournamentEvents = [];
-            }
-        }
-
-        // Display tournament events
-        function displayTournamentEvents(events) {
-            const container = document.getElementById('eventsListContainer');
-
-            if (events.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-calendar-plus fa-2x mb-3"></i>
-                        <h6>No Events Scheduled</h6>
-                        <p>Add your first event using the form above</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Sort events by start time
-            const sortedEvents = events.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
-
-            let eventsHTML = '<div class="list-group list-group-flush">';
-
-            sortedEvents.forEach((event, index) => {
-                const startTime = new Date(event.startTime).toLocaleString();
-                const endTime = event.endTime ? new Date(event.endTime).toLocaleString() : 'Not specified';
-
-                // Event type badge styling
-                let typeBadgeClass = 'badge bg-secondary';
-                switch (event.type) {
-                    case 'registration':
-                        typeBadgeClass = 'badge bg-info';
-                        break;
-                    case 'match':
-                        typeBadgeClass = 'badge bg-primary';
-                        break;
-                    case 'ceremony':
-                        typeBadgeClass = 'badge bg-warning';
-                        break;
-                    case 'announcement':
-                        typeBadgeClass = 'badge bg-success';
-                        break;
-                }
-
-                eventsHTML += `
-                    <div class="list-group-item" style="background: rgba(0, 0, 0, 0.1); border-color: var(--border-color);">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h6 class="mb-0">${event.title}</h6>
-                                    <span class="${typeBadgeClass}">${event.type}</span>
-                                </div>
-                                <p class="mb-1 text-muted">
-                                    <i class="fas fa-clock me-1"></i>
-                                    <strong>Start:</strong> ${startTime}
-                                    ${event.endTime ? `<br><i class="fas fa-clock me-1"></i><strong>End:</strong> ${endTime}` : ''}
-                                </p>
-                                ${event.description ? `<p class="mb-2 small">${event.description}</p>` : ''}
-                            </div>
-                            <div class="btn-group btn-group-sm ms-3">
-                                <button class="btn btn-outline-primary" onclick="editEvent(${index})" title="Edit Event">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-outline-danger" onclick="deleteEvent(${index})" title="Delete Event">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            eventsHTML += '</div>';
-            container.innerHTML = eventsHTML;
-        }
-
-        // Handle add event form submission
-        async function handleAddEventSubmit(e) {
-            e.preventDefault();
-
-            if (!selectedScheduleTournament) {
-                showAlert('Please select a tournament first', 'warning');
-                return;
-            }
-
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const spinner = submitBtn.querySelector('.loading-spinner');
-
-            submitBtn.disabled = true;
-            spinner.style.display = 'inline-block';
-
-            try {
-                const eventData = {
-                    title: document.getElementById('eventTitle').value,
-                    type: document.getElementById('eventType').value,
-                    startTime: document.getElementById('eventStartTime').value,
-                    endTime: document.getElementById('eventEndTime').value || null,
-                    description: document.getElementById('eventDescription').value || null
-                };
-
-                const result = await apiCall(`${API_BASE_URL}/api/user-tournaments/${selectedScheduleTournament._id}/schedule/events`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(eventData)
-                });
-
-                if (result.success) {
-                    showAlert('Event added successfully!', 'success');
-
-                    // Reset form
-                    document.getElementById('addEventForm').reset();
-
-                    // Refresh events list
-                    await fetchTournamentEvents(selectedScheduleTournament._id);
-                } else {
-                    // For now, simulate success since backend might not be implemented
-                    const newEvent = {
-                        ...eventData,
-                        id: Date.now().toString() // Temporary ID
-                    };
-                    tournamentEvents.push(newEvent);
-                    displayTournamentEvents(tournamentEvents);
-
-                    showAlert('Event added successfully! (Note: This is a demo - backend integration pending)', 'success');
-                    document.getElementById('addEventForm').reset();
-                }
-
-            } catch (error) {
-                console.error('Error adding event:', error);
-
-                // For demo purposes, add event locally
-                const newEvent = {
-                    title: document.getElementById('eventTitle').value,
-                    type: document.getElementById('eventType').value,
-                    startTime: document.getElementById('eventStartTime').value,
-                    endTime: document.getElementById('eventEndTime').value || null,
-                    description: document.getElementById('eventDescription').value || null,
-                    id: Date.now().toString()
-                };
-                tournamentEvents.push(newEvent);
-                displayTournamentEvents(tournamentEvents);
-
-                showAlert('Event added locally! (Backend integration pending)', 'info');
-                document.getElementById('addEventForm').reset();
-            } finally {
-                submitBtn.disabled = false;
-                spinner.style.display = 'none';
-            }
-        }
-
-        // Edit event
-        function editEvent(index) {
-            const event = tournamentEvents[index];
-            if (!event) return;
-
-            // Populate edit form
-            document.getElementById('editEventId').value = index;
-            document.getElementById('editEventTitle').value = event.title;
-            document.getElementById('editEventType').value = event.type;
-            document.getElementById('editEventStartTime').value = event.startTime;
-            document.getElementById('editEventEndTime').value = event.endTime || '';
-            document.getElementById('editEventDescription').value = event.description || '';
-
-            // Show modal
-            const modal = new bootstrap.Modal(document.getElementById('editEventModal'));
-            modal.show();
-        }
-
-        // Save event changes
-        async function saveEventChanges() {
-            const index = parseInt(document.getElementById('editEventId').value);
-            const event = tournamentEvents[index];
-
-            if (!event) return;
-
-            const saveBtn = document.querySelector('#editEventModal .btn-primary');
-            const spinner = saveBtn.querySelector('.edit-loading-spinner');
-
-            saveBtn.disabled = true;
-            spinner.style.display = 'inline-block';
-
-            try {
-                const updatedEventData = {
-                    title: document.getElementById('editEventTitle').value,
-                    type: document.getElementById('editEventType').value,
-                    startTime: document.getElementById('editEventStartTime').value,
-                    endTime: document.getElementById('editEventEndTime').value || null,
-                    description: document.getElementById('editEventDescription').value || null
-                };
-
-                // Update locally for demo
-                tournamentEvents[index] = { ...event, ...updatedEventData };
-                displayTournamentEvents(tournamentEvents);
-
-                showAlert('Event updated successfully!', 'success');
-
-                // Close modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('editEventModal'));
-                modal.hide();
-
-            } catch (error) {
-                console.error('Error updating event:', error);
-                showAlert('Failed to update event', 'danger');
-            } finally {
-                saveBtn.disabled = false;
-                spinner.style.display = 'none';
-            }
-        }
-
-        // Delete event
-        async function deleteEvent(index) {
-            const event = tournamentEvents[index];
-            if (!event) return;
-
-            if (!confirm(`Are you sure you want to delete the event "${event.title}"?`)) {
-                return;
-            }
-
-            try {
-                // Delete locally for demo
-                tournamentEvents.splice(index, 1);
-                displayTournamentEvents(tournamentEvents);
-
-                showAlert('Event deleted successfully!', 'success');
-
-            } catch (error) {
-                console.error('Error deleting event:', error);
-                showAlert('Failed to delete event', 'danger');
-            }
-        }
-
-        // Refresh schedule section
-        function refreshScheduleSection() {
-            if (tournamentData.hosted && tournamentData.hosted.length > 0) {
-                populateScheduleDropdown(tournamentData.hosted);
-                showAlert('Schedule section refreshed!', 'info');
-            } else {
-                showAlert('No tournaments available for schedule management', 'warning');
-            }
-        }
-
-        // --- FINALISTS LEADERBOARD MANAGEMENT ---
-        let selectedFinalistsTournament = null;
-
-        // Populate tournament dropdown for finalists management
-        function populateFinalistsDropdown(tournaments) {
-            const select = document.getElementById('finalistsTournamentSelect');
-            if (!select) return;
-
-            // Clear existing options except the first one
-            select.innerHTML = '<option value="">Choose a tournament...</option>';
-
-            tournaments.forEach(tournament => {
-                const option = document.createElement('option');
-                option.value = tournament._id || tournament.id;
-                option.textContent = tournament.title || 'Untitled Tournament';
-                option.dataset.tournament = JSON.stringify(tournament);
-                select.appendChild(option);
-            });
-        }
-
-        // Load tournament for finalists management
-        function loadTournamentFinalists() {
-            const select = document.getElementById('finalistsTournamentSelect');
-            const selectedOption = select.options[select.selectedIndex];
-
-            if (selectedOption.value) {
-                selectedFinalistsTournament = JSON.parse(selectedOption.dataset.tournament);
-                document.getElementById('selectedFinalistsTournamentName').textContent = selectedFinalistsTournament.title || 'Untitled Tournament';
-
-                // Show finalists management container
-                document.getElementById('finalistsManagementContainer').style.display = 'block';
-                document.getElementById('finalistsPlaceholder').style.display = 'none';
-
-                // Generate finalists form
-                generateFinalistsForm();
-
-                // Load existing finalists data if available
-                loadExistingFinalists();
-            } else {
-                selectedFinalistsTournament = null;
-                document.getElementById('finalistsManagementContainer').style.display = 'none';
-                document.getElementById('finalistsPlaceholder').style.display = 'block';
-            }
-        }
-
-        // Generate the finalists form with 16 positions
-        function generateFinalistsForm() {
-            const leftContainer = document.getElementById('finalistsLeft');
-            const rightContainer = document.getElementById('finalistsRight');
-
-            let leftHTML = '';
-            let rightHTML = '';
-
-            // Generate positions 1-8 (left side)
-            for (let i = 1; i <= 8; i++) {
-                leftHTML += `
-                    <div class="mb-3">
-                        <label for="finalist_${i}" class="form-label">Position ${i}</label>
-                        <div class="input-group">
-                            <span class="input-group-text">${i}</span>
-                            <input type="text" class="form-control" id="finalist_${i}" placeholder="Team name">
-                            <input type="number" class="form-control" id="points_${i}" placeholder="Points" min="0">
-                        </div>
-                    </div>
-                `;
-            }
-
-            // Generate positions 9-16 (right side)
-            for (let i = 9; i <= 16; i++) {
-                rightHTML += `
-                    <div class="mb-3">
-                        <label for="finalist_${i}" class="form-label">Position ${i}</label>
-                        <div class="input-group">
-                            <span class="input-group-text">${i}</span>
-                            <input type="text" class="form-control" id="finalist_${i}" placeholder="Team name">
-                            <input type="number" class="form-control" id="points_${i}" placeholder="Points" min="0">
-                        </div>
-                    </div>
-                `;
-            }
-
-            leftContainer.innerHTML = leftHTML;
-            rightContainer.innerHTML = rightHTML;
-        }
-
-        // Load existing finalists data
-        async function loadExistingFinalists() {
-            if (!selectedFinalistsTournament) return;
-
-            try {
-                const result = await apiCall(`${API_BASE_URL}/api/user-tournaments/${selectedFinalistsTournament._id}/leaderboard`, {
-                    method: 'GET'
-                });
-
-                if (result.success && result.data && result.data.standings) {
-                    const standings = result.data.standings;
-
-                    // Populate form with existing data
-                    standings.forEach((standing, index) => {
-                        if (index < 16) { // Only top 16
-                            const position = index + 1;
-                            const teamInput = document.getElementById(`finalist_${position}`);
-                            const pointsInput = document.getElementById(`points_${position}`);
-
-                            if (teamInput) teamInput.value = standing.teamName || '';
-                            if (pointsInput) pointsInput.value = standing.points || '';
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading existing finalists:', error);
-                // Continue without existing data - user can enter fresh data
-            }
-        }
-
-        // Handle finalists form submission
-        async function handleFinalistsSubmit(e) {
-            e.preventDefault();
-
-            if (!selectedFinalistsTournament) {
-                showAlert('Please select a tournament first', 'warning');
-                return;
-            }
-
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const spinner = submitBtn.querySelector('.finalists-loading-spinner');
-
-            submitBtn.disabled = true;
-            spinner.style.display = 'inline-block';
-
-            try {
-                // Collect finalists data
-                const finalists = [];
-
-                for (let i = 1; i <= 16; i++) {
-                    const teamName = document.getElementById(`finalist_${i}`).value.trim();
-                    const points = document.getElementById(`points_${i}`).value;
-
-                    if (teamName) {
-                        finalists.push({
-                            position: i,
-                            teamName: teamName,
-                            points: parseInt(points) || 0
-                        });
-                    }
-                }
-
-                if (finalists.length === 0) {
-                    showAlert('Please enter at least one finalist', 'warning');
-                    return;
-                }
-
-                const result = await apiCall(`${API_BASE_URL}/api/user-tournaments/${selectedFinalistsTournament._id}/leaderboard`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ standings: finalists })
-                });
-
-                if (result.success) {
-                    showAlert('Finalists leaderboard updated successfully!', 'success');
-                } else {
-                    // For demo purposes, show success even if backend isn't implemented
-                    showAlert('Finalists leaderboard updated successfully! (Demo mode - backend integration pending)', 'success');
-                }
-
-            } catch (error) {
-                console.error('Error updating finalists:', error);
-                showAlert('Finalists leaderboard updated locally! (Backend integration pending)', 'info');
-            } finally {
-                submitBtn.disabled = false;
-                spinner.style.display = 'none';
-            }
-        }
-
-        // Clear all finalists
-        function clearFinalists() {
-            if (confirm('Are you sure you want to clear all finalists data?')) {
-                for (let i = 1; i <= 16; i++) {
-                    const teamInput = document.getElementById(`finalist_${i}`);
-                    const pointsInput = document.getElementById(`points_${i}`);
-
-                    if (teamInput) teamInput.value = '';
-                    if (pointsInput) pointsInput.value = '';
-                }
-                showAlert('All finalists data cleared', 'info');
-            }
-        }
-
-        // Initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', function () {
             // Hide loader
             setTimeout(() => {
                 document.getElementById('loader-wrapper').classList.add('hidden');
-            }, 1000);
+                document.body.classList.add('loaded');
+            }, 500);
+
+            // Initialize UI components
+            checkUserAuthentication();
+            initSmartNavbar();
+
+            // Load all player data
+            fetchPlayerDashboardData();
 
             // Initialize mobile menu toggle
             const normalMenuToggle = document.getElementById('normalMenuToggle');
@@ -2735,42 +1295,6 @@
                     normalMenuToggle.classList.toggle('active');
                     normalNav.classList.toggle('active');
                 });
-
-                // Close menu when clicking outside
-                document.addEventListener('click', (e) => {
-                    if (!e.target.closest('.nav-normal') && normalNav.classList.contains('active')) {
-                        normalNav.classList.remove('active');
-                        normalMenuToggle.classList.remove('active');
-                    }
-                });
-            }
-
-            initSmartNavbar(); // Initialize smart scroll behavior
-
-            // Small delay to ensure all elements are ready
-            setTimeout(() => {
-                checkUserAuthentication(); // Check if user is logged in
-            }, 100);
-
-            // Load dashboard data if user is authenticated
-            if (isAuthenticated()) {
-                loadDashboardData();
-
-                // Setup form submissions...
-                const updateForm = document.getElementById('updateTournamentForm');
-                if (updateForm) {
-                    updateForm.addEventListener('submit', handleUpdateSubmit);
-                }
-
-                const addEventForm = document.getElementById('addEventForm');
-                if (addEventForm) {
-                    addEventForm.addEventListener('submit', handleAddEventSubmit);
-                }
-
-                const finalistsForm = document.getElementById('finalistsForm');
-                if (finalistsForm) {
-                    finalistsForm.addEventListener('submit', handleFinalistsSubmit);
-                }
             }
         });
     </script>

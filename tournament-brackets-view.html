@@ -36,267 +36,273 @@
       /* Account for fixed navbar */
     }
     
-   /* =========================MODERN NAVBAR STYLES========================= */
+   /* =========================
+       NAVBAR STYLES (Modern Design)
+       ========================= */
     .nav-normal {
-        background: rgba(13, 10, 26, 0.1);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        padding: 0.5rem 2rem;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-        transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
-        transform: translateY(0);
+      background: rgba(13, 10, 26, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 0.5rem 2rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+      transform: translateY(0);
     }
 
     .nav-normal.nav-hidden {
-        transform: translateY(-100%);
+      transform: translateY(-100%);
     }
 
     .nav-normal.nav-scrolled {
-        background: rgba(13, 10, 26, 0.3);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(25px);
-        -webkit-backdrop-filter: blur(25px);
+      background: rgba(13, 10, 26, 0.3);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
     }
 
     .nav-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        max-width: 1400px;
-        margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
     }
 
     .logo {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: white;
-        text-decoration: none;
-        letter-spacing: -0.5px;
-        display: flex;
-        align-items: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
     }
 
     .logo img {
-        height: 80px;
-        width: auto;
-        margin: 0;
-        padding: 0;
-        display: block;
+      height: 80px;
+      width: auto;
+      margin: 0;
+      padding: 0;
+      display: block;
     }
 
     .nav-center {
-        display: flex;
-        align-items: center;
-        gap: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
     }
 
     .nav-links {
-        display: flex;
-        gap: 0;
-        list-style: none;
-        align-items: center;
-        margin: 0;
-        padding: 0;
+      display: flex;
+      gap: 0;
+      list-style: none;
+      align-items: center;
+      margin: 0;
+      padding: 0;
     }
 
     .nav-links li {
-        position: relative;
+      position: relative;
     }
 
     .nav-links a {
-        color: rgba(255, 255, 255, 0.7);
-        text-decoration: none;
-        font-weight: 500;
-        font-size: 0.95rem;
-        transition: all 0.3s ease;
-        padding: 0.6rem 1.2rem;
-        display: block;
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      padding: 0.6rem 1.2rem;
+      display: block;
     }
 
-    .nav-links a:hover,
-    .nav-links a.active {
-        color: white;
+    .nav-links a:hover {
+      color: white;
     }
 
     .auth-buttons {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
     }
 
     .btn {
-        padding: 0.6rem 1.2rem;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: 500;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
-        border: none;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
+      padding: 0.65rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
     }
 
     .btn-request {
-        background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
-        color: white;
+      background: white;
+      color: #0a0a0a;
     }
 
     .btn-request:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(15, 133, 211, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
     }
 
     .btn-logout {
-        background: rgba(255, 255, 255, 0.1);
-        color: rgba(255, 255, 255, 0.8);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
     }
 
     .btn-logout:hover {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-    }
-
-    #user-menu {
-        display: flex;
-        gap: 1rem;
-        align-items: center;
+      background: rgba(239, 68, 68, 0.25);
     }
 
     .user-info {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        padding: 0.5rem 1rem;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 50px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .user-avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-secondary) 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 0.85rem;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-secondary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.85rem;
     }
 
     .user-name {
-        font-weight: 500;
-        font-size: 0.9rem;
+      font-weight: 500;
+      font-size: 0.9rem;
     }
 
     .menu-toggle {
-        display: none;
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0.5rem;
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
     }
 
     .menu-icon {
-        width: 24px;
-        height: 20px;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+      width: 24px;
+      height: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     .menu-icon span {
-        width: 100%;
-        height: 2px;
-        background: white;
-        border-radius: 2px;
-        transition: all 0.3s ease;
+      width: 100%;
+      height: 2px;
+      background: white;
+      border-radius: 2px;
+      transition: all 0.3s ease;
     }
 
     .menu-toggle.active .menu-icon span:nth-child(1) {
-        transform: rotate(45deg) translate(7px, 7px);
+      transform: rotate(45deg) translate(7px, 7px);
     }
 
     .menu-toggle.active .menu-icon span:nth-child(2) {
-        opacity: 0;
+      opacity: 0;
     }
 
     .menu-toggle.active .menu-icon span:nth-child(3) {
-        transform: rotate(-45deg) translate(7px, -7px);
+      transform: rotate(-45deg) translate(7px, -7px);
     }
 
     /* Mobile Styles */
     @media (max-width: 968px) {
-        .menu-toggle {
-            display: block;
-        }
+      .menu-toggle {
+        display: block;
+      }
 
-        .nav-center {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            height: 100vh;
-            width: 85%;
-            max-width: 350px;
-            flex-direction: column;
-            background: rgba(15, 15, 15, 0.98);
-            backdrop-filter: blur(20px);
-            padding: 6rem 2rem 2rem;
-            gap: 0;
-            transition: right 0.3s ease;
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            align-items: flex-start;
-            overflow-y: auto;
-        }
+      .nav-center {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        height: 100vh;
+        width: 85%;
+        max-width: 350px;
+        flex-direction: column;
+        background: rgba(15, 15, 15, 0.98);
+        backdrop-filter: blur(20px);
+        padding: 6rem 2rem 2rem;
+        gap: 0;
+        transition: right 0.3s ease;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        align-items: flex-start;
+        overflow-y: auto;
+      }
 
-        .nav-center.active {
-            right: 0;
-        }
+      .nav-center.active {
+        right: 0;
+      }
 
-        .nav-links {
-            flex-direction: column;
-            width: 100%;
-            gap: 0;
-        }
+      .nav-links {
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+      }
 
-        .nav-links li {
-            width: 100%;
-        }
+      .nav-links li {
+        width: 100%;
+      }
 
-        .nav-links a {
-            padding: 1rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
+      .nav-links a {
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
 
-        .auth-buttons {
-            flex-direction: column;
-            width: 100%;
-            gap: 1rem;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
+      .auth-buttons {
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
 
-        .user-info {
-            width: 100%;
-            justify-content: center;
-        }
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
 
-        #user-menu {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            gap: 1rem;
-        }
+      .user-info {
+        width: 100%;
+        justify-content: center;
+      }
+
+      #user-menu {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+      }
+    }
+
+    @media (min-width: 769px) {
+
+      /* Apply only on desktop */
+      .nav-actions {
+        padding-left: 1.5rem;
+        margin-left: 1.5rem;
+        border-left: 1px solid var(--border-color);
+      }
     }
 
     @media (max-width: 768px) {
@@ -1014,6 +1020,23 @@
       scrollbar-width: thin;
       scrollbar-color: var(--panel) var(--bg-dark);
     }
+    .user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.user-info:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(10, 250, 217, 0.3);
+    transform: translateY(-2px);
+}
   </style>
 </head>
 
@@ -1033,7 +1056,7 @@
                     <a href="auth.html" class="btn btn-request">Join Us</a>
                 </div>
                 <div id="user-menu" style="display: none;">
-                    <div class="user-info">
+                    <div class="user-info" onclick="window.location.href='user-dashboard.html'" style="cursor: pointer;">
                         <div class="user-avatar" id="user-avatar">U</div>
                         <span class="user-name" id="navbar-username">User</span>
                     </div>

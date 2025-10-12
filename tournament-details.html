@@ -1774,6 +1774,23 @@
     text-align: left;
   }
 }
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.user-info:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(10, 250, 217, 0.3);
+    transform: translateY(-2px);
+}
   </style>
 
   <script>
@@ -1816,9 +1833,11 @@
         <div class="auth-buttons" id="normalAuth">
           <div id="guest-menu"><a href="auth.html" class="btn btn-request">Join Us</a></div>
           <div id="user-menu" style="display: none;">
-            <div class="user-info">
-              <div class="user-avatar" id="user-avatar">U</div><span class="user-name" id="navbar-username">User</span>
-            </div><button class="btn btn-logout" onclick="handleLogout()">Logout</button>
+            <div class="user-info" onclick="window.location.href='user-dashboard.html'" style="cursor: pointer;">
+                <div class="user-avatar" id="user-avatar">U</div>
+                <span class="user-name" id="navbar-username">User</span>
+            </div>
+            <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
           </div>
         </div>
       </div><button class="menu-toggle" id="normalMenuToggle">
