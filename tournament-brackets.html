@@ -2494,12 +2494,60 @@
                 return;
             }
 
+            const format = (tournamentData.format || 'single_elimination').toLowerCase();
+            const isAdmin = await checkAdminAccess();
+            
+            // 1. Check if the format is KP and if the user is an Admin
+            if (format === 'kp' && isAdmin) {
+                const session = getSessionData();
+                const authToken = session ? session.token : null;
+                
+                if (!authToken) {
+                    showNotification("Authentication required for detailed PDF download.", 'error');
+                    return;
+                }
+
+                const downloadBtn = document.getElementById('download-pdf-btn');
+                const originalText = downloadBtn.innerHTML;
+                downloadBtn.disabled = true;
+                downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating Roster...';
+
+                try {
+                    // 2. Call the dedicated backend endpoint to get the ReportLab-generated PDF
+                    const downloadUrl = `${API_BASE_URL}/api/tournaments/${tournamentSlug}/export/kp-slots-pdf?token=${authToken}`;
+                    
+                    // Open URL in a new window/tab to trigger download
+                    window.open(downloadUrl, '_blank');
+                    
+                    showNotification("Detailed KP Roster download started.", 'success');
+
+                } catch (error) {
+                    console.error('Error during backend PDF download:', error);
+                    showNotification("Failed to generate detailed PDF. Check server logs.", 'error');
+                } finally {
+                    // 3. Restore button state regardless of success/failure
+                    downloadBtn.disabled = false;
+                    downloadBtn.innerHTML = originalText;
+                }
+                
+                // Exit the function after calling the backend
+                return; 
+            }
+
+            // 4. Fallback for other formats (using existing client-side jsPDF logic) or non-admin users
+            if (format === 'kp' && !isAdmin) {
+                showNotification("Only tournament administrators can download the detailed KP Roster.", 'warning');
+                return;
+            }
+
+
+            // --- START: Existing jsPDF Client-Side Logic for other formats ---
+
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             const participants = tournamentData.participants || [];
-            const format = (tournamentData.format || 'single_elimination').toLowerCase();
-
-            // Page 1: Tournament Overview
+            
+            // Page 1: Tournament Overview (Keep this part for all non-KP or non-admin downloads)
             doc.setFontSize(20);
             doc.setTextColor(15, 133, 211);
             doc.text(tournamentData.title, 20, 30);
@@ -2535,7 +2583,7 @@
                 yPos += 8;
             });
 
-            // Generate tournament tables based on format
+            // Generate tournament tables based on format (using client-side jsPDF for non-KP formats)
             const formatConfig = getTournamentFormatConfig(format, participants.length);
 
             if (formatConfig && formatConfig.stages) {
@@ -2578,7 +2626,9 @@
                             currentY += 15;
                         }
 
-                        if (table.type === 'qualifier') {
+                        // IMPORTANT: For KP format, this block is now ONLY a fallback 
+                        // as the main execution path above will have already exited for admins.
+                        if (table.type === 'qualifier') { 
                             // Generate qualifier table data with balanced distribution
                             const kpSettings = tournamentData.kpSettings || {};
                             const numberOfGroups = kpSettings.numberOfGroups || 4;
@@ -2591,11 +2641,9 @@
                             // Calculate this group's size and start/end indices
                             let currentGroupSize, startIndex;
                             if (tableIndex < extraTeams) {
-                                // First 'extraTeams' groups get one extra team
                                 currentGroupSize = baseTeamsPerGroup + 1;
                                 startIndex = tableIndex * currentGroupSize;
                             } else {
-                                // Remaining groups get base amount
                                 currentGroupSize = baseTeamsPerGroup;
                                 startIndex = (extraTeams * (baseTeamsPerGroup + 1)) + ((tableIndex - extraTeams) * baseTeamsPerGroup);
                             }
@@ -2734,6 +2782,8 @@
             const fileName = `${tournamentData.slug || 'tournament'}-brackets-${new Date().toISOString().split('T')[0]}.pdf`;
             doc.save(fileName);
         }
+
+        // --- END: Existing jsPDF Client-Side Logic for other formats ---
 
         // Match schedule management functions
         function setMatchSchedule(tableId, tableName) {
