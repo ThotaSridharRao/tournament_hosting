@@ -130,12 +130,6 @@
             <span class="text-xs text-starlight-muted" id="host-status">Verified Host</span>
           </div>
         </div>
-        <!-- Theme Toggle -->
-        <button id="theme-toggle"
-          class="mt-4 w-full flex items-center justify-center space-x-2 px-3 py-2 bg-dark-matter/50 rounded-lg border border-cyber-border hover:border-cyber-cyan transition-colors">
-          <i class="fas fa-moon text-cyber-cyan"></i>
-          <span class="text-sm">Dark Mode</span>
-        </button>
       </div>
 
       <!-- Navigation Menu -->
@@ -190,9 +184,9 @@
       <!-- Sidebar Footer -->
       <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-cyber-border">
         <button id="logout-btn"
-          class="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30 transition-colors"></button>
-        <i class="fas fa-sign-out-alt"></i>
-        <span>Logout</span>
+          class="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30 transition-colors">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
         </button>
       </div>
     </aside>
@@ -262,7 +256,6 @@
         this.hostData = null;
         this.tournaments = [];
         this.notifications = [];
-        this.theme = localStorage.getItem('theme') || 'dark';
       }
 
       setCurrentSection(section) {
@@ -309,23 +302,7 @@
         document.getElementById('page-subtitle').textContent = pageData.subtitle;
       }
 
-      toggleTheme() {
-        this.theme = this.theme === 'dark' ? 'light' : 'dark';
-        localStorage.setItem('theme', this.theme);
-        document.documentElement.classList.toggle('dark', this.theme === 'dark');
 
-        const themeBtn = document.getElementById('theme-toggle');
-        const icon = themeBtn.querySelector('i');
-        const text = themeBtn.querySelector('span');
-
-        if (this.theme === 'dark') {
-          icon.className = 'fas fa-moon text-cyber-cyan';
-          text.textContent = 'Dark Mode';
-        } else {
-          icon.className = 'fas fa-sun text-cyber-cyan';
-          text.textContent = 'Light Mode';
-        }
-      }
     }
 
     // Initialize Dashboard
@@ -366,15 +343,7 @@
       });
     }
 
-    // Theme Toggle
-    function initializeThemeToggle() {
-      document.getElementById('theme-toggle').addEventListener('click', () => {
-        dashboardState.toggleTheme();
-      });
 
-      // Set initial theme
-      document.documentElement.classList.toggle('dark', dashboardState.theme === 'dark');
-    }
 
     // Load Section Content
     async function loadSectionContent(section) {
@@ -503,7 +472,6 @@
       // Initialize components
       initializeMobileMenu();
       initializeNavigation();
-      initializeThemeToggle();
 
       // Load external scripts
       await loadExternalScripts();
