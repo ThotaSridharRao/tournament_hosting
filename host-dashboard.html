@@ -66,13 +66,16 @@
     ::-webkit-scrollbar {
       width: 8px;
     }
+
     ::-webkit-scrollbar-track {
       background: #161329;
     }
+
     ::-webkit-scrollbar-thumb {
       background: #5D3FD3;
       border-radius: 4px;
     }
+
     ::-webkit-scrollbar-thumb:hover {
       background: #0AFAD9;
     }
@@ -91,7 +94,7 @@
 
     /* Background gradient animation */
     .bg-cyber-gradient {
-      background: 
+      background:
         radial-gradient(circle at 15% 85%, rgba(10, 250, 217, 0.1) 0%, transparent 40%),
         radial-gradient(circle at 85% 25%, rgba(93, 63, 211, 0.1) 0%, transparent 40%);
       animation: pulse-cyber 15s infinite ease-in-out;
@@ -101,8 +104,9 @@
 
 <body class="bg-dark-matter text-starlight font-inter overflow-x-hidden">
   <!-- Loading Animation -->
-  <div id="loader-wrapper" class="fixed inset-0 bg-dark-matter/90 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-500">
-    <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie" 
+  <div id="loader-wrapper"
+    class="fixed inset-0 bg-dark-matter/90 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-500">
+    <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie"
       style="width: 300px; height: 300px" autoplay loop></dotlottie-wc>
   </div>
 
@@ -112,11 +116,13 @@
   <!-- Main Container -->
   <div class="flex h-screen">
     <!-- Sidebar Navigation -->
-    <aside id="sidebar" class="w-64 bg-dark-panel/80 backdrop-blur-cyber border-r border-cyber-border transition-transform duration-300 transform lg:translate-x-0 -translate-x-full fixed lg:relative z-40 h-full">
+    <aside id="sidebar"
+      class="w-64 bg-dark-panel/80 backdrop-blur-cyber border-r border-cyber-border transition-transform duration-300 transform lg:translate-x-0 -translate-x-full fixed lg:relative z-40 h-full">
       <!-- Sidebar Header -->
       <div class="p-6 border-b border-cyber-border">
         <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 bg-gradient-to-br from-cyber-cyan to-cyber-indigo rounded-full flex items-center justify-center">
+          <div
+            class="w-10 h-10 bg-gradient-to-br from-cyber-cyan to-cyber-indigo rounded-full flex items-center justify-center">
             <span class="text-dark-matter font-bold text-sm" id="host-avatar-text">H</span>
           </div>
           <div>
@@ -125,7 +131,8 @@
           </div>
         </div>
         <!-- Theme Toggle -->
-        <button id="theme-toggle" class="mt-4 w-full flex items-center justify-center space-x-2 px-3 py-2 bg-dark-matter/50 rounded-lg border border-cyber-border hover:border-cyber-cyan transition-colors">
+        <button id="theme-toggle"
+          class="mt-4 w-full flex items-center justify-center space-x-2 px-3 py-2 bg-dark-matter/50 rounded-lg border border-cyber-border hover:border-cyber-cyan transition-colors">
           <i class="fas fa-moon text-cyber-cyan"></i>
           <span class="text-sm">Dark Mode</span>
         </button>
@@ -135,38 +142,44 @@
       <nav class="p-4">
         <ul class="space-y-2">
           <li>
-            <a href="#dashboard" class="nav-item active flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
+            <a href="#dashboard"
+              class="nav-item active flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
               <i class="fas fa-tachometer-alt text-cyber-cyan group-hover:text-cyber-cyan"></i>
               <span class="font-medium">Dashboard</span>
             </a>
           </li>
           <li>
-            <a href="#tournaments" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
+            <a href="#tournaments"
+              class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
               <i class="fas fa-trophy text-starlight-muted group-hover:text-cyber-cyan"></i>
               <span class="font-medium text-starlight-muted group-hover:text-starlight">Tournaments</span>
               <span class="ml-auto bg-cyber-indigo text-xs px-2 py-1 rounded-full">3</span>
             </a>
           </li>
           <li>
-            <a href="#wallet" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
+            <a href="#wallet"
+              class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
               <i class="fas fa-wallet text-starlight-muted group-hover:text-cyber-cyan"></i>
               <span class="font-medium text-starlight-muted group-hover:text-starlight">Wallet</span>
             </a>
           </li>
           <li>
-            <a href="#schedule" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
+            <a href="#schedule"
+              class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
               <i class="fas fa-calendar-alt text-starlight-muted group-hover:text-cyber-cyan"></i>
               <span class="font-medium text-starlight-muted group-hover:text-starlight">Schedule</span>
             </a>
           </li>
           <li>
-            <a href="#analytics" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
+            <a href="#analytics"
+              class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
               <i class="fas fa-chart-line text-starlight-muted group-hover:text-cyber-cyan"></i>
               <span class="font-medium text-starlight-muted group-hover:text-starlight">Analytics</span>
             </a>
           </li>
           <li>
-            <a href="#settings" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
+            <a href="#settings"
+              class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
               <i class="fas fa-cog text-starlight-muted group-hover:text-cyber-cyan"></i>
               <span class="font-medium text-starlight-muted group-hover:text-starlight">Settings</span>
             </a>
@@ -176,9 +189,10 @@
 
       <!-- Sidebar Footer -->
       <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-cyber-border">
-        <button id="logout-btn" class="w-full flex items-center justify-center ...">
-          <i class="fas fa-sign-out-alt"></i>
-          <span>Logout</span>
+        <button id="logout-btn"
+          class="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30 transition-colors"></button>
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Logout</span>
         </button>
       </div>
     </aside>
@@ -198,16 +212,18 @@
             </button>
             <div>
               <h1 class="text-2xl font-bold text-starlight" id="page-title">Dashboard</h1>
-              <p class="text-sm text-starlight-muted" id="page-subtitle">Welcome back! Here's your tournament overview.</p>
+              <p class="text-sm text-starlight-muted" id="page-subtitle">Welcome back! Here's your tournament overview.
+              </p>
             </div>
           </div>
-          
+
           <!-- Header Actions -->
           <div class="flex items-center space-x-4">
             <!-- Notifications will be added dynamically -->
-            
+
             <!-- Quick Actions -->
-            <button id="header-new-tournament" class="px-4 py-2 bg-cyber-cyan text-dark-matter rounded-lg font-semibold hover:bg-cyber-cyan/90 transition-colors">
+            <button id="header-new-tournament"
+              class="px-4 py-2 bg-cyber-cyan text-dark-matter rounded-lg font-semibold hover:bg-cyber-cyan/90 transition-colors">
               <i class="fas fa-plus mr-2"></i>
               New Tournament
             </button>
@@ -234,9 +250,9 @@
   <!-- JavaScript -->
   <script>
     // API Configuration
-    const isLocal = window.location.hostname === 'localhost' || 
-                   window.location.hostname === '127.0.0.1' || 
-                   window.location.protocol === 'file:';
+    const isLocal = window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      window.location.protocol === 'file:';
     const API_BASE_URL = isLocal ? 'http://localhost:8000' : 'https://t2-237c.onrender.com';
 
     // Dashboard State Management
@@ -297,11 +313,11 @@
         this.theme = this.theme === 'dark' ? 'light' : 'dark';
         localStorage.setItem('theme', this.theme);
         document.documentElement.classList.toggle('dark', this.theme === 'dark');
-        
+
         const themeBtn = document.getElementById('theme-toggle');
         const icon = themeBtn.querySelector('i');
         const text = themeBtn.querySelector('span');
-        
+
         if (this.theme === 'dark') {
           icon.className = 'fas fa-moon text-cyber-cyan';
           text.textContent = 'Dark Mode';
@@ -339,11 +355,11 @@
           e.preventDefault();
           const section = item.getAttribute('href').substring(1);
           dashboardState.setCurrentSection(section);
-          
+
           // Close mobile menu if open
           document.getElementById('sidebar').classList.add('-translate-x-full');
           document.getElementById('sidebar-overlay').classList.add('hidden');
-          
+
           // Load section content (placeholder for now)
           loadSectionContent(section);
         });
@@ -355,7 +371,7 @@
       document.getElementById('theme-toggle').addEventListener('click', () => {
         dashboardState.toggleTheme();
       });
-      
+
       // Set initial theme
       document.documentElement.classList.toggle('dark', dashboardState.theme === 'dark');
     }
@@ -363,7 +379,7 @@
     // Load Section Content
     async function loadSectionContent(section) {
       const contentArea = document.getElementById('content-area');
-      
+
       // Show loading state
       contentArea.innerHTML = `
         <div class="flex items-center justify-center py-20">
@@ -381,7 +397,7 @@
             window.dashboardOverview = new DashboardOverview();
             await window.dashboardOverview.init();
             break;
-          
+
           case 'tournaments':
             if (window.tournamentManagement) {
               window.tournamentManagement.destroy();
@@ -389,7 +405,7 @@
             window.tournamentManagement = new TournamentManagement();
             await window.tournamentManagement.init();
             break;
-          
+
           case 'wallet':
             if (window.walletManagement) {
               window.walletManagement.destroy();
@@ -397,7 +413,7 @@
             window.walletManagement = new WalletManagement();
             await window.walletManagement.init();
             break;
-          
+
           default:
             // Placeholder for other sections
             contentArea.innerHTML = `
@@ -442,19 +458,19 @@
       try {
         // Load API client
         await loadScript('dashboard-assets/js/utils/api-client.js');
-        
+
         // Load dashboard overview component
         await loadScript('dashboard-assets/js/components/dashboard-overview.js');
-        
+
         // Load notifications panel component
         await loadScript('dashboard-assets/js/components/notifications-panel.js');
-        
+
         // Load tournament management component
         await loadScript('dashboard-assets/js/components/tournament-management.js');
-        
+
         // Load wallet management component
         await loadScript('dashboard-assets/js/components/wallet-management.js');
-        
+
         console.log('External scripts loaded successfully');
       } catch (error) {
         console.error('Failed to load external scripts:', error);
@@ -474,6 +490,11 @@
 
     // Initialize Dashboard
     document.addEventListener('DOMContentLoaded', async () => {
+      // Check authentication first
+      if (!checkAuthentication()) {
+        return; // Will redirect to auth page
+      }
+
       // Hide loader after a short delay
       setTimeout(() => {
         document.getElementById('loader-wrapper').classList.add('opacity-0', 'pointer-events-none');
@@ -483,21 +504,30 @@
       initializeMobileMenu();
       initializeNavigation();
       initializeThemeToggle();
-      
+
       // Load external scripts
       await loadExternalScripts();
 
       await loadHostProfile(); // Fetch and display host info
-      
+
       // Set initial state
       dashboardState.setCurrentSection('dashboard');
-      
+
       // Initialize notifications panel
       if (window.NotificationsPanel) {
         window.notificationsPanel = new NotificationsPanel();
         await window.notificationsPanel.init();
       }
-      
+
+      // Add logout functionality
+      document.getElementById('logout-btn')?.addEventListener('click', () => {
+        if (confirm('Are you sure you want to logout?')) {
+          localStorage.removeItem('nexus_session');
+          sessionStorage.removeItem('nexus_session');
+          window.location.href = 'auth.html';
+        }
+      });
+
       // Bind header new tournament button
       document.getElementById('header-new-tournament')?.addEventListener('click', () => {
         // Switch to tournaments section if not already there
@@ -518,34 +548,83 @@
           }
         }
       });
-      
+
       // Load initial dashboard content
       await loadSectionContent('dashboard');
-      
+
       console.log('Host Dashboard initialized successfully!');
     });
 
-    // Add this function inside the main <script> tag
+    // Session management functions (same pattern as other pages)
+    function getSessionData() {
+      const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+      try {
+        return session ? JSON.parse(session) : null;
+      } catch (error) {
+        console.error('Error parsing session data:', error);
+        localStorage.removeItem('nexus_session');
+        sessionStorage.removeItem('nexus_session');
+        return null;
+      }
+    }
+
+    function checkAuthentication() {
+      const sessionData = getSessionData();
+      if (!sessionData || !sessionData.token) {
+        console.log('No valid session found, redirecting to auth...');
+        window.location.href = 'auth.html';
+        return false;
+      }
+
+      // Verify host role
+      if (sessionData.user?.role !== 'host') {
+        console.log('User is not a host, redirecting...');
+        window.location.href = 'auth.html';
+        return false;
+      }
+
+      return true;
+    }
 
     async function loadHostProfile() {
-        try {
-            // Use the apiClient to fetch profile data
-            const response = await window.apiClient.getHostProfile();
-            if (response.success && response.data) {
-                const host = response.data;
-                const hostName = (host.firstName && host.lastName) ? `${host.firstName} ${host.lastName}` : host.username;
-                const avatarText = hostName.charAt(0).toUpperCase();
+      try {
+        // First check if we have valid session
+        const sessionData = getSessionData();
+        if (sessionData && sessionData.user) {
+          // Use session data first for immediate display
+          const user = sessionData.user;
+          const hostName = (user.firstName && user.lastName) ? `${user.firstName} ${user.lastName}` : user.username;
+          const avatarText = hostName.charAt(0).toUpperCase();
 
-                // Update the sidebar elements
-                document.getElementById('host-name').textContent = hostName;
-                document.getElementById('host-avatar-text').textContent = avatarText;
-            }
-        } catch (error) {
-            console.error('Failed to load host profile:', error);
-            // Fallback to default values if API fails
-            document.getElementById('host-name').textContent = 'Host';
-            document.getElementById('host-avatar-text').textContent = 'H';
+          document.getElementById('host-name').textContent = hostName;
+          document.getElementById('host-avatar-text').textContent = avatarText;
         }
+
+        // Then try to fetch fresh profile data
+        const response = await window.apiClient.getHostProfile();
+        if (response.success && response.data) {
+          const host = response.data;
+          const hostName = (host.firstName && host.lastName) ? `${host.firstName} ${host.lastName}` : host.username;
+          const avatarText = hostName.charAt(0).toUpperCase();
+
+          // Update the sidebar elements with fresh data
+          document.getElementById('host-name').textContent = hostName;
+          document.getElementById('host-avatar-text').textContent = avatarText;
+        }
+      } catch (error) {
+        console.error('Failed to load host profile:', error);
+        // Fallback to session data or defaults
+        const sessionData = getSessionData();
+        if (sessionData && sessionData.user) {
+          const user = sessionData.user;
+          const hostName = user.username || 'Host';
+          document.getElementById('host-name').textContent = hostName;
+          document.getElementById('host-avatar-text').textContent = hostName.charAt(0).toUpperCase();
+        } else {
+          document.getElementById('host-name').textContent = 'Host';
+          document.getElementById('host-avatar-text').textContent = 'H';
+        }
+      }
     }
   </script>
 </body>

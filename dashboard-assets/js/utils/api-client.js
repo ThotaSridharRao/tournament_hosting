@@ -6,7 +6,7 @@
 class ApiClient {
   constructor() {
     this.baseURL = this.getBaseURL();
-    this.token = localStorage.getItem('auth_token');
+    this.token = this.getTokenFromSession();
     this.retryAttempts = 3;
     this.retryDelay = 1000; // 1 second
   }
@@ -22,21 +22,47 @@ class ApiClient {
   }
 
   /**
-   * Set authentication token
+   * Get session data (same pattern as other pages)
    */
-  setToken(token) {
-    this.token = token;
-    localStorage.setItem('auth_token', token);
+  getSessionData() {
+    const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+    try {
+      return session ? JSON.parse(session) : null;
+    } catch (error) {
+      console.error('Error parsing session data:', error);
+      localStorage.removeItem('nexus_session');
+      sessionStorage.removeItem('nexus_session');
+      return null;
+    }
   }
 
   /**
-   * Clear authentication token
+   * Get token from session data
+   */
+  getTokenFromSession() {
+    const sessionData = this.getSessionData();
+    return sessionData?.token || null;
+  }
+
+  /**
+   * Set authentication token (updates session)
+   */
+  setToken(token) {
+    this.token = token;
+    const sessionData = this.getSessionData();
+    if (sessionData) {
+      sessionData.token = token;
+      localStorage.setItem('nexus_session', JSON.stringify(sessionData));
+    }
+  }
+
+  /**
+   * Clear authentication token (same pattern as other pages)
    */
   clearToken() {
     this.token = null;
-    localStorage.removeItem('auth_token');
-    // Also remove user_data on logout
-    localStorage.removeItem('user_data');
+    localStorage.removeItem('nexus_session');
+    sessionStorage.removeItem('nexus_session');
   }
 
   /**
@@ -47,8 +73,11 @@ class ApiClient {
       'Content-Type': 'application/json',
     };
 
-    if (this.token) {
-      headers['Authorization'] = `Bearer ${this.token}`;
+    // Always get fresh token from session
+    const currentToken = this.getTokenFromSession();
+    if (currentToken) {
+      headers['Authorization'] = `Bearer ${currentToken}`;
+      this.token = currentToken; // Update cached token
     }
 
     return headers;
@@ -75,7 +104,7 @@ class ApiClient {
         
         if (response.status === 401) {
           this.clearToken();
-          window.location.href = '/auth.html';
+          window.location.href = 'auth.html';
           throw new ApiError('Authentication required. Please log in again.', 401);
         }
 
