@@ -927,4 +927,42 @@ edule Management Styles */
 
 .event-finals {
   @apply bg-yellow-500/20 text-yellow-400;
+}/* Additi
+onal Schedule Event Types */
+.event-bracket-generation {
+  @apply bg-cyber-indigo/20 text-cyber-indigo;
+}
+
+.event-team-checkin {
+  @apply bg-orange-500/20 text-orange-400;
+}
+
+/* Event urgency indicators */
+.event-card.urgent {
+  @apply border-yellow-400/50 shadow-lg shadow-yellow-400/10;
+}
+
+.event-card.today {
+  @apply ring-2 ring-cyber-cyan/50 shadow-lg shadow-cyber-cyan/10;
+}
+
+/* Event priority styling */
+.event-priority-1 {
+  @apply border-l-4 border-l-yellow-400;
+}
+
+.event-priority-2 {
+  @apply border-l-4 border-l-purple-400;
+}
+
+.event-priority-3 {
+  @apply border-l-4 border-l-green-400;
+}
+
+.event-priority-4 {
+  @apply border-l-4 border-l-blue-400;
+}
+
+.event-priority-5 {
+  @apply border-l-4 border-l-cyan-400;
 }

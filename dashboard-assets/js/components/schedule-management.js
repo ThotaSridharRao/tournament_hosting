@@ -115,11 +115,152 @@ class ScheduleManagement {
 
     // Sort events by date
     this.events.sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    // If no events were generated, create some sample events for testing
+    if (this.events.length === 0 && this.tournaments.length > 0) {
+      this.createSampleEvents();
+    }
+  }
+
+  createSampleEvents() {
+    const now = new Date();
+    
+    // Create sample events if we have tournaments but no events
+    if (this.tournaments.length > 0) {
+      const sampleTournament = this.tournaments[0];
+      
+      // Registration Opens (tomorrow)
+      const regStart = new Date(now);
+      regStart.setDate(regStart.getDate() + 1);
+      regStart.setHours(9, 0, 0, 0);
+      
+      this.events.push({
+        id: `${sampleTournament._id}-sample-reg-start`,
+        tournamentId: sampleTournament._id,
+        tournamentTitle: sampleTournament.title,
+        type: 'registration_open',
+        title: 'Registration Opens',
+        description: `Registration period begins for ${sampleTournament.title}`,
+        date: regStart,
+        time: this.formatTime(regStart),
+        status: 'upcoming',
+        icon: 'fas fa-door-open',
+        color: 'text-green-400',
+        bgColor: 'bg-green-500/20',
+        priority: 3
+      });
+
+      // Registration Closes (in 5 days)
+      const regEnd = new Date(now);
+      regEnd.setDate(regEnd.getDate() + 5);
+      regEnd.setHours(23, 59, 0, 0);
+      
+      this.events.push({
+        id: `${sampleTournament._id}-sample-reg-end`,
+        tournamentId: sampleTournament._id,
+        tournamentTitle: sampleTournament.title,
+        type: 'registration_close',
+        title: 'Registration Closes',
+        description: `Last chance to register for ${sampleTournament.title}`,
+        date: regEnd,
+        time: this.formatTime(regEnd),
+        status: 'upcoming',
+        icon: 'fas fa-door-closed',
+        color: 'text-yellow-400',
+        bgColor: 'bg-yellow-500/20',
+        priority: 4
+      });
+
+      // Brackets Generated (in 6 days)
+      const brackets = new Date(now);
+      brackets.setDate(brackets.getDate() + 6);
+      brackets.setHours(18, 0, 0, 0);
+      
+      this.events.push({
+        id: `${sampleTournament._id}-sample-brackets`,
+        tournamentId: sampleTournament._id,
+        tournamentTitle: sampleTournament.title,
+        type: 'bracket_generation',
+        title: 'Brackets Generated',
+        description: `Tournament brackets will be finalized for ${sampleTournament.title}`,
+        date: brackets,
+        time: this.formatTime(brackets),
+        status: 'upcoming',
+        icon: 'fas fa-sitemap',
+        color: 'text-cyber-indigo',
+        bgColor: 'bg-cyber-indigo/20',
+        priority: 4
+      });
+
+      // Tournament Starts (in 7 days)
+      const tournStart = new Date(now);
+      tournStart.setDate(tournStart.getDate() + 7);
+      tournStart.setHours(10, 0, 0, 0);
+      
+      this.events.push({
+        id: `${sampleTournament._id}-sample-start`,
+        tournamentId: sampleTournament._id,
+        tournamentTitle: sampleTournament.title,
+        type: 'tournament_start',
+        title: 'Tournament Begins',
+        description: `${sampleTournament.title} competition starts`,
+        date: tournStart,
+        time: this.formatTime(tournStart),
+        status: 'upcoming',
+        icon: 'fas fa-play-circle',
+        color: 'text-cyber-cyan',
+        bgColor: 'bg-cyber-cyan/20',
+        priority: 5
+      });
+
+      // Team Check-in (2 hours before tournament)
+      const checkin = new Date(tournStart);
+      checkin.setHours(checkin.getHours() - 2);
+      
+      this.events.push({
+        id: `${sampleTournament._id}-sample-checkin`,
+        tournamentId: sampleTournament._id,
+        tournamentTitle: sampleTournament.title,
+        type: 'team_checkin',
+        title: 'Team Check-in',
+        description: `Teams must check-in for ${sampleTournament.title}`,
+        date: checkin,
+        time: this.formatTime(checkin),
+        status: 'upcoming',
+        icon: 'fas fa-clipboard-check',
+        color: 'text-orange-400',
+        bgColor: 'bg-orange-500/20',
+        priority: 3
+      });
+
+      // Finals (in 9 days)
+      const finals = new Date(now);
+      finals.setDate(finals.getDate() + 9);
+      finals.setHours(18, 0, 0, 0);
+      
+      this.events.push({
+        id: `${sampleTournament._id}-sample-finals`,
+        tournamentId: sampleTournament._id,
+        tournamentTitle: sampleTournament.title,
+        type: 'finals',
+        title: 'Finals',
+        description: `Championship finals for ${sampleTournament.title}`,
+        date: finals,
+        time: this.formatTime(finals),
+        status: 'upcoming',
+        icon: 'fas fa-trophy',
+        color: 'text-yellow-400',
+        bgColor: 'bg-yellow-500/20',
+        priority: 1
+      });
+    }
   }
 
   extractTournamentEvents(tournament) {
     const events = [];
     const now = new Date();
+
+
 
     // Registration Open Event
     if (tournament.registrationStart) {
@@ -162,8 +303,8 @@ class ScheduleManagement {
     }
 
     // Tournament Start Event
-    if (tournament.startDate) {
-      const startDate = new Date(tournament.startDate);
+    if (tournament.tournamentStart || tournament.startDate) {
+      const startDate = new Date(tournament.tournamentStart || tournament.startDate);
       events.push({
         id: `${tournament._id}-start`,
         tournamentId: tournament._id,
@@ -181,36 +322,16 @@ class ScheduleManagement {
       });
     }
 
-    // Tournament End Event
-    if (tournament.endDate) {
-      const endDate = new Date(tournament.endDate);
-      events.push({
-        id: `${tournament._id}-end`,
-        tournamentId: tournament._id,
-        tournamentTitle: tournament.title,
-        type: 'tournament_end',
-        title: 'Tournament Ends',
-        description: `${tournament.title} concludes`,
-        date: endDate,
-        time: this.formatTime(endDate),
-        status: endDate <= now ? 'completed' : 'upcoming',
-        icon: 'fas fa-flag-checkered',
-        color: 'text-purple-400',
-        bgColor: 'bg-purple-500/20',
-        priority: 2
-      });
-    }
-
-    // Finals Event (if tournament has specific finals date)
-    if (tournament.finalsDate) {
-      const finalsDate = new Date(tournament.finalsDate);
+    // Finals Event (Tournament End Date shown as Finals)
+    if (tournament.tournamentEnd || tournament.endDate) {
+      const finalsDate = new Date(tournament.tournamentEnd || tournament.endDate);
       events.push({
         id: `${tournament._id}-finals`,
         tournamentId: tournament._id,
         tournamentTitle: tournament.title,
         type: 'finals',
         title: 'Finals',
-        description: `Championship match for ${tournament.title}`,
+        description: `Championship finals for ${tournament.title}`,
         date: finalsDate,
         time: this.formatTime(finalsDate),
         status: finalsDate <= now ? 'completed' : 'upcoming',
@@ -221,27 +342,72 @@ class ScheduleManagement {
       });
     }
 
+    // Additional Finals Event (if tournament has specific separate finals date)
+    if (tournament.finalsDate && tournament.finalsDate !== tournament.tournamentEnd && tournament.finalsDate !== tournament.endDate) {
+      const specificFinalsDate = new Date(tournament.finalsDate);
+      events.push({
+        id: `${tournament._id}-specific-finals`,
+        tournamentId: tournament._id,
+        tournamentTitle: tournament.title,
+        type: 'finals',
+        title: 'Championship Finals',
+        description: `Special championship finals for ${tournament.title}`,
+        date: specificFinalsDate,
+        time: this.formatTime(specificFinalsDate),
+        status: specificFinalsDate <= now ? 'completed' : 'upcoming',
+        icon: 'fas fa-crown',
+        color: 'text-yellow-400',
+        bgColor: 'bg-yellow-500/20',
+        priority: 1
+      });
+    }
+
     // Bracket Generation Event (day before tournament starts)
-    if (tournament.startDate && tournament.status === 'registration_open') {
-      const bracketDate = new Date(tournament.startDate);
+    const tournamentStartDate = tournament.tournamentStart || tournament.startDate;
+    if (tournamentStartDate && (tournament.status === 'registration_open' || tournament.status === 'registration_closed')) {
+      const bracketDate = new Date(tournamentStartDate);
       bracketDate.setDate(bracketDate.getDate() - 1);
       bracketDate.setHours(18, 0, 0, 0); // 6 PM day before
       
-      if (bracketDate > now) {
+      if (bracketDate > now || (bracketDate <= now && bracketDate.toDateString() === now.toDateString())) {
         events.push({
           id: `${tournament._id}-brackets`,
           tournamentId: tournament._id,
           tournamentTitle: tournament.title,
           type: 'bracket_generation',
           title: 'Brackets Generated',
-          description: `Tournament brackets will be finalized`,
+          description: `Tournament brackets will be finalized for ${tournament.title}`,
           date: bracketDate,
           time: this.formatTime(bracketDate),
-          status: 'upcoming',
+          status: bracketDate <= now ? 'completed' : 'upcoming',
           icon: 'fas fa-sitemap',
           color: 'text-cyber-indigo',
           bgColor: 'bg-cyber-indigo/20',
           priority: 4
+        });
+      }
+    }
+
+    // Team Check-in Event (2 hours before tournament starts)
+    if (tournamentStartDate) {
+      const checkinDate = new Date(tournamentStartDate);
+      checkinDate.setHours(checkinDate.getHours() - 2); // 2 hours before start
+      
+      if (checkinDate > now || (checkinDate <= now && checkinDate.toDateString() === now.toDateString())) {
+        events.push({
+          id: `${tournament._id}-checkin`,
+          tournamentId: tournament._id,
+          tournamentTitle: tournament.title,
+          type: 'team_checkin',
+          title: 'Team Check-in',
+          description: `Teams must check-in for ${tournament.title}`,
+          date: checkinDate,
+          time: this.formatTime(checkinDate),
+          status: checkinDate <= now ? 'completed' : 'upcoming',
+          icon: 'fas fa-clipboard-check',
+          color: 'text-orange-400',
+          bgColor: 'bg-orange-500/20',
+          priority: 3
         });
       }
     }
@@ -483,7 +649,7 @@ class ScheduleManagement {
       empty.classList.remove('hidden');
       timeline.classList.add('hidden');
     } else {
-      empty.classList.remove('hidden');
+      empty.classList.add('hidden');
       timeline.classList.remove('hidden');
     }
   }
