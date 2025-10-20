@@ -254,6 +254,14 @@ class ApiClient {
     return this.patch(`/api/tournaments/${tournamentSlug}`, formData);
   }
 
+  async getTournamentParticipants(tournamentId) {
+    return this.get(`/api/host/tournaments/${tournamentId}/participants`);
+  }
+
+  async removeParticipant(tournamentSlug, teamId) {
+    return this.delete(`/api/tournaments/${tournamentSlug}/participants/${teamId}`);
+  }
+
 
   
   async getWalletInfo() {

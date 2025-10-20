@@ -438,7 +438,216 @@ class TournamentManagement {
 
   // Placeholder methods for other functionality
   async manageParticipants(tournamentId) {
-    this.showNotification('Participant management coming soon!', 'info');
+    this.currentTournament = this.tournaments.find(t => t._id === tournamentId);
+    if (!this.currentTournament) {
+      this.showError('Tournament not found');
+      return;
+    }
+
+    await this.showParticipantsModal();
+  }
+
+  async showParticipantsModal() {
+    const tournament = this.currentTournament;
+    
+    const modalHtml = `
+      <div id="participants-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="glass rounded-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+          <div class="flex justify-between items-center p-6 border-b border-cyber-border">
+            <div>
+              <h3 class="text-2xl font-semibold text-starlight">Tournament Participants</h3>
+              <p class="text-starlight-muted mt-1">${tournament.title}</p>
+            </div>
+            <button id="close-participants-modal" class="text-starlight-muted hover:text-starlight">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+          <div class="p-6">
+            <!-- Loading State -->
+            <div id="participants-loading" class="text-center py-12">
+              <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-cyber-cyan"></div>
+              <p class="mt-4 text-starlight-muted">Loading participants...</p>
+            </div>
+
+            <!-- Participants List -->
+            <div id="participants-content" class="hidden">
+              <div class="mb-4 flex justify-between items-center">
+                <div class="text-starlight-muted">
+                  <span id="participants-count">0</span> teams registered
+                </div>
+                <div class="text-sm text-starlight-muted">
+                  Click the trash icon to remove a team
+                </div>
+              </div>
+              
+              <div id="participants-list" class="space-y-4">
+                <!-- Participants will be populated here -->
+              </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="participants-empty" class="hidden text-center py-12">
+              <i class="fas fa-users-slash text-6xl text-starlight-muted mb-4"></i>
+              <h4 class="text-xl font-semibold text-starlight mb-2">No Participants Yet</h4>
+              <p class="text-starlight-muted">No teams have registered for this tournament</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Initialize modal
+    await this.initializeParticipantsModal();
+  }
+
+  async initializeParticipantsModal() {
+    // Bind events
+    document.getElementById('close-participants-modal').addEventListener('click', () => {
+      this.hideParticipantsModal();
+    });
+
+    // Close modal on outside click
+    document.getElementById('participants-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'participants-modal') {
+        this.hideParticipantsModal();
+      }
+    });
+
+    // Load participants
+    await this.loadParticipants();
+  }
+
+  async loadParticipants() {
+    try {
+      const response = await window.apiClient.getTournamentParticipants(this.currentTournament._id);
+
+      if (response.success) {
+        const participants = response.data.participants || [];
+        this.renderParticipants(participants);
+      } else {
+        throw new Error(response.message || 'Failed to load participants');
+      }
+    } catch (error) {
+      console.error('Error loading participants:', error);
+      this.showError('Failed to load participants: ' + error.message);
+      this.hideParticipantsModal();
+    }
+  }
+
+  renderParticipants(participants) {
+    const loadingElement = document.getElementById('participants-loading');
+    const contentElement = document.getElementById('participants-content');
+    const emptyElement = document.getElementById('participants-empty');
+    const listElement = document.getElementById('participants-list');
+    const countElement = document.getElementById('participants-count');
+
+    // Hide loading
+    loadingElement.classList.add('hidden');
+
+    if (!participants || participants.length === 0) {
+      emptyElement.classList.remove('hidden');
+      contentElement.classList.add('hidden');
+      return;
+    }
+
+    // Show content
+    contentElement.classList.remove('hidden');
+    emptyElement.classList.add('hidden');
+
+    // Update count
+    countElement.textContent = participants.length;
+
+    // Render participants list
+    listElement.innerHTML = participants.map(participant => this.renderParticipantCard(participant)).join('');
+  }
+
+  renderParticipantCard(participant) {
+    const players = participant.players || [];
+    const teamName = participant.teamName || 'Unknown Team';
+    const teamId = participant._id;
+
+    return `
+      <div class="bg-dark-matter/30 border border-cyber-border/30 rounded-lg p-4 hover:border-cyber-cyan/50 transition-colors">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-3">
+              <h5 class="text-lg font-semibold text-starlight">${teamName}</h5>
+              <span class="px-2 py-1 bg-cyber-cyan/20 text-cyber-cyan text-xs rounded-full">
+                ${players.length} ${players.length === 1 ? 'player' : 'players'}
+              </span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              ${players.map(player => `
+                <div class="bg-dark-matter/50 border border-cyber-border/20 rounded-lg p-3">
+                  <div class="flex items-center gap-2 mb-1">
+                    <i class="fas fa-user text-cyber-cyan text-sm"></i>
+                    <span class="font-medium text-starlight text-sm">${player.name || 'Unknown Player'}</span>
+                  </div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <i class="fas fa-gamepad text-starlight-muted text-xs"></i>
+                    <span class="text-starlight-muted text-xs">${player.inGameId || 'No ID'}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-envelope text-starlight-muted text-xs"></i>
+                    <span class="text-starlight-muted text-xs">${player.email || 'No email'}</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+
+            ${participant.phone ? `
+              <div class="mt-3 flex items-center gap-2 text-sm text-starlight-muted">
+                <i class="fas fa-phone"></i>
+                <span>Captain: ${participant.phone}</span>
+              </div>
+            ` : ''}
+          </div>
+          
+          <button onclick="window.tournamentManagement.removeParticipant('${teamId}', '${teamName}')" 
+                  class="ml-4 px-3 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors flex items-center gap-2">
+            <i class="fas fa-trash"></i>
+            <span class="hidden sm:inline">Remove</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  async removeParticipant(teamId, teamName) {
+    if (!confirm(`Are you sure you want to remove team "${teamName}" from this tournament?`)) {
+      return;
+    }
+
+    try {
+      const response = await window.apiClient.removeParticipant(this.currentTournament.slug, teamId);
+
+      if (response.success) {
+        this.showNotification(`Team "${teamName}" removed successfully!`, 'success');
+        
+        // Reload participants
+        await this.loadParticipants();
+        
+        // Update tournament list to reflect new participant count
+        await this.loadTournaments();
+      } else {
+        throw new Error(response.message || 'Failed to remove participant');
+      }
+    } catch (error) {
+      console.error('Error removing participant:', error);
+      this.showError('Failed to remove participant: ' + error.message);
+    }
+  }
+
+  hideParticipantsModal() {
+    const modal = document.getElementById('participants-modal');
+    if (modal) {
+      modal.remove();
+    }
   }
 
   async changeStatus(tournamentId, currentStatus) {
