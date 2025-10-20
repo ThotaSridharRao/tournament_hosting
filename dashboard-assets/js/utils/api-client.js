@@ -241,6 +241,10 @@ class ApiClient {
     return this.put(`/api/host/tournaments/${tournamentId}/participants/${participantId}/status`, { status });
   }
 
+  async addTournamentEvent(tournamentSlug, eventData) {
+    return this.post(`/api/tournaments/${tournamentSlug}/updates`, eventData);
+  }
+
 
   
   async getWalletInfo() {
