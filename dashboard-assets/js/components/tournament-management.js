@@ -20,6 +20,10 @@ class TournamentManagement {
   async init() {
     try {
       await this.render();
+
+      // Wait a bit for DOM to be ready
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       this.bindEvents();
       await this.loadTournaments();
     } catch (error) {
@@ -159,6 +163,12 @@ class TournamentManagement {
     const listElement = document.getElementById('tournament-list');
     const emptyElement = document.getElementById('tournaments-empty');
 
+    // Check if elements exist
+    if (!listElement) {
+      console.error('Tournament list element not found');
+      return;
+    }
+
     if (!this.tournaments || this.tournaments.length === 0) {
       listElement.classList.add('hidden');
       emptyElement?.classList.remove('hidden');
@@ -179,9 +189,16 @@ class TournamentManagement {
       completed: 'bg-gray-500/20 text-gray-400'
     };
 
-    const participantCount = tournament.participant_count || 0;
-    const maxParticipants = tournament.max_participants || 0;
+    // Use same logic as tournaments page
+    const participantCount = tournament.participants?.length || 0;
+    const maxTeams = tournament.maxTeams || 16;
+    const entryFee = tournament.entryFee || 0;
+    const prizePool = tournament.prizePool || 0;
     const statusClass = statusColors[tournament.status] || 'bg-gray-500/20 text-gray-400';
+
+    // Format prize pool same as tournaments page
+    const prizePoolFormatted = prizePool ? `₹${prizePool.toLocaleString()}` : 'TBD';
+    const entryFeeFormatted = entryFee ? `₹${entryFee.toLocaleString()}` : 'Free';
 
     return `
       <div class="glass rounded-xl p-6 hover:border-cyber-cyan/50 transition-all duration-300">
@@ -196,9 +213,9 @@ class TournamentManagement {
             <p class="text-starlight-muted mb-3">${tournament.description || 'No description available'}</p>
             <div class="flex flex-wrap gap-4 text-sm text-starlight-muted">
               <span><i class="fas fa-gamepad mr-1"></i> ${tournament.game || 'Unknown Game'}</span>
-              <span><i class="fas fa-users mr-1"></i> ${participantCount}/${maxParticipants} participants</span>
-              <span><i class="fas fa-coins mr-1"></i> ₹${tournament.entry_fee || 0} entry fee</span>
-              <span><i class="fas fa-trophy mr-1"></i> ₹${tournament.prize_pool || 0} prize pool</span>
+              <span><i class="fas fa-users mr-1"></i> ${participantCount}/${maxTeams} teams</span>
+              <span><i class="fas fa-coins mr-1"></i> ${entryFeeFormatted} entry fee</span>
+              <span><i class="fas fa-trophy mr-1"></i> ${prizePoolFormatted} prize pool</span>
             </div>
           </div>
           <div class="flex items-center gap-2 mt-4 lg:mt-0">
