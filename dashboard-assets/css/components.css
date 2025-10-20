@@ -1071,4 +1071,210 @@ tatus Change Modal Styles */
   .status-change-form .flex {
     @apply flex-col space-x-0 space-y-3;
   }
+}/* Edi
+t Tournament Modal Styles */
+#edit-tournament-modal {
+  @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4;
+}
+
+#edit-tournament-modal .glass {
+  @apply bg-dark-panel/80 backdrop-blur-cyber border border-cyber-border rounded-xl;
+}
+
+.edit-tournament-form {
+  @apply space-y-6;
+}
+
+.form-section {
+  @apply space-y-4 pb-6 border-b border-cyber-border last:border-b-0 last:pb-0;
+}
+
+.form-section h4 {
+  @apply text-lg font-semibold text-starlight mb-4;
+}
+
+.form-input {
+  @apply w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none;
+}
+
+.form-textarea {
+  @apply w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none resize-vertical;
+}
+
+.form-select {
+  @apply w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none;
+}
+
+.form-select option {
+  @apply bg-dark-panel text-starlight;
+}
+
+/* Event Row Styles */
+.event-row {
+  @apply bg-dark-matter/30 border border-cyber-border/30 rounded-lg p-4;
+}
+
+.event-row:hover {
+  @apply border-cyber-cyan/50;
+}
+
+.event-row .form-input {
+  @apply bg-dark-panel/50;
+}
+
+/* DateTime input white icons */
+.datetime-white-icons::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+/* Edit Modal Animations */
+#edit-tournament-modal {
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+#edit-tournament-modal .glass {
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+/* Add Event Button */
+#add-event-btn {
+  @apply px-4 py-2 bg-cyber-cyan/20 text-cyber-cyan rounded-lg hover:bg-cyber-cyan/30 transition-colors;
+}
+
+#add-event-btn:hover {
+  @apply transform translateY(-1px);
+}
+
+/* Remove Event Button */
+.event-row button[onclick*="remove"] {
+  @apply w-full px-4 py-3 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors;
+}
+
+.event-row button[onclick*="remove"]:hover {
+  @apply transform translateY(-1px);
+}
+
+/* Form validation styles */
+.form-input:invalid {
+  @apply border-red-500/50;
+}
+
+.form-input:valid {
+  @apply border-green-500/30;
+}
+
+/* Mobile responsive for edit modal */
+@media (max-width: 768px) {
+  #edit-tournament-modal .glass {
+    @apply mx-2 max-w-none max-h-[95vh];
+  }
+  
+  .form-section {
+    @apply space-y-3;
+  }
+  
+  .grid.md\\:grid-cols-2 {
+    @apply grid-cols-1;
+  }
+  
+  .grid.md\\:grid-cols-3 {
+    @apply grid-cols-1;
+  }
+  
+  .event-row .grid.md\\:grid-cols-3 {
+    @apply grid-cols-1 gap-3;
+  }
+  
+  .form-section h4 {
+    @apply text-base;
+  }
+}
+
+@media (max-width: 480px) {
+  #edit-tournament-modal {
+    @apply p-2;
+  }
+  
+  #edit-tournament-modal .glass {
+    @apply p-4;
+  }
+  
+  .form-section {
+    @apply pb-4;
+  }
+  
+  .event-row {
+    @apply p-3;
+  }
+}
+
+/* Loading state for form submission */
+.form-loading {
+  @apply opacity-75 pointer-events-none;
+}
+
+.form-loading button[type="submit"] {
+  @apply bg-gray-500 cursor-not-allowed;
+}
+
+/* Event container empty state */
+#events-container:empty::after {
+  content: "No events added yet. Click 'Add Event' to create tournament milestones.";
+  @apply block text-center text-starlight-muted py-8 italic;
+}
+
+/* Form group spacing */
+.form-group {
+  @apply space-y-2;
+}
+
+.form-group label {
+  @apply block text-sm font-medium text-starlight-muted;
+}
+
+/* Success/Error states for form fields */
+.form-input.success {
+  @apply border-green-500/50 bg-green-500/5;
+}
+
+.form-input.error {
+  @apply border-red-500/50 bg-red-500/5;
+}
+
+/* Improved focus states */
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  @apply ring-2 ring-cyber-cyan/20 border-cyber-cyan;
+}
+/* Status Change Modal - Simplified Styles */
+#status-change-modal select {
+  @apply appearance-none bg-no-repeat bg-right pr-10;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23ffffff" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+  background-position: right 12px center;
+  background-size: 12px;
+}
+
+#status-change-modal select:focus {
+  @apply ring-2 ring-cyber-cyan/20 border-cyber-cyan outline-none;
+}
+
+/* Remove the help text styling since we removed it */
+.status-help-text {
+  display: none;
+}
+
+/* Simplified modal layout */
+#status-change-modal .glass {
+  @apply max-w-sm;
+}
+
+#status-change-modal form {
+  @apply space-y-4;
+}
+
+/* Better button spacing */
+#status-change-modal .flex.space-x-3 {
+  @apply pt-6;
 }

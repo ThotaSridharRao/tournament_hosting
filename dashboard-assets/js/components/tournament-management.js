@@ -374,7 +374,337 @@ class TournamentManagement {
 
   async editTournament(tournamentId) {
     this.currentTournament = this.tournaments.find(t => t._id === tournamentId);
-    alert('Edit tournament functionality will be implemented soon!');
+    if (!this.currentTournament) {
+      this.showError('Tournament not found');
+      return;
+    }
+
+    this.showEditModal();
+  }
+
+  showEditModal() {
+    const tournament = this.currentTournament;
+    
+    const modalHtml = `
+      <div id="edit-tournament-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="glass rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div class="flex justify-between items-center p-6 border-b border-cyber-border">
+            <h3 class="text-2xl font-semibold text-starlight">Edit Tournament</h3>
+            <button id="close-edit-modal" class="text-starlight-muted hover:text-starlight">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+          <form id="edit-tournament-form" class="p-6 space-y-6">
+            <!-- Basic Information -->
+            <div class="form-section">
+              <h4 class="text-lg font-semibold text-starlight mb-4">Basic Information</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-group">
+                  <label for="edit-title" class="block text-sm font-medium text-starlight-muted mb-2">Tournament Title *</label>
+                  <input type="text" id="edit-title" name="title" value="${tournament.title || ''}" 
+                         class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit-game" class="block text-sm font-medium text-starlight-muted mb-2">Game *</label>
+                  <input type="text" id="edit-game" name="game" value="${tournament.game || ''}" 
+                         class="form-input" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="edit-description" class="block text-sm font-medium text-starlight-muted mb-2">Description</label>
+                <textarea id="edit-description" name="description" rows="3" 
+                          class="form-textarea">${tournament.description || ''}</textarea>
+              </div>
+            </div>
+
+            <!-- Tournament Settings -->
+            <div class="form-section">
+              <h4 class="text-lg font-semibold text-starlight mb-4">Tournament Settings</h4>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="form-group">
+                  <label for="edit-prize-pool" class="block text-sm font-medium text-starlight-muted mb-2">Prize Pool (₹) *</label>
+                  <input type="number" id="edit-prize-pool" name="prizePool" min="0" 
+                         value="${tournament.prizePool || 0}" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit-entry-fee" class="block text-sm font-medium text-starlight-muted mb-2">Entry Fee (₹)</label>
+                  <input type="number" id="edit-entry-fee" name="entryFee" min="0" 
+                         value="${tournament.entryFee || 0}" class="form-input">
+                </div>
+                <div class="form-group">
+                  <label for="edit-max-teams" class="block text-sm font-medium text-starlight-muted mb-2">Max Teams *</label>
+                  <input type="number" id="edit-max-teams" name="maxTeams" min="2" 
+                         value="${tournament.maxTeams || 16}" class="form-input" required>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-group">
+                  <label for="edit-max-players" class="block text-sm font-medium text-starlight-muted mb-2">Max Players per Team *</label>
+                  <input type="number" id="edit-max-players" name="maxPlayersPerTeam" min="1" 
+                         value="${tournament.maxPlayersPerTeam || 4}" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit-format" class="block text-sm font-medium text-starlight-muted mb-2">Format *</label>
+                  <select id="edit-format" name="format" class="form-select" required>
+                    <option value="single_elimination" ${tournament.format === 'single_elimination' ? 'selected' : ''}>Single Elimination</option>
+                    <option value="double_elimination" ${tournament.format === 'double_elimination' ? 'selected' : ''}>Double Elimination</option>
+                    <option value="round_robin" ${tournament.format === 'round_robin' ? 'selected' : ''}>Round Robin</option>
+                    <option value="kp" ${tournament.format === 'kp' ? 'selected' : ''}>KP Format</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tournament Dates -->
+            <div class="form-section">
+              <h4 class="text-lg font-semibold text-starlight mb-4">Tournament Dates</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-group">
+                  <label for="edit-reg-start" class="block text-sm font-medium text-starlight-muted mb-2">Registration Start *</label>
+                  <input type="datetime-local" id="edit-reg-start" name="registrationStart" 
+                         value="${this.formatDateForInput(tournament.registrationStart)}" 
+                         class="form-input datetime-white-icons" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit-reg-end" class="block text-sm font-medium text-starlight-muted mb-2">Registration End *</label>
+                  <input type="datetime-local" id="edit-reg-end" name="registrationEnd" 
+                         value="${this.formatDateForInput(tournament.registrationEnd)}" 
+                         class="form-input datetime-white-icons" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit-tournament-start" class="block text-sm font-medium text-starlight-muted mb-2">Tournament Start *</label>
+                  <input type="datetime-local" id="edit-tournament-start" name="tournamentStart" 
+                         value="${this.formatDateForInput(tournament.tournamentStart)}" 
+                         class="form-input datetime-white-icons" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit-tournament-end" class="block text-sm font-medium text-starlight-muted mb-2">Tournament End *</label>
+                  <input type="datetime-local" id="edit-tournament-end" name="tournamentEnd" 
+                         value="${this.formatDateForInput(tournament.tournamentEnd)}" 
+                         class="form-input datetime-white-icons" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tournament Events -->
+            <div class="form-section">
+              <div class="flex justify-between items-center mb-4">
+                <h4 class="text-lg font-semibold text-starlight">Tournament Events</h4>
+                <button type="button" id="add-event-btn" class="px-4 py-2 bg-cyber-cyan/20 text-cyber-cyan rounded-lg hover:bg-cyber-cyan/30 transition-colors">
+                  <i class="fas fa-plus mr-2"></i>Add Event
+                </button>
+              </div>
+              <div id="events-container" class="space-y-3">
+                <!-- Events will be populated here -->
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex justify-end space-x-3 pt-6 border-t border-cyber-border">
+              <button type="button" id="cancel-edit" class="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                Cancel
+              </button>
+              <button type="submit" class="px-6 py-3 bg-cyber-cyan text-dark-matter rounded-lg hover:bg-cyber-cyan/90 transition-colors font-semibold">
+                Update Tournament
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Initialize events
+    this.initializeEditModal();
+  }
+
+  initializeEditModal() {
+    // Populate existing events
+    this.populateEvents();
+
+    // Bind events
+    document.getElementById('close-edit-modal').addEventListener('click', () => {
+      this.hideEditModal();
+    });
+
+    document.getElementById('cancel-edit').addEventListener('click', () => {
+      this.hideEditModal();
+    });
+
+    document.getElementById('add-event-btn').addEventListener('click', () => {
+      this.addEventRow();
+    });
+
+    document.getElementById('edit-tournament-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.handleEditFormSubmit();
+    });
+
+    // Close modal on outside click
+    document.getElementById('edit-tournament-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'edit-tournament-modal') {
+        this.hideEditModal();
+      }
+    });
+  }
+
+  populateEvents() {
+    const eventsContainer = document.getElementById('events-container');
+    const events = this.currentTournament.events || [];
+
+    if (events.length === 0) {
+      // Add default events
+      this.addEventRow('Registration Opens', this.currentTournament.registrationStart);
+      this.addEventRow('Registration Closes', this.currentTournament.registrationEnd);
+      this.addEventRow('Tournament Begins', this.currentTournament.tournamentStart);
+      this.addEventRow('Finals', this.currentTournament.tournamentEnd);
+    } else {
+      events.forEach(event => {
+        this.addEventRow(event.name, event.dateTime, event.description);
+      });
+    }
+  }
+
+  addEventRow(name = '', dateTime = '', description = '') {
+    const eventsContainer = document.getElementById('events-container');
+    const eventId = Date.now() + Math.random();
+
+    const eventHtml = `
+      <div class="event-row bg-dark-matter/30 border border-cyber-border/30 rounded-lg p-4" data-event-id="${eventId}">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+          <div class="form-group">
+            <label class="block text-sm font-medium text-starlight-muted mb-2">Event Name *</label>
+            <input type="text" name="events[${eventId}][name]" value="${name}" 
+                   placeholder="e.g., Match 1, Semi-Finals" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="block text-sm font-medium text-starlight-muted mb-2">Date & Time *</label>
+            <input type="datetime-local" name="events[${eventId}][dateTime]" 
+                   value="${this.formatDateForInput(dateTime)}" 
+                   class="form-input datetime-white-icons" required>
+          </div>
+          <div class="form-group flex items-end">
+            <button type="button" onclick="this.closest('.event-row').remove()" 
+                    class="w-full px-4 py-3 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors">
+              <i class="fas fa-trash mr-2"></i>Remove Event
+            </button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="block text-sm font-medium text-starlight-muted mb-2">Description (Optional)</label>
+          <input type="text" name="events[${eventId}][description]" value="${description}" 
+                 placeholder="Additional details about this event" class="form-input">
+        </div>
+      </div>
+    `;
+
+    eventsContainer.insertAdjacentHTML('beforeend', eventHtml);
+  }
+
+  formatDateForInput(dateString) {
+    if (!dateString) return '';
+    
+    try {
+      const date = new Date(dateString);
+      // Format for datetime-local input (YYYY-MM-DDTHH:MM)
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return '';
+    }
+  }
+
+  async handleEditFormSubmit() {
+    try {
+      const form = document.getElementById('edit-tournament-form');
+      const formData = new FormData(form);
+      
+      // Collect basic tournament data
+      const tournamentData = {
+        title: formData.get('title'),
+        game: formData.get('game'),
+        description: formData.get('description'),
+        prizePool: parseFloat(formData.get('prizePool')),
+        entryFee: parseFloat(formData.get('entryFee')) || 0,
+        maxTeams: parseInt(formData.get('maxTeams')),
+        maxPlayersPerTeam: parseInt(formData.get('maxPlayersPerTeam')),
+        format: formData.get('format'),
+        registrationStart: formData.get('registrationStart'),
+        registrationEnd: formData.get('registrationEnd'),
+        tournamentStart: formData.get('tournamentStart'),
+        tournamentEnd: formData.get('tournamentEnd'),
+        events: []
+      };
+
+      // Collect events data
+      const eventRows = document.querySelectorAll('.event-row');
+      eventRows.forEach(row => {
+        const eventId = row.dataset.eventId;
+        const name = formData.get(`events[${eventId}][name]`);
+        const dateTime = formData.get(`events[${eventId}][dateTime]`);
+        const description = formData.get(`events[${eventId}][description]`) || '';
+
+        if (name && dateTime) {
+          tournamentData.events.push({
+            name,
+            dateTime,
+            description
+          });
+        }
+      });
+
+      // Validate required fields
+      if (!tournamentData.title || !tournamentData.game || !tournamentData.prizePool || 
+          !tournamentData.maxTeams || !tournamentData.maxPlayersPerTeam || !tournamentData.format ||
+          !tournamentData.registrationStart || !tournamentData.registrationEnd ||
+          !tournamentData.tournamentStart || !tournamentData.tournamentEnd) {
+        throw new Error('Please fill in all required fields');
+      }
+
+      // Show loading state
+      const submitButton = form.querySelector('button[type="submit"]');
+      const originalText = submitButton.innerHTML;
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Updating...';
+
+      // Make API call
+      const response = await window.apiClient.updateTournament(this.currentTournament._id, tournamentData);
+
+      if (response.success) {
+        this.showSuccess('Tournament updated successfully!');
+        this.hideEditModal();
+        await this.loadTournaments();
+      } else {
+        throw new Error(response.message || 'Failed to update tournament');
+      }
+
+    } catch (error) {
+      console.error('Edit tournament error:', error);
+      this.showError(error.message || 'Failed to update tournament');
+      
+      // Reset button
+      const submitButton = document.querySelector('#edit-tournament-form button[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.innerHTML = 'Update Tournament';
+      }
+    }
+  }
+
+  hideEditModal() {
+    const modal = document.getElementById('edit-tournament-modal');
+    if (modal) {
+      modal.remove();
+    }
   }
 
   async changeStatus(tournamentId, currentStatus) {
@@ -403,29 +733,16 @@ class TournamentManagement {
 
           <div class="mb-6">
             <p class="text-starlight-muted mb-2">Tournament: <span class="text-starlight font-semibold">${tournamentTitle}</span></p>
-            <p class="text-starlight-muted mb-3">Current Status: <span class="text-cyber-cyan font-semibold">${currentStatus?.replace('_', ' ').toUpperCase()}</span></p>
-            
-            <div class="bg-dark-matter/30 border border-cyber-border/30 rounded-lg p-3">
-              <p class="text-xs text-starlight-muted">
-                <i class="fas fa-info-circle mr-1 text-cyber-cyan"></i>
-                ${this.getStatusHelpText(currentStatus)}
-              </p>
-            </div>
+            <p class="text-starlight-muted">Current Status: <span class="text-cyber-cyan font-semibold">${currentStatus?.replace('_', ' ').toUpperCase()}</span></p>
           </div>
 
-          <form id="status-change-form" class="space-y-4">
+          <form id="status-change-form" class="space-y-6">
             <div>
               <label class="block text-sm font-medium text-starlight mb-2">New Status</label>
-              <select id="new-status" class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none">
+              <select id="new-status" class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none appearance-none bg-no-repeat bg-right pr-10" style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 4 5\\"><path fill=\\"%23ffffff\\" d=\\"M2 0L0 2h4zm0 5L0 3h4z\\"/></svg>'); background-position: right 12px center; background-size: 12px;">
                 <option value="">Select new status</option>
                 ${this.getStatusOptions(currentStatus)}
               </select>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-starlight mb-2">Reason (Optional)</label>
-              <textarea id="status-reason" rows="3" placeholder="Reason for status change..." 
-                       class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none resize-vertical"></textarea>
             </div>
 
             <div class="flex space-x-3 pt-4">
@@ -504,18 +821,7 @@ class TournamentManagement {
     `).join('');
   }
 
-  getStatusHelpText(currentStatus) {
-    const helpTexts = {
-      'draft': 'You can open registration when ready or cancel the tournament.',
-      'registration_open': 'Close registration when you have enough participants or cancel if needed.',
-      'registration_closed': 'Start the tournament when ready or cancel if there are issues.',
-      'ongoing': 'Mark as completed when the tournament finishes or cancel if interrupted.',
-      'completed': 'Tournament is finished. No further status changes available.',
-      'cancelled': 'You can restart this tournament by changing it back to draft status.'
-    };
 
-    return helpTexts[currentStatus] || 'Select a new status for this tournament.';
-  }
 
   hideStatusChangeModal() {
     const modal = document.getElementById('status-change-modal');
@@ -526,7 +832,6 @@ class TournamentManagement {
 
   async handleStatusChange(tournamentId) {
     const newStatus = document.getElementById('new-status').value;
-    const reason = document.getElementById('status-reason').value;
 
     if (!newStatus) {
       this.showError('Please select a new status');
@@ -540,8 +845,7 @@ class TournamentManagement {
       submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Updating...';
 
       const response = await window.apiClient.updateTournamentStatus(tournamentId, {
-        status: newStatus,
-        reason: reason
+        status: newStatus
       });
 
       if (response.success) {
