@@ -698,11 +698,7 @@ class TournamentManagement {
           console.warn('⚠️ DataUpdateNotifier not available, other components may not refresh');
         }
         
-        // Refresh schedule data if schedule component exists
-        if (window.scheduleManagement && typeof window.scheduleManagement.refreshScheduleData === 'function') {
-          console.log('Refreshing schedule data after tournament update...');
-          await window.scheduleManagement.refreshScheduleData();
-        }
+
       } else {
         throw new Error(response.message || 'Failed to update tournament');
       }

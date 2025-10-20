@@ -357,13 +357,13 @@ class ScheduleManagement {
 
     // Check for custom events in both possible field names for backward compatibility
     const customEvents = tournament.scheduleEvents || tournament.events || [];
-    
+
     if (customEvents.length > 0) {
       customEvents.forEach(customEvent => {
         try {
           let eventDate;
           let title;
-          
+
           // Handle new format (scheduleEvents with separate date/time)
           if (customEvent.title && customEvent.date && customEvent.time) {
             const dateTimeStr = `${customEvent.date}T${customEvent.time}`;
@@ -378,7 +378,7 @@ class ScheduleManagement {
           else {
             return; // Skip invalid events
           }
-          
+
           if (!isNaN(eventDate.getTime())) {
             events.push({
               id: `${tournament._id}-custom-${title.toLowerCase().replace(/\s+/g, '-')}`,

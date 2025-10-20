@@ -165,13 +165,7 @@
               <span class="font-medium text-starlight-muted group-hover:text-starlight">Wallet</span>
             </a>
           </li>
-          <li>
-            <a href="#schedule"
-              class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
-              <i class="fas fa-calendar-alt text-starlight-muted group-hover:text-cyber-cyan"></i>
-              <span class="font-medium text-starlight-muted group-hover:text-starlight">Schedule</span>
-            </a>
-          </li>
+
           <li>
             <a href="#analytics"
               class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
@@ -293,7 +287,7 @@
           dashboard: { title: 'Dashboard', subtitle: 'Welcome back! Here\'s your tournament overview.' },
           tournaments: { title: 'Tournaments', subtitle: 'Manage your tournaments and participants.' },
           wallet: { title: 'Wallet', subtitle: 'Track your earnings and manage withdrawals.' },
-          schedule: { title: 'Schedule', subtitle: 'View upcoming matches and events.' },
+
           analytics: { title: 'Analytics', subtitle: 'Analyze your performance and insights.' },
           settings: { title: 'Settings', subtitle: 'Manage your account and preferences.' }
         };
@@ -376,19 +370,7 @@
             await window.tournamentManagement.init();
             break;
 
-          case 'schedule':
-            if (window.scheduleManagement) {
-              // If schedule component exists and data is stale, refresh it
-              if (window.scheduleManagement.isDataStale && window.scheduleManagement.isDataStale()) {
-                console.log('Schedule data is stale, refreshing...');
-                await window.scheduleManagement.refreshScheduleData();
-              }
-            } else {
-              // Create new schedule component
-              window.scheduleManagement = new ScheduleManagement();
-              await window.scheduleManagement.init();
-            }
-            break;
+
 
           case 'wallet':
             if (window.walletManagement) {
@@ -458,8 +440,7 @@
         // Load tournament participants component
         await loadScript('dashboard-assets/js/components/tournament-participants.js');
 
-        // Load schedule management component
-        await loadScript('dashboard-assets/js/components/schedule-management.js');
+
 
         console.log('External scripts loaded successfully');
       } catch (error) {
