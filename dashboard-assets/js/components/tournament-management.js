@@ -44,7 +44,7 @@ class TournamentManagement {
         </div>
 
         <!-- Filters and Search -->
-        <div class="glass rounded-xl p-6 mb-6">
+        <div class="bg-transparent rounded-xl p-6 mb-6">
           <div class="flex flex-col lg:flex-row gap-4">
             <div class="flex-1">
               <input type="text" id="tournament-search" placeholder="Search tournaments..." 
