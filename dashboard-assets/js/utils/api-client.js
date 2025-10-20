@@ -90,7 +90,10 @@ class ApiClient {
     const url = `${this.baseURL}${endpoint}`;
     
     let config = {
-      headers: this.getHeaders(),
+      headers: {
+        ...this.getHeaders(),
+        ...(options.headers || {})
+      },
       ...options,
     };
     
@@ -145,7 +148,19 @@ class ApiClient {
   async get(endpoint, params = {}) {
     const queryString = new URLSearchParams(Object.entries(params).filter(([_, v]) => v != null)).toString();
     const url = queryString ? `${endpoint}?${queryString}` : endpoint;
-    return this.request(url, { method: 'GET' });
+    
+    // Add cache control headers for GET requests
+    const options = { 
+      method: 'GET',
+      headers: {
+        ...this.getHeaders(),
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    };
+    
+    return this.request(url, options);
   }
 
   async post(endpoint, data) {
@@ -278,7 +293,42 @@ class ApiError extends Error {
 // Create singleton instance
 const apiClient = new ApiClient();
 
+// Global event system for data updates
+class DataUpdateNotifier {
+  constructor() {
+    this.listeners = {};
+  }
+
+  on(event, callback) {
+    if (!this.listeners[event]) {
+      this.listeners[event] = [];
+    }
+    this.listeners[event].push(callback);
+  }
+
+  off(event, callback) {
+    if (this.listeners[event]) {
+      this.listeners[event] = this.listeners[event].filter(cb => cb !== callback);
+    }
+  }
+
+  emit(event, data) {
+    if (this.listeners[event]) {
+      this.listeners[event].forEach(callback => {
+        try {
+          callback(data);
+        } catch (error) {
+          console.error('Error in event listener:', error);
+        }
+      });
+    }
+  }
+}
+
+const dataUpdateNotifier = new DataUpdateNotifier();
+
 // Export for use throughout the application
 window.ApiClient = ApiClient;
 window.ApiError = ApiError;
 window.apiClient = apiClient;
+window.dataUpdateNotifier = dataUpdateNotifier;

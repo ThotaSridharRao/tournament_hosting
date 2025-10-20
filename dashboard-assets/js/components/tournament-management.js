@@ -553,7 +553,7 @@ class TournamentManagement {
 
   populateEvents() {
     const eventsContainer = document.getElementById('events-container');
-    const events = this.currentTournament.events || [];
+    const events = this.currentTournament.scheduleEvents || [];
 
     if (events.length === 0) {
       // Add default events
@@ -563,7 +563,9 @@ class TournamentManagement {
       this.addEventRow('Finals', this.currentTournament.tournamentEnd);
     } else {
       events.forEach(event => {
-        this.addEventRow(event.name, event.dateTime, event.description);
+        // Convert separate date and time back to datetime-local format
+        const dateTime = event.date && event.time ? `${event.date}T${event.time.substring(0, 5)}` : '';
+        this.addEventRow(event.title, dateTime, event.description);
       });
     }
   }
@@ -642,10 +644,10 @@ class TournamentManagement {
         registrationEnd: formData.get('registrationEnd'),
         tournamentStart: formData.get('tournamentStart'),
         tournamentEnd: formData.get('tournamentEnd'),
-        events: []
+        scheduleEvents: []
       };
 
-      // Collect events data
+      // Collect events data in the format expected by tournament details page
       const eventRows = document.querySelectorAll('.event-row');
       eventRows.forEach(row => {
         const eventId = row.dataset.eventId;
@@ -654,10 +656,16 @@ class TournamentManagement {
         const description = formData.get(`events[${eventId}][description]`) || '';
 
         if (name && dateTime) {
-          tournamentData.events.push({
-            name,
-            dateTime,
-            description
+          // Convert dateTime to separate date and time fields for tournament details page
+          const eventDate = new Date(dateTime);
+          const date = eventDate.toISOString().split('T')[0]; // YYYY-MM-DD
+          const time = eventDate.toTimeString().split(' ')[0]; // HH:MM:SS
+          
+          tournamentData.scheduleEvents.push({
+            title: name,
+            date: date,
+            time: time,
+            description: description
           });
         }
       });
@@ -683,6 +691,25 @@ class TournamentManagement {
         this.showSuccess('Tournament updated successfully!');
         this.hideEditModal();
         await this.loadTournaments();
+        
+        // Emit tournament update event
+        if (window.dataUpdateNotifier) {
+          console.log('📡 Emitting tournament-updated event for:', this.currentTournament._id);
+          window.dataUpdateNotifier.emit('tournament-updated', {
+            tournamentId: this.currentTournament._id,
+            tournamentTitle: this.currentTournament.title,
+            action: 'update',
+            timestamp: Date.now()
+          });
+        } else {
+          console.warn('⚠️ DataUpdateNotifier not available, other components may not refresh');
+        }
+        
+        // Refresh schedule data if schedule component exists
+        if (window.scheduleManagement && typeof window.scheduleManagement.refreshScheduleData === 'function') {
+          console.log('Refreshing schedule data after tournament update...');
+          await window.scheduleManagement.refreshScheduleData();
+        }
       } else {
         throw new Error(response.message || 'Failed to update tournament');
       }
@@ -928,6 +955,14 @@ class TournamentManagement {
       if (response.success) {
         this.showSuccess('Tournament deleted successfully!');
         await this.loadTournaments();
+        
+        // Emit tournament deletion event
+        if (window.dataUpdateNotifier) {
+          window.dataUpdateNotifier.emit('tournament-deleted', {
+            tournamentId: tournamentId,
+            action: 'delete'
+          });
+        }
       } else {
         this.showError('Failed to delete tournament');
       }
@@ -1053,6 +1088,15 @@ class TournamentManagement {
 
       if (response.success) {
         this.showSuccess('Tournament created successfully!');
+        
+        // Emit tournament creation event
+        if (window.dataUpdateNotifier) {
+          window.dataUpdateNotifier.emit('tournament-created', {
+            tournamentId: response.data?.tournamentId || 'new',
+            action: 'create'
+          });
+        }
+        
         // Redirect back to tournament list
         setTimeout(() => {
           this.init();

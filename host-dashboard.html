@@ -378,10 +378,16 @@
 
           case 'schedule':
             if (window.scheduleManagement) {
-              window.scheduleManagement.destroy();
+              // If schedule component exists and data is stale, refresh it
+              if (window.scheduleManagement.isDataStale && window.scheduleManagement.isDataStale()) {
+                console.log('Schedule data is stale, refreshing...');
+                await window.scheduleManagement.refreshScheduleData();
+              }
+            } else {
+              // Create new schedule component
+              window.scheduleManagement = new ScheduleManagement();
+              await window.scheduleManagement.init();
             }
-            window.scheduleManagement = new ScheduleManagement();
-            await window.scheduleManagement.init();
             break;
 
           case 'wallet':
