@@ -1843,12 +1843,17 @@
         function getTournamentFormatConfig(format, participantCount) {
             // Use backend tournament data to generate format configuration
             const formatSettings = tournamentData.kpSettings || {};
+            const ffSettings = tournamentData.ffSettings || {};
             const matchSchedule = formatSettings.matchSchedule || [];
 
             switch (format) {
                 case 'kp':
                     return generateKPFormatConfig(formatSettings, matchSchedule, participantCount);
                 case 'single_elimination':
+                    // Check if this is Free Fire format
+                    if (tournamentData.game && tournamentData.game.toLowerCase() === 'free fire' && ffSettings.totalMatches) {
+                        return generateFreeFirFormatConfig(ffSettings, participantCount);
+                    }
                     return generateSingleEliminationConfig(participantCount);
                 case 'double_elimination':
                     return generateDoubleEliminationConfig(participantCount);
@@ -1982,6 +1987,49 @@
             };
         }
 
+        function generateFreeFirFormatConfig(ffSettings, participantCount) {
+            const teamsPerMatch = ffSettings.teamsPerMatch || 10;
+            const qualifierMatches = ffSettings.qualifierMatches || 5;
+            
+            // Create qualifier matches
+            const qualifierTables = [];
+            for (let i = 1; i <= qualifierMatches; i++) {
+                qualifierTables.push({
+                    name: `Qualifier Match ${i}`,
+                    type: 'free_fire_qualifier',
+                    teamsPerMatch: teamsPerMatch,
+                    totalMatches: 1,
+                    qualifiers: 2,
+                    matchNumber: i
+                });
+            }
+            
+            return {
+                title: 'Free Fire Single Elimination Tournament',
+                description: 'Battle Royale tournament with qualifier matches leading to grand finals.',
+                stages: [
+                    {
+                        name: 'Qualifier Matches',
+                        description: `${qualifierMatches} qualifier matches, top 2 teams from each qualify for finals`,
+                        tables: qualifierTables
+                    },
+                    {
+                        name: 'Grand Finals',
+                        description: 'Final battle with top 10 teams (2 from each qualifier)',
+                        tables: [
+                            { 
+                                name: 'Grand Finals', 
+                                type: 'free_fire_finals', 
+                                teamsPerMatch: 10, 
+                                totalMatches: 1,
+                                qualifiers: 1
+                            }
+                        ]
+                    }
+                ]
+            };
+        }
+
         function generateGenericFormatConfig(format, participantCount) {
             return {
                 title: `${format.charAt(0).toUpperCase() + format.slice(1)} Tournament`,
@@ -2066,7 +2114,82 @@
             html += `<table class="${tableClass}" id="${tableId}">`;
 
             // Build table based on type
-            if (tableConfig.type === 'qualifier') {
+            if (tableConfig.type === 'free_fire_qualifier') {
+                // Free Fire Qualifier Match Table
+                const matchNumber = tableConfig.matchNumber || 1;
+                const teamsPerMatch = tableConfig.teamsPerMatch || 10;
+                
+                // Get teams for this specific qualifier match (first-come-first-serve)
+                const startIndex = (matchNumber - 1) * teamsPerMatch;
+                const endIndex = startIndex + teamsPerMatch;
+                const matchTeams = participants.slice(startIndex, endIndex);
+                
+                html += `<thead><tr><th>Slot</th><th>Team Name</th><th>Captain</th><th>Players</th><th class="delete-column" style="display: none;">Action</th></tr></thead>`;
+                html += `<tbody>`;
+                
+                // Create rows for each team slot
+                for (let slot = 1; slot <= teamsPerMatch; slot++) {
+                    const team = matchTeams[slot - 1];
+                    html += `<tr>`;
+                    html += `<td class="match-number">${slot}</td>`;
+                    
+                    if (team) {
+                        const playerCount = team.players ? team.players.length : 0;
+                        html += `<td class="match-teams" data-team-id="${team._id || team.id}">
+                                    <strong>${team.teamName || 'Unnamed Team'}</strong>
+                                    <button class="team-delete-btn" onclick="removeTeam('${team._id || team.id}', '${tableId}', ${slot})" title="Remove Team">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                 </td>`;
+                        html += `<td class="team-captain">${team.captainEmail || team.players?.[0]?.email || 'No Captain'}</td>`;
+                        html += `<td class="team-players">${playerCount} players</td>`;
+                    } else {
+                        html += `<td class="match-teams"><em>Open Slot</em></td>`;
+                        html += `<td class="team-captain">-</td>`;
+                        html += `<td class="team-players">-</td>`;
+                    }
+                    
+                    // Delete action column (hidden by default)
+                    html += `<td class="delete-column" style="display: none;"></td>`;
+                    html += `</tr>`;
+                }
+                html += `</tbody>`;
+            } else if (tableConfig.type === 'free_fire_finals') {
+                // Free Fire Finals Table
+                html += `<thead><tr><th>Slot</th><th>Team Name</th><th>Qualified From</th><th>Players</th><th class="delete-column" style="display: none;">Action</th></tr></thead>`;
+                html += `<tbody>`;
+                
+                // Show 10 finalist slots (2 from each qualifier)
+                const finalists = tournamentData.finalists || [];
+                for (let slot = 1; slot <= 10; slot++) {
+                    const team = finalists[slot - 1];
+                    const qualifierMatch = Math.ceil(slot / 2); // Which qualifier they came from
+                    
+                    html += `<tr>`;
+                    html += `<td class="match-number">${slot}</td>`;
+                    
+                    if (team) {
+                        const playerCount = team.players ? team.players.length : 0;
+                        html += `<td class="match-teams" data-team-id="${team._id || team.id}">
+                                    <strong>${team.teamName || 'Unnamed Team'}</strong>
+                                    <button class="team-delete-btn" onclick="removeTeam('${team._id || team.id}', '${tableId}', ${slot})" title="Remove Team">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                 </td>`;
+                        html += `<td class="team-qualifier">Qualifier ${qualifierMatch}</td>`;
+                        html += `<td class="team-players">${playerCount} players</td>`;
+                    } else {
+                        html += `<td class="match-teams"><em>TBD</em></td>`;
+                        html += `<td class="team-qualifier">Qualifier ${qualifierMatch}</td>`;
+                        html += `<td class="team-players">-</td>`;
+                    }
+                    
+                    // Delete action column (hidden by default)
+                    html += `<td class="delete-column" style="display: none;"></td>`;
+                    html += `</tr>`;
+                }
+                html += `</tbody>`;
+            } else if (tableConfig.type === 'qualifier') {
                 html += `<thead><tr><th>S.No</th><th>Team Name</th><th>Captain</th><th>S.No</th><th>Team Name</th><th>Captain</th><th class="delete-column" style="display: none;">Action</th></tr></thead>`;
                 html += `<tbody>`;
 
