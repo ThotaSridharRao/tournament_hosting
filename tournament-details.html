@@ -1883,6 +1883,11 @@
               <p style="color: var(--text-secondary);">Loading details...</p>
             </div>
 
+            <h2>Tournament Format</h2>
+            <div id="tournament-format-details">
+              <p style="color: var(--text-secondary);">Loading format details...</p>
+            </div>
+
           </div>
 
           <div class="details-sidebar">
@@ -2486,7 +2491,170 @@
 
       document.getElementById('tournament-overview').innerHTML = `<p>${tournament.description || "No description available."}</p>`;
 
+      const formatContainer = document.getElementById('tournament-format-details');
+      let formatHTML = '';
 
+      if (tournament.format === 'kp' && tournament.kpSettings) {
+        const s = tournament.kpSettings;
+        const maxTeams = tournament.maxTeams || (s.numberOfGroups * s.groupSize);
+        const totalQualifiers = s.numberOfGroups || 4;
+        const totalMatches = totalQualifiers + 1; // Qualifiers + Final
+
+        formatHTML = `
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div>
+              <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Tournament Format:</strong> KP
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Advancement:</strong> Top 4 teams from each qualifier advance to finals
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Finals:</strong> ${totalQualifiers * 4} qualified teams compete for the championship
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Finalists:</strong> Final standings will appear in the Finalists section after completion
+                </li>
+              </ul>
+            </div>
+          </div>
+        `;
+      } else if (tournament.format === 'single_elimination') {
+        // Check if this is Free Fire format
+        if (tournament.game && tournament.game.toLowerCase() === 'free fire' && tournament.ffSettings) {
+          const ffSettings = tournament.ffSettings;
+          const qualifierMatches = ffSettings.qualifierMatches || 5;
+          const teamsPerMatch = ffSettings.teamsPerMatch || 10;
+          const totalMatches = ffSettings.totalMatches || 6;
+          const maxTeams = tournament.maxTeams || 50;
+
+          formatHTML = `
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+              <div>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                  <li style="padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                    <strong>Tournament Format:</strong> Free Fire Battle Royale
+                  </li>
+                  <li style="padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                    <strong>Max Teams:</strong> ${maxTeams} teams can register
+                  </li>
+                  <li style="padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                    <strong>Qualifier Matches:</strong> ${qualifierMatches} matches with ${teamsPerMatch} teams each
+                  </li>
+                  <li style="padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                    <strong>Advancement:</strong> Top 2 teams from each of the 5 qualifier matches advance
+                  </li>
+                  <li style="padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                    <strong>Grand Finals:</strong> 10 finalist teams (2 from each qualifier) compete for championship
+                  </li>
+                  <li style="padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                    <strong>Total Matches:</strong> ${totalMatches} matches (${qualifierMatches} qualifiers + 1 final)
+                  </li>
+                </ul>
+              </div>
+            </div>
+          `;
+        } else {
+          // Regular single elimination
+          const maxTeams = tournament.maxTeams || 'Unlimited';
+          const totalRounds = maxTeams !== 'Unlimited' ? Math.ceil(Math.log2(maxTeams)) : 'Variable';
+          const totalMatches = maxTeams !== 'Unlimited' ? maxTeams - 1 : 'Variable';
+
+          formatHTML = `
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+              <div>
+                <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                  <li style="padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                    <strong>Tournament Format:</strong> Single Elimination
+                  </li>
+                  <li style="padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                    <strong>Elimination:</strong> Lose one match and you're out of the tournament
+                  </li>
+                  <li style="padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                    <strong>Advancement:</strong> Get in the top 2 of your match to advance to the next round
+                  </li>
+                  <li style="padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                    <strong>Championship:</strong> Tournament progresses through elimination rounds to determine winner
+                  </li>
+                  <li style="padding-left: 1.5rem; position: relative;">
+                    <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                    <strong>Finalists:</strong> Final standings will appear in the Finalists section after completion
+                  </li>
+                </ul>
+              </div>
+            </div>
+          `;
+        }
+      } else if (tournament.format === 'double_elimination') {
+        const maxTeams = tournament.maxTeams || 'Unlimited';
+        const totalMatches = maxTeams !== 'Unlimited' ? (maxTeams * 2) - 2 : 'Variable';
+
+        formatHTML = `
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div>
+              <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Tournament Format:</strong> Double Elimination
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Winners Bracket:</strong> Teams that haven't lost a match
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Losers Bracket:</strong> Teams that lost once get a second chance
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Grand Finals:</strong> Winners bracket champion vs Losers bracket champion
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Finalists:</strong> Final standings will appear in the Finalists section after completion
+                </li>
+              </ul>
+            </div>
+          </div>
+        `;
+      } else {
+        // Generic format for other tournament types
+        const formatName = tournament.format ? tournament.format.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Standard';
+        const maxTeams = tournament.maxTeams || 'Unlimited';
+
+        formatHTML = `
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div>
+              <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Tournament Format:</strong> ${formatName}
+                </li>
+                <li style="padding-left: 1.5rem; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--primary-color);">•</span>
+                  <strong>Details:</strong> Tournament format details will be updated as more information becomes available
+                </li>
+              </ul>
+            </div>
+          </div>
+        `;
+      }
+      formatContainer.innerHTML = formatHTML;
 
       document.getElementById('game-name').textContent = tournament.game || 'TBD';
       document.getElementById('tournament-format').textContent = tournament.format ? tournament.format.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'TBD';

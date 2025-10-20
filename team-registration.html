@@ -1863,9 +1863,7 @@
         function updateTournamentDisplay() {
             if (!currentTournament) return;
             generatePlayerRows();
-            loadPaymentStructure(currentTournament);
             loadTournamentRules(currentTournament);
-            loadTournamentStructure(currentTournament);
             loadRegistrationSummary(currentTournament);
             const posterPath = currentTournament.posterImage || currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl;
             if (posterPath) {
@@ -2024,13 +2022,7 @@
             showRegistrationSuccess(result.data);
         }
 
-        function loadRegistrationSummary(t) {
-            document.querySelector('.registration-summary').innerHTML = `
-                <h4><i class="fas fa-receipt"></i> Registration Summary</h4>
-                <div class="summary-item"><span>Entry Fee</span><span>₹${(t.entryFee || 0).toLocaleString()}</span></div>
-                <div class="summary-total"><div class="summary-item"><span>Total Due</span><span>₹${(t.entryFee || 0).toLocaleString()}</span></div></div>
-            `;
-        }
+
 
         function loadTournamentRules(t) {
             const rules = t.format === 'kp' ? [
@@ -2048,23 +2040,11 @@
             `;
         }
 
-        function loadPaymentStructure(t) {
-            document.getElementById('payment-structure').innerHTML = `
-                <h4><i class="fas fa-coins"></i> Payment Required</h4>
-                <div class="round-payment"><span>One-Time Entry Fee</span><span class="round-fee">₹${(t.entryFee || 0).toLocaleString()}</span></div>`;
-        }
-
-        function loadTournamentStructure(t) {
-            const container = document.getElementById('tournament-structure-section');
-            if (t.format !== 'kp' || !t.kpSettings) { container.innerHTML = ''; return; }
-            const kp = t.kpSettings;
-            container.innerHTML = `
-                <h4><i class="fas fa-sitemap"></i> Tournament Structure</h4>
-                <div class="kp-compact-flow">
-                    <div class="kp-detail-line"><i class="fas fa-layer-group"></i><span>Group Stage:</span><span class="detail-value">${kp.numberOfGroups}x${kp.groupSize} Teams</span></div>
-                    <div class="kp-detail-line"><i class="fas fa-sort-amount-up-alt"></i><span>Advancement:</span><span class="detail-value">Top 4 Teams Each</span></div>
-                    <div class="kp-detail-line"><i class="fas fa-trophy"></i><span>Finals:</span><span class="detail-value">${kp.numberOfGroups * kp.qualifiersPerGroup} Teams Total</span></div>
-                </div>
+        function loadRegistrationSummary(t) {
+            document.querySelector('.registration-summary').innerHTML = `
+                <h4><i class="fas fa-receipt"></i> Registration Summary</h4>
+                <div class="summary-item"><span>Entry Fee</span><span>₹${(t.entryFee || 0).toLocaleString()}</span></div>
+                <div class="summary-total"><div class="summary-item"><span>Total Due</span><span>₹${(t.entryFee || 0).toLocaleString()}</span></div></div>
             `;
         }
 
