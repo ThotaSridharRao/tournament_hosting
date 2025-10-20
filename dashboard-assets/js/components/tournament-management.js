@@ -592,7 +592,268 @@ class TournamentManagement {
   }
 
   async editTournament(tournamentId) {
-    this.showNotification('Tournament editing coming soon!', 'info');
+    this.currentTournament = this.tournaments.find(t => t._id === tournamentId);
+    if (!this.currentTournament) {
+      this.showError('Tournament not found');
+      return;
+    }
+
+    this.showEditTournamentModal();
+  }
+
+  showEditTournamentModal() {
+    const tournament = this.currentTournament;
+    
+    const modalHtml = `
+      <div id="edit-tournament-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="glass rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div class="flex justify-between items-center p-6 border-b border-cyber-border">
+            <h3 class="text-2xl font-semibold text-starlight">Edit Tournament - ${tournament.title}</h3>
+            <button id="close-edit-modal" class="text-starlight-muted hover:text-starlight">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+          <form id="edit-tournament-form" class="p-6 space-y-6">
+            <!-- Basic Information -->
+            <div class="space-y-4">
+              <h4 class="text-lg font-semibold text-starlight border-b border-cyber-border pb-2">Basic Information</h4>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-group">
+                  <label for="edit-title" class="block text-sm font-medium text-starlight-muted mb-2">Tournament Title *</label>
+                  <input type="text" id="edit-title" name="title" value="${tournament.title || ''}" 
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit-game" class="block text-sm font-medium text-starlight-muted mb-2">Game *</label>
+                  <input type="text" id="edit-game" name="game" value="${tournament.game || ''}" 
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="edit-description" class="block text-sm font-medium text-starlight-muted mb-2">Description</label>
+                <textarea id="edit-description" name="description" rows="3" 
+                          class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none resize-vertical">${tournament.description || ''}</textarea>
+              </div>
+            </div>
+
+            <!-- Tournament Settings -->
+            <div class="space-y-4">
+              <h4 class="text-lg font-semibold text-starlight border-b border-cyber-border pb-2">Tournament Settings</h4>
+              
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="form-group">
+                  <label for="edit-prize-pool" class="block text-sm font-medium text-starlight-muted mb-2">Prize Pool (₹) *</label>
+                  <input type="number" id="edit-prize-pool" name="prizePool" min="0" 
+                         value="${tournament.prizePool || 0}" 
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit-entry-fee" class="block text-sm font-medium text-starlight-muted mb-2">Entry Fee (₹)</label>
+                  <input type="number" id="edit-entry-fee" name="entryFee" min="0" 
+                         value="${tournament.entryFee || 0}" 
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none">
+                </div>
+                <div class="form-group">
+                  <label for="edit-max-teams" class="block text-sm font-medium text-starlight-muted mb-2">Max Teams *</label>
+                  <input type="number" id="edit-max-teams" name="maxTeams" min="2" 
+                         value="${tournament.maxTeams || 16}" 
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none" required>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-group">
+                  <label for="edit-max-players" class="block text-sm font-medium text-starlight-muted mb-2">Max Players per Team *</label>
+                  <input type="number" id="edit-max-players" name="maxPlayersPerTeam" min="1" 
+                         value="${tournament.maxPlayersPerTeam || 4}" 
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit-format" class="block text-sm font-medium text-starlight-muted mb-2">Format *</label>
+                  <select id="edit-format" name="format" 
+                          class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none" required>
+                    <option value="single_elimination" ${tournament.format === 'single_elimination' ? 'selected' : ''}>Single Elimination</option>
+                    <option value="double_elimination" ${tournament.format === 'double_elimination' ? 'selected' : ''}>Double Elimination</option>
+                    <option value="round_robin" ${tournament.format === 'round_robin' ? 'selected' : ''}>Round Robin</option>
+                    <option value="kp" ${tournament.format === 'kp' ? 'selected' : ''}>KP Format</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tournament Dates -->
+            <div class="space-y-4">
+              <h4 class="text-lg font-semibold text-starlight border-b border-cyber-border pb-2">Tournament Dates</h4>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-group">
+                  <label for="edit-reg-start" class="block text-sm font-medium text-starlight-muted mb-2">Registration Start *</label>
+                  <input type="datetime-local" id="edit-reg-start" name="registrationStart" 
+                         value="${this.formatDateForInput(tournament.registrationStart)}" 
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none datetime-white-icons" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit-reg-end" class="block text-sm font-medium text-starlight-muted mb-2">Registration End *</label>
+                  <input type="datetime-local" id="edit-reg-end" name="registrationEnd" 
+                         value="${this.formatDateForInput(tournament.registrationEnd)}" 
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none datetime-white-icons" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit-tournament-start" class="block text-sm font-medium text-starlight-muted mb-2">Tournament Start *</label>
+                  <input type="datetime-local" id="edit-tournament-start" name="tournamentStart" 
+                         value="${this.formatDateForInput(tournament.tournamentStart)}" 
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none datetime-white-icons" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit-tournament-end" class="block text-sm font-medium text-starlight-muted mb-2">Tournament End *</label>
+                  <input type="datetime-local" id="edit-tournament-end" name="tournamentEnd" 
+                         value="${this.formatDateForInput(tournament.tournamentEnd)}" 
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none datetime-white-icons" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Poster Image -->
+            <div class="space-y-4">
+              <h4 class="text-lg font-semibold text-starlight border-b border-cyber-border pb-2">Tournament Poster</h4>
+              
+              <div class="form-group">
+                <label for="edit-poster" class="block text-sm font-medium text-starlight-muted mb-2">Poster Image</label>
+                <input type="file" id="edit-poster" name="posterImage" accept="image/*" 
+                       class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-cyber-cyan file:text-dark-matter hover:file:bg-cyber-cyan/90 focus:border-cyber-cyan focus:outline-none">
+                <p class="text-xs text-starlight-muted mt-1">Upload a new poster image (optional). Current poster will be kept if no new image is selected.</p>
+                ${tournament.posterImage ? `
+                  <div class="mt-3">
+                    <p class="text-sm text-starlight-muted mb-2">Current poster:</p>
+                    <img src="${tournament.posterImage}" alt="Current poster" class="w-32 h-20 object-cover rounded-lg border border-cyber-border">
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex justify-end space-x-3 pt-6 border-t border-cyber-border">
+              <button type="button" id="cancel-edit" class="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                Cancel
+              </button>
+              <button type="submit" class="px-6 py-3 bg-cyber-cyan text-dark-matter rounded-lg hover:bg-cyber-cyan/90 transition-colors font-semibold">
+                <i class="fas fa-save mr-2"></i>Update Tournament
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Initialize modal
+    this.initializeEditTournamentModal();
+  }
+
+  initializeEditTournamentModal() {
+    // Bind events
+    document.getElementById('close-edit-modal').addEventListener('click', () => {
+      this.hideEditTournamentModal();
+    });
+
+    document.getElementById('cancel-edit').addEventListener('click', () => {
+      this.hideEditTournamentModal();
+    });
+
+    document.getElementById('edit-tournament-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.handleEditTournament();
+    });
+
+    // Close modal on outside click
+    document.getElementById('edit-tournament-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'edit-tournament-modal') {
+        this.hideEditTournamentModal();
+      }
+    });
+  }
+
+  async handleEditTournament() {
+    try {
+      const form = document.getElementById('edit-tournament-form');
+      const formData = new FormData(form);
+
+      // Validate required fields
+      const title = formData.get('title').trim();
+      const game = formData.get('game').trim();
+      const prizePool = formData.get('prizePool');
+      const maxTeams = formData.get('maxTeams');
+      const maxPlayersPerTeam = formData.get('maxPlayersPerTeam');
+      const format = formData.get('format');
+
+      if (!title || !game || !prizePool || !maxTeams || !maxPlayersPerTeam || !format) {
+        throw new Error('Please fill in all required fields');
+      }
+
+      // Show loading state
+      const submitButton = form.querySelector('button[type="submit"]');
+      const originalText = submitButton.innerHTML;
+      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Updating...';
+      submitButton.disabled = true;
+
+      // Update tournament via API
+      const response = await window.apiClient.updateTournamentDetails(this.currentTournament.slug, formData);
+
+      if (response.success) {
+        this.showNotification('Tournament updated successfully!', 'success');
+        
+        // Update current tournament data
+        Object.assign(this.currentTournament, response.data);
+        
+        // Refresh the tournament list
+        await this.loadTournaments();
+        
+        // Hide modal
+        this.hideEditTournamentModal();
+      } else {
+        throw new Error(response.message || 'Failed to update tournament');
+      }
+
+    } catch (error) {
+      console.error('Error updating tournament:', error);
+      this.showError('Failed to update tournament: ' + error.message);
+      
+      // Restore button
+      const submitButton = document.getElementById('edit-tournament-form').querySelector('button[type="submit"]');
+      submitButton.innerHTML = '<i class="fas fa-save mr-2"></i>Update Tournament';
+      submitButton.disabled = false;
+    }
+  }
+
+  formatDateForInput(dateString) {
+    if (!dateString) return '';
+    
+    try {
+      const date = new Date(dateString);
+      // Format for datetime-local input (YYYY-MM-DDTHH:MM)
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return '';
+    }
+  }
+
+  hideEditTournamentModal() {
+    const modal = document.getElementById('edit-tournament-modal');
+    if (modal) {
+      modal.remove();
+    }
   }
 
   async deleteTournament(tournamentId) {

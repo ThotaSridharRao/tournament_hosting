@@ -249,6 +249,11 @@ class ApiClient {
     return this.patch(`/api/tournaments/${tournamentSlug}/status`, { status });
   }
 
+  async updateTournamentDetails(tournamentSlug, formData) {
+    // Use FormData for file uploads
+    return this.patch(`/api/tournaments/${tournamentSlug}`, formData);
+  }
+
 
   
   async getWalletInfo() {
