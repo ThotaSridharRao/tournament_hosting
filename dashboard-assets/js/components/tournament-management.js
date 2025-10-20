@@ -374,10 +374,22 @@ class TournamentManagement {
   }
 
   async manageParticipants(tournamentId) {
-    const tournament = this.tournaments.find(t => t._id === tournamentId);
-    if (!tournament) return;
+    // 1. Initialize the new Participants View
+    window.tournamentParticipantsView = new TournamentParticipantsView(this);
 
-    alert(`Managing participants for: ${tournament.title}\nThis functionality will be implemented soon!`);
+    // 2. Set the dashboard title/subtitle to reflect the new view
+    this.updateDashboardHeader('Tournament Participants', 'View and manage all registered teams.');
+
+    // 3. Clear the current content and initialize the view
+    await window.tournamentParticipantsView.init(tournamentId);
+  }
+
+  // ADD THIS NEW HELPER METHOD to update the main dashboard header when switching views
+  updateDashboardHeader(title, subtitle) {
+    const pageTitle = document.getElementById('page-title');
+    const pageSubtitle = document.getElementById('page-subtitle');
+    if (pageTitle) pageTitle.textContent = title;
+    if (pageSubtitle) pageSubtitle.textContent = subtitle;
   }
 
   async loadParticipants(tournamentId) {
