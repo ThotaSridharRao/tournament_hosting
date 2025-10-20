@@ -555,19 +555,12 @@ class TournamentManagement {
     const eventsContainer = document.getElementById('events-container');
     const events = this.currentTournament.scheduleEvents || [];
 
-    if (events.length === 0) {
-      // Add default events
-      this.addEventRow('Registration Opens', this.currentTournament.registrationStart);
-      this.addEventRow('Registration Closes', this.currentTournament.registrationEnd);
-      this.addEventRow('Tournament Begins', this.currentTournament.tournamentStart);
-      this.addEventRow('Finals', this.currentTournament.tournamentEnd);
-    } else {
-      events.forEach(event => {
-        // Convert separate date and time back to datetime-local format
-        const dateTime = event.date && event.time ? `${event.date}T${event.time.substring(0, 5)}` : '';
-        this.addEventRow(event.title, dateTime, event.description);
-      });
-    }
+    // Only populate actual custom events that were explicitly saved
+    events.forEach(event => {
+      // Convert separate date and time back to datetime-local format
+      const dateTime = event.date && event.time ? `${event.date}T${event.time.substring(0, 5)}` : '';
+      this.addEventRow(event.title, dateTime, event.description);
+    });
   }
 
   addEventRow(name = '', dateTime = '', description = '') {

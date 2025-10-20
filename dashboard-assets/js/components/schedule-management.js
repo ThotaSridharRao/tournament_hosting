@@ -190,128 +190,10 @@ class ScheduleManagement {
 
     console.log('Total events generated:', this.events.length);
 
-    // Only create sample events if we have tournaments but no events AND it's for development
-    if (this.events.length === 0 && this.tournaments.length > 0) {
-      console.log('No events found, creating sample events for development');
-      this.createSampleEvents();
-    }
+    // Development fallback removed - only show actual events from tournaments
   }
 
-  createSampleEvents() {
-    const now = new Date();
 
-    // Create sample events if we have tournaments but no events
-    if (this.tournaments.length > 0) {
-      const sampleTournament = this.tournaments[0];
-
-      // Registration Opens (tomorrow)
-      const regStart = new Date(now);
-      regStart.setDate(regStart.getDate() + 1);
-      regStart.setHours(9, 0, 0, 0);
-
-      this.events.push({
-        id: `${sampleTournament._id}-sample-reg-start`,
-        tournamentId: sampleTournament._id,
-        tournamentTitle: sampleTournament.title,
-        type: 'registration_open',
-        title: 'Registration Opens',
-        description: `Registration period begins for ${sampleTournament.title}`,
-        date: regStart,
-        time: this.formatTime(regStart),
-        status: 'upcoming',
-        icon: 'fas fa-door-open',
-        color: 'text-green-400',
-        bgColor: 'bg-green-500/20',
-        priority: 3
-      });
-
-      // Registration Closes (in 5 days)
-      const regEnd = new Date(now);
-      regEnd.setDate(regEnd.getDate() + 5);
-      regEnd.setHours(23, 59, 0, 0);
-
-      this.events.push({
-        id: `${sampleTournament._id}-sample-reg-end`,
-        tournamentId: sampleTournament._id,
-        tournamentTitle: sampleTournament.title,
-        type: 'registration_close',
-        title: 'Registration Closes',
-        description: `Last chance to register for ${sampleTournament.title}`,
-        date: regEnd,
-        time: this.formatTime(regEnd),
-        status: 'upcoming',
-        icon: 'fas fa-door-closed',
-        color: 'text-yellow-400',
-        bgColor: 'bg-yellow-500/20',
-        priority: 4
-      });
-
-      // Brackets Generated (in 6 days)
-      const brackets = new Date(now);
-      brackets.setDate(brackets.getDate() + 6);
-      brackets.setHours(18, 0, 0, 0);
-
-      this.events.push({
-        id: `${sampleTournament._id}-sample-brackets`,
-        tournamentId: sampleTournament._id,
-        tournamentTitle: sampleTournament.title,
-        type: 'bracket_generation',
-        title: 'Brackets Generated',
-        description: `Tournament brackets will be finalized for ${sampleTournament.title}`,
-        date: brackets,
-        time: this.formatTime(brackets),
-        status: 'upcoming',
-        icon: 'fas fa-sitemap',
-        color: 'text-cyber-indigo',
-        bgColor: 'bg-cyber-indigo/20',
-        priority: 4
-      });
-
-      // Tournament Starts (in 7 days)
-      const tournStart = new Date(now);
-      tournStart.setDate(tournStart.getDate() + 7);
-      tournStart.setHours(10, 0, 0, 0);
-
-      this.events.push({
-        id: `${sampleTournament._id}-sample-start`,
-        tournamentId: sampleTournament._id,
-        tournamentTitle: sampleTournament.title,
-        type: 'tournament_start',
-        title: 'Tournament Begins',
-        description: `${sampleTournament.title} competition starts`,
-        date: tournStart,
-        time: this.formatTime(tournStart),
-        status: 'upcoming',
-        icon: 'fas fa-play-circle',
-        color: 'text-cyber-cyan',
-        bgColor: 'bg-cyber-cyan/20',
-        priority: 5
-      });
-
-      // Note: Team Check-in events are only added if explicitly defined in tournament.events
-
-      // Finals (in 9 days)
-      const finals = new Date(now);
-      finals.setDate(finals.getDate() + 9);
-      finals.setHours(18, 0, 0, 0);
-
-      this.events.push({
-        id: `${sampleTournament._id}-sample-finals`,
-        tournamentId: sampleTournament._id,
-        tournamentTitle: sampleTournament.title,
-        type: 'finals',
-        title: 'Finals',
-        description: `Championship finals for ${sampleTournament.title}`,
-        date: finals,
-        time: this.formatTime(finals),
-        status: 'upcoming',
-        icon: 'fas fa-trophy',
-        color: 'text-yellow-400',
-        bgColor: 'bg-yellow-500/20',
-        priority: 1
-      });
-    }
-  }
 
   extractTournamentEvents(tournament) {
     const events = [];
@@ -473,34 +355,49 @@ class ScheduleManagement {
       }
     }
 
-    // Only add custom events that are explicitly defined in the tournament
-    if (tournament.scheduleEvents && Array.isArray(tournament.scheduleEvents)) {
-      tournament.scheduleEvents.forEach(customEvent => {
-        if (customEvent.title && customEvent.date && customEvent.time) {
-          try {
-            // Convert separate date and time back to datetime for processing
+    // Check for custom events in both possible field names for backward compatibility
+    const customEvents = tournament.scheduleEvents || tournament.events || [];
+    
+    if (customEvents.length > 0) {
+      customEvents.forEach(customEvent => {
+        try {
+          let eventDate;
+          let title;
+          
+          // Handle new format (scheduleEvents with separate date/time)
+          if (customEvent.title && customEvent.date && customEvent.time) {
             const dateTimeStr = `${customEvent.date}T${customEvent.time}`;
-            const eventDate = new Date(dateTimeStr);
-            if (!isNaN(eventDate.getTime())) {
-              events.push({
-                id: `${tournament._id}-custom-${customEvent.title.toLowerCase().replace(/\s+/g, '-')}`,
-                tournamentId: tournament._id,
-                tournamentTitle: tournament.title,
-                type: 'custom_event',
-                title: customEvent.title,
-                description: customEvent.description || `${customEvent.title} for ${tournament.title}`,
-                date: eventDate,
-                time: this.formatTime(eventDate),
-                status: eventDate <= now ? 'completed' : 'upcoming',
-                icon: 'fas fa-calendar-check',
-                color: 'text-purple-400',
-                bgColor: 'bg-purple-500/20',
-                priority: 2
-              });
-            }
-          } catch (error) {
-            console.warn('Invalid custom event date for tournament:', tournament.title, customEvent);
+            eventDate = new Date(dateTimeStr);
+            title = customEvent.title;
           }
+          // Handle old format (events with combined dateTime)
+          else if (customEvent.name && customEvent.dateTime) {
+            eventDate = new Date(customEvent.dateTime);
+            title = customEvent.name;
+          }
+          else {
+            return; // Skip invalid events
+          }
+          
+          if (!isNaN(eventDate.getTime())) {
+            events.push({
+              id: `${tournament._id}-custom-${title.toLowerCase().replace(/\s+/g, '-')}`,
+              tournamentId: tournament._id,
+              tournamentTitle: tournament.title,
+              type: 'custom_event',
+              title: title,
+              description: customEvent.description || `${title} for ${tournament.title}`,
+              date: eventDate,
+              time: this.formatTime(eventDate),
+              status: eventDate <= now ? 'completed' : 'upcoming',
+              icon: 'fas fa-calendar-check',
+              color: 'text-purple-400',
+              bgColor: 'bg-purple-500/20',
+              priority: 2
+            });
+          }
+        } catch (error) {
+          console.warn('Invalid custom event date for tournament:', tournament.title, customEvent);
         }
       });
     }
