@@ -75,11 +75,7 @@ class TournamentManagement {
         <div id="tournaments-empty" class="hidden text-center py-12">
           <i class="fas fa-trophy text-6xl text-starlight-muted mb-4"></i>
           <h3 class="text-xl font-semibold text-starlight mb-2">No Tournaments Yet</h3>
-          <p class="text-starlight-muted mb-6">Create your first tournament to get started</p>
-          <button class="px-6 py-3 bg-cyber-cyan text-dark-matter rounded-lg font-semibold hover:bg-cyber-cyan/90 transition-colors">
-            <i class="fas fa-plus mr-2"></i>
-            Create Tournament
-          </button>
+          <p class="text-starlight-muted">No tournaments have been created yet</p>
         </div>
       </div>
     `;
