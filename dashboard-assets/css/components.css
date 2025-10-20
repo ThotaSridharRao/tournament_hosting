@@ -965,4 +965,110 @@ onal Schedule Event Types */
 
 .event-priority-5 {
   @apply border-l-4 border-l-cyan-400;
+}/* S
+tatus Change Modal Styles */
+#status-change-modal {
+  @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4;
+}
+
+#status-change-modal .glass {
+  @apply bg-dark-panel/80 backdrop-blur-cyber border border-cyber-border rounded-xl;
+}
+
+.status-change-form {
+  @apply space-y-4;
+}
+
+.status-change-form select {
+  @apply w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none;
+}
+
+.status-change-form textarea {
+  @apply w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none resize-vertical;
+}
+
+.status-change-form select option {
+  @apply bg-dark-panel text-starlight;
+}
+
+.status-change-form select option:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* Status button styling */
+.status-button {
+  @apply px-4 py-2 bg-yellow-500/20 text-yellow-400 rounded-lg hover:bg-yellow-500/30 transition-colors;
+}
+
+.status-button:hover {
+  @apply transform translateY(-1px);
+}
+
+/* Status indicators */
+.status-draft {
+  @apply bg-gray-500/20 text-gray-400;
+}
+
+.status-registration-open {
+  @apply bg-green-500/20 text-green-400;
+}
+
+.status-registration-closed {
+  @apply bg-yellow-500/20 text-yellow-400;
+}
+
+.status-ongoing {
+  @apply bg-blue-500/20 text-blue-400;
+}
+
+.status-completed {
+  @apply bg-purple-500/20 text-purple-400;
+}
+
+.status-cancelled {
+  @apply bg-red-500/20 text-red-400;
+}
+
+/* Status change modal animations */
+#status-change-modal {
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+#status-change-modal .glass {
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Mobile responsive for status change modal */
+@media (max-width: 768px) {
+  #status-change-modal .glass {
+    @apply mx-4 max-w-none;
+  }
+  
+  .status-change-form {
+    @apply space-y-3;
+  }
+  
+  .status-change-form .flex {
+    @apply flex-col space-x-0 space-y-3;
+  }
 }

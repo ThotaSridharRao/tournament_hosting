@@ -210,6 +210,10 @@ class ApiClient {
     return this.put(`/api/host/tournaments/${tournamentId}`, tournamentData);
   }
 
+  async updateTournamentStatus(tournamentId, statusData) {
+    return this.put(`/api/host/tournaments/${tournamentId}/status`, statusData);
+  }
+
   async deleteTournament(tournamentId) {
     return this.delete(`/api/host/tournaments/${tournamentId}`);
   }

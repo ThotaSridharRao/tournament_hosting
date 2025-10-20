@@ -213,6 +213,10 @@ class TournamentManagement {
               class="px-4 py-2 bg-cyber-indigo/20 text-cyber-indigo rounded-lg hover:bg-cyber-indigo/30 transition-colors">
               <i class="fas fa-users mr-1"></i> Participants
             </button>
+            <button onclick="window.tournamentManagement.changeStatus('${tournament._id}', '${tournament.status}')" 
+              class="px-4 py-2 bg-yellow-500/20 text-yellow-400 rounded-lg hover:bg-yellow-500/30 transition-colors">
+              <i class="fas fa-toggle-on mr-1"></i> Status
+            </button>
             <button onclick="window.tournamentManagement.editTournament('${tournament._id}')" 
               class="px-4 py-2 bg-cyber-cyan/20 text-cyber-cyan rounded-lg hover:bg-cyber-cyan/30 transition-colors">
               <i class="fas fa-edit mr-1"></i> Edit
@@ -371,6 +375,196 @@ class TournamentManagement {
   async editTournament(tournamentId) {
     this.currentTournament = this.tournaments.find(t => t._id === tournamentId);
     alert('Edit tournament functionality will be implemented soon!');
+  }
+
+  async changeStatus(tournamentId, currentStatus) {
+    const tournament = this.tournaments.find(t => t._id === tournamentId);
+    if (!tournament) {
+      this.showError('Tournament not found');
+      return;
+    }
+
+    this.showStatusChangeModal(tournamentId, currentStatus, tournament.title);
+  }
+
+  showStatusChangeModal(tournamentId, currentStatus, tournamentTitle) {
+    const contentArea = document.getElementById('content-area');
+    
+    // Create modal HTML
+    const modalHtml = `
+      <div id="status-change-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="glass rounded-xl max-w-md w-full p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-semibold text-starlight">Change Tournament Status</h3>
+            <button id="close-status-modal" class="text-starlight-muted hover:text-starlight">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="mb-6">
+            <p class="text-starlight-muted mb-2">Tournament: <span class="text-starlight font-semibold">${tournamentTitle}</span></p>
+            <p class="text-starlight-muted mb-3">Current Status: <span class="text-cyber-cyan font-semibold">${currentStatus?.replace('_', ' ').toUpperCase()}</span></p>
+            
+            <div class="bg-dark-matter/30 border border-cyber-border/30 rounded-lg p-3">
+              <p class="text-xs text-starlight-muted">
+                <i class="fas fa-info-circle mr-1 text-cyber-cyan"></i>
+                ${this.getStatusHelpText(currentStatus)}
+              </p>
+            </div>
+          </div>
+
+          <form id="status-change-form" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-starlight mb-2">New Status</label>
+              <select id="new-status" class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none">
+                <option value="">Select new status</option>
+                ${this.getStatusOptions(currentStatus)}
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-starlight mb-2">Reason (Optional)</label>
+              <textarea id="status-reason" rows="3" placeholder="Reason for status change..." 
+                       class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none resize-vertical"></textarea>
+            </div>
+
+            <div class="flex space-x-3 pt-4">
+              <button type="button" id="cancel-status-change" class="flex-1 px-4 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                Cancel
+              </button>
+              <button type="submit" class="flex-1 px-4 py-3 bg-cyber-cyan text-dark-matter rounded-lg hover:bg-cyber-cyan/90 transition-colors font-semibold">
+                Update Status
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Bind events
+    document.getElementById('close-status-modal').addEventListener('click', () => {
+      this.hideStatusChangeModal();
+    });
+
+    document.getElementById('cancel-status-change').addEventListener('click', () => {
+      this.hideStatusChangeModal();
+    });
+
+    document.getElementById('status-change-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.handleStatusChange(tournamentId);
+    });
+
+    // Close modal on outside click
+    document.getElementById('status-change-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'status-change-modal') {
+        this.hideStatusChangeModal();
+      }
+    });
+  }
+
+  getStatusOptions(currentStatus) {
+    // Define logical status transitions
+    const statusTransitions = {
+      'draft': ['registration_open', 'cancelled'],
+      'registration_open': ['registration_closed', 'cancelled'],
+      'registration_closed': ['ongoing', 'cancelled'],
+      'ongoing': ['completed', 'cancelled'],
+      'completed': [], // Final state
+      'cancelled': ['draft'] // Can restart from draft
+    };
+
+    const statusLabels = {
+      'draft': 'Draft',
+      'registration_open': 'Registration Open',
+      'registration_closed': 'Registration Closed',
+      'ongoing': 'Ongoing',
+      'completed': 'Completed',
+      'cancelled': 'Cancelled'
+    };
+
+    const statusDescriptions = {
+      'draft': 'Tournament is being prepared',
+      'registration_open': 'Players can register for the tournament',
+      'registration_closed': 'Registration period has ended',
+      'ongoing': 'Tournament is currently running',
+      'completed': 'Tournament has finished',
+      'cancelled': 'Tournament has been cancelled'
+    };
+
+    const allowedTransitions = statusTransitions[currentStatus] || [];
+    
+    return allowedTransitions.map(status => `
+      <option value="${status}" title="${statusDescriptions[status]}">
+        ${statusLabels[status]}
+      </option>
+    `).join('');
+  }
+
+  getStatusHelpText(currentStatus) {
+    const helpTexts = {
+      'draft': 'You can open registration when ready or cancel the tournament.',
+      'registration_open': 'Close registration when you have enough participants or cancel if needed.',
+      'registration_closed': 'Start the tournament when ready or cancel if there are issues.',
+      'ongoing': 'Mark as completed when the tournament finishes or cancel if interrupted.',
+      'completed': 'Tournament is finished. No further status changes available.',
+      'cancelled': 'You can restart this tournament by changing it back to draft status.'
+    };
+
+    return helpTexts[currentStatus] || 'Select a new status for this tournament.';
+  }
+
+  hideStatusChangeModal() {
+    const modal = document.getElementById('status-change-modal');
+    if (modal) {
+      modal.remove();
+    }
+  }
+
+  async handleStatusChange(tournamentId) {
+    const newStatus = document.getElementById('new-status').value;
+    const reason = document.getElementById('status-reason').value;
+
+    if (!newStatus) {
+      this.showError('Please select a new status');
+      return;
+    }
+
+    try {
+      const submitButton = document.querySelector('#status-change-form button[type="submit"]');
+      const originalText = submitButton.innerHTML;
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Updating...';
+
+      const response = await window.apiClient.updateTournamentStatus(tournamentId, {
+        status: newStatus,
+        reason: reason
+      });
+
+      if (response.success) {
+        this.showSuccess(`Tournament status updated to ${newStatus.replace('_', ' ').toUpperCase()}`);
+        this.hideStatusChangeModal();
+        
+        // Refresh tournaments list
+        await this.loadTournaments();
+      } else {
+        throw new Error(response.message || 'Failed to update tournament status');
+      }
+
+    } catch (error) {
+      console.error('Status change error:', error);
+      this.showError(error.message || 'Failed to update tournament status');
+      
+      // Reset button
+      const submitButton = document.querySelector('#status-change-form button[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.innerHTML = 'Update Status';
+      }
+    }
   }
 
   async manageParticipants(tournamentId) {
