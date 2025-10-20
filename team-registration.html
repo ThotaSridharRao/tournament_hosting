@@ -1182,18 +1182,8 @@
             transition: opacity 0.3s ease;
         }
 
-        .player-form:hover::before {
-            opacity: 1;
-        }
-
         .player-form:last-child {
             margin-bottom: 0;
-        }
-
-        .player-form:hover {
-            border-color: rgba(10, 250, 217, 0.3);
-            background: rgba(10, 250, 217, 0.05);
-            transform: translateX(4px);
         }
 
         .captain-badge {
@@ -1763,46 +1753,7 @@
                 </form>
             </div>
 
-            <div class="tournament-info">
-                <div class="tournament-poster" id="tournament-poster">
-                    <div class="poster-placeholder">
-                        <i class="fas fa-image"></i><br>
-                        Tournament Poster
-                    </div>
-                </div>
 
-                <div class="tournament-details">
-                    <h3 id="tournament-title">Loading Tournament...</h3>
-                    <div class="detail-item">
-                        <span class="detail-label">Game</span>
-                        <span class="detail-value" id="game-name">--</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Format</span>
-                        <span class="detail-value" id="tournament-format">--</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Max Teams</span>
-                        <span class="detail-value" id="max-teams">--</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Prize Pool</span>
-                        <span class="detail-value" id="prize-pool">--</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">Registration Ends</span>
-                        <span class="detail-value" id="reg-end-date">--</span>
-                    </div>
-                </div>
-
-                <div class="tournament-structure-section" id="tournament-structure-section">
-                    <!-- Tournament structure will be loaded dynamically -->
-                </div>
-
-                <div class="payment-structure" id="payment-structure">
-                    <!-- Payment structure will be loaded dynamically -->
-                </div>
-            </div>
         </div>
     </main>
 
