@@ -1865,11 +1865,6 @@
             generatePlayerRows();
             loadTournamentRules(currentTournament);
             loadRegistrationSummary(currentTournament);
-            const posterPath = currentTournament.posterImage || currentTournament.poster || currentTournament.thumbnailUrl || currentTournament.imageUrl;
-            if (posterPath) {
-                const imageUrl = getImageUrl(posterPath);
-                document.getElementById('tournament-poster').innerHTML = `<img src="${imageUrl}" alt="Tournament Poster" onerror="this.parentElement.innerHTML='<div class=\\'poster-placeholder\\'><i class=\\'fas fa-image\\'></i><br>Tournament Poster</div>'">`;
-            }
             checkRegistrationAvailability();
         }
 
