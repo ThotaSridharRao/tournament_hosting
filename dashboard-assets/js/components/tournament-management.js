@@ -268,22 +268,22 @@ class TournamentManagement {
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div class="form-group">
                   <label for="reg-start-date" class="block text-sm font-medium text-starlight-muted mb-2">Registration Start *</label>
-                  <input type="datetime-local" id="reg-start-date" name="registrationStart" class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none" required>
+                  <input type="datetime-local" id="reg-start-date" name="registrationStart" class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none datetime-white-icons" required>
                 </div>
                 
                 <div class="form-group">
                   <label for="reg-end-date" class="block text-sm font-medium text-starlight-muted mb-2">Registration End *</label>
-                  <input type="datetime-local" id="reg-end-date" name="registrationEnd" class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none" required>
+                  <input type="datetime-local" id="reg-end-date" name="registrationEnd" class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none datetime-white-icons" required>
                 </div>
                 
                 <div class="form-group">
                   <label for="tournament-start-date" class="block text-sm font-medium text-starlight-muted mb-2">Tournament Start *</label>
-                  <input type="datetime-local" id="tournament-start-date" name="tournamentStart" class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none" required>
+                  <input type="datetime-local" id="tournament-start-date" name="tournamentStart" class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none datetime-white-icons" required>
                 </div>
                 
                 <div class="form-group">
                   <label for="tournament-end-date" class="block text-sm font-medium text-starlight-muted mb-2">Tournament End *</label>
-                  <input type="datetime-local" id="tournament-end-date" name="tournamentEnd" class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none" required>
+                  <input type="datetime-local" id="tournament-end-date" name="tournamentEnd" class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none datetime-white-icons" required>
                 </div>
               </div>
             </div>
@@ -498,20 +498,54 @@ class TournamentManagement {
       submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating...';
       submitBtn.disabled = true;
 
-      // Create FormData object
+      // Create FormData object with exact backend format
       const formData = new FormData();
 
-      // Add all form fields
-      const formElements = form.elements;
-      for (let element of formElements) {
-        if (element.type === 'file') {
-          // Only include file if user selected one
-          if (element.files && element.files.length > 0 && element.files[0].size > 0) {
-            formData.append(element.name, element.files[0]);
-          }
-        } else if (element.name && element.value !== undefined && element.value !== '') {
-          formData.append(element.name, element.value);
-        }
+      // Get form values and validate
+      const title = form.querySelector('[name="title"]').value.trim();
+      const game = form.querySelector('[name="game"]').value.trim();
+      const description = form.querySelector('[name="description"]').value.trim();
+      const registrationStart = form.querySelector('[name="registrationStart"]').value;
+      const registrationEnd = form.querySelector('[name="registrationEnd"]').value;
+      const tournamentStart = form.querySelector('[name="tournamentStart"]').value;
+      const tournamentEnd = form.querySelector('[name="tournamentEnd"]').value;
+      const prizePool = form.querySelector('[name="prizePool"]').value;
+      const entryFee = form.querySelector('[name="entryFee"]').value || '0';
+      const maxTeams = form.querySelector('[name="maxTeams"]').value;
+      const maxPlayersPerTeam = form.querySelector('[name="maxPlayersPerTeam"]').value;
+      const format = form.querySelector('[name="format"]').value;
+      const posterImage = form.querySelector('[name="posterImage"]').files[0];
+
+      // Validate required fields
+      if (!title || !game || !description || !registrationStart || !registrationEnd ||
+        !tournamentStart || !tournamentEnd || !prizePool || !maxTeams ||
+        !maxPlayersPerTeam || !format) {
+        throw new Error('Please fill in all required fields');
+      }
+
+      // Add fields to FormData (matching backend expectations)
+      formData.append('title', title);
+      formData.append('game', game);
+      formData.append('description', description);
+      formData.append('registrationStart', registrationStart);
+      formData.append('registrationEnd', registrationEnd);
+      formData.append('tournamentStart', tournamentStart);
+      formData.append('tournamentEnd', tournamentEnd);
+      formData.append('prizePool', prizePool);
+      formData.append('entryFee', entryFee);
+      formData.append('maxTeams', maxTeams);
+      formData.append('maxPlayersPerTeam', maxPlayersPerTeam);
+      formData.append('format', format);
+
+      // Add poster image if selected
+      if (posterImage && posterImage.size > 0) {
+        formData.append('posterImage', posterImage);
+      }
+
+      // Debug log
+      console.log('Form data being sent:');
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
       }
 
       // Make API call
@@ -529,7 +563,24 @@ class TournamentManagement {
 
     } catch (error) {
       console.error('Error creating tournament:', error);
-      this.showError('Failed to create tournament: ' + error.message);
+
+      // Better error message handling
+      let errorMessage = 'Failed to create tournament';
+      if (error.data && error.data.detail) {
+        if (Array.isArray(error.data.detail)) {
+          // Handle validation errors array
+          const validationErrors = error.data.detail.map(err =>
+            `${err.loc ? err.loc.join('.') : 'Field'}: ${err.msg}`
+          ).join(', ');
+          errorMessage = `Validation errors: ${validationErrors}`;
+        } else {
+          errorMessage = error.data.detail;
+        }
+      } else if (error.message && error.message !== '[object Object]') {
+        errorMessage = error.message;
+      }
+
+      this.showError(errorMessage);
     } finally {
       // Reset button state
       submitBtn.innerHTML = originalText;

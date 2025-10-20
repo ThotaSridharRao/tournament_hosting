@@ -201,13 +201,8 @@ class ApiClient {
     return this.get('/api/host/tournaments', params);
   }
 
-  async createTournament(tournamentData) {
-    const formData = new FormData();
-    for (const key in tournamentData) {
-        if (tournamentData[key] !== null && tournamentData[key] !== undefined) {
-             formData.append(key, tournamentData[key]);
-        }
-    }
+  async createTournament(formData) {
+    // FormData is already prepared by the component
     return this.post('/api/tournaments', formData);
   }
 
