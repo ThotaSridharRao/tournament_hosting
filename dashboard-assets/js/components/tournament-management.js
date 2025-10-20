@@ -420,24 +420,7 @@ class TournamentManagement {
     }
   }
 
-  async exportParticipants(tournamentId) {
-    try {
-      this.showInfo('Generating participant list...');
-      const tournament = this.tournaments.find(t => t._id === tournamentId);
-      const blob = await window.apiClient.exportParticipantsCSV(tournamentId);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.style.display = 'none';
-      a.href = url;
-      a.download = `${tournament.title}_participants.csv`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      this.showSuccess('Participant list downloaded!');
-    } catch (error) {
-      this.showError('Failed to export participants');
-    }
-  }
+
 
   async deleteTournament(tournamentId) {
     if (!confirm('Are you sure you want to delete this tournament? This action cannot be undone.')) return;

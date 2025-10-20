@@ -13,6 +13,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- jsPDF for PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
   <link rel="stylesheet" href="dashboard-assets/css/components.css">
 
   <script>
@@ -219,13 +222,6 @@
           <!-- Header Actions -->
           <div class="flex items-center space-x-4">
             <!-- Notifications will be added dynamically -->
-
-            <!-- Quick Actions -->
-            <button id="header-new-tournament"
-              class="px-4 py-2 bg-cyber-cyan text-dark-matter rounded-lg font-semibold hover:bg-cyber-cyan/90 transition-colors">
-              <i class="fas fa-plus mr-2"></i>
-              New Tournament
-            </button>
           </div>
         </div>
       </header>
@@ -501,27 +497,6 @@
           localStorage.removeItem('nexus_session');
           sessionStorage.removeItem('nexus_session');
           window.location.href = 'auth.html';
-        }
-      });
-
-      // Bind header new tournament button
-      document.getElementById('header-new-tournament')?.addEventListener('click', () => {
-        // Switch to tournaments section if not already there
-        if (dashboardState.currentSection !== 'tournaments') {
-          dashboardState.setCurrentSection('tournaments');
-          loadSectionContent('tournaments').then(() => {
-            // Show create modal after tournaments section loads
-            setTimeout(() => {
-              if (window.tournamentManagement) {
-                window.tournamentManagement.showCreateModal();
-              }
-            }, 100);
-          });
-        } else {
-          // Already in tournaments section, just show modal
-          if (window.tournamentManagement) {
-            window.tournamentManagement.showCreateModal();
-          }
         }
       });
 

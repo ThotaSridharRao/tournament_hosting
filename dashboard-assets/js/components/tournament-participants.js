@@ -86,19 +86,23 @@ class TournamentParticipantsView {
 
     contentArea.innerHTML = `
       <div class="animate-fade-in space-y-6">
+        <!-- Back Button -->
+        <div class="mb-4">
+          <button id="back-to-tournaments-btn" title="Back to Tournaments" class="flex items-center justify-center w-10 h-10 bg-dark-matter/50 hover:bg-cyber-cyan/20 border border-cyber-border hover:border-cyber-cyan rounded-lg transition-all duration-200 group">
+            <i class="fas fa-arrow-left text-starlight-muted group-hover:text-cyber-cyan transition-colors"></i>
+          </button>
+        </div>
+
+        <!-- Header Section -->
         <div class="flex items-center justify-between mb-8 border-b border-cyber-border pb-4">
           <div>
             <h2 class="text-3xl font-bold text-starlight mb-2">Participants: ${this.tournament.title}</h2>
             <p class="text-starlight-muted">Total Teams: ${participantCount}/${this.tournament.maxTeams}</p>
           </div>
-          <div class="flex space-x-3">
-            <button id="export-csv-btn" class="btn-secondary flex items-center space-x-2">
-                <i class="fas fa-file-csv"></i>
-                <span>Export CSV</span>
-            </button>
-            <button id="back-to-tournaments-btn" class="btn-primary flex items-center space-x-2">
-              <i class="fas fa-arrow-left"></i>
-              <span>Back to Tournaments</span>
+          <div>
+            <button id="export-pdf-btn" class="btn-secondary flex items-center space-x-2">
+                <i class="fas fa-file-pdf"></i>
+                <span>Download PDF</span>
             </button>
           </div>
         </div>
@@ -203,9 +207,9 @@ class TournamentParticipantsView {
       this.tmInstance.init(); // Re-initialize the parent component to show list
     });
 
-    // Export CSV button
-    document.getElementById('export-csv-btn')?.addEventListener('click', () => {
-      this.downloadCSV();
+    // Export PDF button
+    document.getElementById('export-pdf-btn')?.addEventListener('click', () => {
+      this.downloadPDF();
     });
 
     // Modal Events
@@ -270,25 +274,100 @@ class TournamentParticipantsView {
     }
   }
 
-  async downloadCSV() {
-    const exportBtn = document.getElementById('export-csv-btn');
+  async downloadPDF() {
+    const exportBtn = document.getElementById('export-pdf-btn');
     const originalText = exportBtn.innerHTML;
     exportBtn.disabled = true;
-    exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+    exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
 
     try {
-        const blob = await window.apiClient.exportParticipantsCSV(this.tournamentId); // Uses endpoint from api-client.js
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = `${this.tournament.slug || 'tournament'}_participants.csv`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        window.tournamentManagement.showSuccess('Participant list downloaded!');
+        // Generate PDF using jsPDF with autoTable
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Add title
+        doc.setFontSize(18);
+        doc.setTextColor(15, 133, 211); // Primary color
+        doc.text(`${this.tournament.title}`, 20, 25);
+        
+        doc.setFontSize(14);
+        doc.setTextColor(93, 63, 211); // Secondary color
+        doc.text('Tournament Participants', 20, 35);
+        
+        // Add tournament info
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Total Teams: ${this.participants.length}/${this.tournament.maxTeams || 'Unlimited'}`, 20, 45);
+        doc.text(`Generated on: ${new Date().toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        })}`, 20, 52);
+        
+        // Prepare table data
+        const tableData = this.participants.map((participant, index) => [
+            index + 1,
+            participant.teamName || 'N/A',
+            participant.captainEmail || 'N/A',
+            `${participant.players?.length || 0}/${this.tournament.maxPlayersPerTeam || 'N/A'}`,
+            (participant.status || 'UNKNOWN').toUpperCase(),
+            this.formatDate(participant.registrationDate)
+        ]);
+        
+        // Generate table using autoTable
+        doc.autoTable({
+            head: [['#', 'Team Name', 'Captain Email', 'Players', 'Status', 'Registration Date']],
+            body: tableData,
+            startY: 60,
+            theme: 'grid',
+            headStyles: {
+                fillColor: [15, 133, 211],
+                textColor: [255, 255, 255],
+                fontSize: 10,
+                fontStyle: 'bold'
+            },
+            bodyStyles: {
+                fontSize: 9,
+                textColor: [50, 50, 50]
+            },
+            alternateRowStyles: {
+                fillColor: [245, 245, 245]
+            },
+            columnStyles: {
+                0: { cellWidth: 15, halign: 'center' },
+                1: { cellWidth: 40 },
+                2: { cellWidth: 50 },
+                3: { cellWidth: 25, halign: 'center' },
+                4: { cellWidth: 25, halign: 'center' },
+                5: { cellWidth: 35, halign: 'center' }
+            },
+            margin: { left: 20, right: 20 },
+            styles: {
+                overflow: 'linebreak',
+                cellPadding: 3
+            }
+        });
+        
+        // Add footer
+        const pageCount = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+            doc.setFontSize(8);
+            doc.setTextColor(150, 150, 150);
+            doc.text(`Page ${i} of ${pageCount}`, doc.internal.pageSize.width - 30, doc.internal.pageSize.height - 10);
+            doc.text('Generated by Uni Games Tournament System', 20, doc.internal.pageSize.height - 10);
+        }
+        
+        // Save the PDF
+        const fileName = `${this.tournament.slug || 'tournament'}_participants_${new Date().toISOString().split('T')[0]}.pdf`;
+        doc.save(fileName);
+        window.tournamentManagement.showSuccess('Participant list PDF downloaded successfully!');
+        
     } catch (error) {
-        window.tournamentManagement.showError('Failed to export participants: ' + error.message);
+        console.error('PDF generation error:', error);
+        window.tournamentManagement.showError('Failed to generate PDF: ' + error.message);
     } finally {
         exportBtn.disabled = false;
         exportBtn.innerHTML = originalText;
