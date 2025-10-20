@@ -245,6 +245,10 @@ class ApiClient {
     return this.post(`/api/tournaments/${tournamentSlug}/updates`, eventData);
   }
 
+  async updateTournamentStatus(tournamentSlug, status) {
+    return this.patch(`/api/tournaments/${tournamentSlug}/status`, { status });
+  }
+
 
   
   async getWalletInfo() {

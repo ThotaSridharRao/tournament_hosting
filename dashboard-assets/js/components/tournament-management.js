@@ -442,7 +442,153 @@ class TournamentManagement {
   }
 
   async changeStatus(tournamentId, currentStatus) {
-    this.showNotification('Status change coming soon!', 'info');
+    this.currentTournament = this.tournaments.find(t => t._id === tournamentId);
+    if (!this.currentTournament) {
+      this.showError('Tournament not found');
+      return;
+    }
+
+    this.showStatusChangeModal(currentStatus);
+  }
+
+  showStatusChangeModal(currentStatus) {
+    const tournament = this.currentTournament;
+    const statusOptions = [
+      { value: 'upcoming', label: 'Upcoming', description: 'Tournament is scheduled but not yet open for registration' },
+      { value: 'registration_open', label: 'Registration Open', description: 'Players can register for the tournament' },
+      { value: 'registration_closed', label: 'Registration Closed', description: 'Registration period has ended' },
+      { value: 'ongoing', label: 'Ongoing', description: 'Tournament is currently in progress' },
+      { value: 'ended', label: 'Ended', description: 'Tournament has completed' }
+    ];
+
+    const modalHtml = `
+      <div id="status-change-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="glass rounded-xl max-w-md w-full">
+          <div class="flex justify-between items-center p-6 border-b border-cyber-border">
+            <h3 class="text-xl font-semibold text-starlight">Change Tournament Status</h3>
+            <button id="close-status-modal" class="text-starlight-muted hover:text-starlight">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+          <div class="p-6">
+            <div class="mb-4">
+              <p class="text-starlight-muted mb-2">Tournament: <span class="text-starlight font-semibold">${tournament.title}</span></p>
+              <p class="text-starlight-muted">Current Status: <span class="text-cyber-cyan font-semibold">${currentStatus?.replace('_', ' ').toUpperCase()}</span></p>
+            </div>
+
+            <form id="status-change-form" class="space-y-4">
+              <div class="form-group">
+                <label for="new-status" class="block text-sm font-medium text-starlight-muted mb-3">Select New Status:</label>
+                <div class="space-y-2">
+                  ${statusOptions.map(option => `
+                    <label class="flex items-start space-x-3 p-3 rounded-lg border border-cyber-border/30 hover:border-cyber-cyan/50 cursor-pointer transition-colors ${option.value === currentStatus ? 'bg-cyber-cyan/10 border-cyber-cyan' : ''}">
+                      <input type="radio" name="status" value="${option.value}" 
+                             class="mt-1 text-cyber-cyan focus:ring-cyber-cyan" 
+                             ${option.value === currentStatus ? 'checked' : ''}>
+                      <div class="flex-1">
+                        <div class="font-medium text-starlight">${option.label}</div>
+                        <div class="text-sm text-starlight-muted">${option.description}</div>
+                      </div>
+                    </label>
+                  `).join('')}
+                </div>
+              </div>
+
+              <div class="flex justify-end space-x-3 pt-4 border-t border-cyber-border">
+                <button type="button" id="cancel-status-change" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                  Cancel
+                </button>
+                <button type="submit" class="px-4 py-2 bg-cyber-cyan text-dark-matter rounded-lg hover:bg-cyber-cyan/90 transition-colors font-semibold">
+                  Update Status
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Initialize modal
+    this.initializeStatusModal();
+  }
+
+  initializeStatusModal() {
+    // Bind events
+    document.getElementById('close-status-modal').addEventListener('click', () => {
+      this.hideStatusModal();
+    });
+
+    document.getElementById('cancel-status-change').addEventListener('click', () => {
+      this.hideStatusModal();
+    });
+
+    document.getElementById('status-change-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.handleStatusChange();
+    });
+
+    // Close modal on outside click
+    document.getElementById('status-change-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'status-change-modal') {
+        this.hideStatusModal();
+      }
+    });
+  }
+
+  async handleStatusChange() {
+    try {
+      const form = document.getElementById('status-change-form');
+      const formData = new FormData(form);
+      const newStatus = formData.get('status');
+
+      if (!newStatus) {
+        throw new Error('Please select a status');
+      }
+
+      // Show loading state
+      const submitButton = form.querySelector('button[type="submit"]');
+      const originalText = submitButton.innerHTML;
+      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Updating...';
+      submitButton.disabled = true;
+
+      // Update status via API
+      const response = await window.apiClient.updateTournamentStatus(this.currentTournament.slug, newStatus);
+
+      if (response.success) {
+        this.showNotification('Tournament status updated successfully!', 'success');
+        
+        // Update current tournament data
+        this.currentTournament.status = newStatus;
+        
+        // Refresh the tournament list
+        await this.loadTournaments();
+        
+        // Hide modal
+        this.hideStatusModal();
+      } else {
+        throw new Error(response.message || 'Failed to update status');
+      }
+
+    } catch (error) {
+      console.error('Error updating status:', error);
+      this.showError('Failed to update status: ' + error.message);
+      
+      // Restore button
+      const submitButton = document.getElementById('status-change-form').querySelector('button[type="submit"]');
+      submitButton.innerHTML = 'Update Status';
+      submitButton.disabled = false;
+    }
+  }
+
+  hideStatusModal() {
+    const modal = document.getElementById('status-change-modal');
+    if (modal) {
+      modal.remove();
+    }
   }
 
   async editTournament(tournamentId) {
