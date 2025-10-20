@@ -210,24 +210,29 @@ class TournamentManagement {
           </div>
           <div class="flex items-center gap-2 mt-4 lg:mt-0">
             <button onclick="window.tournamentManagement.manageParticipants('${tournament._id}')" 
-              class="px-4 py-2 bg-cyber-indigo/20 text-cyber-indigo rounded-lg hover:bg-cyber-indigo/30 transition-colors">
-              <i class="fas fa-users mr-1"></i> Participants
+              class="w-10 h-10 bg-cyber-indigo/20 text-cyber-indigo rounded-lg hover:bg-cyber-indigo/30 transition-colors flex items-center justify-center" 
+              title="Manage Participants">
+              <i class="fas fa-users"></i>
             </button>
             <button onclick="window.tournamentManagement.changeStatus('${tournament._id}', '${tournament.status}')" 
-              class="px-4 py-2 bg-yellow-500/20 text-yellow-400 rounded-lg hover:bg-yellow-500/30 transition-colors">
-              <i class="fas fa-toggle-on mr-1"></i> Status
+              class="w-10 h-10 bg-yellow-500/20 text-yellow-400 rounded-lg hover:bg-yellow-500/30 transition-colors flex items-center justify-center" 
+              title="Change Status">
+              <i class="fas fa-toggle-on"></i>
             </button>
             <button onclick="window.tournamentManagement.manageEvents('${tournament._id}')" 
-              class="px-4 py-2 bg-purple-500/20 text-purple-400 rounded-lg hover:bg-purple-500/30 transition-colors">
-              <i class="fas fa-calendar-plus mr-1"></i> Events
+              class="w-10 h-10 bg-purple-500/20 text-purple-400 rounded-lg hover:bg-purple-500/30 transition-colors flex items-center justify-center" 
+              title="Manage Events">
+              <i class="fas fa-calendar-plus"></i>
             </button>
             <button onclick="window.tournamentManagement.editTournament('${tournament._id}')" 
-              class="px-4 py-2 bg-cyber-cyan/20 text-cyber-cyan rounded-lg hover:bg-cyber-cyan/30 transition-colors">
-              <i class="fas fa-edit mr-1"></i> Edit
+              class="w-10 h-10 bg-cyber-cyan/20 text-cyber-cyan rounded-lg hover:bg-cyber-cyan/30 transition-colors flex items-center justify-center" 
+              title="Edit Tournament">
+              <i class="fas fa-edit"></i>
             </button>
             <button onclick="window.tournamentManagement.deleteTournament('${tournament._id}')" 
-              class="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors">
-              <i class="fas fa-trash mr-1"></i> Delete
+              class="w-10 h-10 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors flex items-center justify-center" 
+              title="Delete Tournament">
+              <i class="fas fa-trash"></i>
             </button>
           </div>
         </div>
@@ -249,8 +254,8 @@ class TournamentManagement {
     const tournament = this.currentTournament;
     
     const modalHtml = `
-      <div id="event-management-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="glass rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div id="event-management-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+        <div class="glass rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
           <div class="flex justify-between items-center p-6 border-b border-cyber-border">
             <h3 class="text-2xl font-semibold text-starlight">Manage Events - ${tournament.title}</h3>
             <button id="close-event-modal" class="text-starlight-muted hover:text-starlight">
@@ -451,8 +456,8 @@ class TournamentManagement {
     const tournament = this.currentTournament;
     
     const modalHtml = `
-      <div id="participants-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="glass rounded-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+      <div id="participants-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+        <div class="glass rounded-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
           <div class="flex justify-between items-center p-6 border-b border-cyber-border">
             <div>
               <h3 class="text-2xl font-semibold text-starlight">Tournament Participants</h3>
@@ -527,6 +532,7 @@ class TournamentManagement {
 
       if (response.success) {
         const participants = response.data.participants || [];
+        this.participants = participants; // Store for team details view
         this.renderParticipants(participants);
       } else {
         throw new Error(response.message || 'Failed to load participants');
@@ -562,63 +568,142 @@ class TournamentManagement {
     countElement.textContent = participants.length;
 
     // Render participants list
-    listElement.innerHTML = participants.map(participant => this.renderParticipantCard(participant)).join('');
+    listElement.innerHTML = participants.map((participant, index) => this.renderParticipantCard(participant, index)).join('');
   }
 
-  renderParticipantCard(participant) {
+  renderParticipantCard(participant, index) {
     const players = participant.players || [];
     const teamName = participant.teamName || 'Unknown Team';
     const teamId = participant._id;
 
     return `
       <div class="bg-dark-matter/30 border border-cyber-border/30 rounded-lg p-4 hover:border-cyber-cyan/50 transition-colors">
-        <div class="flex justify-between items-start">
-          <div class="flex-1">
-            <div class="flex items-center gap-3 mb-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4 flex-1">
+            <span class="text-cyber-cyan font-semibold text-lg w-8">${index + 1}.</span>
+            <div class="flex-1">
               <h5 class="text-lg font-semibold text-starlight">${teamName}</h5>
-              <span class="px-2 py-1 bg-cyber-cyan/20 text-cyber-cyan text-xs rounded-full">
-                ${players.length} ${players.length === 1 ? 'player' : 'players'}
-              </span>
+              <span class="text-sm text-starlight-muted">${players.length} ${players.length === 1 ? 'player' : 'players'}</span>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              ${players.map(player => `
-                <div class="bg-dark-matter/50 border border-cyber-border/20 rounded-lg p-3">
-                  <div class="flex items-center gap-2 mb-1">
-                    <i class="fas fa-user text-cyber-cyan text-sm"></i>
-                    <span class="font-medium text-starlight text-sm">${player.name || 'Unknown Player'}</span>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <button onclick="window.tournamentManagement.viewTeamDetails('${teamId}', '${teamName.replace(/'/g, "\\'")}', ${index})" 
+                    class="w-10 h-10 bg-cyber-cyan/20 text-cyber-cyan rounded-lg hover:bg-cyber-cyan/30 transition-colors flex items-center justify-center" 
+                    title="View Team Details">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button onclick="window.tournamentManagement.removeParticipant('${teamId}', '${teamName.replace(/'/g, "\\'")}', ${index})" 
+                    class="w-10 h-10 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors flex items-center justify-center" 
+                    title="Remove Team">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  async viewTeamDetails(teamId, teamName, teamIndex) {
+    const participant = this.participants.find(p => p._id === teamId);
+    if (!participant) {
+      this.showError('Team not found');
+      return;
+    }
+
+    this.showTeamDetailsModal(participant, teamIndex + 1);
+  }
+
+  showTeamDetailsModal(participant, teamNumber) {
+    const players = participant.players || [];
+    const teamName = participant.teamName || 'Unknown Team';
+
+    const modalHtml = `
+      <div id="team-details-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+        <div class="glass rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
+          <div class="flex justify-between items-center p-6 border-b border-cyber-border">
+            <div>
+              <h3 class="text-2xl font-semibold text-starlight">Team #${teamNumber} - ${teamName}</h3>
+              <p class="text-starlight-muted mt-1">${players.length} ${players.length === 1 ? 'player' : 'players'}</p>
+            </div>
+            <button id="close-team-details-modal" class="text-starlight-muted hover:text-starlight">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              ${players.map((player, index) => `
+                <div class="bg-dark-matter/50 border border-cyber-border/20 rounded-lg p-4">
+                  <div class="flex items-center gap-2 mb-3">
+                    <span class="w-8 h-8 bg-cyber-cyan/20 text-cyber-cyan rounded-full flex items-center justify-center text-sm font-semibold">
+                      ${index + 1}
+                    </span>
+                    <div>
+                      <h4 class="font-semibold text-starlight">${player.name || 'Unknown Player'}</h4>
+                      <span class="text-xs text-starlight-muted">${player.role || 'Player'}</span>
+                    </div>
                   </div>
-                  <div class="flex items-center gap-2 mb-1">
-                    <i class="fas fa-gamepad text-starlight-muted text-xs"></i>
-                    <span class="text-starlight-muted text-xs">${player.inGameId || 'No ID'}</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <i class="fas fa-envelope text-starlight-muted text-xs"></i>
-                    <span class="text-starlight-muted text-xs">${player.email || 'No email'}</span>
+                  
+                  <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-gamepad text-cyber-cyan text-sm w-4"></i>
+                      <span class="text-starlight text-sm">${player.inGameId || 'No Game ID'}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-envelope text-starlight-muted text-sm w-4"></i>
+                      <span class="text-starlight-muted text-sm">${player.email || 'No email'}</span>
+                    </div>
                   </div>
                 </div>
               `).join('')}
             </div>
 
             ${participant.phone ? `
-              <div class="mt-3 flex items-center gap-2 text-sm text-starlight-muted">
-                <i class="fas fa-phone"></i>
-                <span>Captain: ${participant.phone}</span>
+              <div class="mt-6 p-4 bg-dark-matter/30 border border-cyber-border/20 rounded-lg">
+                <div class="flex items-center gap-2">
+                  <i class="fas fa-phone text-cyber-cyan"></i>
+                  <span class="text-starlight font-medium">Captain Contact:</span>
+                  <span class="text-starlight-muted">${participant.phone}</span>
+                </div>
               </div>
             ` : ''}
+
+            <div class="flex justify-end mt-6 pt-4 border-t border-cyber-border">
+              <button onclick="window.tournamentManagement.hideTeamDetailsModal()" 
+                      class="px-6 py-3 bg-cyber-cyan text-dark-matter rounded-lg hover:bg-cyber-cyan/90 transition-colors font-semibold">
+                Close
+              </button>
+            </div>
           </div>
-          
-          <button onclick="window.tournamentManagement.removeParticipant('${teamId}', '${teamName}')" 
-                  class="ml-4 px-3 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors flex items-center gap-2">
-            <i class="fas fa-trash"></i>
-            <span class="hidden sm:inline">Remove</span>
-          </button>
         </div>
       </div>
     `;
+
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Bind close events
+    document.getElementById('close-team-details-modal').addEventListener('click', () => {
+      this.hideTeamDetailsModal();
+    });
+
+    // Close modal on outside click
+    document.getElementById('team-details-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'team-details-modal') {
+        this.hideTeamDetailsModal();
+      }
+    });
   }
 
-  async removeParticipant(teamId, teamName) {
+  hideTeamDetailsModal() {
+    const modal = document.getElementById('team-details-modal');
+    if (modal) {
+      modal.remove();
+    }
+  }
+
+  async removeParticipant(teamId, teamName, teamIndex) {
     if (!confirm(`Are you sure you want to remove team "${teamName}" from this tournament?`)) {
       return;
     }
