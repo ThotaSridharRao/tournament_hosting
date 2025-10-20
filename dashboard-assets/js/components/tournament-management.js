@@ -739,7 +739,7 @@ class TournamentManagement {
           <form id="status-change-form" class="space-y-6">
             <div>
               <label class="block text-sm font-medium text-starlight mb-2">New Status</label>
-              <select id="new-status" class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none appearance-none bg-no-repeat bg-right pr-10" style="background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 4 5\\"><path fill=\\"%23ffffff\\" d=\\"M2 0L0 2h4zm0 5L0 3h4z\\"/></svg>'); background-position: right 12px center; background-size: 12px;">
+              <select id="new-status" class="w-full px-4 py-3 border border-cyber-border rounded-lg focus:border-cyber-cyan focus:outline-none">
                 <option value="">Select new status</option>
                 ${this.getStatusOptions(currentStatus)}
               </select>

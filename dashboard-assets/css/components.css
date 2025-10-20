@@ -366,11 +366,11 @@
   .mobile-hidden {
     @apply hidden;
   }
-  
+
   .mobile-full {
     @apply w-full;
   }
-  
+
   .mobile-stack {
     @apply flex-col space-y-2 space-x-0;
   }
@@ -418,6 +418,7 @@
     transform: translateY(100%);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -429,6 +430,7 @@
     transform: translateY(-100%);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -440,11 +442,14 @@
     transform: translateY(30px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
   }
-}/* Tour
+}
+
+/* Tour
 nament Management Specific Styles */
 .tournament-management {
   @apply space-y-6;
@@ -585,19 +590,19 @@ nament Management Specific Styles */
   .tournament-card {
     @apply p-4;
   }
-  
+
   .tournament-card:hover {
     @apply transform-none;
   }
-  
+
   .modal-content {
     @apply mx-2;
   }
-  
+
   .form-section {
     @apply space-y-3;
   }
-  
+
   .participant-tab {
     @apply text-xs px-2 py-1;
   }
@@ -821,6 +826,7 @@ nament Management Specific Styles */
 .modal-content::-webkit-scrollbar-thumb:hover {
   background: rgba(10, 250, 217, 0.5);
 }
+
 /* Sch
 edule Management Styles */
 .schedule-management {
@@ -871,15 +877,15 @@ edule Management Styles */
   .event-card {
     @apply p-3;
   }
-  
+
   .event-icon {
     @apply w-10 h-10;
   }
-  
+
   .date-header {
     @apply text-sm px-3 py-1;
   }
-  
+
   .view-mode-btn {
     @apply text-sm px-3 py-1;
   }
@@ -927,7 +933,9 @@ edule Management Styles */
 
 .event-finals {
   @apply bg-yellow-500/20 text-yellow-400;
-}/* Additi
+}
+
+/* Additi
 onal Schedule Event Types */
 .event-bracket-generation {
   @apply bg-cyber-indigo/20 text-cyber-indigo;
@@ -965,7 +973,9 @@ onal Schedule Event Types */
 
 .event-priority-5 {
   @apply border-l-4 border-l-cyan-400;
-}/* S
+}
+
+/* S
 tatus Change Modal Styles */
 #status-change-modal {
   @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4;
@@ -1042,6 +1052,7 @@ tatus Change Modal Styles */
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -1052,6 +1063,7 @@ tatus Change Modal Styles */
     opacity: 0;
     transform: translateY(-20px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -1063,15 +1075,17 @@ tatus Change Modal Styles */
   #status-change-modal .glass {
     @apply mx-4 max-w-none;
   }
-  
+
   .status-change-form {
     @apply space-y-3;
   }
-  
+
   .status-change-form .flex {
     @apply flex-col space-x-0 space-y-3;
   }
-}/* Edi
+}
+
+/* Edi
 t Tournament Modal Styles */
 #edit-tournament-modal {
   @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4;
@@ -1169,23 +1183,23 @@ t Tournament Modal Styles */
   #edit-tournament-modal .glass {
     @apply mx-2 max-w-none max-h-[95vh];
   }
-  
+
   .form-section {
     @apply space-y-3;
   }
-  
+
   .grid.md\\:grid-cols-2 {
     @apply grid-cols-1;
   }
-  
+
   .grid.md\\:grid-cols-3 {
     @apply grid-cols-1;
   }
-  
+
   .event-row .grid.md\\:grid-cols-3 {
     @apply grid-cols-1 gap-3;
   }
-  
+
   .form-section h4 {
     @apply text-base;
   }
@@ -1195,15 +1209,15 @@ t Tournament Modal Styles */
   #edit-tournament-modal {
     @apply p-2;
   }
-  
+
   #edit-tournament-modal .glass {
     @apply p-4;
   }
-  
+
   .form-section {
     @apply pb-4;
   }
-  
+
   .event-row {
     @apply p-3;
   }
@@ -1248,6 +1262,7 @@ t Tournament Modal Styles */
 .form-select:focus {
   @apply ring-2 ring-cyber-cyan/20 border-cyber-cyan;
 }
+
 /* Status Change Modal - Simplified Styles */
 #status-change-modal select {
   @apply appearance-none bg-no-repeat bg-right pr-10;
@@ -1277,4 +1292,106 @@ t Tournament Modal Styles */
 /* Better button spacing */
 #status-change-modal .flex.space-x-3 {
   @apply pt-6;
+}
+
+/*
+ Fix form input visibility in modals */
+#edit-tournament-modal .form-input,
+#edit-tournament-modal .form-textarea,
+#edit-tournament-modal .form-select,
+#status-change-modal select {
+  background-color: rgba(22, 19, 41, 0.9) !important;
+  color: #F0F0F0 !important;
+  border: 1px solid rgba(10, 250, 217, 0.2) !important;
+}
+
+#edit-tournament-modal .form-input::placeholder,
+#edit-tournament-modal .form-textarea::placeholder {
+  color: rgba(240, 240, 240, 0.5) !important;
+}
+
+#edit-tournament-modal .form-select option,
+#status-change-modal select option {
+  background-color: #161329 !important;
+  color: #F0F0F0 !important;
+}
+
+/* Ensure focus states are visible */
+#edit-tournament-modal .form-input:focus,
+#edit-tournament-modal .form-textarea:focus,
+#edit-tournament-modal .form-select:focus,
+#status-change-modal select:focus {
+  border-color: #0AFAD9 !important;
+  box-shadow: 0 0 0 2px rgba(10, 250, 217, 0.2) !important;
+  outline: none !important;
+}
+
+/* Fix datetime input visibility */
+#edit-tournament-modal input[type="datetime-local"] {
+  background-color: rgba(22, 19, 41, 0.9) !important;
+  color: #F0F0F0 !important;
+}
+
+/* Fix number input visibility */
+#edit-tournament-modal input[type="number"] {
+  background-color: rgba(22, 19, 41, 0.9) !important;
+  color: #F0F0F0 !important;
+}
+
+/* Fix text input visibility */
+#edit-tournament-modal input[type="text"] {
+  background-color: rgba(22, 19, 41, 0.9) !important;
+  color: #F0F0F0 !important;
+}
+
+/* Status change modal specific fixes */
+#status-change-modal select {
+  background-color: rgba(22, 19, 41, 0.9) !important;
+  color: #F0F0F0 !important;
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23F0F0F0" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  padding-right: 40px;
+}/* CRIT
+ICAL: Fix form input visibility in modals */
+#edit-tournament-modal input,
+#edit-tournament-modal textarea,
+#edit-tournament-modal select,
+#status-change-modal select {
+  background-color: rgba(22, 19, 41, 0.9) !important;
+  color: #F0F0F0 !important;
+  border: 1px solid rgba(10, 250, 217, 0.2) !important;
+}
+
+#edit-tournament-modal input::placeholder,
+#edit-tournament-modal textarea::placeholder {
+  color: rgba(240, 240, 240, 0.5) !important;
+}
+
+#edit-tournament-modal select option,
+#status-change-modal select option {
+  background-color: #161329 !important;
+  color: #F0F0F0 !important;
+}
+
+/* Status dropdown with visible arrow */
+#status-change-modal select {
+  appearance: none !important;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23F0F0F0" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>') !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px center !important;
+  background-size: 12px !important;
+  padding-right: 40px !important;
+}
+
+/* Focus states */
+#edit-tournament-modal input:focus,
+#edit-tournament-modal textarea:focus,
+#edit-tournament-modal select:focus,
+#status-change-modal select:focus {
+  border-color: #0AFAD9 !important;
+  box-shadow: 0 0 0 2px rgba(10, 250, 217, 0.2) !important;
+  outline: none !important;
 }
