@@ -36,15 +36,9 @@ class TournamentManagement {
     contentArea.innerHTML = `
       <div class="animate-fade-in">
         <!-- Tournament Management Header -->
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
-          <div>
-            <h2 class="text-3xl font-bold text-starlight mb-2">Tournament Management</h2>
-            <p class="text-starlight-muted">Create and manage your tournaments</p>
-          </div>
-          <button id="create-tournament-btn" class="mt-4 lg:mt-0 px-6 py-3 bg-cyber-cyan text-dark-matter rounded-lg font-semibold hover:bg-cyber-cyan/90 transition-colors">
-            <i class="fas fa-plus mr-2"></i>
-            Create Tournament
-          </button>
+        <div class="mb-8">
+          <h2 class="text-3xl font-bold text-starlight mb-2">Tournament Management</h2>
+          <p class="text-starlight-muted">View and manage your tournaments</p>
         </div>
 
         <!-- Filters and Search -->
@@ -105,14 +99,6 @@ class TournamentManagement {
         this.loadTournaments();
       });
     }
-
-    // Create tournament button
-    const createBtn = document.getElementById('create-tournament-btn');
-    if (createBtn) {
-      createBtn.addEventListener('click', () => {
-        this.showCreateModal();
-      });
-    }
   }
 
   async loadTournaments() {
@@ -121,11 +107,15 @@ class TournamentManagement {
       const params = {
         page: this.pagination.page,
         limit: this.pagination.limit,
-        status: this.filters.status,
         search: this.filters.search,
         sort_by: this.filters.sortBy,
         sort_order: this.filters.sortOrder
       };
+
+      // Only add status filter if it's not 'all'
+      if (this.filters.status && this.filters.status !== 'all') {
+        params.status = this.filters.status;
+      }
 
       const response = await window.apiClient.getTournaments(params);
 
