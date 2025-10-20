@@ -821,3 +821,110 @@ nament Management Specific Styles */
 .modal-content::-webkit-scrollbar-thumb:hover {
   background: rgba(10, 250, 217, 0.5);
 }
+/* Sch
+edule Management Styles */
+.schedule-management {
+  @apply space-y-6;
+}
+
+.view-mode-btn {
+  @apply bg-dark-matter/50 text-starlight-muted border border-cyber-border hover:border-cyber-cyan hover:text-cyber-cyan transition-colors;
+}
+
+.view-mode-btn.active {
+  @apply bg-cyber-cyan text-dark-matter border-cyber-cyan;
+}
+
+.date-section {
+  @apply mb-8;
+}
+
+.date-header {
+  @apply px-4 py-2 rounded-lg font-semibold text-center min-w-max;
+}
+
+.event-card {
+  @apply relative;
+}
+
+.event-card::before {
+  content: '';
+  @apply absolute left-0 top-0 bottom-0 w-1 bg-cyber-border rounded-full;
+}
+
+.event-card:hover::before {
+  @apply bg-cyber-cyan;
+}
+
+.event-icon {
+  @apply flex-shrink-0;
+}
+
+/* Timeline connector styles */
+.date-section:not(:last-child) .event-card:last-child::after {
+  content: '';
+  @apply absolute left-6 -bottom-6 w-px h-6 bg-cyber-border;
+}
+
+/* Schedule responsive styles */
+@media (max-width: 768px) {
+  .event-card {
+    @apply p-3;
+  }
+  
+  .event-icon {
+    @apply w-10 h-10;
+  }
+  
+  .date-header {
+    @apply text-sm px-3 py-1;
+  }
+  
+  .view-mode-btn {
+    @apply text-sm px-3 py-1;
+  }
+}
+
+/* Schedule animation styles */
+.event-card {
+  @apply transform transition-all duration-200;
+}
+
+.event-card:hover {
+  @apply scale-105;
+}
+
+/* Status indicators */
+.event-status-completed {
+  @apply opacity-75;
+}
+
+.event-status-upcoming {
+  @apply opacity-100;
+}
+
+/* Today highlight */
+.date-header.today {
+  @apply bg-cyber-cyan text-dark-matter shadow-lg shadow-cyber-cyan/20;
+}
+
+/* Event type colors */
+.event-registration-open {
+  @apply bg-green-500/20 text-green-400;
+}
+
+.event-registration-close {
+  @apply bg-yellow-500/20 text-yellow-400;
+}
+
+.event-tournament-start {
+  @apply bg-cyber-cyan/20 text-cyber-cyan;
+}
+
+.event-tournament-end {
+  @apply bg-purple-500/20 text-purple-400;
+}
+
+.event-finals {
+  @apply bg-yellow-500/20 text-yellow-400;
+}

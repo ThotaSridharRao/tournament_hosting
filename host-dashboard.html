@@ -376,6 +376,14 @@
             await window.tournamentManagement.init();
             break;
 
+          case 'schedule':
+            if (window.scheduleManagement) {
+              window.scheduleManagement.destroy();
+            }
+            window.scheduleManagement = new ScheduleManagement();
+            await window.scheduleManagement.init();
+            break;
+
           case 'wallet':
             if (window.walletManagement) {
               window.walletManagement.destroy();
@@ -443,6 +451,9 @@
 
         // Load tournament participants component
         await loadScript('dashboard-assets/js/components/tournament-participants.js');
+
+        // Load schedule management component
+        await loadScript('dashboard-assets/js/components/schedule-management.js');
 
         console.log('External scripts loaded successfully');
       } catch (error) {
