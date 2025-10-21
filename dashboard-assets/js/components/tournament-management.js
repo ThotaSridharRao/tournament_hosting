@@ -76,10 +76,40 @@ class TournamentManagement {
         </div>
 
         <!-- Empty State -->
-        <div id="tournaments-empty" class="hidden text-center py-12">
-          <i class="fas fa-trophy text-6xl text-starlight-muted mb-4"></i>
-          <h3 class="text-xl font-semibold text-starlight mb-2">No Tournaments Yet</h3>
-          <p class="text-starlight-muted">No tournaments have been created yet</p>
+        <div id="tournaments-empty" class="hidden">
+          <div class="glass rounded-xl p-12 text-center">
+            <div class="mb-8">
+              <div class="w-24 h-24 bg-cyber-cyan/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-trophy text-4xl text-cyber-cyan"></i>
+              </div>
+              <h3 class="text-2xl font-bold text-starlight mb-3">Ready to Host Your First Tournament?</h3>
+              <p class="text-starlight-muted text-lg mb-2">Create engaging gaming competitions and build your community</p>
+              <p class="text-starlight-muted">Set up tournaments, manage participants, and track your success</p>
+            </div>
+            
+            <button id="create-first-tournament-btn" class="px-8 py-4 bg-gradient-to-r from-cyber-cyan to-cyber-indigo text-dark-matter rounded-lg font-bold text-lg hover:from-cyber-cyan/90 hover:to-cyber-indigo/90 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-cyber-cyan/30 flex items-center gap-3 mx-auto">
+              <i class="fas fa-plus-circle text-xl"></i>
+              Create Your First Tournament
+            </button>
+            
+            <div class="mt-8 pt-8 border-t border-cyber-border/30">
+              <p class="text-sm text-starlight-muted mb-4">Need help getting started?</p>
+              <div class="flex flex-wrap justify-center gap-4 text-sm">
+                <span class="flex items-center gap-2 text-starlight-muted">
+                  <i class="fas fa-check text-cyber-cyan"></i>
+                  Easy tournament setup
+                </span>
+                <span class="flex items-center gap-2 text-starlight-muted">
+                  <i class="fas fa-check text-cyber-cyan"></i>
+                  Automated participant management
+                </span>
+                <span class="flex items-center gap-2 text-starlight-muted">
+                  <i class="fas fa-check text-cyber-cyan"></i>
+                  Real-time analytics
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -110,6 +140,14 @@ class TournamentManagement {
     const createTournamentBtn = document.getElementById('create-tournament-btn');
     if (createTournamentBtn) {
       createTournamentBtn.addEventListener('click', () => {
+        this.showCreateTournamentModal();
+      });
+    }
+
+    // Create first tournament button (empty state)
+    const createFirstTournamentBtn = document.getElementById('create-first-tournament-btn');
+    if (createFirstTournamentBtn) {
+      createFirstTournamentBtn.addEventListener('click', () => {
         this.showCreateTournamentModal();
       });
     }

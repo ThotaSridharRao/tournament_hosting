@@ -1395,3 +1395,81 @@ ICAL: Fix form input visibility in modals */
   box-shadow: 0 0 0 2px rgba(10, 250, 217, 0.2) !important;
   outline: none !important;
 }
+/* Tr
+ansaction Filter Button Styles */
+.transaction-type-filter,
+.transaction-status-filter {
+  @apply px-4 py-2 rounded-lg text-sm font-medium border border-cyber-border text-starlight-muted bg-dark-matter/50 hover:bg-cyber-cyan/10 hover:text-starlight hover:border-cyber-cyan/50 transition-all duration-200 flex items-center;
+}
+
+.transaction-type-filter.active,
+.transaction-status-filter.active {
+  @apply bg-cyber-cyan text-dark-matter border-cyber-cyan shadow-lg shadow-cyber-cyan/20;
+}
+
+.transaction-type-filter:hover,
+.transaction-status-filter:hover {
+  @apply transform translateY(-1px);
+}
+
+.transaction-type-filter i,
+.transaction-status-filter i {
+  @apply transition-colors duration-200;
+}
+
+.transaction-type-filter.active i,
+.transaction-status-filter.active i {
+  @apply text-dark-matter;
+}
+
+/* Filter Section Styling */
+.transaction-filters {
+  @apply space-y-4;
+}
+
+.transaction-filters h4 {
+  @apply text-sm font-medium text-starlight-muted mb-2;
+}
+
+.transaction-filters .flex {
+  @apply flex-wrap gap-2;
+}
+
+/* Responsive filter buttons */
+@media (max-width: 768px) {
+  .transaction-type-filter,
+  .transaction-status-filter {
+    @apply px-3 py-2 text-xs;
+  }
+  
+  .transaction-filters .flex {
+    @apply gap-1;
+  }
+}
+
+/* Filter button animations */
+.transaction-type-filter,
+.transaction-status-filter {
+  @apply transform transition-all duration-200;
+}
+
+.transaction-type-filter:active,
+.transaction-status-filter:active {
+  @apply scale-95;
+}
+
+/* Loading state for filters */
+.transaction-type-filter.loading,
+.transaction-status-filter.loading {
+  @apply opacity-50 pointer-events-none;
+}
+
+/* Filter count badges */
+.filter-count {
+  @apply ml-2 px-2 py-0.5 bg-cyber-cyan/20 text-cyber-cyan text-xs rounded-full;
+}
+
+.transaction-type-filter.active .filter-count,
+.transaction-status-filter.active .filter-count {
+  @apply bg-dark-matter/20 text-dark-matter;
+}

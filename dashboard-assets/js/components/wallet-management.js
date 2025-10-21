@@ -169,21 +169,45 @@ class WalletManagement {
 
           <!-- Transactions Tab -->
           <div id="transactions-tab" class="tab-content p-6">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="text-lg font-semibold text-starlight">Transaction History</h3>
-              <div class="flex space-x-2">
-                <select id="transaction-type-filter" class="bg-dark-panel border border-cyber-border rounded-lg px-3 py-2 text-starlight">
-                  <option value="">All Types</option>
-                  <option value="tournament_payout">Tournament Payout</option>
-                  <option value="withdrawal">Withdrawal</option>
-                  <option value="refund">Refund</option>
-                </select>
-                <select id="transaction-status-filter" class="bg-dark-panel border border-cyber-border rounded-lg px-3 py-2 text-starlight">
-                  <option value="">All Status</option>
-                  <option value="completed">Completed</option>
-                  <option value="pending">Pending</option>
-                  <option value="failed">Failed</option>
-                </select>
+            <div class="mb-6">
+              <h3 class="text-lg font-semibold text-starlight mb-4">Transaction History</h3>
+              
+              <!-- Transaction Type Filters -->
+              <div class="mb-4">
+                <h4 class="text-sm font-medium text-starlight-muted mb-2">Filter by Type</h4>
+                <div class="flex flex-wrap gap-2">
+                  <button class="transaction-type-filter active" data-type="">
+                    <i class="fas fa-list mr-2"></i>All Types
+                  </button>
+                  <button class="transaction-type-filter" data-type="tournament_payout">
+                    <i class="fas fa-trophy mr-2"></i>Tournament Payout
+                  </button>
+                  <button class="transaction-type-filter" data-type="withdrawal">
+                    <i class="fas fa-arrow-down mr-2"></i>Withdrawal
+                  </button>
+                  <button class="transaction-type-filter" data-type="refund">
+                    <i class="fas fa-undo mr-2"></i>Refund
+                  </button>
+                </div>
+              </div>
+
+              <!-- Transaction Status Filters -->
+              <div class="mb-4">
+                <h4 class="text-sm font-medium text-starlight-muted mb-2">Filter by Status</h4>
+                <div class="flex flex-wrap gap-2">
+                  <button class="transaction-status-filter active" data-status="">
+                    <i class="fas fa-circle mr-2"></i>All Status
+                  </button>
+                  <button class="transaction-status-filter" data-status="completed">
+                    <i class="fas fa-check-circle mr-2"></i>Completed
+                  </button>
+                  <button class="transaction-status-filter" data-status="pending">
+                    <i class="fas fa-clock mr-2"></i>Pending
+                  </button>
+                  <button class="transaction-status-filter" data-status="failed">
+                    <i class="fas fa-times-circle mr-2"></i>Failed
+                  </button>
+                </div>
               </div>
             </div>
             
@@ -455,15 +479,20 @@ class WalletManagement {
       this.submitWithdrawal();
     });
 
-    // Transaction filters
-    document.getElementById('transaction-type-filter')?.addEventListener('change', (e) => {
-      this.transactionFilters.type = e.target.value;
-      this.loadTransactions();
+    // Transaction type filter buttons
+    document.querySelectorAll('.transaction-type-filter').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const type = e.currentTarget.dataset.type;
+        this.setTransactionTypeFilter(type);
+      });
     });
 
-    document.getElementById('transaction-status-filter')?.addEventListener('change', (e) => {
-      this.transactionFilters.status = e.target.value;
-      this.loadTransactions();
+    // Transaction status filter buttons
+    document.querySelectorAll('.transaction-status-filter').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const status = e.currentTarget.dataset.status;
+        this.setTransactionStatusFilter(status);
+      });
     });
   }
 
@@ -659,6 +688,44 @@ class WalletManagement {
         </button>
       </div>
     `;
+  }
+
+  /**
+   * Set transaction type filter
+   */
+  setTransactionTypeFilter(type) {
+    // Update filter state
+    this.transactionFilters.type = type;
+    
+    // Update button states
+    document.querySelectorAll('.transaction-type-filter').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    document.querySelector(`[data-type="${type}"]`).classList.add('active');
+    
+    // Reload transactions
+    this.loadTransactions().then(() => {
+      document.getElementById('transactions-list').innerHTML = this.renderTransactionsList();
+    });
+  }
+
+  /**
+   * Set transaction status filter
+   */
+  setTransactionStatusFilter(status) {
+    // Update filter state
+    this.transactionFilters.status = status;
+    
+    // Update button states
+    document.querySelectorAll('.transaction-status-filter').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    document.querySelector(`[data-status="${status}"]`).classList.add('active');
+    
+    // Reload transactions
+    this.loadTransactions().then(() => {
+      document.getElementById('transactions-list').innerHTML = this.renderTransactionsList();
+    });
   }
 
   /**
