@@ -512,9 +512,21 @@ class TournamentManagement {
               <h3 class="text-2xl font-semibold text-starlight">Tournament Participants</h3>
               <p class="text-starlight-muted mt-1">${tournament.title}</p>
             </div>
-            <button id="close-participants-modal" class="text-starlight-muted hover:text-starlight">
-              <i class="fas fa-times text-xl"></i>
-            </button>
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2">
+                <button id="export-csv-btn" class="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 transition-colors flex items-center gap-2" title="Export as CSV">
+                  <i class="fas fa-file-csv"></i>
+                  <span class="hidden sm:inline">CSV</span>
+                </button>
+                <button id="export-excel-btn" class="px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition-colors flex items-center gap-2" title="Export as Excel">
+                  <i class="fas fa-file-excel"></i>
+                  <span class="hidden sm:inline">Excel</span>
+                </button>
+              </div>
+              <button id="close-participants-modal" class="text-starlight-muted hover:text-starlight">
+                <i class="fas fa-times text-xl"></i>
+              </button>
+            </div>
           </div>
 
           <div class="p-6">
@@ -562,6 +574,15 @@ class TournamentManagement {
     // Bind events
     document.getElementById('close-participants-modal').addEventListener('click', () => {
       this.hideParticipantsModal();
+    });
+
+    // Export buttons
+    document.getElementById('export-csv-btn').addEventListener('click', () => {
+      this.exportParticipants('csv');
+    });
+
+    document.getElementById('export-excel-btn').addEventListener('click', () => {
+      this.exportParticipants('xlsx');
     });
 
     // Close modal on outside click
@@ -812,10 +833,10 @@ class TournamentManagement {
 
   sortParticipants(participants) {
     const { column, direction } = this.participantsSortState;
-    
+
     return [...participants].sort((a, b) => {
       let aValue, bValue;
-      
+
       switch (column) {
         case 'teamName':
           aValue = (a.teamName || '').toLowerCase();
@@ -828,7 +849,7 @@ class TournamentManagement {
         default:
           return 0;
       }
-      
+
       if (aValue < bValue) return direction === 'asc' ? -1 : 1;
       if (aValue > bValue) return direction === 'asc' ? 1 : -1;
       return 0;
@@ -840,6 +861,143 @@ class TournamentManagement {
       return '';
     }
     return this.participantsSortState.direction === 'asc' ? '-up' : '-down';
+  }
+
+  async exportParticipants(format) {
+    try {
+      if (!this.participants || this.participants.length === 0) {
+        this.showError('No participants to export');
+        return;
+      }
+
+      // Show loading state on button
+      const button = document.getElementById(`export-${format === 'xlsx' ? 'excel' : 'csv'}-btn`);
+      const originalContent = button.innerHTML;
+      button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Exporting...';
+      button.disabled = true;
+
+      // Prepare export data
+      const exportData = {
+        tournamentId: this.currentTournament._id,
+        tournamentTitle: this.currentTournament.title,
+        format: format,
+        participants: this.participants.map(participant => ({
+          teamName: participant.teamName || 'Unknown Team',
+          playerCount: participant.players ? participant.players.length : 0,
+          players: participant.players || [],
+          registrationDate: participant.createdAt,
+          captainPhone: participant.phone || '',
+          status: participant.status || 'registered'
+        }))
+      };
+
+      // Make API request for file download
+      const response = await fetch(`${window.apiClient.baseURL}/api/host/tournaments/${this.currentTournament._id}/participants/export`, {
+        method: 'POST',
+        headers: {
+          ...window.apiClient.getHeaders(),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ format, data: exportData })
+      });
+
+      if (response.ok) {
+        // Get the blob from response
+        const blob = await response.blob();
+
+        // Create download link
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+
+        // Set filename based on format
+        const timestamp = new Date().toISOString().split('T')[0];
+        const filename = `${this.currentTournament.title.replace(/[^a-zA-Z0-9]/g, '_')}_participants_${timestamp}.${format}`;
+        link.download = filename;
+
+        // Trigger download
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Clean up
+        window.URL.revokeObjectURL(url);
+
+        this.showNotification(`Participants exported successfully as ${format.toUpperCase()}!`, 'success');
+      } else {
+        throw new Error('Failed to export participants');
+      }
+
+    } catch (error) {
+      console.error('Export error:', error);
+
+      // Fallback to client-side export if API fails
+      if (format === 'csv') {
+        this.exportParticipantsCSV();
+      } else {
+        this.showError('Excel export requires server support. Please try CSV format.');
+      }
+    } finally {
+      // Restore button state
+      const button = document.getElementById(`export-${format === 'xlsx' ? 'excel' : 'csv'}-btn`);
+      if (button) {
+        button.innerHTML = originalContent;
+        button.disabled = false;
+      }
+    }
+  }
+
+  exportParticipantsCSV() {
+    try {
+      // Prepare CSV data
+      const headers = ['Team Name', 'Player Count', 'Player Names', 'Player Emails', 'Game IDs', 'Registration Date', 'Captain Phone'];
+      const rows = this.participants.map(participant => {
+        const players = participant.players || [];
+        const playerNames = players.map(p => p.name || 'Unknown').join('; ');
+        const playerEmails = players.map(p => p.email || 'N/A').join('; ');
+        const gameIds = players.map(p => p.inGameId || 'N/A').join('; ');
+        const registrationDate = participant.createdAt ? new Date(participant.createdAt).toLocaleDateString() : 'Unknown';
+
+        return [
+          participant.teamName || 'Unknown Team',
+          players.length,
+          playerNames,
+          playerEmails,
+          gameIds,
+          registrationDate,
+          participant.phone || 'N/A'
+        ];
+      });
+
+      // Create CSV content
+      const csvContent = [headers, ...rows]
+        .map(row => row.map(field => `"${String(field).replace(/"/g, '""')}"`).join(','))
+        .join('\n');
+
+      // Create and download file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+
+      const timestamp = new Date().toISOString().split('T')[0];
+      const filename = `${this.currentTournament.title.replace(/[^a-zA-Z0-9]/g, '_')}_participants_${timestamp}.csv`;
+      link.download = filename;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      this.showNotification('Participants exported successfully as CSV!', 'success');
+    } catch (error) {
+      console.error('CSV export error:', error);
+      this.showError('Failed to export CSV file');
+    }
+  }
+
+  hideParticipantsModal() {
+    this.smoothCloseModal('participants-modal');
   }
 
   showCreateTournamentModal() {
