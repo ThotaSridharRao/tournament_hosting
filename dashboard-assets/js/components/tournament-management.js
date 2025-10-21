@@ -261,6 +261,11 @@ class TournamentManagement {
             </div>
           </div>
           <div class="flex items-center gap-2 mt-4 lg:mt-0">
+            <button onclick="window.tournamentManagement.manageBrackets('${tournament._id}')" 
+              class="w-10 h-10 bg-orange-500/20 text-orange-400 rounded-lg hover:bg-orange-500/30 transition-colors flex items-center justify-center" 
+              title="Manage Brackets">
+              <i class="fas fa-sitemap"></i>
+            </button>
             <button onclick="window.tournamentManagement.manageParticipants('${tournament._id}')" 
               class="w-10 h-10 bg-cyber-indigo/20 text-cyber-indigo rounded-lg hover:bg-cyber-indigo/30 transition-colors flex items-center justify-center" 
               title="Manage Participants">
@@ -488,6 +493,520 @@ class TournamentManagement {
 
   hideEventModal() {
     this.smoothCloseModal('event-management-modal');
+  }
+
+  async manageBrackets(tournamentId) {
+    this.currentTournament = this.tournaments.find(t => t._id === tournamentId);
+    if (!this.currentTournament) {
+      this.showError('Tournament not found');
+      return;
+    }
+
+    await this.showBracketsModal();
+  }
+
+  async showBracketsModal() {
+    const tournament = this.currentTournament;
+
+    // Load participants first
+    try {
+      const response = await window.apiClient.getTournamentParticipants(tournament._id);
+      if (response.success) {
+        this.participants = response.data.participants || [];
+      }
+    } catch (error) {
+      console.error('Failed to load participants:', error);
+      this.participants = [];
+    }
+
+    const modalHtml = `
+      <div id="brackets-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+        <div class="glass rounded-xl max-w-7xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
+          <div class="flex justify-between items-center p-6 border-b border-cyber-border">
+            <div>
+              <h3 class="text-2xl font-semibold text-starlight">Tournament Brackets</h3>
+              <p class="text-starlight-muted mt-1">${tournament.title}</p>
+            </div>
+            <button id="close-brackets-modal" class="text-starlight-muted hover:text-starlight">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+          <div class="p-6">
+            <!-- Tournament Info -->
+            <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div class="bg-dark-matter/30 border border-cyber-border rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-cyber-cyan">${this.participants.length}</div>
+                <div class="text-starlight-muted text-sm">Teams</div>
+              </div>
+              <div class="bg-dark-matter/30 border border-cyber-border rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-green-400">${tournament.format || 'Single Elimination'}</div>
+                <div class="text-starlight-muted text-sm">Format</div>
+              </div>
+              <div class="bg-dark-matter/30 border border-cyber-border rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-yellow-400">${tournament.status?.replace('_', ' ').toUpperCase()}</div>
+                <div class="text-starlight-muted text-sm">Status</div>
+              </div>
+              <div class="bg-dark-matter/30 border border-cyber-border rounded-lg p-4 text-center">
+                <button id="generate-brackets-btn" class="w-full px-4 py-2 bg-gradient-to-r from-cyber-cyan to-cyber-indigo text-dark-matter rounded-lg font-semibold hover:from-cyber-cyan/90 hover:to-cyber-indigo/90 transition-all duration-300">
+                  Generate Brackets
+                </button>
+              </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="brackets-loading" class="hidden text-center py-12">
+              <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-cyber-cyan"></div>
+              <p class="mt-4 text-starlight-muted">Loading brackets...</p>
+            </div>
+
+            <!-- Brackets Content -->
+            <div id="brackets-content">
+              <!-- Brackets will be populated here -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="brackets-empty" class="text-center py-12">
+              <i class="fas fa-sitemap text-6xl text-starlight-muted mb-4"></i>
+              <h4 class="text-xl font-semibold text-starlight mb-2">No Brackets Generated</h4>
+              <p class="text-starlight-muted mb-4">Generate brackets to organize matches and track tournament progress</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    await this.initializeBracketsModal();
+  }
+
+  async initializeBracketsModal() {
+    // Bind events
+    document.getElementById('close-brackets-modal').addEventListener('click', () => {
+      this.hideBracketsModal();
+    });
+
+    document.getElementById('generate-brackets-btn').addEventListener('click', () => {
+      this.generateTournamentBrackets();
+    });
+
+    // Close modal on outside click
+    document.getElementById('brackets-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'brackets-modal') {
+        this.hideBracketsModal();
+      }
+    });
+
+    // Check if brackets already exist
+    await this.loadExistingBrackets();
+  }
+
+  async loadExistingBrackets() {
+    try {
+      const response = await window.apiClient.getTournamentBrackets(this.currentTournament._id);
+      if (response.success && response.data) {
+        this.renderBracketsContent(response.data);
+      }
+    } catch (error) {
+      console.log('No existing brackets found');
+    }
+  }
+
+  async generateTournamentBrackets() {
+    try {
+      if (this.participants.length === 0) {
+        this.showError('No participants found. Cannot generate brackets.');
+        return;
+      }
+
+      // Show loading
+      const generateBtn = document.getElementById('generate-brackets-btn');
+      const originalText = generateBtn.innerHTML;
+      generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generating...';
+      generateBtn.disabled = true;
+
+      // Create bracket structure based on tournament format
+      const format = this.currentTournament.format || 'single-elimination';
+      const bracketData = this.createBracketStructure(format);
+
+      // Save brackets via API
+      const response = await window.apiClient.createTournamentBrackets(this.currentTournament._id, bracketData);
+
+      if (response.success) {
+        this.renderBracketsContent(response.data);
+        this.showNotification('Brackets generated successfully!', 'success');
+      } else {
+        throw new Error(response.message || 'Failed to generate brackets');
+      }
+
+    } catch (error) {
+      console.error('Error generating brackets:', error);
+      this.showError('Failed to generate brackets: ' + error.message);
+    } finally {
+      // Restore button
+      const generateBtn = document.getElementById('generate-brackets-btn');
+      if (generateBtn) {
+        generateBtn.innerHTML = 'Generate Brackets';
+        generateBtn.disabled = false;
+      }
+    }
+  }
+
+  createBracketStructure(format) {
+    // Create bracket structure similar to tournament-brackets.html
+    const participants = this.participants;
+    const kpSettings = this.currentTournament.kpSettings || {};
+
+    if (format === 'free_fire' || this.currentTournament.game?.toLowerCase().includes('free fire')) {
+      return this.createFreeFireBrackets(participants, kpSettings);
+    } else {
+      return this.createGenericBrackets(participants, format);
+    }
+  }
+
+  createFreeFireBrackets(participants, kpSettings) {
+    const numberOfGroups = kpSettings.numberOfGroups || 4;
+    const teamsPerMatch = kpSettings.teamsPerMatch || 10;
+    const qualifiersPerGroup = kpSettings.qualifiersPerGroup || 4;
+
+    const qualifierMatches = Math.ceil(participants.length / teamsPerMatch);
+    const qualifierTables = [];
+
+    // Create qualifier matches
+    for (let i = 1; i <= qualifierMatches; i++) {
+      qualifierTables.push({
+        name: `Qualifier Match ${i}`,
+        type: 'free_fire_qualifier',
+        teamsPerMatch: teamsPerMatch,
+        totalMatches: 1,
+        qualifiers: 2,
+        matchNumber: i
+      });
+    }
+
+    return {
+      title: 'Free Fire Tournament',
+      description: 'Battle Royale tournament with qualifier matches leading to grand finals.',
+      stages: [
+        {
+          name: 'Qualifier Matches',
+          description: `${qualifierMatches} qualifier matches, top 2 teams from each qualify for finals`,
+          tables: qualifierTables
+        },
+        {
+          name: 'Grand Finals',
+          description: 'Final battle with top teams',
+          tables: [
+            {
+              name: 'Grand Finals',
+              type: 'free_fire_finals',
+              teamsPerMatch: qualifierMatches * 2,
+              totalMatches: 1,
+              qualifiers: 1
+            }
+          ]
+        }
+      ]
+    };
+  }
+
+  createGenericBrackets(participants, format) {
+    const numberOfGroups = 4;
+    const qualifiersPerGroup = 4;
+
+    return {
+      title: `${format.charAt(0).toUpperCase() + format.slice(1)} Tournament`,
+      description: `Tournament using ${format} format with ${participants.length} teams.`,
+      stages: [
+        {
+          name: 'Group Stage',
+          description: `${numberOfGroups} groups, top ${qualifiersPerGroup} from each advance`,
+          tables: Array.from({ length: numberOfGroups }, (_, i) => ({
+            name: `Group ${String.fromCharCode(65 + i)}`,
+            type: 'qualifier',
+            teamsPerMatch: Math.ceil(participants.length / numberOfGroups),
+            totalMatches: 1,
+            qualifiers: qualifiersPerGroup
+          }))
+        },
+        {
+          name: 'Finals',
+          description: `Final stage with top ${numberOfGroups * qualifiersPerGroup} teams`,
+          tables: [
+            {
+              name: 'Finals',
+              type: 'final',
+              teamsPerMatch: numberOfGroups * qualifiersPerGroup,
+              totalMatches: 1,
+              qualifiers: 1
+            }
+          ]
+        }
+      ]
+    };
+  }
+
+  renderBracketsContent(bracketData) {
+    const contentElement = document.getElementById('brackets-content');
+    const emptyElement = document.getElementById('brackets-empty');
+
+    emptyElement.classList.add('hidden');
+    contentElement.classList.remove('hidden');
+
+    let html = '';
+
+    if (bracketData.stages) {
+      bracketData.stages.forEach((stage, stageIndex) => {
+        html += `
+          <div class="stage-section mb-8">
+            <div class="stage-header bg-gradient-to-r from-cyber-cyan to-cyber-indigo text-dark-matter rounded-t-xl p-4">
+              <h4 class="text-xl font-bold">${stage.name}</h4>
+              <p class="opacity-90">${stage.description}</p>
+            </div>
+            
+            <div class="stage-tables space-y-6 bg-dark-matter/30 border border-cyber-border rounded-b-xl p-6">
+              ${stage.tables.map((table, tableIndex) => this.renderMatchTable(table, stageIndex, tableIndex)).join('')}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    contentElement.innerHTML = html;
+  }
+
+  renderMatchTable(tableConfig, stageIndex, tableIndex) {
+    const tableId = `stage-${stageIndex}-table-${tableIndex}`;
+
+    // Calculate team distribution for this table
+    const totalParticipants = this.participants.length;
+    const numberOfTables = tableConfig.type === 'qualifier' ? 4 : 1;
+
+    let teamsForThisTable = [];
+    if (tableConfig.type === 'qualifier') {
+      const baseTeamsPerTable = Math.floor(totalParticipants / numberOfTables);
+      const extraTeams = totalParticipants % numberOfTables;
+
+      let startIndex;
+      if (tableIndex < extraTeams) {
+        const teamsInThisTable = baseTeamsPerTable + 1;
+        startIndex = tableIndex * teamsInThisTable;
+        teamsForThisTable = this.participants.slice(startIndex, startIndex + teamsInThisTable);
+      } else {
+        const teamsInThisTable = baseTeamsPerTable;
+        startIndex = (extraTeams * (baseTeamsPerTable + 1)) + ((tableIndex - extraTeams) * baseTeamsPerTable);
+        teamsForThisTable = this.participants.slice(startIndex, startIndex + teamsInThisTable);
+      }
+    } else if (tableConfig.type === 'free_fire_qualifier') {
+      const teamsPerMatch = tableConfig.teamsPerMatch || 10;
+      const matchNumber = tableConfig.matchNumber || 1;
+      const startIndex = (matchNumber - 1) * teamsPerMatch;
+      teamsForThisTable = this.participants.slice(startIndex, startIndex + teamsPerMatch);
+    }
+
+    let html = `
+      <div class="match-table-container bg-dark-matter/50 border border-cyber-border rounded-lg overflow-hidden">
+        <div class="match-table-header bg-dark-matter/70 p-4 flex justify-between items-center">
+          <h5 class="text-lg font-semibold text-starlight">${tableConfig.name}</h5>
+          <div class="flex items-center gap-3">
+            <span class="bg-cyber-cyan text-dark-matter px-3 py-1 rounded-full text-sm font-semibold">
+              ${teamsForThisTable.length} Teams
+            </span>
+            <button onclick="window.tournamentManagement.updateFinalists('${tableId}', '${tableConfig.name}')" 
+                    class="px-4 py-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 transition-colors text-sm font-semibold">
+              Update Results
+            </button>
+          </div>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-dark-matter/30">
+    `;
+
+    // Table headers based on type
+    if (tableConfig.type === 'free_fire_qualifier' || tableConfig.type === 'free_fire_finals') {
+      html += `
+        <tr>
+          <th class="px-4 py-3 text-left text-starlight">Slot</th>
+          <th class="px-4 py-3 text-left text-starlight">Team Name</th>
+          <th class="px-4 py-3 text-left text-starlight">Captain</th>
+          <th class="px-4 py-3 text-left text-starlight">Players</th>
+        </tr>
+      `;
+    } else {
+      html += `
+        <tr>
+          <th class="px-4 py-3 text-left text-starlight">S.No</th>
+          <th class="px-4 py-3 text-left text-starlight">Team Name</th>
+          <th class="px-4 py-3 text-left text-starlight">Captain</th>
+          <th class="px-4 py-3 text-left text-starlight">S.No</th>
+          <th class="px-4 py-3 text-left text-starlight">Team Name</th>
+          <th class="px-4 py-3 text-left text-starlight">Captain</th>
+        </tr>
+      `;
+    }
+
+    html += `</thead><tbody>`;
+
+    // Table rows based on type
+    if (tableConfig.type === 'free_fire_qualifier' || tableConfig.type === 'free_fire_finals') {
+      const maxSlots = tableConfig.teamsPerMatch || 10;
+      for (let slot = 1; slot <= maxSlots; slot++) {
+        const team = teamsForThisTable[slot - 1];
+        html += `
+          <tr class="border-t border-cyber-border/30 hover:bg-dark-matter/20">
+            <td class="px-4 py-3 font-semibold text-cyber-cyan">${slot}</td>
+            <td class="px-4 py-3 text-starlight">${team ? team.teamName : 'Open Slot'}</td>
+            <td class="px-4 py-3 text-starlight-muted">${team ? (team.captainEmail || 'No Captain') : '-'}</td>
+            <td class="px-4 py-3 text-starlight-muted">${team ? (team.players?.length || 0) + ' players' : '-'}</td>
+          </tr>
+        `;
+      }
+    } else {
+      // Two-column layout for qualifier/final tables
+      const maxRows = Math.ceil(teamsForThisTable.length / 2);
+      for (let row = 0; row < maxRows; row++) {
+        const team1 = teamsForThisTable[row * 2];
+        const team2 = teamsForThisTable[row * 2 + 1];
+
+        html += `
+          <tr class="border-t border-cyber-border/30 hover:bg-dark-matter/20">
+            <td class="px-4 py-3 font-semibold text-cyber-cyan">${row * 2 + 1}</td>
+            <td class="px-4 py-3 text-starlight">${team1 ? team1.teamName : 'Open Slot'}</td>
+            <td class="px-4 py-3 text-starlight-muted">${team1 ? (team1.captainEmail || 'No Captain') : '-'}</td>
+            <td class="px-4 py-3 font-semibold text-cyber-cyan">${team2 ? row * 2 + 2 : ''}</td>
+            <td class="px-4 py-3 text-starlight">${team2 ? team2.teamName : ''}</td>
+            <td class="px-4 py-3 text-starlight-muted">${team2 ? (team2.captainEmail || 'No Captain') : ''}</td>
+          </tr>
+        `;
+      }
+    }
+
+    html += `</tbody></table></div></div>`;
+    return html;
+  }
+
+  async updateFinalists(tableId, tableName) {
+    // Show modal to update finalists/results for this table
+    this.showUpdateFinalistsModal(tableId, tableName);
+  }
+
+  showUpdateFinalistsModal(tableId, tableName) {
+    const modalHtml = `
+      <div id="update-finalists-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+        <div class="glass rounded-xl max-w-md w-full animate-slide-in">
+          <div class="flex justify-between items-center p-6 border-b border-cyber-border">
+            <h3 class="text-xl font-semibold text-starlight">Update Results</h3>
+            <button id="close-finalists-modal" class="text-starlight-muted hover:text-starlight">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+          <div class="p-6">
+            <div class="mb-4">
+              <h4 class="text-lg font-semibold text-starlight mb-2">${tableName}</h4>
+              <p class="text-starlight-muted">Update match results and finalists</p>
+            </div>
+
+            <form id="finalists-form" class="space-y-4">
+              <div>
+                <label for="match-status" class="block text-sm font-medium text-starlight mb-2">Match Status</label>
+                <select id="match-status" name="status" class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none">
+                  <option value="scheduled">Scheduled</option>
+                  <option value="ongoing">Ongoing</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="match-notes" class="block text-sm font-medium text-starlight mb-2">Match Notes</label>
+                <textarea id="match-notes" name="notes" rows="3" placeholder="Match results, scores, finalists..."
+                          class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none resize-vertical"></textarea>
+              </div>
+
+              <div class="flex gap-3 pt-4">
+                <button type="button" onclick="window.tournamentManagement.hideUpdateFinalistsModal()" 
+                        class="flex-1 px-4 py-3 bg-dark-matter/50 text-starlight-muted rounded-lg hover:bg-dark-matter/70 transition-colors">
+                  Cancel
+                </button>
+                <button type="submit" 
+                        class="flex-1 px-4 py-3 bg-cyber-cyan text-dark-matter rounded-lg hover:bg-cyber-cyan/90 transition-colors font-semibold">
+                  Update Results
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Bind events
+    document.getElementById('close-finalists-modal').addEventListener('click', () => {
+      this.hideUpdateFinalistsModal();
+    });
+
+    document.getElementById('finalists-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.submitFinalistsUpdate(tableId, tableName);
+    });
+  }
+
+  async submitFinalistsUpdate(tableId, tableName) {
+    try {
+      const form = document.getElementById('finalists-form');
+      const formData = new FormData(form);
+
+      const updateData = {
+        tableId: tableId,
+        tableName: tableName,
+        status: formData.get('status'),
+        notes: formData.get('notes')
+      };
+
+      // Show loading
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Updating...';
+      submitBtn.disabled = true;
+
+      // Update via API
+      const response = await window.apiClient.updateTournamentResults(this.currentTournament._id, updateData);
+
+      if (response.success) {
+        this.hideUpdateFinalistsModal();
+        this.showNotification('Results updated successfully!', 'success');
+        // Refresh brackets display
+        await this.loadExistingBrackets();
+      } else {
+        throw new Error(response.message || 'Failed to update results');
+      }
+
+    } catch (error) {
+      console.error('Error updating results:', error);
+      this.showError('Failed to update results: ' + error.message);
+    } finally {
+      // Restore button
+      const submitBtn = document.getElementById('finalists-form')?.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.innerHTML = 'Update Results';
+        submitBtn.disabled = false;
+      }
+    }
+  }
+
+  hideUpdateFinalistsModal() {
+    const modal = document.getElementById('update-finalists-modal');
+    if (modal) {
+      modal.classList.add('animate-fade-out');
+      setTimeout(() => modal.remove(), 250);
+    }
+  }
+
+  hideBracketsModal() {
+    this.smoothCloseModal('brackets-modal');
   }
 
   // Placeholder methods for other functionality
