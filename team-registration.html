@@ -1544,6 +1544,45 @@
             border-color: rgba(10, 250, 217, 0.3);
             transform: translateY(-2px);
         }
+
+        /* --- Responsive Design --- */
+        
+        /* This rule exists in your file but is empty. We'll add the form fix here. */
+        @media (max-width: 992px) {
+            .registration-container {
+                grid-template-columns: 1fr;
+            }
+
+            .tournament-info {
+                position: static;
+                margin-top: 2.5rem;
+            }
+            
+            /* ADD THIS BLOCK to stack the player inputs on tablets/laptops */
+            .player-form {
+                /* Change from 1fr 1fr 1fr auto to 1fr to stack fields */
+                grid-template-columns: 1fr; 
+                gap: 1.5rem 1rem; /* Adjust gap for better vertical spacing */
+            }
+        }
+
+        @media (max-width: 768px) { 
+            /* ... keep existing mobile styles ... */
+            .form-row {
+                grid-template-columns: 1fr;
+                overflow-x: visible;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+            
+            /* The 992px rule will now cover this, but keep the 768px just in case */
+            .player-form {
+                 grid-template-columns: 1fr;
+                 padding: 1rem;
+            }
+        }
     </style>
 </head>
 
