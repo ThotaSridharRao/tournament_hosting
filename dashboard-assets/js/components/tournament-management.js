@@ -493,12 +493,12 @@ class TournamentManagement {
                   <span id="participants-count">0</span> teams registered
                 </div>
                 <div class="text-sm text-starlight-muted">
-                  Click the trash icon to remove a team
+                  Click column headers to sort • Click actions to manage teams
                 </div>
               </div>
               
-              <div id="participants-list" class="space-y-4">
-                <!-- Participants will be populated here -->
+              <div id="participants-list" class="overflow-x-auto">
+                <!-- Participants table will be populated here -->
               </div>
             </div>
 
@@ -578,40 +578,87 @@ class TournamentManagement {
     // Update count
     countElement.textContent = participants.length;
 
-    // Render participants list
-    listElement.innerHTML = participants.map((participant, index) => this.renderParticipantCard(participant, index)).join('');
+    // Initialize sorting state if not exists
+    if (!this.participantsSortState) {
+      this.participantsSortState = {
+        column: 'teamName',
+        direction: 'asc'
+      };
+    }
+
+    // Sort participants
+    const sortedParticipants = this.sortParticipants(participants);
+
+    // Render participants table
+    listElement.innerHTML = this.renderParticipantsTable(sortedParticipants);
   }
 
-  renderParticipantCard(participant, index) {
+  renderParticipantsTable(participants) {
+    return `
+      <div class="bg-dark-matter/30 border border-cyber-border/30 rounded-lg overflow-hidden">
+        <table class="w-full">
+          <thead class="bg-dark-matter/50 border-b border-cyber-border/30">
+            <tr>
+              <th class="px-4 py-3 text-left text-starlight font-semibold">#</th>
+              <th class="px-4 py-3 text-left text-starlight font-semibold cursor-pointer hover:bg-cyber-cyan/10 transition-colors" 
+                  onclick="window.tournamentManagement.sortParticipantsBy('teamName')">
+                <div class="flex items-center gap-2">
+                  Team Name
+                  <i class="fas fa-sort${this.getSortIcon('teamName')} text-cyber-cyan"></i>
+                </div>
+              </th>
+              <th class="px-4 py-3 text-left text-starlight font-semibold">Players</th>
+              <th class="px-4 py-3 text-left text-starlight font-semibold cursor-pointer hover:bg-cyber-cyan/10 transition-colors" 
+                  onclick="window.tournamentManagement.sortParticipantsBy('registrationDate')">
+                <div class="flex items-center gap-2">
+                  Registration Date
+                  <i class="fas fa-sort${this.getSortIcon('registrationDate')} text-cyber-cyan"></i>
+                </div>
+              </th>
+              <th class="px-4 py-3 text-center text-starlight font-semibold">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-cyber-border/20">
+            ${participants.map((participant, index) => this.renderParticipantRow(participant, index)).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  renderParticipantRow(participant, index) {
     const players = participant.players || [];
     const teamName = participant.teamName || 'Unknown Team';
     const teamId = participant._id;
+    const registrationDate = participant.createdAt ? new Date(participant.createdAt).toLocaleDateString() : 'Unknown';
 
     return `
-      <div class="bg-dark-matter/30 border border-cyber-border/30 rounded-lg p-4 hover:border-cyber-cyan/50 transition-colors">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-4 flex-1">
-            <span class="text-cyber-cyan font-semibold text-lg w-8">${index + 1}.</span>
-            <div class="flex-1">
-              <h5 class="text-lg font-semibold text-starlight">${teamName}</h5>
-              <span class="text-sm text-starlight-muted">${players.length} ${players.length === 1 ? 'player' : 'players'}</span>
-            </div>
-          </div>
-          
-          <div class="flex items-center gap-2">
+      <tr class="hover:bg-cyber-cyan/5 transition-colors">
+        <td class="px-4 py-3 text-cyber-cyan font-semibold">${index + 1}</td>
+        <td class="px-4 py-3">
+          <div class="text-starlight font-medium">${teamName}</div>
+        </td>
+        <td class="px-4 py-3">
+          <div class="text-starlight-muted">${players.length} ${players.length === 1 ? 'player' : 'players'}</div>
+        </td>
+        <td class="px-4 py-3">
+          <div class="text-starlight-muted">${registrationDate}</div>
+        </td>
+        <td class="px-4 py-3">
+          <div class="flex items-center justify-center gap-2">
             <button onclick="window.tournamentManagement.viewTeamDetails('${teamId}', '${teamName.replace(/'/g, "\\'")}', ${index})" 
-                    class="w-10 h-10 bg-cyber-cyan/20 text-cyber-cyan rounded-lg hover:bg-cyber-cyan/30 transition-colors flex items-center justify-center" 
+                    class="w-8 h-8 bg-cyber-cyan/20 text-cyber-cyan rounded hover:bg-cyber-cyan/30 transition-colors flex items-center justify-center" 
                     title="View Team Details">
-              <i class="fas fa-eye"></i>
+              <i class="fas fa-eye text-xs"></i>
             </button>
             <button onclick="window.tournamentManagement.removeParticipant('${teamId}', '${teamName.replace(/'/g, "\\'")}', ${index})" 
-                    class="w-10 h-10 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors flex items-center justify-center" 
+                    class="w-8 h-8 bg-red-500/20 text-red-400 rounded hover:bg-red-500/30 transition-colors flex items-center justify-center" 
                     title="Remove Team">
-              <i class="fas fa-trash"></i>
+              <i class="fas fa-trash text-xs"></i>
             </button>
           </div>
-        </div>
-      </div>
+        </td>
+      </tr>
     `;
   }
 
@@ -709,6 +756,52 @@ class TournamentManagement {
 
   hideTeamDetailsModal() {
     this.smoothCloseModal('team-details-modal');
+  }
+
+  sortParticipantsBy(column) {
+    if (this.participantsSortState.column === column) {
+      // Toggle direction if same column
+      this.participantsSortState.direction = this.participantsSortState.direction === 'asc' ? 'desc' : 'asc';
+    } else {
+      // New column, default to ascending
+      this.participantsSortState.column = column;
+      this.participantsSortState.direction = 'asc';
+    }
+
+    // Re-render participants with new sort
+    this.renderParticipants(this.participants);
+  }
+
+  sortParticipants(participants) {
+    const { column, direction } = this.participantsSortState;
+    
+    return [...participants].sort((a, b) => {
+      let aValue, bValue;
+      
+      switch (column) {
+        case 'teamName':
+          aValue = (a.teamName || '').toLowerCase();
+          bValue = (b.teamName || '').toLowerCase();
+          break;
+        case 'registrationDate':
+          aValue = new Date(a.createdAt || 0);
+          bValue = new Date(b.createdAt || 0);
+          break;
+        default:
+          return 0;
+      }
+      
+      if (aValue < bValue) return direction === 'asc' ? -1 : 1;
+      if (aValue > bValue) return direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
+  getSortIcon(column) {
+    if (this.participantsSortState.column !== column) {
+      return '';
+    }
+    return this.participantsSortState.direction === 'asc' ? '-up' : '-down';
   }
 
   showCreateTournamentModal() {
