@@ -1107,7 +1107,7 @@
 
         .player-form {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr auto;
+            grid-template-columns: repeat(3, minmax(200px, 1fr));  /* Minimum 200px per column */
             gap: 1rem;
             align-items: end;
             margin-bottom: 1rem;
