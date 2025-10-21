@@ -280,6 +280,13 @@
             </a>
           </li>
           <li>
+            <a href="#brackets"
+              class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
+              <i class="fas fa-sitemap text-starlight-muted group-hover:text-cyber-cyan"></i>
+              <span class="font-medium text-starlight-muted group-hover:text-starlight">Match/Brackets</span>
+            </a>
+          </li>
+          <li>
             <a href="#wallet"
               class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-cyber-cyan/10 hover:border-cyber-cyan group">
               <i class="fas fa-wallet text-starlight-muted group-hover:text-cyber-cyan"></i>
@@ -407,8 +414,8 @@
         const titles = {
           dashboard: { title: 'Dashboard', subtitle: 'Welcome back! Here\'s your tournament overview.' },
           tournaments: { title: 'Tournaments', subtitle: 'Manage your tournaments and participants.' },
+          brackets: { title: 'Match/Bracket Management', subtitle: 'Generate brackets and manage match results.' },
           wallet: { title: 'Wallet', subtitle: 'Track your earnings and manage withdrawals.' },
-
           analytics: { title: 'Analytics', subtitle: 'Analyze your performance and insights.' },
           settings: { title: 'Settings', subtitle: 'Manage your account and preferences.' }
         };
@@ -491,7 +498,13 @@
             await window.tournamentManagement.init();
             break;
 
-
+          case 'brackets':
+            if (window.bracketManagement) {
+              window.bracketManagement.destroy();
+            }
+            window.bracketManagement = new BracketManagement();
+            await window.bracketManagement.init();
+            break;
 
           case 'wallet':
             if (window.walletManagement) {
@@ -532,6 +545,7 @@
       const icons = {
         dashboard: 'tachometer-alt',
         tournaments: 'trophy',
+        brackets: 'sitemap',
         wallet: 'wallet',
         schedule: 'calendar-alt',
         analytics: 'chart-line',
@@ -554,6 +568,9 @@
 
         // Load tournament management component
         await loadScript('dashboard-assets/js/components/tournament-management.js');
+
+        // Load bracket management component
+        await loadScript('dashboard-assets/js/components/bracket-management.js');
 
         // Load wallet management component
         await loadScript('dashboard-assets/js/components/wallet-management.js');
