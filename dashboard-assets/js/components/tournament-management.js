@@ -36,9 +36,15 @@ class TournamentManagement {
     contentArea.innerHTML = `
       <div class="animate-fade-in">
         <!-- Tournament Management Header -->
-        <div class="mb-8">
-          <h2 class="text-3xl font-bold text-starlight mb-2">Tournament Management</h2>
-          <p class="text-starlight-muted">View and manage your tournaments</p>
+        <div class="mb-8 flex flex-col lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h2 class="text-3xl font-bold text-starlight mb-2">Tournament Management</h2>
+            <p class="text-starlight-muted">View and manage your tournaments</p>
+          </div>
+          <button id="create-tournament-btn" class="mt-4 lg:mt-0 px-6 py-3 bg-gradient-to-r from-cyber-cyan to-cyber-indigo text-dark-matter rounded-lg font-semibold hover:from-cyber-cyan/90 hover:to-cyber-indigo/90 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyber-cyan/25 flex items-center gap-2">
+            <i class="fas fa-plus"></i>
+            Create Tournament
+          </button>
         </div>
 
         <!-- Filters and Search -->
@@ -97,6 +103,14 @@ class TournamentManagement {
         this.filters.status = e.target.value;
         this.pagination.page = 1;
         this.loadTournaments();
+      });
+    }
+
+    // Create tournament button
+    const createTournamentBtn = document.getElementById('create-tournament-btn');
+    if (createTournamentBtn) {
+      createTournamentBtn.addEventListener('click', () => {
+        this.showCreateTournamentModal();
       });
     }
   }
@@ -252,7 +266,7 @@ class TournamentManagement {
 
   showEventManagementModal() {
     const tournament = this.currentTournament;
-    
+
     const modalHtml = `
       <div id="event-management-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
         <div class="glass rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
@@ -370,7 +384,7 @@ class TournamentManagement {
     try {
       const form = document.getElementById('add-event-form');
       const formData = new FormData(form);
-      
+
       const title = formData.get('title').trim();
       const datetime = formData.get('datetime');
       const description = formData.get('description').trim();
@@ -403,16 +417,16 @@ class TournamentManagement {
 
       if (response.success) {
         this.showNotification('Event added successfully!', 'success');
-        
+
         // Update current tournament data
         if (!this.currentTournament.scheduleEvents) {
           this.currentTournament.scheduleEvents = [];
         }
         this.currentTournament.scheduleEvents.push(response.data);
-        
+
         // Refresh the existing events display
         this.populateExistingEvents();
-        
+
         // Reset form
         form.reset();
       } else {
@@ -426,7 +440,7 @@ class TournamentManagement {
     } catch (error) {
       console.error('Error adding event:', error);
       this.showError('Failed to add event: ' + error.message);
-      
+
       // Restore button
       const submitButton = document.getElementById('add-event-form').querySelector('button[type="submit"]');
       submitButton.innerHTML = '<i class="fas fa-plus mr-2"></i>Add Event';
@@ -454,7 +468,7 @@ class TournamentManagement {
 
   async showParticipantsModal() {
     const tournament = this.currentTournament;
-    
+
     const modalHtml = `
       <div id="participants-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
         <div class="glass rounded-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
@@ -703,6 +717,316 @@ class TournamentManagement {
     }
   }
 
+  showCreateTournamentModal() {
+    const modalHtml = `
+      <div id="create-tournament-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+        <div class="glass rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto animate-slide-in">
+          <div class="flex justify-between items-center p-6 border-b border-cyber-border">
+            <div>
+              <h3 class="text-2xl font-semibold text-starlight flex items-center gap-3">
+                <i class="fas fa-plus-circle text-cyber-cyan"></i>
+                Create Tournament
+              </h3>
+              <p class="text-starlight-muted mt-1">Set up your gaming tournament and start building your community</p>
+            </div>
+            <button id="close-create-modal" class="text-starlight-muted hover:text-starlight transition-colors">
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+          <form id="create-tournament-form" class="p-6 space-y-6">
+            <!-- Basic Information -->
+            <div class="bg-dark-matter/30 border border-cyber-border/30 rounded-lg p-6">
+              <h4 class="text-lg font-semibold text-starlight mb-4 flex items-center gap-2">
+                <i class="fas fa-info-circle text-cyber-cyan"></i>
+                Basic Information
+              </h4>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-group">
+                  <label for="tournament-title" class="block text-sm font-medium text-starlight mb-2">Tournament Title *</label>
+                  <input type="text" id="tournament-title" name="title" required maxlength="100" 
+                         placeholder="Enter tournament title"
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none transition-colors">
+                  <p class="text-xs text-starlight-muted mt-1">Choose an engaging title for your tournament</p>
+                </div>
+                
+                <div class="form-group">
+                  <label for="tournament-game" class="block text-sm font-medium text-starlight mb-2">Game *</label>
+                  <input type="text" id="tournament-game" name="game" required maxlength="50"
+                         placeholder="e.g., BGMI, Free Fire, Valorant, CS:GO"
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none transition-colors">
+                  <p class="text-xs text-starlight-muted mt-1">Enter the name of the game for this tournament</p>
+                </div>
+              </div>
+
+              <div class="form-group mt-4">
+                <label for="tournament-description" class="block text-sm font-medium text-starlight mb-2">Description *</label>
+                <textarea id="tournament-description" name="description" required maxlength="2000" rows="4"
+                          placeholder="Describe your tournament, rules, and any special instructions..."
+                          class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none transition-colors resize-vertical"></textarea>
+                <p class="text-xs text-starlight-muted mt-1">Provide clear information about rules, format, and requirements</p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div class="form-group">
+                  <label for="tournament-format" class="block text-sm font-medium text-starlight mb-2">Tournament Format *</label>
+                  <select id="tournament-format" name="format" required
+                          class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none transition-colors">
+                    <option value="">Select Format</option>
+                    <option value="single-elimination">Single Elimination</option>
+                    <option value="double_elimination">Double Elimination</option>
+                    <option value="round_robin">Round Robin</option>
+                    <option value="swiss">Swiss System</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label for="max-teams" class="block text-sm font-medium text-starlight mb-2">Maximum Teams *</label>
+                  <input type="number" id="max-teams" name="maxTeams" required min="2" max="500" value="16"
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none transition-colors">
+                  <p class="text-xs text-starlight-muted mt-1">Between 2 and 500 teams</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Schedule & Timing -->
+            <div class="bg-dark-matter/30 border border-cyber-border/30 rounded-lg p-6">
+              <h4 class="text-lg font-semibold text-starlight mb-4 flex items-center gap-2">
+                <i class="fas fa-calendar-alt text-cyber-cyan"></i>
+                Schedule & Timing
+              </h4>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-group">
+                  <label for="registration-start" class="block text-sm font-medium text-starlight mb-2">Registration Start *</label>
+                  <input type="datetime-local" id="registration-start" name="registrationStart" required
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none transition-colors datetime-white-icons">
+                </div>
+                
+                <div class="form-group">
+                  <label for="registration-end" class="block text-sm font-medium text-starlight mb-2">Registration End *</label>
+                  <input type="datetime-local" id="registration-end" name="registrationEnd" required
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none transition-colors datetime-white-icons">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div class="form-group">
+                  <label for="tournament-start" class="block text-sm font-medium text-starlight mb-2">Tournament Start *</label>
+                  <input type="datetime-local" id="tournament-start" name="tournamentStart" required
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none transition-colors datetime-white-icons">
+                </div>
+                
+                <div class="form-group">
+                  <label for="tournament-end" class="block text-sm font-medium text-starlight mb-2">Tournament End *</label>
+                  <input type="datetime-local" id="tournament-end" name="tournamentEnd" required
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none transition-colors datetime-white-icons">
+                </div>
+              </div>
+            </div>
+
+            <!-- Pricing & Teams -->
+            <div class="bg-dark-matter/30 border border-cyber-border/30 rounded-lg p-6">
+              <h4 class="text-lg font-semibold text-starlight mb-4 flex items-center gap-2">
+                <i class="fas fa-coins text-cyber-cyan"></i>
+                Pricing & Teams
+              </h4>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-group">
+                  <label for="entry-fee" class="block text-sm font-medium text-starlight mb-2">Entry Fee (₹)</label>
+                  <input type="number" id="entry-fee" name="entryFee" min="0" max="10000" value="0" required
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none transition-colors">
+                  <p class="text-xs text-starlight-muted mt-1">Set to 0 for free tournaments</p>
+                </div>
+                
+                <div class="form-group">
+                  <label for="prize-pool" class="block text-sm font-medium text-starlight mb-2">Prize Pool (₹)</label>
+                  <input type="number" id="prize-pool" name="prizePool" min="0" max="100000" value="0" required
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none transition-colors">
+                  <p class="text-xs text-starlight-muted mt-1">Total prize money for winners</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div class="form-group">
+                  <label for="max-players-per-team" class="block text-sm font-medium text-starlight mb-2">Max Players per Team *</label>
+                  <input type="number" id="max-players-per-team" name="maxPlayersPerTeam" min="1" max="10" value="4" required
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none transition-colors">
+                  <p class="text-xs text-starlight-muted mt-1">Maximum number of players allowed per team</p>
+                </div>
+                
+                <div class="form-group">
+                  <label for="tournament-poster" class="block text-sm font-medium text-starlight mb-2">Tournament Poster</label>
+                  <input type="file" id="tournament-poster" name="poster" accept="image/*"
+                         class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-cyber-cyan file:text-dark-matter hover:file:bg-cyber-cyan/90">
+                  <p class="text-xs text-starlight-muted mt-1">Upload a poster image for your tournament (optional)</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Venue Information -->
+            <div class="bg-dark-matter/30 border border-cyber-border/30 rounded-lg p-6">
+              <h4 class="text-lg font-semibold text-starlight mb-4 flex items-center gap-2">
+                <i class="fas fa-map-marker-alt text-cyber-cyan"></i>
+                Venue Information
+              </h4>
+              
+              <div class="form-group mb-4">
+                <label for="venue-type" class="block text-sm font-medium text-starlight mb-2">Venue Type *</label>
+                <select id="venue-type" name="venueType" required
+                        class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none transition-colors">
+                  <option value="online">Online</option>
+                  <option value="physical">Physical Venue</option>
+                </select>
+              </div>
+
+              <div id="physical-venue-fields" class="hidden space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="form-group">
+                    <label for="venue-name" class="block text-sm font-medium text-starlight mb-2">Venue Name</label>
+                    <input type="text" id="venue-name" name="venueName"
+                           class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none transition-colors">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="venue-capacity" class="block text-sm font-medium text-starlight mb-2">Venue Capacity</label>
+                    <input type="number" id="venue-capacity" name="venueCapacity" min="1"
+                           class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight focus:border-cyber-cyan focus:outline-none transition-colors">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="venue-address" class="block text-sm font-medium text-starlight mb-2">Address</label>
+                  <textarea id="venue-address" name="venueAddress" rows="3"
+                            class="w-full px-4 py-3 bg-dark-matter/50 border border-cyber-border rounded-lg text-starlight placeholder-starlight-muted focus:border-cyber-cyan focus:outline-none transition-colors resize-vertical"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-cyber-border">
+              <button type="button" id="cancel-create-tournament" 
+                      class="flex-1 px-6 py-3 bg-gray-600/20 text-gray-300 rounded-lg hover:bg-gray-600/30 transition-colors font-semibold">
+                Cancel
+              </button>
+              <button type="submit" id="submit-create-tournament"
+                      class="flex-1 px-6 py-3 bg-gradient-to-r from-cyber-cyan to-cyber-indigo text-dark-matter rounded-lg font-semibold hover:from-cyber-cyan/90 hover:to-cyber-indigo/90 transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2">
+                <i class="fas fa-plus"></i>
+                Create Tournament
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    `;
+
+    // Add modal to page
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Initialize modal
+    this.initializeCreateTournamentModal();
+  }
+
+  initializeCreateTournamentModal() {
+    // Bind close events
+    document.getElementById('close-create-modal').addEventListener('click', () => {
+      this.hideCreateTournamentModal();
+    });
+
+    document.getElementById('cancel-create-tournament').addEventListener('click', () => {
+      this.hideCreateTournamentModal();
+    });
+
+    // Close modal on outside click
+    document.getElementById('create-tournament-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'create-tournament-modal') {
+        this.hideCreateTournamentModal();
+      }
+    });
+
+    // Venue type change handler
+    document.getElementById('venue-type').addEventListener('change', (e) => {
+      const physicalFields = document.getElementById('physical-venue-fields');
+      if (e.target.value === 'physical') {
+        physicalFields.classList.remove('hidden');
+      } else {
+        physicalFields.classList.add('hidden');
+      }
+    });
+
+    // Form submission
+    document.getElementById('create-tournament-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.handleCreateTournament();
+    });
+
+    // Set default dates
+    this.setDefaultDates();
+  }
+
+  setDefaultDates() {
+    const now = new Date();
+    const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+    // Format dates for datetime-local input
+    const formatDateTime = (date) => {
+      return date.toISOString().slice(0, 16);
+    };
+
+    // Set default values
+    document.getElementById('registration-start').value = formatDateTime(now);
+    document.getElementById('registration-end').value = formatDateTime(tomorrow);
+    document.getElementById('tournament-start').value = formatDateTime(tomorrow);
+    document.getElementById('tournament-end').value = formatDateTime(nextWeek);
+  }
+
+  async handleCreateTournament() {
+    try {
+      const form = document.getElementById('create-tournament-form');
+      const formData = new FormData(form);
+
+      // Show loading state
+      const submitButton = document.getElementById('submit-create-tournament');
+      const originalText = submitButton.innerHTML;
+      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating...';
+      submitButton.disabled = true;
+
+      // Create tournament via API
+      const response = await window.apiClient.createTournament(formData);
+
+      if (response.success) {
+        this.showNotification('Tournament created successfully!', 'success');
+        this.hideCreateTournamentModal();
+
+        // Refresh tournaments list
+        await this.loadTournaments();
+      } else {
+        throw new Error(response.message || 'Failed to create tournament');
+      }
+
+    } catch (error) {
+      console.error('Error creating tournament:', error);
+      this.showError('Failed to create tournament: ' + error.message);
+    } finally {
+      // Restore button
+      const submitButton = document.getElementById('submit-create-tournament');
+      if (submitButton) {
+        submitButton.innerHTML = '<i class="fas fa-plus mr-2"></i>Create Tournament';
+        submitButton.disabled = false;
+      }
+    }
+  }
+
+  hideCreateTournamentModal() {
+    const modal = document.getElementById('create-tournament-modal');
+    if (modal) {
+      modal.remove();
+    }
+  }
+
   async removeParticipant(teamId, teamName, teamIndex) {
     if (!confirm(`Are you sure you want to remove team "${teamName}" from this tournament?`)) {
       return;
@@ -713,10 +1037,10 @@ class TournamentManagement {
 
       if (response.success) {
         this.showNotification(`Team "${teamName}" removed successfully!`, 'success');
-        
+
         // Reload participants
         await this.loadParticipants();
-        
+
         // Update tournament list to reflect new participant count
         await this.loadTournaments();
       } else {
@@ -854,13 +1178,13 @@ class TournamentManagement {
 
       if (response.success) {
         this.showNotification('Tournament status updated successfully!', 'success');
-        
+
         // Update current tournament data
         this.currentTournament.status = newStatus;
-        
+
         // Refresh the tournament list
         await this.loadTournaments();
-        
+
         // Hide modal
         this.hideStatusModal();
       } else {
@@ -870,7 +1194,7 @@ class TournamentManagement {
     } catch (error) {
       console.error('Error updating status:', error);
       this.showError('Failed to update status: ' + error.message);
-      
+
       // Restore button
       const submitButton = document.getElementById('status-change-form').querySelector('button[type="submit"]');
       submitButton.innerHTML = 'Update Status';
@@ -897,7 +1221,7 @@ class TournamentManagement {
 
   showEditTournamentModal() {
     const tournament = this.currentTournament;
-    
+
     const modalHtml = `
       <div id="edit-tournament-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="glass rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -1100,13 +1424,13 @@ class TournamentManagement {
 
       if (response.success) {
         this.showNotification('Tournament updated successfully!', 'success');
-        
+
         // Update current tournament data
         Object.assign(this.currentTournament, response.data);
-        
+
         // Refresh the tournament list
         await this.loadTournaments();
-        
+
         // Hide modal
         this.hideEditTournamentModal();
       } else {
@@ -1116,7 +1440,7 @@ class TournamentManagement {
     } catch (error) {
       console.error('Error updating tournament:', error);
       this.showError('Failed to update tournament: ' + error.message);
-      
+
       // Restore button
       const submitButton = document.getElementById('edit-tournament-form').querySelector('button[type="submit"]');
       submitButton.innerHTML = '<i class="fas fa-save mr-2"></i>Update Tournament';
@@ -1126,7 +1450,7 @@ class TournamentManagement {
 
   formatDateForInput(dateString) {
     if (!dateString) return '';
-    
+
     try {
       const date = new Date(dateString);
       // Format for datetime-local input (YYYY-MM-DDTHH:MM)
@@ -1135,7 +1459,7 @@ class TournamentManagement {
       const day = String(date.getDate()).padStart(2, '0');
       const hours = String(date.getHours()).padStart(2, '0');
       const minutes = String(date.getMinutes()).padStart(2, '0');
-      
+
       return `${year}-${month}-${day}T${hours}:${minutes}`;
     } catch (error) {
       console.error('Error formatting date:', error);
@@ -1160,7 +1484,7 @@ class TournamentManagement {
     // Create notification element
     const notification = document.createElement('div');
     notification.className = 'fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300';
-    
+
     switch (type) {
       case 'success':
         notification.classList.add('bg-green-600', 'text-white');
