@@ -449,10 +449,7 @@ class TournamentManagement {
   }
 
   hideEventModal() {
-    const modal = document.getElementById('event-management-modal');
-    if (modal) {
-      modal.remove();
-    }
+    this.smoothCloseModal('event-management-modal');
   }
 
   // Placeholder methods for other functionality
@@ -711,10 +708,7 @@ class TournamentManagement {
   }
 
   hideTeamDetailsModal() {
-    const modal = document.getElementById('team-details-modal');
-    if (modal) {
-      modal.remove();
-    }
+    this.smoothCloseModal('team-details-modal');
   }
 
   showCreateTournamentModal() {
@@ -964,6 +958,98 @@ class TournamentManagement {
 
     // Set default dates
     this.setDefaultDates();
+
+    // Setup real-time validation
+    this.setupCreateTournamentValidation();
+  }
+
+  setupCreateTournamentValidation() {
+    const validationRules = {
+      title: {
+        required: true,
+        minLength: 3,
+        maxLength: 100
+      },
+      game: {
+        required: true,
+        minLength: 2,
+        maxLength: 50
+      },
+      description: {
+        required: true,
+        minLength: 10,
+        maxLength: 2000
+      },
+      format: {
+        required: true
+      },
+      maxTeams: {
+        required: true,
+        min: 2,
+        max: 500
+      },
+      registrationStart: {
+        required: true,
+        date: true,
+        futureDate: false // Can be now or future
+      },
+      registrationEnd: {
+        required: true,
+        date: true,
+        futureDate: true,
+        custom: (value) => {
+          const regStart = document.getElementById('registration-start').value;
+          if (regStart && value && new Date(value) <= new Date(regStart)) {
+            return 'Registration end must be after registration start';
+          }
+          return true;
+        }
+      },
+      tournamentStart: {
+        required: true,
+        date: true,
+        futureDate: true,
+        custom: (value) => {
+          const regEnd = document.getElementById('registration-end').value;
+          if (regEnd && value && new Date(value) <= new Date(regEnd)) {
+            return 'Tournament start must be after registration end';
+          }
+          return true;
+        }
+      },
+      tournamentEnd: {
+        required: true,
+        date: true,
+        futureDate: true,
+        custom: (value) => {
+          const tournamentStart = document.getElementById('tournament-start').value;
+          if (tournamentStart && value && new Date(value) <= new Date(tournamentStart)) {
+            return 'Tournament end must be after tournament start';
+          }
+          return true;
+        }
+      },
+      entryFee: {
+        required: true,
+        min: 0,
+        max: 10000
+      },
+      prizePool: {
+        required: true,
+        min: 0,
+        max: 100000
+      },
+      maxPlayersPerTeam: {
+        required: true,
+        min: 1,
+        max: 10
+      },
+      venueType: {
+        required: true
+      }
+    };
+
+    this.setupRealTimeValidation('create-tournament-form', validationRules);
   }
 
   setDefaultDates() {
@@ -985,6 +1071,36 @@ class TournamentManagement {
 
   async handleCreateTournament() {
     try {
+      // Validate form before submission
+      const validationRules = {
+        title: { required: true, minLength: 3, maxLength: 100 },
+        game: { required: true, minLength: 2, maxLength: 50 },
+        description: { required: true, minLength: 10, maxLength: 2000 },
+        format: { required: true },
+        maxTeams: { required: true, min: 2, max: 500 },
+        registrationStart: { required: true, date: true },
+        registrationEnd: { required: true, date: true, futureDate: true },
+        tournamentStart: { required: true, date: true, futureDate: true },
+        tournamentEnd: { required: true, date: true, futureDate: true },
+        entryFee: { required: true, min: 0, max: 10000 },
+        prizePool: { required: true, min: 0, max: 100000 },
+        maxPlayersPerTeam: { required: true, min: 1, max: 10 },
+        venueType: { required: true }
+      };
+
+      const validation = this.validateForm('create-tournament-form', validationRules);
+
+      if (!validation.isValid) {
+        // Focus on first error field
+        const firstErrorField = document.querySelector('.input-field.error');
+        if (firstErrorField) {
+          firstErrorField.focus();
+          firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        this.showError('Please fix the errors in the form before submitting');
+        return;
+      }
+
       const form = document.getElementById('create-tournament-form');
       const formData = new FormData(form);
 
@@ -1021,10 +1137,7 @@ class TournamentManagement {
   }
 
   hideCreateTournamentModal() {
-    const modal = document.getElementById('create-tournament-modal');
-    if (modal) {
-      modal.remove();
-    }
+    this.smoothCloseModal('create-tournament-modal');
   }
 
   async removeParticipant(teamId, teamName, teamIndex) {
@@ -1053,10 +1166,7 @@ class TournamentManagement {
   }
 
   hideParticipantsModal() {
-    const modal = document.getElementById('participants-modal');
-    if (modal) {
-      modal.remove();
-    }
+    this.smoothCloseModal('participants-modal');
   }
 
   async changeStatus(tournamentId, currentStatus) {
@@ -1203,10 +1313,7 @@ class TournamentManagement {
   }
 
   hideStatusModal() {
-    const modal = document.getElementById('status-change-modal');
-    if (modal) {
-      modal.remove();
-    }
+    this.smoothCloseModal('status-change-modal');
   }
 
   async editTournament(tournamentId) {
@@ -1468,10 +1575,7 @@ class TournamentManagement {
   }
 
   hideEditTournamentModal() {
-    const modal = document.getElementById('edit-tournament-modal');
-    if (modal) {
-      modal.remove();
-    }
+    this.smoothCloseModal('edit-tournament-modal');
   }
 
   async deleteTournament(tournamentId) {
@@ -1480,10 +1584,206 @@ class TournamentManagement {
     }
   }
 
+  // Helper method for smooth modal closing
+  smoothCloseModal(modalId, callback = null) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      // Add exit animation
+      modal.classList.add('animate-fade-out');
+      const modalContent = modal.querySelector('.glass, .rounded-xl');
+      if (modalContent) {
+        modalContent.classList.remove('animate-slide-in');
+        modalContent.classList.add('animate-slide-out');
+      }
+
+      // Remove after animation completes
+      setTimeout(() => {
+        modal.remove();
+        if (callback) callback();
+      }, 250); // Match the animation duration
+    }
+  }
+
+  // Form validation system
+  validateField(fieldId, value, rules = {}) {
+    const field = document.getElementById(fieldId);
+    const formGroup = field?.closest('.form-group');
+
+    if (!field || !formGroup) return { isValid: true };
+
+    // Remove existing validation states
+    field.classList.remove('error', 'success');
+    formGroup.classList.remove('has-error', 'has-success');
+
+    // Remove existing error/success messages
+    const existingError = formGroup.querySelector('.field-error');
+    const existingSuccess = formGroup.querySelector('.field-success');
+    if (existingError) existingError.remove();
+    if (existingSuccess) existingSuccess.remove();
+
+    const errors = [];
+
+    // Required validation
+    if (rules.required && (!value || value.toString().trim() === '')) {
+      errors.push('This field is required');
+    }
+
+    // Min length validation
+    if (rules.minLength && value && value.length < rules.minLength) {
+      errors.push(`Minimum ${rules.minLength} characters required`);
+    }
+
+    // Max length validation
+    if (rules.maxLength && value && value.length > rules.maxLength) {
+      errors.push(`Maximum ${rules.maxLength} characters allowed`);
+    }
+
+    // Min value validation
+    if (rules.min !== undefined && value && parseFloat(value) < rules.min) {
+      errors.push(`Minimum value is ${rules.min}`);
+    }
+
+    // Max value validation
+    if (rules.max !== undefined && value && parseFloat(value) > rules.max) {
+      errors.push(`Maximum value is ${rules.max}`);
+    }
+
+    // Email validation
+    if (rules.email && value) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) {
+        errors.push('Please enter a valid email address');
+      }
+    }
+
+    // Date validation
+    if (rules.date && value) {
+      const date = new Date(value);
+      if (isNaN(date.getTime())) {
+        errors.push('Please enter a valid date');
+      } else if (rules.futureDate && date <= new Date()) {
+        errors.push('Date must be in the future');
+      }
+    }
+
+    // Custom validation
+    if (rules.custom && typeof rules.custom === 'function') {
+      const customResult = rules.custom(value);
+      if (customResult !== true) {
+        errors.push(customResult);
+      }
+    }
+
+    // Apply validation state
+    if (errors.length > 0) {
+      field.classList.add('input-field', 'error');
+      formGroup.classList.add('has-error');
+
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'field-error';
+      errorDiv.innerHTML = `<i class="fas fa-exclamation-circle validation-icon"></i>${errors[0]}`;
+
+      // Insert after the field
+      field.parentNode.insertBefore(errorDiv, field.nextSibling);
+
+      // Trigger animation
+      setTimeout(() => errorDiv.classList.add('show'), 10);
+
+      return { isValid: false, errors };
+    } else if (value && value.toString().trim() !== '') {
+      field.classList.add('input-field', 'success');
+      formGroup.classList.add('has-success');
+
+      const successDiv = document.createElement('div');
+      successDiv.className = 'field-success';
+      successDiv.innerHTML = `<i class="fas fa-check-circle validation-icon"></i>Valid`;
+
+      // Insert after the field
+      field.parentNode.insertBefore(successDiv, field.nextSibling);
+
+      // Trigger animation
+      setTimeout(() => successDiv.classList.add('show'), 10);
+    }
+
+    return { isValid: true };
+  }
+
+  // Validate entire form
+  validateForm(formId, validationRules) {
+    const form = document.getElementById(formId);
+    if (!form) return { isValid: false, errors: ['Form not found'] };
+
+    const formData = new FormData(form);
+    const errors = {};
+    let isFormValid = true;
+
+    // Validate each field
+    for (const [fieldName, rules] of Object.entries(validationRules)) {
+      const fieldValue = formData.get(fieldName);
+      const fieldId = form.querySelector(`[name="${fieldName}"]`)?.id;
+
+      if (fieldId) {
+        const validation = this.validateField(fieldId, fieldValue, rules);
+        if (!validation.isValid) {
+          errors[fieldName] = validation.errors;
+          isFormValid = false;
+        }
+      }
+    }
+
+    return { isValid: isFormValid, errors };
+  }
+
+  // Real-time validation setup
+  setupRealTimeValidation(formId, validationRules) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+
+    // Add event listeners for real-time validation
+    Object.keys(validationRules).forEach(fieldName => {
+      const field = form.querySelector(`[name="${fieldName}"]`);
+      if (field) {
+        // Validate on blur (when user leaves field)
+        field.addEventListener('blur', () => {
+          const value = field.value;
+          this.validateField(field.id, value, validationRules[fieldName]);
+        });
+
+        // Clear validation on focus (when user starts typing)
+        field.addEventListener('focus', () => {
+          const formGroup = field.closest('.form-group');
+          if (formGroup) {
+            field.classList.remove('error', 'success');
+            formGroup.classList.remove('has-error', 'has-success');
+
+            const errorMsg = formGroup.querySelector('.field-error');
+            const successMsg = formGroup.querySelector('.field-success');
+            if (errorMsg) errorMsg.remove();
+            if (successMsg) successMsg.remove();
+          }
+        });
+
+        // Validate on input for certain field types
+        if (field.type === 'email' || field.type === 'number') {
+          field.addEventListener('input', () => {
+            // Debounce validation
+            clearTimeout(field.validationTimeout);
+            field.validationTimeout = setTimeout(() => {
+              const value = field.value;
+              if (value.trim() !== '') {
+                this.validateField(field.id, value, validationRules[fieldName]);
+              }
+            }, 500);
+          });
+        }
+      }
+    });
+  }
+
   showNotification(message, type = 'info') {
     // Create notification element
     const notification = document.createElement('div');
-    notification.className = 'fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300';
+    notification.className = 'fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in';
 
     switch (type) {
       case 'success':
@@ -1501,15 +1801,15 @@ class TournamentManagement {
 
     document.body.appendChild(notification);
 
-    // Auto remove after 3 seconds
+    // Auto remove after 3 seconds with smooth animation
     setTimeout(() => {
-      notification.style.opacity = '0';
-      notification.style.transform = 'translateX(100%)';
+      notification.classList.remove('animate-fade-in');
+      notification.classList.add('animate-fade-out');
       setTimeout(() => {
         if (notification.parentNode) {
           notification.parentNode.removeChild(notification);
         }
-      }, 300);
+      }, 250);
     }, 3000);
   }
 
