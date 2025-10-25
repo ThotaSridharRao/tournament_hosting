@@ -407,6 +407,51 @@
       color: var(--primary-color);
     }
 
+    /* Email Notice Banner */
+    .email-notice-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      background: rgba(10, 250, 217, 0.08);
+      border: 1px solid rgba(10, 250, 217, 0.25);
+      border-radius: var(--radius-sm);
+      transition: all 0.3s var(--ease);
+    }
+
+    .email-notice-banner .notice-icon {
+      flex-shrink: 0;
+      margin-top: 0.125rem;
+    }
+
+    .email-notice-banner .notice-icon i {
+      font-size: 1.25rem;
+      color: var(--primary-color);
+    }
+
+    .email-notice-banner .notice-content h4 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .email-notice-banner .notice-content p {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 480px) {
+      .email-notice-banner {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+      }
+    }
+
     /* Loader */
     #loader-wrapper {
       position: fixed;
@@ -457,6 +502,17 @@
       <div class="auth-header">
         <h1 class="auth-title">Become a Host</h1>
         <p class="auth-subtitle">Register to host tournaments and manage events</p>
+      </div>
+
+      <!-- Email Notice for Existing Players -->
+      <div class="email-notice-banner">
+        <div class="notice-icon">
+          <i class="fas fa-info-circle"></i>
+        </div>
+        <div class="notice-content">
+          <h4>Already a Player?</h4>
+          <p>You can use the <strong>same email address</strong> that you used for your player account. Your host and player accounts will be linked but remain separate with different access levels.</p>
+        </div>
       </div>
 
       <div class="error-message" id="error-message"></div>

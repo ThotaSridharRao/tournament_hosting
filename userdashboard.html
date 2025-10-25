@@ -357,6 +357,62 @@
             overflow: hidden;
         }
 
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .header-text {
+            flex: 1;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-host-register {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-secondary));
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(10, 250, 217, 0.3);
+        }
+
+        .btn-host-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(10, 250, 217, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .btn-host-register i {
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.5rem;
+            }
+
+            .btn-host-register {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
         .dashboard-header::before {
             content: '';
             position: absolute;
@@ -958,8 +1014,18 @@
 
     <main id="main" class="container">
         <div class="dashboard-header">
-            <h1 id="welcome-message">Welcome Back!</h1>
-            <p id="user-role-info">Your Player Dashboard.</p>
+            <div class="header-content">
+                <div class="header-text">
+                    <h1 id="welcome-message">Welcome Back!</h1>
+                    <p id="user-role-info">Your Player Dashboard.</p>
+                </div>
+                <div class="header-actions">
+                    <button id="become-host-btn" class="btn-host-register">
+                        <i class="fas fa-crown"></i>
+                        <span>Become a Host</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
         <div class="dashboard-grid">
@@ -1442,7 +1508,20 @@
                     normalNav.classList.toggle('active');
                 });
             }
+
+            // Initialize host registration button
+            initHostRegistrationButton();
         });
+
+        // Host registration functionality
+        function initHostRegistrationButton() {
+            const becomeHostBtn = document.getElementById('become-host-btn');
+            if (becomeHostBtn) {
+                becomeHostBtn.addEventListener('click', function () {
+                    window.location.href = 'host-registration.html';
+                });
+            }
+        }
     </script>
 </body>
 
