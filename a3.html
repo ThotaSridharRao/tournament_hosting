@@ -4,7 +4,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="Step-by-step guide to becoming a tournament host on Uni Games - Learn how to organize gaming events" />
+  <meta name="description"
+    content="Step-by-step guide to becoming a tournament host on Uni Games - Learn how to organize gaming events" />
   <meta name="theme-color" content="#0D0A1A" />
   <title>How to Register as a Host | Uni Games</title>
   <link rel="icon" type="image/png" href="ug.png">
@@ -336,9 +337,40 @@
       padding: 0 2rem;
     }
 
-    .article-header {
-      margin-bottom: 3rem;
+    .article-hero {
+      height: 500px;
+      background: linear-gradient(135deg, rgba(13, 10, 26, 0.8), rgba(22, 19, 41, 0.9)),
+        url('https://placehold.co/1200x500/161329/F0F0F0?text=Host+Registration+Guide');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
+      margin-bottom: 3rem;
+      border-radius: var(--radius);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .article-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(10, 250, 217, 0.1), rgba(93, 63, 211, 0.1));
+      z-index: 1;
+    }
+
+    .article-hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      padding: 2rem;
     }
 
     .article-category {
@@ -352,10 +384,11 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 1.5rem;
+      box-shadow: 0 4px 15px rgba(10, 250, 217, 0.3);
     }
 
     .article-title {
-      font-size: clamp(2rem, 5vw, 3rem);
+      font-size: clamp(2.5rem, 6vw, 4rem);
       font-weight: 800;
       line-height: 1.2;
       margin-bottom: 1.5rem;
@@ -363,32 +396,30 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     .article-meta {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 2rem;
+      gap: 1.5rem;
       color: var(--text-secondary);
       font-size: 0.9rem;
-      margin-bottom: 2rem;
+      flex-wrap: wrap;
     }
 
     .article-meta span {
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .article-image {
-      width: 100%;
-      height: 400px;
-      object-fit: cover;
-      border-radius: var(--radius);
-      margin-bottom: 3rem;
-      border: 1px solid var(--border-color);
-    }
 
     .article-content {
       font-size: 1.1rem;
@@ -536,13 +567,18 @@
         padding: 0 1rem;
       }
 
+      .article-hero {
+        height: 400px;
+        background-attachment: scroll;
+      }
+
+      .article-hero-content {
+        padding: 1.5rem;
+      }
+
       .article-meta {
         flex-direction: column;
         gap: 1rem;
-      }
-
-      .article-image {
-        height: 250px;
       }
 
       .article-content {
@@ -568,31 +604,39 @@
       </a>
 
       <article>
-        <header class="article-header">
-          <div class="article-category">Host Guide</div>
-          <h1 class="article-title">How to Register as a Host on Uni Games</h1>
-          <div class="article-meta">
-            <span><i class="fas fa-calendar"></i> December 14, 2024</span>
-            <span><i class="fas fa-clock"></i> 10 min read</span>
-            <span><i class="fas fa-user"></i> Uni Games Team</span>
+        <div class="article-hero">
+          <div class="article-hero-content">
+            <div class="article-category">Host Guide</div>
+            <h1 class="article-title">How to Register as a Host on Uni Games</h1>
+            <div class="article-meta">
+              <span><i class="fas fa-calendar"></i> December 14, 2024</span>
+              <span><i class="fas fa-clock"></i> 10 min read</span>
+              <span><i class="fas fa-user"></i> Uni Games Team</span>
+            </div>
           </div>
-        </header>
-
-        <img src="https://placehold.co/800x400/161329/F0F0F0?text=Host+Registration+Guide" alt="Host Registration Guide" class="article-image">
+        </div>
 
         <div class="article-content">
-          <p>Ready to take your passion for gaming to the next level? Becoming a tournament host on Uni Games allows you to organize exciting competitive events, build communities, and earn substantial revenue. This comprehensive guide will walk you through every step of the host registration process, payment systems, and the powerful features available to hosts.</p>
+          <p>Ready to take your passion for gaming to the next level? Becoming a tournament host on Uni Games allows you
+            to organize exciting competitive events, build communities, and earn substantial revenue. This comprehensive
+            guide will walk you through every step of the host registration process, payment systems, and the powerful
+            features available to hosts.</p>
 
           <h2>Why Become a Host on Uni Games?</h2>
 
           <p>Hosting tournaments on Uni Games offers exceptional opportunities:</p>
           <ul>
-            <li><strong>Earn Substantial Revenue:</strong> Keep 90% of tournament entry fees with transparent payout system</li>
-            <li><strong>Professional Tools:</strong> Access advanced tournament management, bracket generation, and analytics</li>
-            <li><strong>Build Community:</strong> Create lasting connections with gamers and establish your esports brand</li>
-            <li><strong>Flexible Operations:</strong> Host events on your schedule with full control over formats and rules</li>
+            <li><strong>Earn Substantial Revenue:</strong> Keep 90% of tournament entry fees with transparent payout
+              system</li>
+            <li><strong>Professional Tools:</strong> Access advanced tournament management, bracket generation, and
+              analytics</li>
+            <li><strong>Build Community:</strong> Create lasting connections with gamers and establish your esports
+              brand</li>
+            <li><strong>Flexible Operations:</strong> Host events on your schedule with full control over formats and
+              rules</li>
             <li><strong>Multi-Game Support:</strong> Organize tournaments for BGMI, Valorant, CS2, FIFA, and more</li>
-            <li><strong>Automated Systems:</strong> Streamlined participant management, payment processing, and dispute resolution</li>
+            <li><strong>Automated Systems:</strong> Streamlined participant management, payment processing, and dispute
+              resolution</li>
           </ul>
 
           <h2>Host Registration Requirements</h2>
@@ -602,7 +646,8 @@
             <li><strong>Identity Verification:</strong> Valid Aadhaar card (12-digit number + document upload)</li>
             <li><strong>Contact Information:</strong> Phone number, email, and organization/company name</li>
             <li><strong>Banking Details:</strong> Account information for automated payouts (added after approval)</li>
-            <li><strong>Technical Requirements:</strong> Reliable internet connection and device for tournament management</li>
+            <li><strong>Technical Requirements:</strong> Reliable internet connection and device for tournament
+              management</li>
             <li><strong>Agreement Compliance:</strong> Accept terms of service and verification requirements</li>
           </ul>
 
@@ -611,9 +656,11 @@
           <div class="strategy-card">
             <div class="strategy-number">1</div>
             <h3>Access Host Registration</h3>
-            <p>Navigate to the host registration page directly or click "Become a Host" from your user dashboard. The registration form is separate from regular player accounts and requires additional verification.</p>
+            <p>Navigate to the host registration page directly or click "Become a Host" from your user dashboard. The
+              registration form is separate from regular player accounts and requires additional verification.</p>
             <!-- Space for screenshot image -->
-            <div class="image-placeholder" style="height: 200px; background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); margin: 1rem 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); border-radius: 8px;">
+            <div class="image-placeholder"
+              style="height: 200px; background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); margin: 1rem 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); border-radius: 8px;">
               [Screenshot: Host Registration Page Access]
             </div>
           </div>
@@ -621,9 +668,12 @@
           <div class="strategy-card">
             <div class="strategy-number">2</div>
             <h3>Complete Personal Information</h3>
-            <p>Fill out the comprehensive registration form with your username, email, secure password, organization/company name, and contact phone number. All fields are mandatory for verification purposes.</p>
+            <p>Fill out the comprehensive registration form with your username, email, secure password,
+              organization/company name, and contact phone number. All fields are mandatory for verification purposes.
+            </p>
             <!-- Space for screenshot image -->
-            <div class="image-placeholder" style="height: 200px; background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); margin: 1rem 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); border-radius: 8px;">
+            <div class="image-placeholder"
+              style="height: 200px; background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); margin: 1rem 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); border-radius: 8px;">
               [Screenshot: Personal Information Form Fields]
             </div>
           </div>
@@ -631,9 +681,11 @@
           <div class="strategy-card">
             <div class="strategy-number">3</div>
             <h3>Aadhaar Verification Process</h3>
-            <p>Enter your 12-digit Aadhaar number and upload a clear photo or scan of your Aadhaar card (PDF, JPG, JPEG, or PNG format, max 5MB). This is mandatory for Indian legal compliance and ensures platform security.</p>
+            <p>Enter your 12-digit Aadhaar number and upload a clear photo or scan of your Aadhaar card (PDF, JPG, JPEG,
+              or PNG format, max 5MB). This is mandatory for Indian legal compliance and ensures platform security.</p>
             <!-- Space for screenshot image -->
-            <div class="image-placeholder" style="height: 200px; background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); margin: 1rem 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); border-radius: 8px;">
+            <div class="image-placeholder"
+              style="height: 200px; background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); margin: 1rem 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); border-radius: 8px;">
               [Screenshot: Aadhaar Verification Section]
             </div>
           </div>
@@ -641,9 +693,11 @@
           <div class="strategy-card">
             <div class="strategy-number">4</div>
             <h3>Accept Terms and Submit</h3>
-            <p>Review and accept the terms of service and verification agreement. These cover platform rules, payout policies, and host responsibilities. Submit your application for review by our verification team.</p>
+            <p>Review and accept the terms of service and verification agreement. These cover platform rules, payout
+              policies, and host responsibilities. Submit your application for review by our verification team.</p>
             <!-- Space for screenshot image -->
-            <div class="image-placeholder" style="height: 200px; background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); margin: 1rem 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); border-radius: 8px;">
+            <div class="image-placeholder"
+              style="height: 200px; background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); margin: 1rem 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); border-radius: 8px;">
               [Screenshot: Terms Agreement and Submit Button]
             </div>
           </div>
@@ -654,9 +708,12 @@
 
           <h3>🏆 Tournament Management</h3>
           <ul>
-            <li><strong>Tournament Creation:</strong> Set up tournaments with custom rules, entry fees (₹0-₹10,000), and prize pools (up to ₹1,00,000)</li>
-            <li><strong>Bracket Generation:</strong> Automated single/double elimination brackets with real-time updates</li>
-            <li><strong>Participant Management:</strong> Track registrations, handle disputes, and manage team communications</li>
+            <li><strong>Tournament Creation:</strong> Set up tournaments with custom rules, entry fees (₹0-₹10,000), and
+              prize pools (up to ₹1,00,000)</li>
+            <li><strong>Bracket Generation:</strong> Automated single/double elimination brackets with real-time updates
+            </li>
+            <li><strong>Participant Management:</strong> Track registrations, handle disputes, and manage team
+              communications</li>
             <li><strong>Live Monitoring:</strong> Real-time match tracking and result management</li>
           </ul>
 
@@ -671,7 +728,8 @@
 
           <h3>📊 Analytics & Insights</h3>
           <ul>
-            <li><strong>Performance Metrics:</strong> Tournament success rates, participant retention, and revenue trends</li>
+            <li><strong>Performance Metrics:</strong> Tournament success rates, participant retention, and revenue
+              trends</li>
             <li><strong>Participant Analytics:</strong> Player demographics, engagement patterns, and feedback</li>
             <li><strong>Financial Reports:</strong> Detailed earning reports with downloadable statements</li>
             <li><strong>Growth Tracking:</strong> Monitor your hosting business growth over time</li>
@@ -684,9 +742,11 @@
           <div class="strategy-card">
             <div class="strategy-number">5</div>
             <h3>Tournament Setup</h3>
-            <p>Use the "Create Tournament" button to access the tournament creation form. Configure basic details like title, game selection, format (single/double elimination), team size, and maximum participants.</p>
+            <p>Use the "Create Tournament" button to access the tournament creation form. Configure basic details like
+              title, game selection, format (single/double elimination), team size, and maximum participants.</p>
             <!-- Space for screenshot image -->
-            <div class="image-placeholder" style="height: 200px; background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); margin: 1rem 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); border-radius: 8px;">
+            <div class="image-placeholder"
+              style="height: 200px; background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); margin: 1rem 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); border-radius: 8px;">
               [Screenshot: Tournament Creation Form]
             </div>
           </div>
@@ -694,9 +754,11 @@
           <div class="strategy-card">
             <div class="strategy-number">6</div>
             <h3>Financial Configuration</h3>
-            <p>Set entry fees (₹0 for free tournaments up to ₹10,000) and prize pools (up to ₹1,00,000). The system automatically calculates your earnings (90% of entry fees) and displays expected revenue.</p>
+            <p>Set entry fees (₹0 for free tournaments up to ₹10,000) and prize pools (up to ₹1,00,000). The system
+              automatically calculates your earnings (90% of entry fees) and displays expected revenue.</p>
             <!-- Space for screenshot image -->
-            <div class="image-placeholder" style="height: 200px; background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); margin: 1rem 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); border-radius: 8px;">
+            <div class="image-placeholder"
+              style="height: 200px; background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); margin: 1rem 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); border-radius: 8px;">
               [Screenshot: Entry Fee and Prize Pool Settings]
             </div>
           </div>
@@ -704,7 +766,8 @@
           <h2>Fee Structure & Earnings</h2>
 
           <blockquote>
-            "Uni Games offers one of the most competitive revenue sharing models in the industry, allowing hosts to keep 90% of entry fees while providing comprehensive tournament management tools." - Platform Policy
+            "Uni Games offers one of the most competitive revenue sharing models in the industry, allowing hosts to keep
+            90% of entry fees while providing comprehensive tournament management tools." - Platform Policy
           </blockquote>
 
           <h3>Revenue Breakdown:</h3>
@@ -737,30 +800,40 @@
 
           <h2>Getting Started Today</h2>
 
-          <p>Ready to become a tournament host? The registration process takes just 5-10 minutes, with approval typically completed within 24-48 hours. Once approved, you can immediately start creating tournaments and building your esports community.</p>
+          <p>Ready to become a tournament host? The registration process takes just 5-10 minutes, with approval
+            typically completed within 24-48 hours. Once approved, you can immediately start creating tournaments and
+            building your esports community.</p>
 
-          <p><strong>Start your hosting journey today and turn your passion for gaming into a profitable venture with Uni Games' industry-leading platform and support system.</strong></p>
+          <p><strong>Start your hosting journey today and turn your passion for gaming into a profitable venture with
+              Uni Games' industry-leading platform and support system.</strong></p>
 
           <blockquote>
-            "The best players aren't just mechanically gifted – they're students of the game who constantly analyze and adapt their strategies." - Former World Champion
+            "The best players aren't just mechanically gifted – they're students of the game who constantly analyze and
+            adapt their strategies." - Former World Champion
           </blockquote>
 
           <div class="strategy-card">
             <div class="strategy-number">4</div>
             <h3>Mental Resilience</h3>
-            <p>Competitive gaming is as much a mental battle as it is a test of skill. Develop techniques to manage tilt, maintain focus during long sessions, and bounce back from losses. Consider meditation, breathing exercises, or working with a sports psychologist.</p>
+            <p>Competitive gaming is as much a mental battle as it is a test of skill. Develop techniques to manage
+              tilt, maintain focus during long sessions, and bounce back from losses. Consider meditation, breathing
+              exercises, or working with a sports psychologist.</p>
           </div>
 
           <div class="strategy-card">
             <div class="strategy-number">5</div>
             <h3>Analyze Your Gameplay</h3>
-            <p>Record and review your matches regularly. Look for patterns in your mistakes, identify areas for improvement, and track your progress over time. Many professional players spend as much time analyzing replays as they do actually playing.</p>
+            <p>Record and review your matches regularly. Look for patterns in your mistakes, identify areas for
+              improvement, and track your progress over time. Many professional players spend as much time analyzing
+              replays as they do actually playing.</p>
           </div>
 
           <div class="strategy-card">
             <div class="strategy-number">6</div>
             <h3>Optimize Your Practice</h3>
-            <p>Quality over quantity. Focused practice sessions with specific goals are more valuable than mindless grinding. Use aim trainers, practice specific scenarios, and work on your weaknesses rather than just playing what feels comfortable.</p>
+            <p>Quality over quantity. Focused practice sessions with specific goals are more valuable than mindless
+              grinding. Use aim trainers, practice specific scenarios, and work on your weaknesses rather than just
+              playing what feels comfortable.</p>
           </div>
 
           <h2>Advanced Competitive Strategies</h2>
@@ -768,46 +841,62 @@
           <div class="strategy-card">
             <div class="strategy-number">7</div>
             <h3>Adapt to the Meta</h3>
-            <p>The competitive landscape is constantly evolving. Stay informed about patch notes, meta shifts, and new strategies. Be willing to adapt your playstyle and learn new characters, weapons, or tactics as the game evolves.</p>
+            <p>The competitive landscape is constantly evolving. Stay informed about patch notes, meta shifts, and new
+              strategies. Be willing to adapt your playstyle and learn new characters, weapons, or tactics as the game
+              evolves.</p>
           </div>
 
           <div class="strategy-card">
             <div class="strategy-number">8</div>
             <h3>Physical and Mental Health</h3>
-            <p>Peak performance requires peak condition. Maintain good posture, take regular breaks, exercise regularly, and get adequate sleep. A healthy body supports a sharp mind, which is crucial for competitive success.</p>
+            <p>Peak performance requires peak condition. Maintain good posture, take regular breaks, exercise regularly,
+              and get adequate sleep. A healthy body supports a sharp mind, which is crucial for competitive success.
+            </p>
           </div>
 
           <div class="strategy-card">
             <div class="strategy-number">9</div>
             <h3>Learn from the Best</h3>
-            <p>Study professional players who excel in your role or playstyle. Watch their streams, analyze their decision-making, and try to understand their thought processes. Many pros are willing to share knowledge through educational content.</p>
+            <p>Study professional players who excel in your role or playstyle. Watch their streams, analyze their
+              decision-making, and try to understand their thought processes. Many pros are willing to share knowledge
+              through educational content.</p>
           </div>
 
           <div class="strategy-card">
             <div class="strategy-number">10</div>
             <h3>Consistent Improvement</h3>
-            <p>Set specific, measurable goals for your improvement. Whether it's achieving a certain rank, improving your accuracy percentage, or mastering a new technique, having clear objectives keeps you motivated and focused on growth.</p>
+            <p>Set specific, measurable goals for your improvement. Whether it's achieving a certain rank, improving
+              your accuracy percentage, or mastering a new technique, having clear objectives keeps you motivated and
+              focused on growth.</p>
           </div>
 
           <h2>Putting It All Together</h2>
 
-          <p>Success in competitive gaming doesn't happen overnight. It requires dedication, patience, and a willingness to learn from both victories and defeats. Here are some final tips to accelerate your improvement:</p>
+          <p>Success in competitive gaming doesn't happen overnight. It requires dedication, patience, and a willingness
+            to learn from both victories and defeats. Here are some final tips to accelerate your improvement:</p>
 
           <ul>
             <li><strong>Create a practice schedule:</strong> Consistency is more important than marathon sessions</li>
-            <li><strong>Find practice partners:</strong> Training with others can expose weaknesses and provide motivation</li>
-            <li><strong>Stay positive:</strong> A good attitude helps you learn faster and perform better under pressure</li>
+            <li><strong>Find practice partners:</strong> Training with others can expose weaknesses and provide
+              motivation</li>
+            <li><strong>Stay positive:</strong> A good attitude helps you learn faster and perform better under pressure
+            </li>
             <li><strong>Take breaks:</strong> Burnout is real and can set back your progress significantly</li>
             <li><strong>Celebrate small wins:</strong> Acknowledge improvements, no matter how minor they seem</li>
           </ul>
 
           <h2>The Road Ahead</h2>
 
-          <p>Remember that every professional player started as a beginner. The difference between good players and great players isn't just talent – it's the willingness to put in the work, learn from mistakes, and never stop improving.</p>
+          <p>Remember that every professional player started as a beginner. The difference between good players and
+            great players isn't just talent – it's the willingness to put in the work, learn from mistakes, and never
+            stop improving.</p>
 
-          <p>Competitive gaming is a journey, not a destination. Embrace the process, enjoy the challenge, and remember that every match is an opportunity to learn something new. With dedication and the right strategies, you can achieve your competitive gaming goals.</p>
+          <p>Competitive gaming is a journey, not a destination. Embrace the process, enjoy the challenge, and remember
+            that every match is an opportunity to learn something new. With dedication and the right strategies, you can
+            achieve your competitive gaming goals.</p>
 
-          <p>Now get out there and start climbing those ranks. Your future self will thank you for the effort you put in today!</p>
+          <p>Now get out there and start climbing those ranks. Your future self will thank you for the effort you put in
+            today!</p>
         </div>
       </article>
     </div>
@@ -942,7 +1031,7 @@
       }
 
       initSmartNavbar();
-      
+
       setTimeout(() => {
         checkUserAuthentication();
       }, 100);
