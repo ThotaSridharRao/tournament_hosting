@@ -550,6 +550,102 @@
         font-size: 1rem;
       }
     }
+
+    /* =========================
+       Footer
+       ========================= */
+    footer.site-footer {
+      background: #070707;
+      padding: 5rem 2rem 2rem;
+      text-align: center;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .footer-grid {
+      max-width: 1200px;
+      margin: 0 auto 3rem auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2.5rem;
+      text-align: left;
+    }
+
+    .footer-column h4 {
+      color: var(--text-primary);
+      margin-bottom: 1.5rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .footer-column ul a,
+    .footer-column p {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      display: block;
+      margin-bottom: 0.75rem;
+      font-size: 1rem;
+    }
+
+    .footer-column ul a:hover {
+      color: var(--primary-color);
+    }
+
+    .footer-brand .brand {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .footer-brand p {
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .social-links a {
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      color: var(--primary-color);
+      transform: translateY(-3px);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border-color);
+      padding-top: 2rem;
+      opacity: 0.7;
+      font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: left;
+        gap: 2rem;
+      }
+
+      .footer-column:not(.footer-brand) {
+        display: none;
+      }
+
+      .social-links {
+        justify-content: flex-start;
+      }
+
+      .footer-brand .brand {
+        justify-content: flex-start;
+      }
+    }
   </style>
 </head>
 
@@ -667,205 +763,63 @@
             </div>
           </div>
 
-          <h2>Host Dashboard Features</h2>
+          <p>The host registration process is straightforward and designed to get you started quickly. Once your
+            application is submitted, our team will review it within 24-48 hours. Upon approval, you'll receive access
+            to the host dashboard where you can immediately begin creating and managing tournaments.</p>
 
-          <p>Once approved, hosts gain access to a comprehensive dashboard with powerful tools:</p>
-
-          <h3>🏆 Tournament Management</h3>
-          <ul>
-            <li><strong>Tournament Creation:</strong> Set up tournaments with custom rules, entry fees (₹0-₹10,000), and
-              prize pools (up to ₹1,00,000)</li>
-            <li><strong>Bracket Generation:</strong> Automated single/double elimination brackets with real-time updates
-            </li>
-            <li><strong>Participant Management:</strong> Track registrations, handle disputes, and manage team
-              communications</li>
-            <li><strong>Live Monitoring:</strong> Real-time match tracking and result management</li>
-          </ul>
-
-          <h3>💰 Payment & Earnings System</h3>
-          <ul>
-            <li><strong>Revenue Share:</strong> Keep 90% of all entry fees collected from participants</li>
-            <li><strong>Automated Payouts:</strong> Instant tournament payouts to your wallet after completion</li>
-            <li><strong>Withdrawal System:</strong> Request withdrawals with minimum ₹100 threshold</li>
-            <li><strong>Transaction History:</strong> Complete records of earnings, withdrawals, and fees</li>
-            <li><strong>Real-time Balance:</strong> Track available balance, pending amounts, and total earnings</li>
-          </ul>
-
-          <h3>📊 Analytics & Insights</h3>
-          <ul>
-            <li><strong>Performance Metrics:</strong> Tournament success rates, participant retention, and revenue
-              trends</li>
-            <li><strong>Participant Analytics:</strong> Player demographics, engagement patterns, and feedback</li>
-            <li><strong>Financial Reports:</strong> Detailed earning reports with downloadable statements</li>
-            <li><strong>Growth Tracking:</strong> Monitor your hosting business growth over time</li>
-          </ul>
-
-          <h2>Tournament Creation Process</h2>
-
-          <p>Creating tournaments is streamlined through the host dashboard:</p>
-
-          <div class="strategy-card">
-            <div class="strategy-number">5</div>
-            <h3>Tournament Setup</h3>
-            <p>Use the "Create Tournament" button to access the tournament creation form. Configure basic details like
-              title, game selection, format (single/double elimination), team size, and maximum participants.</p>
-            <!-- Space for screenshot image -->
-            <div class="image-placeholder"
-              style="height: 200px; background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); margin: 1rem 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); border-radius: 8px;">
-              [Screenshot: Tournament Creation Form]
-            </div>
-          </div>
-
-          <div class="strategy-card">
-            <div class="strategy-number">6</div>
-            <h3>Financial Configuration</h3>
-            <p>Set entry fees (₹0 for free tournaments up to ₹10,000) and prize pools (up to ₹1,00,000). The system
-              automatically calculates your earnings (90% of entry fees) and displays expected revenue.</p>
-            <!-- Space for screenshot image -->
-            <div class="image-placeholder"
-              style="height: 200px; background: rgba(255,255,255,0.1); border: 2px dashed rgba(255,255,255,0.3); margin: 1rem 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); border-radius: 8px;">
-              [Screenshot: Entry Fee and Prize Pool Settings]
-            </div>
-          </div>
-
-          <h2>Fee Structure & Earnings</h2>
-
-          <blockquote>
-            "Uni Games offers one of the most competitive revenue sharing models in the industry, allowing hosts to keep
-            90% of entry fees while providing comprehensive tournament management tools." - Platform Policy
-          </blockquote>
-
-          <h3>Revenue Breakdown:</h3>
-          <ul>
-            <li><strong>Host Share:</strong> 90% of all entry fees collected</li>
-            <li><strong>Platform Fee:</strong> 10% covers payment processing, platform maintenance, and support</li>
-            <li><strong>No Hidden Charges:</strong> Transparent fee structure with no additional deductions</li>
-            <li><strong>Instant Payouts:</strong> Earnings credited immediately after tournament completion</li>
-          </ul>
-
-          <h3>Withdrawal Terms:</h3>
-          <ul>
-            <li><strong>Minimum Withdrawal:</strong> ₹100 per request</li>
-            <li><strong>Maximum Withdrawal:</strong> ₹1,00,000 per request</li>
-            <li><strong>Processing Time:</strong> 1-3 business days for bank transfers</li>
-            <li><strong>No Withdrawal Fees:</strong> Free withdrawals to registered bank accounts</li>
-            <li><strong>Multiple Methods:</strong> Bank transfer, UPI, and digital wallet options</li>
-          </ul>
-
-          <h2>Support & Resources</h2>
-
-          <p>Uni Games provides comprehensive support for hosts:</p>
-          <ul>
-            <li><strong>24/7 Technical Support:</strong> Dedicated host support team for technical issues</li>
-            <li><strong>Dispute Resolution:</strong> Automated and manual dispute handling systems</li>
-            <li><strong>Marketing Support:</strong> Tournament promotion through platform channels</li>
-            <li><strong>Best Practices Guide:</strong> Resources for successful tournament organization</li>
-            <li><strong>Community Forums:</strong> Connect with other hosts and share experiences</li>
-          </ul>
-
-          <h2>Getting Started Today</h2>
-
-          <p>Ready to become a tournament host? The registration process takes just 5-10 minutes, with approval
-            typically completed within 24-48 hours. Once approved, you can immediately start creating tournaments and
-            building your esports community.</p>
-
-          <p><strong>Start your hosting journey today and turn your passion for gaming into a profitable venture with
-              Uni Games' industry-leading platform and support system.</strong></p>
-
-          <blockquote>
-            "The best players aren't just mechanically gifted – they're students of the game who constantly analyze and
-            adapt their strategies." - Former World Champion
-          </blockquote>
-
-          <div class="strategy-card">
-            <div class="strategy-number">4</div>
-            <h3>Mental Resilience</h3>
-            <p>Competitive gaming is as much a mental battle as it is a test of skill. Develop techniques to manage
-              tilt, maintain focus during long sessions, and bounce back from losses. Consider meditation, breathing
-              exercises, or working with a sports psychologist.</p>
-          </div>
-
-          <div class="strategy-card">
-            <div class="strategy-number">5</div>
-            <h3>Analyze Your Gameplay</h3>
-            <p>Record and review your matches regularly. Look for patterns in your mistakes, identify areas for
-              improvement, and track your progress over time. Many professional players spend as much time analyzing
-              replays as they do actually playing.</p>
-          </div>
-
-          <div class="strategy-card">
-            <div class="strategy-number">6</div>
-            <h3>Optimize Your Practice</h3>
-            <p>Quality over quantity. Focused practice sessions with specific goals are more valuable than mindless
-              grinding. Use aim trainers, practice specific scenarios, and work on your weaknesses rather than just
-              playing what feels comfortable.</p>
-          </div>
-
-          <h2>Advanced Competitive Strategies</h2>
-
-          <div class="strategy-card">
-            <div class="strategy-number">7</div>
-            <h3>Adapt to the Meta</h3>
-            <p>The competitive landscape is constantly evolving. Stay informed about patch notes, meta shifts, and new
-              strategies. Be willing to adapt your playstyle and learn new characters, weapons, or tactics as the game
-              evolves.</p>
-          </div>
-
-          <div class="strategy-card">
-            <div class="strategy-number">8</div>
-            <h3>Physical and Mental Health</h3>
-            <p>Peak performance requires peak condition. Maintain good posture, take regular breaks, exercise regularly,
-              and get adequate sleep. A healthy body supports a sharp mind, which is crucial for competitive success.
-            </p>
-          </div>
-
-          <div class="strategy-card">
-            <div class="strategy-number">9</div>
-            <h3>Learn from the Best</h3>
-            <p>Study professional players who excel in your role or playstyle. Watch their streams, analyze their
-              decision-making, and try to understand their thought processes. Many pros are willing to share knowledge
-              through educational content.</p>
-          </div>
-
-          <div class="strategy-card">
-            <div class="strategy-number">10</div>
-            <h3>Consistent Improvement</h3>
-            <p>Set specific, measurable goals for your improvement. Whether it's achieving a certain rank, improving
-              your accuracy percentage, or mastering a new technique, having clear objectives keeps you motivated and
-              focused on growth.</p>
-          </div>
-
-          <h2>Putting It All Together</h2>
-
-          <p>Success in competitive gaming doesn't happen overnight. It requires dedication, patience, and a willingness
-            to learn from both victories and defeats. Here are some final tips to accelerate your improvement:</p>
-
-          <ul>
-            <li><strong>Create a practice schedule:</strong> Consistency is more important than marathon sessions</li>
-            <li><strong>Find practice partners:</strong> Training with others can expose weaknesses and provide
-              motivation</li>
-            <li><strong>Stay positive:</strong> A good attitude helps you learn faster and perform better under pressure
-            </li>
-            <li><strong>Take breaks:</strong> Burnout is real and can set back your progress significantly</li>
-            <li><strong>Celebrate small wins:</strong> Acknowledge improvements, no matter how minor they seem</li>
-          </ul>
-
-          <h2>The Road Ahead</h2>
-
-          <p>Remember that every professional player started as a beginner. The difference between good players and
-            great players isn't just talent – it's the willingness to put in the work, learn from mistakes, and never
-            stop improving.</p>
-
-          <p>Competitive gaming is a journey, not a destination. Embrace the process, enjoy the challenge, and remember
-            that every match is an opportunity to learn something new. With dedication and the right strategies, you can
-            achieve your competitive gaming goals.</p>
-
-          <p>Now get out there and start climbing those ranks. Your future self will thank you for the effort you put in
-            today!</p>
+          <p><strong>Ready to start hosting tournaments and building your gaming community? Complete the registration
+              process today and join the growing network of successful tournament hosts on Uni Games.</strong></p>
         </div>
       </article>
     </div>
   </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-column footer-brand">
+          <a href="index.html" class="brand" style="display: flex; align-items: center; gap: 0.5rem;">
+            <img src="ug.png" alt="Uni Games" style="height: 80px; width: auto;">
+            Uni Games
+          </a>
+          <p>The ultimate destination for competitive gaming.</p>
+          <div class="social-links">
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h4>Tournaments</h4>
+          <ul>
+            <li><a href="tournaments.html">Browse All</a></li>
+            <li><a href="tournaments.html?filter=live">Live Matches</a></li>
+            <li><a href="tournaments.html?filter=upcoming">Upcoming</a></li>
+            <li><a href="tournaments.html?filter=completed">Past Results</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Community</h4>
+          <ul>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">Forums</a></li>
+            <li><a href="#">Support</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Uni Games. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
 
   <script>
     // Session management functions
