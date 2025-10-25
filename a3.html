@@ -462,21 +462,32 @@
       margin-bottom: 1rem;
     }
 
-    /* Back button */
+    /* Back button - Glassmorphism */
     .back-button {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
       color: var(--primary-color);
       text-decoration: none;
-      font-weight: 600;
+      font-size: 1.2rem;
       margin-bottom: 2rem;
       transition: all 0.3s ease;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
     .back-button:hover {
-      transform: translateX(-5px);
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(10, 250, 217, 0.4);
       color: white;
+      box-shadow: 0 12px 40px rgba(10, 250, 217, 0.2);
     }
 
     /* Loading Animation */
@@ -548,47 +559,12 @@
       style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
   </div>
 
-  <nav class="nav-normal">
-    <div class="nav-container">
-      <a href="index.html" class="logo">
-        <img src="ug.png" alt="Uni Games">
-      </a>
-      <div class="nav-center" id="normalNav">
-        <ul class="nav-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="tournaments.html">Tournaments</a></li>
-          <li><a href="index.html#features">Features</a></li>
-          <li><a href="dispute-support.html">Support</a></li>
-          <li><a href="index.html#faq">FAQ</a></li>
-        </ul>
-        <div class="auth-buttons" id="normalAuth">
-          <div id="guest-menu">
-            <a href="auth.html" class="btn btn-request">Join Us</a>
-          </div>
-          <div id="user-menu" style="display: none;">
-            <div class="user-info" onclick="window.location.href='userdashboard.html'" style="cursor: pointer;">
-              <div class="user-avatar" id="user-avatar">U</div>
-              <span class="user-name" id="navbar-username">User</span>
-            </div>
-            <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
-          </div>
-        </div>
-      </div>
-      <button class="menu-toggle" id="normalMenuToggle">
-        <div class="menu-icon">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </button>
-    </div>
-  </nav>
+
 
   <main class="article-main">
     <div class="article-container">
       <a href="index.html" class="back-button">
         <i class="fas fa-arrow-left"></i>
-        Back to Home
       </a>
 
       <article>
