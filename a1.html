@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="The Rise of Esports: How Gaming Became a Global Phenomenon - Uni Games" />
+  <meta name="theme-color" content="#0D0A1A" />
+  <title>The Rise of Esports | Uni Games</title>
+  <link rel="icon" type="image/png" href="ug.png">
+  <!-- Fonts & icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity=""
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
+
+  <style>
+    /* =========================
+       Theme variables (Cyberpunk)
+       ========================= */
+    :root {
+      --primary-color: #0AFAD9;
+      --bg-dark: #0D0A1A;
+      --accent-secondary: #5D3FD3;
+      --panel: #161329;
+      --text-primary: #F0F0F0;
+      --text-secondary: rgba(240, 240, 240, 0.7);
+      --border-color: rgba(10, 250, 217, 0.2);
+      --ease: 0.3s ease;
+      --radius: 12px;
+      --container: 1400px;
+    }
+
+    /* Base resets & accessibility */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* =========================
+       NAVBAR STYLES (From index.html)
+       ========================= */
+    .nav-normal {
+      background: rgba(13, 10, 26, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 0.5rem 2rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+      transform: translateY(0);
+    }
+
+    .nav-normal.nav-hidden {
+      transform: translateY(-100%);
+    }
+
+    .nav-normal.nav-scrolled {
+      background: rgba(13, 10, 26, 0.3);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 80px;
+      width: auto;
+      margin: 0;
+      padding: 0;
+      display: block;
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0;
+      list-style: none;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links li {
+      position: relative;
+    }
+
+    .nav-links a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      padding: 0.6rem 1.2rem;
+      display: block;
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 0.65rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .btn-request {
+      background: white;
+      color: #0a0a0a;
+    }
+
+    .btn-request:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .user-info:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(10, 250, 217, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-secondary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .user-name {
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .menu-icon {
+      width: 24px;
+      height: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .menu-icon span {
+      width: 100%;
+      height: 2px;
+      background: white;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .menu-toggle.active .menu-icon span:nth-child(1) {
+      transform: rotate(45deg) translate(7px, 7px);
+    }
+
+    .menu-toggle.active .menu-icon span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.active .menu-icon span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
+    }
+
+    /* Mobile Styles */
+    @media (max-width: 968px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      .nav-center {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        height: 100vh;
+        width: 85%;
+        max-width: 350px;
+        flex-direction: column;
+        background: rgba(15, 15, 15, 0.98);
+        backdrop-filter: blur(20px);
+        padding: 6rem 2rem 2rem;
+        gap: 0;
+        transition: right 0.3s ease;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        align-items: flex-start;
+        overflow-y: auto;
+      }
+
+      .nav-center.active {
+        right: 0;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+      }
+
+      .nav-links li {
+        width: 100%;
+      }
+
+      .nav-links a {
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .auth-buttons {
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .user-info {
+        width: 100%;
+        justify-content: center;
+      }
+
+      #user-menu {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+      }
+    }
+
+    /* =========================
+       ARTICLE STYLES
+       ========================= */
+    .article-main {
+      padding-top: 120px;
+      padding-bottom: 4rem;
+      min-height: 100vh;
+    }
+
+    .article-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .article-header {
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+
+    .article-category {
+      display: inline-block;
+      background: var(--primary-color);
+      color: var(--bg-dark);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.5rem;
+    }
+
+    .article-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--text-primary), var(--primary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .article-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .article-image {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      margin-bottom: 3rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .article-content {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--text-primary);
+    }
+
+    .article-content h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 2.5rem 0 1.5rem 0;
+      color: var(--primary-color);
+    }
+
+    .article-content h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin: 2rem 0 1rem 0;
+      color: var(--text-primary);
+    }
+
+    .article-content p {
+      margin-bottom: 1.5rem;
+    }
+
+    .article-content blockquote {
+      background: var(--panel);
+      border-left: 4px solid var(--primary-color);
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-radius: var(--radius);
+      font-style: italic;
+      color: var(--text-secondary);
+    }
+
+    .article-content ul,
+    .article-content ol {
+      margin: 1.5rem 0;
+      padding-left: 2rem;
+    }
+
+    .article-content li {
+      margin-bottom: 0.5rem;
+    }
+
+    /* Back button */
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      transform: translateX(-5px);
+      color: white;
+    }
+
+    /* Loading Animation */
+    #loader-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-dark);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    #loader-wrapper.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+      background-color: var(--bg-dark);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--panel);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: var(--accent-secondary);
+    }
+
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--panel) var(--bg-dark);
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .article-container {
+        padding: 0 1rem;
+      }
+
+      .article-meta {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .article-image {
+        height: 250px;
+      }
+
+      .article-content {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="loader-wrapper">
+    <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie"
+      style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+  </div>
+
+  <nav class="nav-normal">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <img src="ug.png" alt="Uni Games">
+      </a>
+      <div class="nav-center" id="normalNav">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="tournaments.html">Tournaments</a></li>
+          <li><a href="index.html#features">Features</a></li>
+          <li><a href="dispute-support.html">Support</a></li>
+          <li><a href="index.html#faq">FAQ</a></li>
+        </ul>
+        <div class="auth-buttons" id="normalAuth">
+          <div id="guest-menu">
+            <a href="auth.html" class="btn btn-request">Join Us</a>
+          </div>
+          <div id="user-menu" style="display: none;">
+            <div class="user-info" onclick="window.location.href='userdashboard.html'" style="cursor: pointer;">
+              <div class="user-avatar" id="user-avatar">U</div>
+              <span class="user-name" id="navbar-username">User</span>
+            </div>
+            <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
+          </div>
+        </div>
+      </div>
+      <button class="menu-toggle" id="normalMenuToggle">
+        <div class="menu-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </button>
+    </div>
+  </nav>
+
+  <main class="article-main">
+    <div class="article-container">
+      <a href="index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+      </a>
+
+      <article>
+        <header class="article-header">
+          <div class="article-category">Esports</div>
+          <h1 class="article-title">The Rise of Esports: How Gaming Became a Global Phenomenon</h1>
+          <div class="article-meta">
+            <span><i class="fas fa-calendar"></i> December 15, 2024</span>
+            <span><i class="fas fa-clock"></i> 8 min read</span>
+            <span><i class="fas fa-user"></i> Uni Games Team</span>
+          </div>
+        </header>
+
+        <img src="/assets/esports-arena.jpg" alt="Esports Arena" class="article-image">
+
+        <div class="article-content">
+          <p>The world of competitive gaming has transformed from basement tournaments to sold-out stadiums, billion-dollar prize pools, and global audiences that rival traditional sports. This is the story of how esports became one of the fastest-growing industries in entertainment.</p>
+
+          <h2>From Arcade Competitions to Global Spectacle</h2>
+          
+          <p>The roots of competitive gaming trace back to the early 1970s, when Stanford University hosted the first known video game tournament for the game "Spacewar!" The prize? A year's subscription to Rolling Stone magazine. Fast forward to today, and we're witnessing tournaments with prize pools exceeding $40 million.</p>
+
+          <p>The transformation didn't happen overnight. The 1990s saw the emergence of fighting game tournaments, with Street Fighter and Tekken leading the charge. The late 90s and early 2000s brought us StarCraft in South Korea, which became a cultural phenomenon and laid the groundwork for modern esports infrastructure.</p>
+
+          <h2>The Digital Revolution</h2>
+
+          <p>The real game-changer came with the advent of high-speed internet and streaming platforms. Twitch, launched in 2011, democratized esports broadcasting, allowing anyone to watch professional players compete from anywhere in the world. This accessibility was crucial in building the massive global audience we see today.</p>
+
+          <blockquote>
+            "Esports isn't just about playing games anymore. It's about storytelling, community building, and creating experiences that resonate with millions of fans worldwide." - Professional Esports Analyst
+          </blockquote>
+
+          <h2>The Numbers Don't Lie</h2>
+
+          <p>Today's esports industry is a financial powerhouse:</p>
+
+          <ul>
+            <li>Global esports revenue exceeded $1.8 billion in 2024</li>
+            <li>Over 540 million people worldwide watch esports content</li>
+            <li>The average esports viewer is 26 years old</li>
+            <li>Major tournaments regularly attract audiences of 100+ million viewers</li>
+          </ul>
+
+          <h2>Beyond Entertainment: Career Opportunities</h2>
+
+          <p>The esports ecosystem has created numerous career paths beyond just being a professional player. From coaches and analysts to broadcasters, event organizers, and content creators, the industry now employs thousands of people in various capacities.</p>
+
+          <p>Universities have also embraced esports, with over 200 colleges in the US alone offering esports scholarships. This academic recognition has helped legitimize competitive gaming as a viable career path for young talent.</p>
+
+          <h3>The Future is Bright</h3>
+
+          <p>As we look ahead, several trends are shaping the future of esports:</p>
+
+          <ul>
+            <li><strong>Mobile Gaming:</strong> The rise of mobile esports, particularly in emerging markets</li>
+            <li><strong>Virtual Reality:</strong> VR tournaments are beginning to gain traction</li>
+            <li><strong>Mainstream Integration:</strong> Traditional sports organizations investing in esports teams</li>
+            <li><strong>Olympic Recognition:</strong> Discussions about esports inclusion in future Olympic Games</li>
+          </ul>
+
+          <p>The journey from niche hobby to global phenomenon showcases the power of community, technology, and human competitive spirit. As esports continues to evolve, one thing remains certain: we're only at the beginning of this incredible story.</p>
+
+          <p>Whether you're a casual viewer or aspiring professional, there's never been a better time to be part of the esports revolution. The game is just getting started.</p>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <script>
+    // Session management functions
+    function getSessionData() {
+      const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+      try {
+        return session ? JSON.parse(session) : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function isAuthenticated() {
+      const sessionData = getSessionData();
+      return sessionData && sessionData.token && sessionData.user;
+    }
+
+    function handleLogout() {
+      if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('nexus_session');
+        sessionStorage.removeItem('nexus_session');
+        window.location.reload();
+      }
+    }
+
+    function checkUserAuthentication() {
+      const sessionData = getSessionData();
+      const guestMenu = document.getElementById('guest-menu');
+      const userMenu = document.getElementById('user-menu');
+      const user = sessionData?.user;
+
+      if (user) {
+        const username = user.username || user.email.split('@')[0];
+        const userInitials = username.substring(0, 2).toUpperCase();
+
+        const navbarUsername = document.getElementById('navbar-username');
+        const userAvatar = document.getElementById('user-avatar');
+
+        if (navbarUsername) {
+          navbarUsername.textContent = username;
+        }
+
+        if (userAvatar) {
+          userAvatar.textContent = userInitials;
+        }
+
+        if (guestMenu) {
+          guestMenu.style.display = 'none';
+        }
+        if (userMenu) {
+          userMenu.style.display = 'flex';
+        }
+      } else {
+        if (guestMenu) {
+          guestMenu.style.display = 'flex';
+        }
+        if (userMenu) {
+          userMenu.style.display = 'none';
+        }
+      }
+    }
+
+    function initSmartNavbar() {
+      const navbar = document.querySelector('.nav-normal');
+      if (!navbar) return;
+
+      let lastScrollY = window.scrollY;
+      let ticking = false;
+
+      function updateNavbar() {
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY > 50) {
+          navbar.classList.add('nav-scrolled');
+        } else {
+          navbar.classList.remove('nav-scrolled');
+        }
+
+        if (currentScrollY > 100) {
+          if (currentScrollY > lastScrollY && currentScrollY > 200) {
+            navbar.classList.add('nav-hidden');
+          } else {
+            navbar.classList.remove('nav-hidden');
+          }
+        } else {
+          navbar.classList.remove('nav-hidden');
+        }
+
+        lastScrollY = currentScrollY;
+        ticking = false;
+      }
+
+      function requestTick() {
+        if (!ticking) {
+          requestAnimationFrame(updateNavbar);
+          ticking = true;
+        }
+      }
+
+      window.addEventListener('scroll', requestTick, { passive: true });
+      updateNavbar();
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function () {
+      // Hide loader
+      setTimeout(() => {
+        document.getElementById('loader-wrapper').classList.add('hidden');
+      }, 1000);
+
+      // Initialize mobile menu toggle
+      const normalMenuToggle = document.getElementById('normalMenuToggle');
+      const normalNav = document.getElementById('normalNav');
+
+      if (normalMenuToggle && normalNav) {
+        normalMenuToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          normalMenuToggle.classList.toggle('active');
+          normalNav.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.nav-normal') && normalNav.classList.contains('active')) {
+            normalNav.classList.remove('active');
+            normalMenuToggle.classList.remove('active');
+          }
+        });
+      }
+
+      initSmartNavbar();
+      
+      setTimeout(() => {
+        checkUserAuthentication();
+      }, 100);
+
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) {
+          setTimeout(() => {
+            checkUserAuthentication();
+          }, 100);
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

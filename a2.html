@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Building the Perfect Gaming Setup: A Complete Guide - Uni Games" />
+  <meta name="theme-color" content="#0D0A1A" />
+  <title>Building the Perfect Gaming Setup | Uni Games</title>
+  <link rel="icon" type="image/png" href="ug.png">
+  <!-- Fonts & icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity=""
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.1/dist/dotlottie-wc.js" type="module"></script>
+
+  <style>
+    /* =========================
+       Theme variables (Cyberpunk)
+       ========================= */
+    :root {
+      --primary-color: #0AFAD9;
+      --bg-dark: #0D0A1A;
+      --accent-secondary: #5D3FD3;
+      --panel: #161329;
+      --text-primary: #F0F0F0;
+      --text-secondary: rgba(240, 240, 240, 0.7);
+      --border-color: rgba(10, 250, 217, 0.2);
+      --ease: 0.3s ease;
+      --radius: 12px;
+      --container: 1400px;
+    }
+
+    /* Base resets & accessibility */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* =========================
+       NAVBAR STYLES (From index.html)
+       ========================= */
+    .nav-normal {
+      background: rgba(13, 10, 26, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 0.5rem 2rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+      transform: translateY(0);
+    }
+
+    .nav-normal.nav-hidden {
+      transform: translateY(-100%);
+    }
+
+    .nav-normal.nav-scrolled {
+      background: rgba(13, 10, 26, 0.3);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 80px;
+      width: auto;
+      margin: 0;
+      padding: 0;
+      display: block;
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0;
+      list-style: none;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links li {
+      position: relative;
+    }
+
+    .nav-links a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      padding: 0.6rem 1.2rem;
+      display: block;
+    }
+
+    .nav-links a:hover {
+      color: white;
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 0.65rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .btn-request {
+      background: white;
+      color: #0a0a0a;
+    }
+
+    .btn-request:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .user-info:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(10, 250, 217, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-secondary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .user-name {
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    .menu-icon {
+      width: 24px;
+      height: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .menu-icon span {
+      width: 100%;
+      height: 2px;
+      background: white;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .menu-toggle.active .menu-icon span:nth-child(1) {
+      transform: rotate(45deg) translate(7px, 7px);
+    }
+
+    .menu-toggle.active .menu-icon span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.active .menu-icon span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
+    }
+
+    /* Mobile Styles */
+    @media (max-width: 968px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      .nav-center {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        height: 100vh;
+        width: 85%;
+        max-width: 350px;
+        flex-direction: column;
+        background: rgba(15, 15, 15, 0.98);
+        backdrop-filter: blur(20px);
+        padding: 6rem 2rem 2rem;
+        gap: 0;
+        transition: right 0.3s ease;
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        align-items: flex-start;
+        overflow-y: auto;
+      }
+
+      .nav-center.active {
+        right: 0;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
+      }
+
+      .nav-links li {
+        width: 100%;
+      }
+
+      .nav-links a {
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .auth-buttons {
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .user-info {
+        width: 100%;
+        justify-content: center;
+      }
+
+      #user-menu {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+      }
+    }
+
+    /* =========================
+       ARTICLE STYLES
+       ========================= */
+    .article-main {
+      padding-top: 120px;
+      padding-bottom: 4rem;
+      min-height: 100vh;
+    }
+
+    .article-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .article-header {
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+
+    .article-category {
+      display: inline-block;
+      background: var(--primary-color);
+      color: var(--bg-dark);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.5rem;
+    }
+
+    .article-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--text-primary), var(--primary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .article-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .article-image {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      margin-bottom: 3rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .article-content {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--text-primary);
+    }
+
+    .article-content h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 2.5rem 0 1.5rem 0;
+      color: var(--primary-color);
+    }
+
+    .article-content h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin: 2rem 0 1rem 0;
+      color: var(--text-primary);
+    }
+
+    .article-content p {
+      margin-bottom: 1.5rem;
+    }
+
+    .article-content blockquote {
+      background: var(--panel);
+      border-left: 4px solid var(--primary-color);
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-radius: var(--radius);
+      font-style: italic;
+      color: var(--text-secondary);
+    }
+
+    .article-content ul,
+    .article-content ol {
+      margin: 1.5rem 0;
+      padding-left: 2rem;
+    }
+
+    .article-content li {
+      margin-bottom: 0.5rem;
+    }
+
+    /* Back button */
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary-color);
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      transform: translateX(-5px);
+      color: white;
+    }
+
+    /* Loading Animation */
+    #loader-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-dark);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    #loader-wrapper.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+      background-color: var(--bg-dark);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--panel);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: var(--accent-secondary);
+    }
+
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--panel) var(--bg-dark);
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .article-container {
+        padding: 0 1rem;
+      }
+
+      .article-meta {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .article-image {
+        height: 250px;
+      }
+
+      .article-content {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="loader-wrapper">
+    <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie"
+      style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+  </div>
+
+  <nav class="nav-normal">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <img src="ug.png" alt="Uni Games">
+      </a>
+      <div class="nav-center" id="normalNav">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="tournaments.html">Tournaments</a></li>
+          <li><a href="index.html#features">Features</a></li>
+          <li><a href="dispute-support.html">Support</a></li>
+          <li><a href="index.html#faq">FAQ</a></li>
+        </ul>
+        <div class="auth-buttons" id="normalAuth">
+          <div id="guest-menu">
+            <a href="auth.html" class="btn btn-request">Join Us</a>
+          </div>
+          <div id="user-menu" style="display: none;">
+            <div class="user-info" onclick="window.location.href='userdashboard.html'" style="cursor: pointer;">
+              <div class="user-avatar" id="user-avatar">U</div>
+              <span class="user-name" id="navbar-username">User</span>
+            </div>
+            <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
+          </div>
+        </div>
+      </div>
+      <button class="menu-toggle" id="normalMenuToggle">
+        <div class="menu-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </button>
+    </div>
+  </nav>
+
+  <main class="article-main">
+    <div class="article-container">
+      <a href="index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+      </a>
+
+      <article>
+        <header class="article-header">
+          <div class="article-category">Gaming Setup</div>
+          <h1 class="article-title">Building the Perfect Gaming Setup: A Complete Guide</h1>
+          <div class="article-meta">
+            <span><i class="fas fa-calendar"></i> December 12, 2024</span>
+            <span><i class="fas fa-clock"></i> 12 min read</span>
+            <span><i class="fas fa-user"></i> Tech Team</span>
+          </div>
+        </header>
+
+        <img src="/assets/gaming-setup.jpg" alt="Gaming Setup" class="article-image">
+
+        <div class="article-content">
+          <p>Creating the perfect gaming setup is both an art and a science. Whether you're a casual gamer or aspiring esports professional, having the right equipment and environment can significantly impact your performance and enjoyment. This comprehensive guide will walk you through every aspect of building your dream gaming station.</p>
+
+          <h2>The Foundation: Your Gaming PC</h2>
+          
+          <p>Your gaming PC is the heart of your setup. The key components that matter most for gaming performance are:</p>
+
+          <h3>Graphics Card (GPU)</h3>
+          <p>The GPU is arguably the most important component for gaming. For 1080p gaming, consider mid-range options like the RTX 4060 or RX 7600. For 1440p or 4K gaming, you'll want higher-end cards like the RTX 4070 Ti or RX 7800 XT.</p>
+
+          <h3>Processor (CPU)</h3>
+          <p>Modern games benefit from strong single-core performance and multiple cores. AMD's Ryzen 5 7600X or Intel's Core i5-13600K offer excellent gaming performance without breaking the bank.</p>
+
+          <h3>Memory (RAM)</h3>
+          <p>16GB of DDR4 or DDR5 RAM is the current sweet spot for gaming. Faster memory speeds can provide small performance improvements, especially with AMD processors.</p>
+
+          <h2>Display Technology: Monitors That Matter</h2>
+
+          <p>Your monitor is your window into the gaming world. Key specifications to consider:</p>
+
+          <ul>
+            <li><strong>Resolution:</strong> 1080p for competitive gaming, 1440p for the best balance, 4K for visual fidelity</li>
+            <li><strong>Refresh Rate:</strong> 144Hz minimum for competitive games, 240Hz+ for esports professionals</li>
+            <li><strong>Panel Type:</strong> TN for speed, IPS for colors, VA for contrast</li>
+            <li><strong>Response Time:</strong> 1ms for competitive gaming, up to 5ms is acceptable for casual gaming</li>
+          </ul>
+
+          <blockquote>
+            "The difference between a 60Hz and 144Hz monitor is night and day. Once you experience high refresh rate gaming, there's no going back." - Professional Esports Player
+          </blockquote>
+
+          <h2>Audio: The Competitive Edge</h2>
+
+          <p>Good audio can be the difference between victory and defeat in competitive games. Consider these options:</p>
+
+          <h3>Gaming Headsets</h3>
+          <p>Look for headsets with good positional audio, comfortable padding, and clear microphones. Popular choices include the SteelSeries Arctis series, HyperX Cloud series, and Audio-Technica ATH-G1.</p>
+
+          <h3>Dedicated Microphones</h3>
+          <p>For streaming or content creation, consider a dedicated USB microphone like the Blue Yeti or Audio-Technica AT2020USB+.</p>
+
+          <h2>Input Devices: Precision and Comfort</h2>
+
+          <h3>Gaming Keyboards</h3>
+          <p>Mechanical keyboards offer better tactile feedback and durability. Popular switch types include:</p>
+          <ul>
+            <li><strong>Cherry MX Red:</strong> Linear, quiet, good for gaming</li>
+            <li><strong>Cherry MX Blue:</strong> Tactile, clicky, great for typing</li>
+            <li><strong>Cherry MX Brown:</strong> Tactile, quieter, versatile for gaming and typing</li>
+          </ul>
+
+          <h3>Gaming Mice</h3>
+          <p>Look for mice with high-quality sensors, customizable DPI, and ergonomic designs. Consider your grip style (palm, claw, or fingertip) when choosing.</p>
+
+          <h2>The Gaming Environment</h2>
+
+          <h3>Lighting</h3>
+          <p>Proper lighting reduces eye strain and creates ambiance. Consider bias lighting behind your monitor and RGB lighting for aesthetics. Avoid glare on your screen.</p>
+
+          <h3>Ergonomics</h3>
+          <p>Invest in a good gaming chair that supports proper posture. Your monitor should be at eye level, and your arms should be parallel to the floor when using your keyboard and mouse.</p>
+
+          <h3>Cable Management</h3>
+          <p>Clean cable management not only looks better but also improves airflow and makes maintenance easier. Use cable ties, clips, and routing channels to keep things organized.</p>
+
+          <h2>Budget Considerations</h2>
+
+          <p>Building a gaming setup doesn't have to break the bank. Here are three budget tiers:</p>
+
+          <ul>
+            <li><strong>Budget ($800-1200):</strong> Focus on 1080p gaming with mid-range components</li>
+            <li><strong>Mid-range ($1200-2000):</strong> 1440p gaming with high refresh rates</li>
+            <li><strong>High-end ($2000+):</strong> 4K gaming, premium peripherals, and future-proofing</li>
+          </ul>
+
+          <h2>Future-Proofing Your Setup</h2>
+
+          <p>Technology evolves rapidly, but some investments last longer than others:</p>
+
+          <ul>
+            <li>Quality monitors can last 5-7 years</li>
+            <li>Mechanical keyboards and mice can last decades with proper care</li>
+            <li>A good chair is an investment in your health and comfort</li>
+            <li>Plan for GPU upgrades every 3-4 years for cutting-edge performance</li>
+          </ul>
+
+          <h2>Final Thoughts</h2>
+
+          <p>Building the perfect gaming setup is a journey, not a destination. Start with the essentials and upgrade over time as your needs and budget allow. Remember that the best setup is one that fits your specific gaming preferences, space constraints, and budget.</p>
+
+          <p>Most importantly, don't get caught up in having the latest and greatest everything. A well-balanced setup that you're comfortable with will serve you better than the most expensive components that don't match your needs.</p>
+
+          <p>Happy gaming, and may your framerates be high and your temperatures low!</p>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <script>
+    // Session management functions
+    function getSessionData() {
+      const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+      try {
+        return session ? JSON.parse(session) : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function isAuthenticated() {
+      const sessionData = getSessionData();
+      return sessionData && sessionData.token && sessionData.user;
+    }
+
+    function handleLogout() {
+      if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('nexus_session');
+        sessionStorage.removeItem('nexus_session');
+        window.location.reload();
+      }
+    }
+
+    function checkUserAuthentication() {
+      const sessionData = getSessionData();
+      const guestMenu = document.getElementById('guest-menu');
+      const userMenu = document.getElementById('user-menu');
+      const user = sessionData?.user;
+
+      if (user) {
+        const username = user.username || user.email.split('@')[0];
+        const userInitials = username.substring(0, 2).toUpperCase();
+
+        const navbarUsername = document.getElementById('navbar-username');
+        const userAvatar = document.getElementById('user-avatar');
+
+        if (navbarUsername) {
+          navbarUsername.textContent = username;
+        }
+
+        if (userAvatar) {
+          userAvatar.textContent = userInitials;
+        }
+
+        if (guestMenu) {
+          guestMenu.style.display = 'none';
+        }
+        if (userMenu) {
+          userMenu.style.display = 'flex';
+        }
+      } else {
+        if (guestMenu) {
+          guestMenu.style.display = 'flex';
+        }
+        if (userMenu) {
+          userMenu.style.display = 'none';
+        }
+      }
+    }
+
+    function initSmartNavbar() {
+      const navbar = document.querySelector('.nav-normal');
+      if (!navbar) return;
+
+      let lastScrollY = window.scrollY;
+      let ticking = false;
+
+      function updateNavbar() {
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY > 50) {
+          navbar.classList.add('nav-scrolled');
+        } else {
+          navbar.classList.remove('nav-scrolled');
+        }
+
+        if (currentScrollY > 100) {
+          if (currentScrollY > lastScrollY && currentScrollY > 200) {
+            navbar.classList.add('nav-hidden');
+          } else {
+            navbar.classList.remove('nav-hidden');
+          }
+        } else {
+          navbar.classList.remove('nav-hidden');
+        }
+
+        lastScrollY = currentScrollY;
+        ticking = false;
+      }
+
+      function requestTick() {
+        if (!ticking) {
+          requestAnimationFrame(updateNavbar);
+          ticking = true;
+        }
+      }
+
+      window.addEventListener('scroll', requestTick, { passive: true });
+      updateNavbar();
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function () {
+      // Hide loader
+      setTimeout(() => {
+        document.getElementById('loader-wrapper').classList.add('hidden');
+      }, 1000);
+
+      // Initialize mobile menu toggle
+      const normalMenuToggle = document.getElementById('normalMenuToggle');
+      const normalNav = document.getElementById('normalNav');
+
+      if (normalMenuToggle && normalNav) {
+        normalMenuToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          normalMenuToggle.classList.toggle('active');
+          normalNav.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.nav-normal') && normalNav.classList.contains('active')) {
+            normalNav.classList.remove('active');
+            normalMenuToggle.classList.remove('active');
+          }
+        });
+      }
+
+      initSmartNavbar();
+      
+      setTimeout(() => {
+        checkUserAuthentication();
+      }, 100);
+
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) {
+          setTimeout(() => {
+            checkUserAuthentication();
+          }, 100);
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
