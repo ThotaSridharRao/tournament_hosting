@@ -407,48 +407,79 @@
       color: var(--primary-color);
     }
 
-    /* Email Notice Banner */
-    .email-notice-banner {
+    /* Top Right Notice */
+    .top-right-notice {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      max-width: 350px;
+      background: rgba(255, 193, 7, 0.1);
+      border: 1px solid rgba(255, 193, 7, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       display: flex;
       align-items: flex-start;
-      gap: 1rem;
-      padding: 1.25rem;
-      margin-bottom: 1.5rem;
-      background: rgba(10, 250, 217, 0.08);
-      border: 1px solid rgba(10, 250, 217, 0.25);
-      border-radius: var(--radius-sm);
-      transition: all 0.3s var(--ease);
+      gap: 0.75rem;
+      animation: slideInRight 0.5s ease-out;
     }
 
-    .email-notice-banner .notice-icon {
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .top-right-notice .notice-icon {
       flex-shrink: 0;
       margin-top: 0.125rem;
     }
 
-    .email-notice-banner .notice-icon i {
+    .top-right-notice .notice-icon i {
       font-size: 1.25rem;
-      color: var(--primary-color);
+      color: #ffc107;
     }
 
-    .email-notice-banner .notice-content h4 {
+    .top-right-notice .notice-content h5 {
       margin: 0 0 0.5rem 0;
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-weight: 600;
       color: var(--text-primary);
     }
 
-    .email-notice-banner .notice-content p {
+    .top-right-notice .notice-content p {
       margin: 0;
-      font-size: 0.9rem;
-      line-height: 1.5;
+      font-size: 0.8rem;
+      line-height: 1.4;
       color: var(--text-secondary);
     }
 
-    @media (max-width: 480px) {
-      .email-notice-banner {
-        flex-direction: column;
-        text-align: center;
-        gap: 0.75rem;
+    @media (max-width: 768px) {
+      .top-right-notice {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin: 1rem;
+        max-width: none;
+        animation: slideInDown 0.5s ease-out;
+      }
+
+      @keyframes slideInDown {
+        from {
+          transform: translateY(-100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
       }
     }
 
@@ -492,6 +523,17 @@
 </head>
 
 <body>
+  <!-- Top Right Email Notice -->
+  <div class="top-right-notice">
+    <div class="notice-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+    <div class="notice-content">
+      <h5>Important Notice</h5>
+      <p><strong>Use a different email address.</strong> If you already have a player account, you must register with a new email for your host account.</p>
+    </div>
+  </div>
+
   <div id="loader-wrapper">
     <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie"
       style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
@@ -504,16 +546,7 @@
         <p class="auth-subtitle">Register to host tournaments and manage events</p>
       </div>
 
-      <!-- Email Notice for Existing Players -->
-      <div class="email-notice-banner">
-        <div class="notice-icon">
-          <i class="fas fa-info-circle"></i>
-        </div>
-        <div class="notice-content">
-          <h4>Already a Player?</h4>
-          <p>You can use the <strong>same email address</strong> that you used for your player account. Your host and player accounts will be linked but remain separate with different access levels.</p>
-        </div>
-      </div>
+
 
       <div class="error-message" id="error-message"></div>
       <div class="success-message" id="success-message"></div>
