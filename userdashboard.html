@@ -59,274 +59,276 @@
             line-height: 1.6;
             overflow-x: hidden;
             /* PADDING TOP REMOVED - Using padding-top on main */
-            display: flex; /* ADDED: Use Flexbox for sticky footer */
-            flex-direction: column; /* ADDED: Stack content vertically */
+            display: flex;
+            /* ADDED: Use Flexbox for sticky footer */
+            flex-direction: column;
+            /* ADDED: Stack content vertically */
         }
 
         /* =========================
        NAVBAR STYLES (Modern Design)
        ========================= */
-    .nav-normal {
-      background: rgba(13, 10, 26, 0.1);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      padding: 0.5rem 2rem;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
-      transform: translateY(0);
-    }
+        .nav-normal {
+            background: rgba(13, 10, 26, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+            transform: translateY(0);
+        }
 
-    .nav-normal.nav-hidden {
-      transform: translateY(-100%);
-    }
+        .nav-normal.nav-hidden {
+            transform: translateY(-100%);
+        }
 
-    .nav-normal.nav-scrolled {
-      background: rgba(13, 10, 26, 0.3);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-    }
+        .nav-normal.nav-scrolled {
+            background: rgba(13, 10, 26, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+        }
 
-    .nav-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: white;
-      text-decoration: none;
-      letter-spacing: -0.5px;
-      display: flex;
-      align-items: center;
-    }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+        }
 
-    .logo img {
-      height: 80px;
-      width: auto;
-      margin: 0;
-      padding: 0;
-      display: block;
-    }
+        .logo img {
+            height: 80px;
+            width: auto;
+            margin: 0;
+            padding: 0;
+            display: block;
+        }
 
-    .nav-center {
-      display: flex;
-      align-items: center;
-      gap: 2.5rem;
-    }
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
 
-    .nav-links {
-      display: flex;
-      gap: 0;
-      list-style: none;
-      align-items: center;
-      margin: 0;
-      padding: 0;
-    }
+        .nav-links {
+            display: flex;
+            gap: 0;
+            list-style: none;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
 
-    .nav-links li {
-      position: relative;
-    }
+        .nav-links li {
+            position: relative;
+        }
 
-    .nav-links a {
-      color: rgba(255, 255, 255, 0.7);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.95rem;
-      transition: all 0.3s ease;
-      padding: 0.6rem 1.2rem;
-      display: block;
-    }
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            padding: 0.6rem 1.2rem;
+            display: block;
+        }
 
-    /* Active navigation link */
-    .nav-links a.active {
-      color: var(--primary-color);
-      font-weight: 700;
-    }
+        /* Active navigation link */
+        .nav-links a.active {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
 
-    .nav-links a:hover {
-      color: white;
-    }
+        .nav-links a:hover {
+            color: white;
+        }
 
-    .auth-buttons {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
 
-    .btn {
-      padding: 0.65rem 1.5rem;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      border: none;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
+        .btn {
+            padding: 0.65rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
 
-    .btn-request {
-      background: white;
-      color: #0a0a0a;
-    }
+        .btn-request {
+            background: white;
+            color: #0a0a0a;
+        }
 
-    .btn-request:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
-    }
+        .btn-request:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+        }
 
-    .btn-logout {
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
+        .btn-logout {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
 
-    .btn-logout:hover {
-      background: rgba(239, 68, 68, 0.25);
-    }
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
 
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      padding: 0.5rem 1rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 50px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-    .user-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-secondary) 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
 
-    .user-name {
-      font-weight: 500;
-      font-size: 0.9rem;
-    }
+        .user-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
 
-    .menu-toggle {
-      display: none;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0.5rem;
-    }
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
 
-    .menu-icon {
-      width: 24px;
-      height: 20px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+        .menu-icon {
+            width: 24px;
+            height: 20px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
 
-    .menu-icon span {
-      width: 100%;
-      height: 2px;
-      background: white;
-      border-radius: 2px;
-      transition: all 0.3s ease;
-    }
+        .menu-icon span {
+            width: 100%;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
 
-    .menu-toggle.active .menu-icon span:nth-child(1) {
-      transform: rotate(45deg) translate(7px, 7px);
-    }
+        .menu-toggle.active .menu-icon span:nth-child(1) {
+            transform: rotate(45deg) translate(7px, 7px);
+        }
 
-    .menu-toggle.active .menu-icon span:nth-child(2) {
-      opacity: 0;
-    }
+        .menu-toggle.active .menu-icon span:nth-child(2) {
+            opacity: 0;
+        }
 
-    .menu-toggle.active .menu-icon span:nth-child(3) {
-      transform: rotate(-45deg) translate(7px, -7px);
-    }
+        .menu-toggle.active .menu-icon span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
 
-    /* Mobile Styles */
-    @media (max-width: 968px) {
-      .menu-toggle {
-        display: block;
-      }
+        /* Mobile Styles */
+        @media (max-width: 968px) {
+            .menu-toggle {
+                display: block;
+            }
 
-      .nav-center {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        height: 100vh;
-        width: 85%;
-        max-width: 350px;
-        flex-direction: column;
-        background: rgba(15, 15, 15, 0.98);
-        backdrop-filter: blur(20px);
-        padding: 6rem 2rem 2rem;
-        gap: 0;
-        transition: right 0.3s ease;
-        border-left: 1px solid rgba(255, 255, 255, 0.1);
-        align-items: flex-start;
-        overflow-y: auto;
-      }
+            .nav-center {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                height: 100vh;
+                width: 85%;
+                max-width: 350px;
+                flex-direction: column;
+                background: rgba(15, 15, 15, 0.98);
+                backdrop-filter: blur(20px);
+                padding: 6rem 2rem 2rem;
+                gap: 0;
+                transition: right 0.3s ease;
+                border-left: 1px solid rgba(255, 255, 255, 0.1);
+                align-items: flex-start;
+                overflow-y: auto;
+            }
 
-      .nav-center.active {
-        right: 0;
-      }
+            .nav-center.active {
+                right: 0;
+            }
 
-      .nav-links {
-        flex-direction: column;
-        width: 100%;
-        gap: 0;
-      }
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 0;
+            }
 
-      .nav-links li {
-        width: 100%;
-      }
+            .nav-links li {
+                width: 100%;
+            }
 
-      .nav-links a {
-        padding: 1rem 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      }
+            .nav-links a {
+                padding: 1rem 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
 
-      .auth-buttons {
-        flex-direction: column;
-        width: 100%;
-        gap: 1rem;
-        margin-top: 2rem;
-        padding-top: 2rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-      }
+            .auth-buttons {
+                flex-direction: column;
+                width: 100%;
+                gap: 1rem;
+                margin-top: 2rem;
+                padding-top: 2rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
 
-      .btn {
-        width: 100%;
-        text-align: center;
-      }
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
 
-      .user-info {
-        width: 100%;
-        justify-content: center;
-      }
+            .user-info {
+                width: 100%;
+                justify-content: center;
+            }
 
-      #user-menu {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        gap: 1rem;
-      }
-    }
+            #user-menu {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                gap: 1rem;
+            }
+        }
 
         /* =========================
            DASHBOARD LAYOUT
@@ -334,8 +336,10 @@
         main {
             padding: 3rem 2rem 5rem;
             /* min-height: calc(100vh - 120px); REMOVED - replaced by flex-grow */
-            flex-grow: 1; /* ADDED: Allows main content to fill remaining space */
-            padding-top: calc(90px + 3rem); /* ADDED: Push content down below fixed nav */
+            flex-grow: 1;
+            /* ADDED: Allows main content to fill remaining space */
+            padding-top: calc(90px + 3rem);
+            /* ADDED: Push content down below fixed nav */
         }
 
         .container {
@@ -477,13 +481,16 @@
                 text-align: center;
                 padding: 1.25rem 1rem;
             }
+
             .tournament-info {
                 align-items: center;
                 text-align: center;
             }
+
             .team-role {
                 text-align: center;
             }
+
             .view-btn {
                 width: 100%;
                 margin: 0 auto;
@@ -577,14 +584,26 @@
             gap: 1rem;
         }
 
+        .notifications-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
         .activity-item {
-            padding: 1.25rem;
+            padding: 1rem;
             background: rgba(255, 255, 255, 0.03);
-            border-radius: 10px;
+            border-radius: 8px;
             border-left: 3px solid var(--accent-secondary);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
             position: relative;
+        }
+
+        .activity-item.unread {
+            background: rgba(10, 250, 217, 0.08);
+            border-left-color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(10, 250, 217, 0.1);
         }
 
         .activity-item::before {
@@ -595,7 +614,7 @@
             bottom: 0;
             width: 3px;
             background: linear-gradient(180deg, var(--primary-color), var(--accent-secondary));
-            border-radius: 10px 0 0 10px;
+            border-radius: 8px 0 0 8px;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -603,134 +622,152 @@
         .activity-item:hover {
             background: rgba(10, 250, 217, 0.05);
             border-left-color: var(--primary-color);
-            transform: translateX(4px);
+            transform: translateX(2px);
         }
 
         .activity-item:hover::before {
             opacity: 1;
         }
 
-        .activity-item strong {
-            color: var(--primary-color);
-            font-weight: 700;
-            font-size: 1rem;
+        .activity-item.unread::before {
+            opacity: 1;
         }
 
         .activity-time {
-            display: block;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
-            margin-top: 0.5rem;
-            font-style: italic;
+            font-weight: 500;
+        }
+
+        /* Scrollbar for notifications timeline */
+        .notifications-timeline::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .notifications-timeline::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 2px;
+        }
+
+        .notifications-timeline::-webkit-scrollbar-thumb {
+            background: var(--accent-secondary);
+            border-radius: 2px;
+        }
+
+        .notifications-timeline::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
         }
 
         /* =========================
            FOOTER STYLES (Copied from index.html)
            ========================= */
         /* Footer Styles */
-    footer.site-footer {
-      background: #070707;  /* Changed from var(--panel) to black */
-      padding: 5rem 2rem 2rem;
-      text-align: center;
-      border-top: 1px solid var(--border-color);
-    }
+        footer.site-footer {
+            background: #070707;
+            /* Changed from var(--panel) to black */
+            padding: 5rem 2rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
 
-    .footer-grid {
-      max-width: 1200px;
-      margin: 0 auto 3rem auto;
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;  /* First column wider for brand */
-      gap: 3rem;
-      text-align: left;
-    }
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto 3rem auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            /* First column wider for brand */
+            gap: 3rem;
+            text-align: left;
+        }
 
-    .footer-column h4 {
-      color: var(--text-primary);
-      margin-bottom: 1.5rem;
-      font-size: 1.2rem;
-      font-weight: 700;
-    }
+        .footer-column h4 {
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
 
-    .footer-column ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
-    .footer-column ul a,
-    .footer-column p {
-      color: var(--text-secondary);
-      text-decoration: none;
-      transition: all 0.3s ease;
-      display: block;
-      margin-bottom: 0.75rem;
-      font-size: 1rem;
-}
+        .footer-column ul a,
+        .footer-column p {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: block;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
 
-    .footer-column ul li {
-      margin-bottom: 0.5rem;
-    }
+        .footer-column ul li {
+            margin-bottom: 0.5rem;
+        }
 
-    .footer-column ul a:hover {
-      color: var(--primary-color);
-    }
+        .footer-column ul a:hover {
+            color: var(--primary-color);
+        }
 
-    .footer-brand .brand {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: var(--text-primary);
-      text-decoration: none;
-    }
+        .footer-brand .brand {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
 
-    .footer-brand p {
-      margin-bottom: 1.5rem;
-      line-height: 1.7;
-      color: var(--text-secondary);
-    }
+        .footer-brand p {
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
 
-    .social-links {
-      display: flex;
-      gap: 1.5rem;
-      margin-top: 1rem;
-    }
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
 
-    .social-links a {
-      color: var(--text-secondary);
-      font-size: 1.5rem;
-      transition: all 0.3s ease;
-    }
+        .social-links a {
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
 
-    .social-links a:hover {
-      color: var(--primary-color);
-      transform: translateY(-3px);
-    }
+        .social-links a:hover {
+            color: var(--primary-color);
+            transform: translateY(-3px);
+        }
 
-    .footer-bottom {
-      border-top: 1px solid var(--border-color);
-      padding-top: 2rem;
-      opacity: 0.7;
-      font-size: 1rem;
-    }
-    @media (max-width: 768px) {
-      .footer-grid {
-        grid-template-columns: 1fr;
-        text-align: left;
-        gap: 2rem;
-      }
+        .footer-bottom {
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+            opacity: 0.7;
+            font-size: 1rem;
+        }
 
-      /* Hide the Tournaments, Community, and Company columns on mobile */
-      .footer-column:not(.footer-brand) {
-        display: none;
-      }
+        @media (max-width: 768px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: left;
+                gap: 2rem;
+            }
 
-      .social-links {
-        justify-content: flex-start;
-      }
-      
-      .footer-brand .brand {
-        justify-content: flex-start;
-      }
-    }
+            /* Hide the Tournaments, Community, and Company columns on mobile */
+            .footer-column:not(.footer-brand) {
+                display: none;
+            }
+
+            .social-links {
+                justify-content: flex-start;
+            }
+
+            .footer-brand .brand {
+                justify-content: flex-start;
+            }
+        }
 
 
         /* =========================
@@ -778,100 +815,101 @@
             scrollbar-width: thin;
             scrollbar-color: var(--panel) var(--bg-dark);
         }
+
         /* Mobile Responsiveness for Dashboard */
-@media (max-width: 768px) {
-    main {
-        padding: 2rem 1rem 3rem;
-        padding-top: calc(90px + 2rem);
-    }
+        @media (max-width: 768px) {
+            main {
+                padding: 2rem 1rem 3rem;
+                padding-top: calc(90px + 2rem);
+            }
 
-    .dashboard-header {
-        padding: 2rem 1.5rem;
-    }
+            .dashboard-header {
+                padding: 2rem 1.5rem;
+            }
 
-    .dashboard-header h1 {
-        font-size: 2rem;
-    }
+            .dashboard-header h1 {
+                font-size: 2rem;
+            }
 
-    .dashboard-header p {
-        font-size: 1rem;
-    }
+            .dashboard-header p {
+                font-size: 1rem;
+            }
 
-    .dashboard-grid {
-        gap: 1.5rem;
-    }
+            .dashboard-grid {
+                gap: 1.5rem;
+            }
 
-    .dashboard-section {
-        padding: 1.5rem;
-    }
+            .dashboard-section {
+                padding: 1.5rem;
+            }
 
-    .section-title {
-        font-size: 1.2rem;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
+            .section-title {
+                font-size: 1.2rem;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
 
-    .section-title::before {
-        height: 20px;
-    }
+            .section-title::before {
+                height: 20px;
+            }
 
-    .tournament-list {
-        gap: 1rem;
-    }
+            .tournament-list {
+                gap: 1rem;
+            }
 
-    .tournament-info .name {
-        font-size: 1rem;
-    }
+            .tournament-info .name {
+                font-size: 1rem;
+            }
 
-    .tournament-info .game {
-        font-size: 0.8rem;
-    }
+            .tournament-info .game {
+                font-size: 0.8rem;
+            }
 
-    .team-role {
-        font-size: 0.85rem;
-    }
+            .team-role {
+                font-size: 0.85rem;
+            }
 
-    .activity-item {
-        padding: 1rem;
-    }
+            .activity-item {
+                padding: 1rem;
+            }
 
-    .activity-item strong {
-        font-size: 0.95rem;
-    }
-}
+            .activity-item strong {
+                font-size: 0.95rem;
+            }
+        }
 
-@media (max-width: 480px) {
-    .dashboard-header {
-        padding: 1.5rem 1rem;
-    }
+        @media (max-width: 480px) {
+            .dashboard-header {
+                padding: 1.5rem 1rem;
+            }
 
-    .dashboard-header h1 {
-        font-size: 1.75rem;
-    }
+            .dashboard-header h1 {
+                font-size: 1.75rem;
+            }
 
-    .dashboard-section {
-        padding: 1.25rem;
-    }
+            .dashboard-section {
+                padding: 1.25rem;
+            }
 
-    .section-title {
-        font-size: 1.1rem;
-        line-height: 1.4;
-    }
+            .section-title {
+                font-size: 1.1rem;
+                line-height: 1.4;
+            }
 
-    .tournament-item {
-        padding: 1rem;
-    }
+            .tournament-item {
+                padding: 1rem;
+            }
 
-    .view-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
-    }
+            .view-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
 
-    .status-badge {
-        padding: 0.4rem 0.75rem;
-        font-size: 0.7rem;
-    }
-}
+            .status-badge {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.7rem;
+            }
+        }
     </style>
 </head>
 
@@ -946,51 +984,51 @@
     </main>
 
     <footer class="site-footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-column footer-brand">
-          <a href="index.html" class="brand" style="display: flex; align-items: center; gap: 0.5rem;">
-            <img src="ug.png" alt="Uni Games" style="height: 60px; width: auto;">
-            Uni Games
-          </a>
-          <p>The ultimate destination for competitive gaming.</p>
-          <div class="social-links">
-            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
-            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
-          </div>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column footer-brand">
+                    <a href="index.html" class="brand" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <img src="ug.png" alt="Uni Games" style="height: 60px; width: auto;">
+                        Uni Games
+                    </a>
+                    <p>The ultimate destination for competitive gaming.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Tournaments</h4>
+                    <ul>
+                        <li><a href="tournaments.html">Browse All</a></li>
+                        <li><a href="tournaments.html?filter=live">Live Matches</a></li>
+                        <li><a href="tournaments.html?filter=upcoming">Upcoming</a></li>
+                        <li><a href="tournaments.html?filter=completed">Past Results</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="#">Discord</a></li>
+                        <li><a href="#">Forums</a></li>
+                        <li><a href="#">Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Uni Games. All rights reserved.</p>
+            </div>
         </div>
-        <div class="footer-column">
-          <h4>Tournaments</h4>
-          <ul>
-            <li><a href="tournaments.html">Browse All</a></li>
-            <li><a href="tournaments.html?filter=live">Live Matches</a></li>
-            <li><a href="tournaments.html?filter=upcoming">Upcoming</a></li>
-            <li><a href="tournaments.html?filter=completed">Past Results</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <h4>Community</h4>
-          <ul>
-            <li><a href="#">Discord</a></li>
-            <li><a href="#">Forums</a></li>
-            <li><a href="#">Support</a></li>
-          </ul>
-        </div>
-        <div class="footer-column">
-          <h4>Company</h4>
-          <ul>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2025 Uni Games. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
+    </footer>
 
 
     <script>
@@ -1106,7 +1144,7 @@
             const token = getAuthToken();
             const listContainer = document.getElementById('tournament-list');
             const countSpan = document.getElementById('tournament-count');
-            
+
             listContainer.innerHTML = `<p class="text-secondary" style="text-align: center;">
                 <i class="fas fa-spinner fa-spin"></i> Loading your tournaments...
             </p>`;
@@ -1169,75 +1207,185 @@
             const feedContainer = document.getElementById('activity-feed');
 
             feedContainer.innerHTML = `<p class="text-secondary" style="text-align: center;">
-                <i class="fas fa-spinner fa-spin"></i> Loading activity feed...
+                <i class="fas fa-spinner fa-spin"></i> Loading notifications...
             </p>`;
 
             try {
-                // Fetch recent activities for the user (limit 10 for dashboard)
-                const response = await fetch(`${API_BASE_URL}/api/activities/user?limit=10`, {
+                // Fetch user-specific notifications (persistent timeline)
+                const response = await fetch(`${API_BASE_URL}/api/users/me/notifications`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const result = await response.json();
 
                 if (response.ok && result.success) {
-                    const activities = result.data || [];
-                    renderActivities(activities);
+                    const notifications = result.data || [];
+                    renderUserNotifications(notifications);
                 } else {
-                     feedContainer.innerHTML = `<p class="text-secondary" style="text-align: center; color: #ef4444;">
-                        Error loading activities: ${result.detail || 'Server error.'}
+                    feedContainer.innerHTML = `<p class="text-secondary" style="text-align: center; color: #ef4444;">
+                        Error loading notifications: ${result.message || 'Server error.'}
                     </p>`;
                 }
             } catch (error) {
-                console.error("Error fetching player activities:", error);
+                console.error("Error fetching user notifications:", error);
                 feedContainer.innerHTML = `<p class="text-secondary" style="text-align: center; color: #ef4444;">
-                    Network error. Could not load activity feed.
+                    Network error. Could not load notifications.
                 </p>`;
             }
         }
 
-        function renderActivities(activities) {
+        function renderUserNotifications(notifications) {
             const feedContainer = document.getElementById('activity-feed');
 
-            if (activities.length === 0) {
+            if (notifications.length === 0) {
                 feedContainer.innerHTML = `<p class="text-secondary" style="text-align: center;">
-                    <i class="fas fa-bell"></i> No recent notifications.
+                    <i class="fas fa-bell"></i> No notifications yet.
                 </p>`;
                 return;
             }
 
-            feedContainer.innerHTML = activities.map(a => {
-                const icon = getIconForActivity(a.type);
-                const title = a.title || 'Update';
-                const description = a.description || 'Details unavailable.';
-                const timeAgo = a.timeAgo || new Date(a.timestamp).toLocaleTimeString();
+            // Sort notifications by date (newest first)
+            const sortedNotifications = notifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            feedContainer.innerHTML = `
+                <div class="notifications-timeline" style="max-height: 400px; overflow-y: auto;">
+                    ${sortedNotifications.map(notification => {
+                const icon = getIconForNotification(notification.type);
+                const message = formatNotificationMessage(notification);
+                const timeAgo = formatTimeAgo(notification.createdAt);
+                const isUnread = !notification.read;
 
                 return `
-                    <div class="activity-item">
-                        <i class="${icon}" style="margin-right: 0.5rem; color: var(--primary-color);"></i>
-                        <strong>${title}</strong>
-                        <span class="activity-time">${timeAgo}</span>
-                        <p style="margin: 0.5rem 0 0; font-size: 0.9rem;">${description}</p>
+                            <div class="activity-item ${isUnread ? 'unread' : ''}" data-notification-id="${notification._id}">
+                                <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+                                    <div style="flex-shrink: 0; margin-top: 0.25rem;">
+                                        <i class="${icon}" style="color: var(--primary-color); font-size: 1.1rem;"></i>
+                                    </div>
+                                    <div style="flex-grow: 1;">
+                                        <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">
+                                            ${message}
+                                        </div>
+                                        <span class="activity-time" style="font-size: 0.8rem; color: var(--text-secondary);">
+                                            ${timeAgo}
+                                        </span>
+                                        ${isUnread ? '<span style="display: inline-block; width: 6px; height: 6px; background: var(--primary-color); border-radius: 50%; margin-left: 0.5rem;"></span>' : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+            }).join('')}
+                </div>
+                ${notifications.some(n => !n.read) ? `
+                    <div style="text-align: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                        <button onclick="markAllNotificationsAsRead()" style="background: var(--primary-color); color: var(--bg-dark); border: none; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                            Mark All as Read
+                        </button>
                     </div>
-                `;
-            }).join('');
+                ` : ''}
+            `;
+
+            // Mark notifications as read when viewed
+            markNotificationsAsViewed(notifications.filter(n => !n.read));
         }
 
-        function getIconForActivity(type) {
+        function getIconForNotification(type) {
             switch (type) {
-                case 'user_registered_tournament':
+                case 'tournament_registration':
                     return 'fas fa-check-circle';
-                case 'tournament_announced':
-                    return 'fas fa-bullhorn';
-                case 'tournament_status_changed':
-                    return 'fas fa-sync-alt';
-                case 'round_started':
-                    return 'fas fa-play';
-                case 'payment_completed':
-                    return 'fas fa-money-check-alt';
-                case 'user_joined':
-                    return 'fas fa-user-plus';
+                case 'tournament_starting':
+                    return 'fas fa-play-circle';
+                case 'tournament_reminder':
+                    return 'fas fa-bell';
+                case 'support_ticket_update':
+                    return 'fas fa-headset';
+                case 'payment_status':
+                    return 'fas fa-credit-card';
+                case 'team_update':
+                    return 'fas fa-users';
+                case 'tournament_result':
+                    return 'fas fa-trophy';
                 default:
                     return 'fas fa-info-circle';
+            }
+        }
+
+        function formatNotificationMessage(notification) {
+            const { type, data } = notification;
+
+            switch (type) {
+                case 'tournament_registration':
+                    return `You registered for tournament "${data.tournamentName}"`;
+                case 'tournament_starting':
+                    return `Tournament "${data.tournamentName}" is about to start`;
+                case 'tournament_reminder':
+                    return `Reminder: Tournament "${data.tournamentName}" starts in ${data.timeRemaining}`;
+                case 'support_ticket_update':
+                    return `Update on your support ticket #${data.ticketId}: ${data.status}`;
+                case 'payment_status':
+                    return `Payment ${data.status} for tournament "${data.tournamentName}"`;
+                case 'team_update':
+                    return `Team "${data.teamName}" ${data.action}`;
+                case 'tournament_result':
+                    return `Tournament "${data.tournamentName}" results are available`;
+                default:
+                    return notification.message || 'New notification';
+            }
+        }
+
+        function formatTimeAgo(dateString) {
+            const now = new Date();
+            const date = new Date(dateString);
+            const diffInSeconds = Math.floor((now - date) / 1000);
+
+            if (diffInSeconds < 60) return 'Just now';
+            if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+            if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+            if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)}d ago`;
+
+            return date.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: date.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
+            });
+        }
+
+        async function markNotificationsAsViewed(unreadNotifications) {
+            if (unreadNotifications.length === 0) return;
+
+            const token = getAuthToken();
+            const notificationIds = unreadNotifications.map(n => n._id);
+
+            try {
+                await fetch(`${API_BASE_URL}/api/users/me/notifications/mark-viewed`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ notificationIds })
+                });
+            } catch (error) {
+                console.error('Error marking notifications as viewed:', error);
+            }
+        }
+
+        async function markAllNotificationsAsRead() {
+            const token = getAuthToken();
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users/me/notifications/mark-all-read`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Refresh notifications
+                    fetchPlayerActivities();
+                }
+            } catch (error) {
+                console.error('Error marking all notifications as read:', error);
             }
         }
 

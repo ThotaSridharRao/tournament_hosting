@@ -1460,10 +1460,172 @@
         border-color: rgba(10, 250, 217, 0.3);
         transform: translateY(-2px);
     }
+
+    /* Server Load Warning Styles */
+    .server-load-warning {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10000;
+      background: rgba(13, 10, 26, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(10, 250, 217, 0.3);
+      padding: 1rem 2rem;
+      transform: translateY(-100%);
+      transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      animation: slideDownWarning 0.8s ease-out 1s forwards;
+    }
+
+    .warning-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(22, 19, 41, 0.8);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(10, 250, 217, 0.2);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .warning-icon {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, rgba(10, 250, 217, 0.2), rgba(93, 63, 211, 0.2));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+
+    .warning-icon i {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+    }
+
+    .warning-text {
+      flex-grow: 1;
+    }
+
+    .warning-text h3 {
+      margin: 0 0 0.25rem 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .warning-text p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .warning-close {
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: var(--text-secondary);
+    }
+
+    .warning-close:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #ef4444;
+      transform: scale(1.1);
+    }
+
+    .warning-close i {
+      font-size: 0.9rem;
+    }
+
+    @keyframes slideDownWarning {
+      0% {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        box-shadow: 0 0 20px rgba(10, 250, 217, 0.3);
+      }
+      50% {
+        box-shadow: 0 0 30px rgba(10, 250, 217, 0.5);
+      }
+    }
+
+    .server-load-warning.dismissed {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+
+    /* Mobile responsiveness for warning */
+    @media (max-width: 768px) {
+      .server-load-warning {
+        padding: 0.75rem 1rem;
+      }
+
+      .warning-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.75rem;
+        padding: 1rem;
+      }
+
+      .warning-text h3 {
+        font-size: 1rem;
+      }
+
+      .warning-text p {
+        font-size: 0.85rem;
+      }
+
+      .warning-close {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+      }
+    }
   </style>
 </head>
 
 <body>
+
+  <!-- Server Load Warning Message -->
+  <div id="server-load-warning" class="server-load-warning">
+    <div class="warning-content">
+      <div class="warning-icon">
+        <i class="fas fa-server"></i>
+      </div>
+      <div class="warning-text">
+        <h3>High Server Load Notice</h3>
+        <p>Our servers are experiencing heavy traffic. Your page might take a moment to load. Please be patient or try refreshing if needed.</p>
+      </div>
+      <button class="warning-close" onclick="dismissServerWarning()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
 
   <div id="loader-wrapper">
     <dotlottie-wc src="https://lottie.host/f3668d34-e871-48f2-89e1-a802d02b8429/2gMMYTNzAd.lottie"
@@ -2178,6 +2340,44 @@
 
     // Initial ping after 30 seconds
     setTimeout(keepBackendAlive, 30000);
+
+    // Server Load Warning Functions
+    function dismissServerWarning() {
+      const warning = document.getElementById('server-load-warning');
+      if (warning) {
+        warning.classList.add('dismissed');
+        setTimeout(() => {
+          warning.style.display = 'none';
+        }, 600);
+        
+        // Store dismissal in localStorage so it doesn't show again for this session
+        localStorage.setItem('serverWarningDismissed', 'true');
+      }
+    }
+
+    // Auto-dismiss warning after 10 seconds if user doesn't interact
+    setTimeout(() => {
+      const warning = document.getElementById('server-load-warning');
+      if (warning && !warning.classList.contains('dismissed')) {
+        dismissServerWarning();
+      }
+    }, 10000);
+
+    // Check if warning was already dismissed in this session
+    document.addEventListener('DOMContentLoaded', function() {
+      const wasDismissed = localStorage.getItem('serverWarningDismissed');
+      if (wasDismissed === 'true') {
+        const warning = document.getElementById('server-load-warning');
+        if (warning) {
+          warning.style.display = 'none';
+        }
+      }
+      
+      // Clear the dismissal flag when page loads (so it shows on next visit)
+      setTimeout(() => {
+        localStorage.removeItem('serverWarningDismissed');
+      }, 1000);
+    });
 
   </script>
 </body>
