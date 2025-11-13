@@ -1407,6 +1407,16 @@
     </nav>
 
     <div class="container">
+        <!-- Room Details Dialog -->
+        <div id="room-details-dialog" style="position: fixed; top: 20px; right: 20px; width: 300px; background: var(--panel); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 1rem; z-index: 1000; display: none; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h4 style="margin: 0; color: var(--primary-color);"><i class="fas fa-door-open"></i> Room Details</h4>
+                <button onclick="closeRoomDetailsDialog()" style="background: none; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer;">&times;</button>
+            </div>
+            <div id="room-details-content">
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">No room details available yet.</p>
+            </div>
+        </div>
 
         <div class="header">
             <h1 class="tournament-title" id="tournament-title">Loading Tournament...</h1>
@@ -3443,6 +3453,71 @@
                 }
             }, 10000);
         }
+
+        // Room Details Dialog Functions
+        async function checkAndShowRoomDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+            
+            if (!slug) return;
+            
+            try {
+                // Fetch room details from backend API
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/room-details`);
+                const result = await response.json();
+
+                if (response.ok && result.success && result.data && Object.keys(result.data).length > 0) {
+                    showRoomDetailsDialog(result.data);
+                }
+            } catch (error) {
+                console.error('Error fetching room details:', error);
+                // Fallback to localStorage for backward compatibility
+                const roomDetailsKey = `room_details_${slug}`;
+                const roomDetails = JSON.parse(localStorage.getItem(roomDetailsKey) || '{}');
+                if (Object.keys(roomDetails).length > 0) {
+                    showRoomDetailsDialog(roomDetails);
+                }
+            }
+        }
+
+        function showRoomDetailsDialog(roomDetails) {
+            const dialog = document.getElementById('room-details-dialog');
+            const content = document.getElementById('room-details-content');
+            
+            let html = '';
+            for (const [round, details] of Object.entries(roomDetails)) {
+                const roundName = round.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                const matchTime = new Date(details.matchTime).toLocaleString();
+                
+                html += `
+                    <div style="margin-bottom: 1rem; padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 6px; border-left: 3px solid var(--primary-color);">
+                        <h5 style="margin: 0 0 0.5rem 0; color: var(--primary-color); font-size: 0.9rem;">${roundName}</h5>
+                        <p style="margin: 0 0 0.25rem 0; font-size: 0.8rem;"><i class="fas fa-clock"></i> ${matchTime}</p>
+                        <p style="margin: 0 0 0.25rem 0; font-size: 0.8rem;"><i class="fas fa-door-open"></i> Room ID: ${details.roomId}</p>
+                        <p style="margin: 0; font-size: 0.8rem;"><i class="fas fa-key"></i> Password: ${details.password}</p>
+                    </div>
+                `;
+            }
+            
+            content.innerHTML = html;
+            dialog.style.display = 'block';
+        }
+
+        function closeRoomDetailsDialog() {
+            document.getElementById('room-details-dialog').style.display = 'none';
+        }
+
+        // Check for room details when page loads and when refreshed
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkAndShowRoomDetails, 1000); // Delay to ensure tournament data is loaded
+        });
+
+        // Also check when the page becomes visible (when user switches back to tab)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                checkAndShowRoomDetails();
+            }
+        });
     </script>
 </body>
 

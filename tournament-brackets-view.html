@@ -35,8 +35,8 @@
       padding-top: 60px;
       /* Account for fixed navbar */
     }
-    
-   /* =========================
+
+    /* =========================
        NAVBAR STYLES (Modern Design)
        ========================= */
     .nav-normal {
@@ -759,7 +759,7 @@
       color: var(--text-secondary);
     }
 
-    
+
 
     .qualifier-source {
       color: var(--text-secondary);
@@ -953,7 +953,8 @@
       }
 
       .carousel-btn span {
-        display: none; /* Hide "Previous" and "Next" text */
+        display: none;
+        /* Hide "Previous" and "Next" text */
       }
 
       .carousel-indicator {
@@ -1026,67 +1027,79 @@
       scrollbar-width: thin;
       scrollbar-color: var(--panel) var(--bg-dark);
     }
-    .user-info {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 50px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
 
-.user-info:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(10, 250, 217, 0.3);
-    transform: translateY(-2px);
-}
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .user-info:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(10, 250, 217, 0.3);
+      transform: translateY(-2px);
+    }
   </style>
 </head>
 
 <body>
   <nav class="nav-normal">
     <div class="nav-container">
-        <a href="index.html" class="logo">
-            <img src="ug.png" alt="Uni Games">
-        </a>
-        <div class="nav-center" id="normalNav">
-            <ul class="nav-links">
-              <li><a href="index.html">Home</a></li>
-              <li><a href="tournaments.html">Tournaments</a></li>
-              <li><a href="dispute-support.html">Support</a></li>
-                
-            </ul>
-            <div class="auth-buttons" id="normalAuth">
-                <div id="guest-menu">
-                    <a href="auth.html" class="btn btn-request">Join Us</a>
-                </div>
-                <div id="user-menu" style="display: none;">
-                    <div class="user-info" onclick="window.location.href='userdashboard.html'" style="cursor: pointer;">
-                        <div class="user-avatar" id="user-avatar">U</div>
-                        <span class="user-name" id="navbar-username">User</span>
-                    </div>
-                    <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
-                </div>
+      <a href="index.html" class="logo">
+        <img src="ug.png" alt="Uni Games">
+      </a>
+      <div class="nav-center" id="normalNav">
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="tournaments.html">Tournaments</a></li>
+          <li><a href="dispute-support.html">Support</a></li>
+
+        </ul>
+        <div class="auth-buttons" id="normalAuth">
+          <div id="guest-menu">
+            <a href="auth.html" class="btn btn-request">Join Us</a>
+          </div>
+          <div id="user-menu" style="display: none;">
+            <div class="user-info" onclick="window.location.href='userdashboard.html'" style="cursor: pointer;">
+              <div class="user-avatar" id="user-avatar">U</div>
+              <span class="user-name" id="navbar-username">User</span>
             </div>
+            <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
+          </div>
         </div>
-        <button class="menu-toggle" id="normalMenuToggle">
-            <div class="menu-icon">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </button>
+      </div>
+      <button class="menu-toggle" id="normalMenuToggle">
+        <div class="menu-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </button>
     </div>
-</nav>
+  </nav>
 
   <div id="mobile-nav" class="mobile-nav" hidden>
   </div>
 
   <div class="container">
-
+    <!-- Room Details Dialog -->
+    <div id="room-details-dialog"
+      style="position: fixed; top: 20px; right: 20px; width: 300px; background: var(--panel); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 1rem; z-index: 1000; display: none; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h4 style="margin: 0; color: var(--primary-color);"><i class="fas fa-door-open"></i> Room Details</h4>
+        <button onclick="closeRoomDetailsDialog()"
+          style="background: none; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer;">&times;</button>
+      </div>
+      <div id="room-details-content">
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">No room details available yet.</p>
+      </div>
+    </div>
 
     <div class="hero-section">
       <div class="hero-content">
@@ -1227,16 +1240,16 @@
           html += `<div class="qualifier-carousel">`;
           html += `<div class="carousel-container">`;
           html += `<div class="carousel-slides" id="carousel-slides">`;
-          
+
           // Create all qualifier tables as slides
           stage.tables.forEach((table, tableIndex) => {
             html += `<div class="carousel-slide">`;
             html += createMatchTable(table, participants, stageIndex, tableIndex);
             html += `</div>`;
           });
-          
+
           html += `</div></div>`; // Close carousel-slides and carousel-container
-          
+
           // Add navigation controls
           html += `<div class="carousel-controls">`;
           html += `<button class="carousel-btn" id="prev-btn" onclick="previousSlide()" disabled>
@@ -1247,7 +1260,7 @@
                       Next <i class="fas fa-chevron-right"></i>
                   </button>`;
           html += `</div>`;
-          
+
           html += `</div>`; // Close qualifier-carousel
         } else {
           // For finalists or other stages, display normally
@@ -1259,7 +1272,7 @@
         html += `</div>`;
       });
 
-          container.innerHTML = html;
+      container.innerHTML = html;
     }
 
     function getTournamentFormatConfig(format, participantCount) {
@@ -1291,13 +1304,13 @@
       const kpSettings = tournamentData.kpSettings || {};
       const numberOfGroups = kpSettings.numberOfGroups || 4;
       const totalParticipants = participants.length;
-      
+
       // Calculate balanced distribution
       // Example: 97 teams, 4 groups -> base=24, extra=1 -> [25,24,24,24]
       // Example: 96 teams, 4 groups -> base=24, extra=0 -> [24,24,24,24]
       const baseTeamsPerGroup = Math.floor(totalParticipants / numberOfGroups);
       const extraTeams = totalParticipants % numberOfGroups;
-      
+
       // Calculate this group's size and start/end indices
       let currentGroupSize, startIndex;
       if (tableIndex < extraTeams) {
@@ -1309,7 +1322,7 @@
         currentGroupSize = baseTeamsPerGroup;
         startIndex = (extraTeams * (baseTeamsPerGroup + 1)) + ((tableIndex - extraTeams) * baseTeamsPerGroup);
       }
-      
+
       const endIndex = startIndex + currentGroupSize;
       const qualifierTeams = participants.slice(startIndex, endIndex);
 
@@ -1342,7 +1355,7 @@
         const maxRows = Math.ceil(currentGroupSize / 2);
         for (let row = 0; row < maxRows; row++) {
           html += `<tr>`;
-          
+
           // First team (left side)
           const slot1 = (row * 2) + 1;
           const team1 = qualifierTeams[slot1 - 1];
@@ -1352,7 +1365,7 @@
           } else {
             html += `<td class="match-teams"><em>Open Slot</em></td>`;
           }
-          
+
           // Second team (right side)
           const slot2 = (row * 2) + 2;
           if (slot2 <= currentGroupSize) {
@@ -1368,7 +1381,7 @@
             html += `<td class="match-number"></td>`;
             html += `<td class="match-teams"></td>`;
           }
-          
+
           html += `</tr>`;
         }
         html += `</tbody>`;
@@ -1911,115 +1924,180 @@
       const prevBtn = document.getElementById('prev-btn');
       const nextBtn = document.getElementById('next-btn');
       const indicator = document.getElementById('slide-indicator');
-      
+
       if (carouselSlides) {
         carouselSlides.style.transform = `translateX(-${currentSlide * 100}%)`;
       }
-      
+
       // Update button states
       if (prevBtn) prevBtn.disabled = currentSlide === 0;
       if (nextBtn) nextBtn.disabled = currentSlide === totalSlides - 1;
-      
+
       // Update indicator
       if (indicator) indicator.textContent = `Match ${currentSlide + 1} of ${totalSlides}`;
     }
 
     // Call initializeCarousel after brackets are loaded
     const originalDisplayBrackets = displayBrackets;
-    displayBrackets = function() {
+    displayBrackets = function () {
       originalDisplayBrackets();
       setTimeout(initializeCarousel, 100);
     };
     // =========================
-  // SESSION & NAVBAR MANAGEMENT
-  // =========================
-  
-     // Consolidated session function
+    // SESSION & NAVBAR MANAGEMENT
+    // =========================
+
+    // Consolidated session function
     function getSessionData() {
-        const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
-        if (!session) return null;
-        try {
-            const parsedSession = JSON.parse(session);
-            if (parsedSession && parsedSession.token && parsedSession.user) {
-                return parsedSession;
-            }
-            return null;
-        } catch (error) {
-            console.error('Error parsing session data:', error);
-            localStorage.removeItem('nexus_session');
-            sessionStorage.removeItem('nexus_session');
-            return null;
+      const session = localStorage.getItem('nexus_session') || sessionStorage.getItem('nexus_session');
+      if (!session) return null;
+      try {
+        const parsedSession = JSON.parse(session);
+        if (parsedSession && parsedSession.token && parsedSession.user) {
+          return parsedSession;
         }
+        return null;
+      } catch (error) {
+        console.error('Error parsing session data:', error);
+        localStorage.removeItem('nexus_session');
+        sessionStorage.removeItem('nexus_session');
+        return null;
+      }
     }
 
     function checkUserAuthentication() {
-        const sessionData = getSessionData();
-        const guestMenu = document.getElementById('guest-menu');
-        const userMenu = document.getElementById('user-menu');
-        const user = sessionData?.user;
+      const sessionData = getSessionData();
+      const guestMenu = document.getElementById('guest-menu');
+      const userMenu = document.getElementById('user-menu');
+      const user = sessionData?.user;
 
-        if (user) {
-            const username = user.username || (user.email ? user.email.split('@')[0] : 'User');
-            const userInitials = username.substring(0, 2).toUpperCase();
+      if (user) {
+        const username = user.username || (user.email ? user.email.split('@')[0] : 'User');
+        const userInitials = username.substring(0, 2).toUpperCase();
 
-            const navbarUsername = document.getElementById('navbar-username');
-            const userAvatar = document.getElementById('user-avatar');
+        const navbarUsername = document.getElementById('navbar-username');
+        const userAvatar = document.getElementById('user-avatar');
 
-            if (navbarUsername) navbarUsername.textContent = username;
-            if (userAvatar) userAvatar.textContent = userInitials;
+        if (navbarUsername) navbarUsername.textContent = username;
+        if (userAvatar) userAvatar.textContent = userInitials;
 
-            if (guestMenu) guestMenu.style.display = 'none';
-            if (userMenu) userMenu.style.display = 'flex';
-        } else {
-            if (guestMenu) guestMenu.style.display = 'block';
-            if (userMenu) userMenu.style.display = 'none';
-        }
+        if (guestMenu) guestMenu.style.display = 'none';
+        if (userMenu) userMenu.style.display = 'flex';
+      } else {
+        if (guestMenu) guestMenu.style.display = 'block';
+        if (userMenu) userMenu.style.display = 'none';
+      }
     }
 
     function initializeMobileMenu() {
-        const normalMenuToggle = document.getElementById('normalMenuToggle');
-        const normalNav = document.getElementById('normalNav');
+      const normalMenuToggle = document.getElementById('normalMenuToggle');
+      const normalNav = document.getElementById('normalNav');
 
-        if (normalMenuToggle && normalNav) {
-            normalMenuToggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                normalMenuToggle.classList.toggle('active');
-                normalNav.classList.toggle('active');
-            });
+      if (normalMenuToggle && normalNav) {
+        normalMenuToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          normalMenuToggle.classList.toggle('active');
+          normalNav.classList.toggle('active');
+        });
 
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.nav-normal') && normalNav.classList.contains('active')) {
-                    normalNav.classList.remove('active');
-                    normalMenuToggle.classList.remove('active');
-                }
-            });
-        }
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.nav-normal') && normalNav.classList.contains('active')) {
+            normalNav.classList.remove('active');
+            normalMenuToggle.classList.remove('active');
+          }
+        });
+      }
     }
 
     function handleLogout() {
-        if (confirm('Are you sure you want to logout?')) {
-            localStorage.removeItem('nexus_session');
-            sessionStorage.removeItem('nexus_session');
-            window.location.href = 'auth.html';
-        }
+      if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('nexus_session');
+        sessionStorage.removeItem('nexus_session');
+        window.location.href = 'auth.html';
+      }
     }
 
     function redirectToAuth(tab = 'register') {
-        const returnUrl = encodeURIComponent(window.location.href);
-        window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
+      const returnUrl = encodeURIComponent(window.location.href);
+      window.location.href = `auth.html?tab=${tab}&returnUrl=${returnUrl}`;
     }
 
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', () => {
-        checkUserAuthentication();
-        initializeMobileMenu();
-        
+      checkUserAuthentication();
+      initializeMobileMenu();
+
     });
     // Add to DOMContentLoaded or after navbar initialization
     document.querySelectorAll('.nav-links a').forEach(link => {
-        if (link.href === window.location.href) {
-            link.classList.add('active');
+      if (link.href === window.location.href) {
+        link.classList.add('active');
+      }
+    });
+
+    // Room Details Dialog Functions
+    async function checkAndShowRoomDetails() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const slug = urlParams.get('slug');
+
+      if (!slug) return;
+
+      try {
+        // Fetch room details from backend API
+        const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/room-details`);
+        const result = await response.json();
+
+        if (response.ok && result.success && result.data && Object.keys(result.data).length > 0) {
+          showRoomDetailsDialog(result.data);
         }
+      } catch (error) {
+        console.error('Error fetching room details:', error);
+        // Fallback to localStorage for backward compatibility
+        const roomDetailsKey = `room_details_${slug}`;
+        const roomDetails = JSON.parse(localStorage.getItem(roomDetailsKey) || '{}');
+        if (Object.keys(roomDetails).length > 0) {
+          showRoomDetailsDialog(roomDetails);
+        }
+      }
+    }
+
+    function showRoomDetailsDialog(roomDetails) {
+      const dialog = document.getElementById('room-details-dialog');
+      const content = document.getElementById('room-details-content');
+
+      let html = '';
+      for (const [round, details] of Object.entries(roomDetails)) {
+        const roundName = round.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+        const matchTime = new Date(details.matchTime).toLocaleString();
+
+        html += `
+                <div style="margin-bottom: 1rem; padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 6px; border-left: 3px solid var(--primary-color);">
+                    <h5 style="margin: 0 0 0.5rem 0; color: var(--primary-color); font-size: 0.9rem;">${roundName}</h5>
+                    <p style="margin: 0 0 0.25rem 0; font-size: 0.8rem;"><i class="fas fa-clock"></i> ${matchTime}</p>
+                    <p style="margin: 0 0 0.25rem 0; font-size: 0.8rem;"><i class="fas fa-door-open"></i> Room ID: ${details.roomId}</p>
+                    <p style="margin: 0; font-size: 0.8rem;"><i class="fas fa-key"></i> Password: ${details.password}</p>
+                </div>
+            `;
+      }
+
+      content.innerHTML = html;
+      dialog.style.display = 'block';
+    }
+
+    function closeRoomDetailsDialog() {
+      document.getElementById('room-details-dialog').style.display = 'none';
+    }
+
+    // Check for room details when page loads and when refreshed
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(checkAndShowRoomDetails, 1000); // Delay to ensure tournament data is loaded
+    });
+
+    // Also check when the page becomes visible (when user switches back to tab)
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) {
+        checkAndShowRoomDetails();
+      }
     });
   </script>
 

@@ -403,6 +403,53 @@
             box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
         }
 
+        .section-action-btn.room-details-btn {
+            background: #28a745;
+        }
+
+        .section-action-btn.room-details-btn:hover {
+            background: #218838;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Room Details Mode Styles */
+        .admin-tournament-list.room-details-mode .admin-tournament-item {
+            grid-template-columns: 2fr auto auto auto;
+        }
+
+        .tournament-room-details-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 6px;
+            background: #28a745;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: scale(0.8);
+            animation: fadeInScale 0.3s ease forwards;
+        }
+
+        .tournament-room-details-btn:hover {
+            background: #218838;
+            transform: scale(1.05);
+        }
+
+        /* Hide room details buttons by default */
+        .admin-tournament-item .tournament-room-details-btn {
+            display: none;
+        }
+
+        /* Show room details buttons in room-details mode */
+        .admin-tournament-list.room-details-mode .tournament-room-details-btn {
+            display: flex;
+        }
+
 
 
         /* Tab System Styles */
@@ -1103,6 +1150,16 @@
                 height: 40px;
             }
 
+            .admin-tournament-list.room-details-mode .admin-tournament-item {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-tournament-list.room-details-mode .tournament-room-details-btn {
+                margin: 0.5rem auto 0;
+                width: 40px;
+                height: 40px;
+            }
+
             .admin-tournament-list.edit-mode .admin-tournament-item {
                 grid-template-columns: 1fr;
             }
@@ -1195,6 +1252,10 @@
             }
 
             .admin-tournament-list.brackets-mode .admin-tournament-item {
+                grid-template-columns: 3fr auto auto auto;
+            }
+
+            .admin-tournament-list.room-details-mode .admin-tournament-item {
                 grid-template-columns: 3fr auto auto auto;
             }
 
@@ -1456,6 +1517,10 @@
                                 title="View Tournament Brackets">
                                 <i class="fas fa-sitemap"></i>
                             </button>
+                            <button class="section-action-btn room-details-btn" onclick="showRoomDetailsTournament()"
+                                title="Manage Room Details">
+                                <i class="fas fa-door-open"></i>
+                            </button>
                             <button class="section-action-btn delete-btn" onclick="showDeleteTournament()"
                                 title="Delete Tournament">
                                 <i class="fas fa-trash"></i>
@@ -1484,23 +1549,24 @@
                 <div class="section-header">
                     <h3 class="section-title">Host Payouts</h3>
                     <div class="section-actions">
-                        <button class="section-action-btn" onclick="renderPayoutsManagement()"
-                            title="Refresh Payouts">
+                        <button class="section-action-btn" onclick="renderPayoutsManagement()" title="Refresh Payouts">
                             <i class="fas fa-sync-alt"></i>
                         </button>
                     </div>
                 </div>
-                <div style="display: flex; justify-content: space-around; border-bottom: 1px solid var(--border-color);">
-                    <div class="payout-status-tab active" data-status="pending"
-                        onclick="switchPayoutsTab('pending')">Pending</div>
-                    <div class="payout-status-tab" data-status="completed"
-                        onclick="switchPayoutsTab('completed')">Completed</div>
-                    <div class="payout-status-tab" data-status="failed"
-                        onclick="switchPayoutsTab('failed')">Failed</div>
+                <div
+                    style="display: flex; justify-content: space-around; border-bottom: 1px solid var(--border-color);">
+                    <div class="payout-status-tab active" data-status="pending" onclick="switchPayoutsTab('pending')">
+                        Pending</div>
+                    <div class="payout-status-tab" data-status="completed" onclick="switchPayoutsTab('completed')">
+                        Completed</div>
+                    <div class="payout-status-tab" data-status="failed" onclick="switchPayoutsTab('failed')">Failed
+                    </div>
                 </div>
                 <div id="payout-requests-container" class="payout-list">
                     <!-- Payout requests will be injected here -->
-                    <p style="text-align: center; color: var(--text-secondary); padding: 2rem;">Loading payout requests...</p>
+                    <p style="text-align: center; color: var(--text-secondary); padding: 2rem;">Loading payout
+                        requests...</p>
                 </div>
                 <div id="payout-pagination" style="text-align: center; margin-top: 1rem;">
                     <!-- Pagination buttons here -->
@@ -2533,6 +2599,28 @@
             }
         }
 
+        function showRoomDetailsTournament() {
+            // Toggle room details mode for tournament cards
+            const tournamentList = document.getElementById('admin-tournament-list');
+            const roomDetailsBtn = document.querySelector('.section-action-btn.room-details-btn');
+
+            if (tournamentList.classList.contains('room-details-mode')) {
+                // Exit room details mode
+                tournamentList.classList.remove('room-details-mode');
+                roomDetailsBtn.innerHTML = '<i class="fas fa-door-open"></i>';
+                roomDetailsBtn.title = 'Manage Room Details';
+                // Re-render tournament list without room details buttons
+                renderTournamentList('admin-tournament-list', adminTournaments, 'manage');
+            } else {
+                // Enter room details mode
+                tournamentList.classList.add('room-details-mode');
+                roomDetailsBtn.innerHTML = '<i class="fas fa-times"></i>';
+                roomDetailsBtn.title = 'Cancel Room Details';
+                // Re-render tournament list with room details buttons
+                renderTournamentList('admin-tournament-list', adminTournaments, 'room-details');
+            }
+        }
+
         function renderTournamentList(containerId, tournaments, actionType) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -2583,6 +2671,11 @@
                         <i class="fas fa-sitemap"></i>
                     </button>` : '';
 
+                const roomDetailsButton = actionType === 'room-details' ?
+                    `<button class="tournament-room-details-btn" onclick="manageRoomDetails('${t.slug}')" title="Manage Room Details for ${title}">
+                        <i class="fas fa-door-open"></i>
+                    </button>` : '';
+
                 const editButtons = actionType === 'edit' ?
                     `<div class="tournament-edit-actions">
                         <button class="tournament-edit-btn details" onclick="editTournamentDetails(event, '${t.slug}')" title="Edit Details">
@@ -2609,6 +2702,7 @@
                         <div class="tournament-prize">${prize}</div>
                         ${deleteButton}
                         ${bracketsButton}
+                        ${roomDetailsButton}
                         ${editButtons}
                     </div>`;
             }).join('');
@@ -2620,6 +2714,15 @@
                 return;
             }
             renderOperation('finalistsEditor', tournament);
+        }
+
+        function manageRoomDetails(slug) {
+            const tournament = adminTournaments.find(t => t.slug === slug);
+            if (!tournament) {
+                showCustomAlert('Error', 'Tournament not found!', 'error');
+                return;
+            }
+            renderOperation('roomDetailsEditor', tournament);
         }
 
 
@@ -2797,7 +2900,7 @@
             const container = document.getElementById('operation-content');
             if (!container) return;
             // Clear any old content before rendering new
-            container.innerHTML = ''; 
+            container.innerHTML = '';
 
             let contentHtml = '';
             switch (operationName) {
@@ -2837,6 +2940,9 @@
                     break;
                 case 'finalistsEditor':
                     if (data) contentHtml = getFinalistsEditorHTML(data);
+                    break;
+                case 'roomDetailsEditor':
+                    if (data) contentHtml = getRoomDetailsEditorHTML(data);
                     break;
                 default:
                     // If no operation is selected, just clear the content
@@ -3375,6 +3481,111 @@
 
             // Operation tabs removed - functionality moved to section action buttons
         });
+
+        function getRoomDetailsEditorHTML(t) {
+            return `
+                <div class="operation-title-header">
+                    <h3 class="operation-title">Room Details: ${t.title}</h3>
+                    <button type="button" class="close-btn" onclick="showRoomDetailsTournament()" title="Back to Tournament List">&times;</button>
+                </div>
+                <form id="room-details-form">
+                    <input type="hidden" name="slug" value="${t.slug}">
+                    
+                    <div style="margin-bottom: 1rem; padding: 1rem; background: rgba(40, 167, 69, 0.1); border-radius: 8px; border: 1px solid var(--border-color);">
+                        <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary);">
+                            <i class="fas fa-info-circle" style="margin-right: 0.5rem; color: #28a745;"></i>
+                            Add room details for each round. Players will see this information when they refresh the brackets page.
+                        </p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="round-name" class="form-label">Round/Match Name</label>
+                        <input type="text" id="round-name" name="round" class="form-input" placeholder="e.g., Round 1, Quarterfinals, Group A Match, etc." required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="match-time" class="form-label">Timing</label>
+                        <input type="datetime-local" id="match-time" name="matchTime" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="room-id" class="form-label">Room ID</label>
+                        <input type="text" id="room-id" name="roomId" class="form-input" placeholder="e.g., 123456789, ABCD-EFGH-IJKL" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="text" id="password" name="password" class="form-input" placeholder="Room/Match password" required>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="submit-btn btn-secondary" onclick="showRoomDetailsTournament()">Cancel</button>
+                        <button type="submit" class="submit-btn">Add Room Details</button>
+                    </div>
+                </form>
+            `;
+        }
+
+        // Handle room details form submission
+        document.addEventListener('submit', function (event) {
+            if (event.target.id === 'room-details-form') {
+                event.preventDefault();
+                handleRoomDetailsSubmit(event);
+            }
+        });
+
+        async function handleRoomDetailsSubmit(event) {
+            const form = event.target;
+            const formData = new FormData(form);
+            const slug = formData.get('slug');
+            const round = formData.get('round');
+            const matchTime = formData.get('matchTime');
+            const roomId = formData.get('roomId');
+            const password = formData.get('password');
+
+            const btn = form.querySelector('button[type="submit"]');
+            btn.textContent = 'Adding...';
+            btn.disabled = true;
+
+            try {
+                // Send room details to backend API
+                const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/room-details`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${getSessionData()?.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        round: round,
+                        matchTime: matchTime,
+                        roomId: roomId,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    showCustomAlert('Success', 'Room details added successfully! Players will see this information when they refresh the brackets page.', 'success');
+                    showRoomDetailsTournament(); // Go back to tournament list
+                } else {
+                    throw new Error(result.message || 'Failed to add room details');
+                }
+
+            } catch (error) {
+                console.error('Room details error:', error);
+                let errorMessage = 'Failed to add room details';
+                if (error.message) {
+                    errorMessage += ': ' + error.message;
+                } else if (error.detail) {
+                    errorMessage += ': ' + error.detail;
+                }
+                showCustomAlert('Error', errorMessage, 'error');
+            } finally {
+                btn.textContent = 'Add Room Details';
+                btn.disabled = false;
+            }
+        }
 
 
     </script>
