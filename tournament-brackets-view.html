@@ -1097,7 +1097,7 @@
           style="background: none; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer;">&times;</button>
       </div>
       <div id="room-details-content">
-        <p style="color: var(--text-secondary); font-size: 0.9rem;">No room details available yet.</p>
+        <!-- Content will be populated by JavaScript -->
       </div>
     </div>
 
@@ -2047,41 +2047,71 @@
         const response = await fetch(`${API_BASE_URL}/api/tournaments/${slug}/room-details`);
         const result = await response.json();
 
-        if (response.ok && result.success && result.data && Object.keys(result.data).length > 0) {
+        if (response.ok && result.success && result.data && result.data.length > 0) {
           showRoomDetailsDialog(result.data);
         }
       } catch (error) {
         console.error('Error fetching room details:', error);
         // Fallback to localStorage for backward compatibility
         const roomDetailsKey = `room_details_${slug}`;
-        const roomDetails = JSON.parse(localStorage.getItem(roomDetailsKey) || '{}');
-        if (Object.keys(roomDetails).length > 0) {
+        const roomDetails = JSON.parse(localStorage.getItem(roomDetailsKey) || '[]');
+        if (roomDetails.length > 0) {
           showRoomDetailsDialog(roomDetails);
         }
       }
     }
 
-    function showRoomDetailsDialog(roomDetails) {
+    function showRoomDetailsDialog(roomDetailsArray) {
       const dialog = document.getElementById('room-details-dialog');
       const content = document.getElementById('room-details-content');
 
       let html = '';
-      for (const [round, details] of Object.entries(roomDetails)) {
-        const roundName = round.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
-        const matchTime = new Date(details.matchTime).toLocaleString();
+      
+      // Handle both array format (from backend) and object format (legacy)
+      if (Array.isArray(roomDetailsArray)) {
+        // New backend format - array of room details
+        if (roomDetailsArray.length === 0) {
+          return; // Don't show dialog if no room details
+        }
+        
+        roomDetailsArray.forEach(details => {
+          const matchTime = new Date(details.matchTime).toLocaleString();
+          
+          html += `
+            <div style="margin-bottom: 1rem; padding: 0.75rem; background: rgba(15, 133, 211, 0.1); border-radius: 6px; border-left: 3px solid var(--primary-color);">
+              <h5 style="margin: 0 0 0.5rem 0; color: var(--primary-color); font-size: 0.9rem;">${details.round}</h5>
+              <p style="margin: 0 0 0.25rem 0; font-size: 0.8rem;"><i class="fas fa-clock"></i> ${matchTime}</p>
+              <p style="margin: 0 0 0.25rem 0; font-size: 0.8rem;"><i class="fas fa-door-open"></i> Room ID: ${details.roomId}</p>
+              ${details.password ? `<p style="margin: 0; font-size: 0.8rem;"><i class="fas fa-key"></i> Password: ${details.password}</p>` : ''}
+            </div>
+          `;
+        });
+      } else {
+        // Legacy format - object with round names as keys
+        if (Object.keys(roomDetailsArray).length === 0) {
+          return; // Don't show dialog if no room details
+        }
+        
+        for (const [round, details] of Object.entries(roomDetailsArray)) {
+          const roundName = round.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+          const matchTime = new Date(details.matchTime).toLocaleString();
 
-        html += `
-                <div style="margin-bottom: 1rem; padding: 0.75rem; background: rgba(0,0,0,0.2); border-radius: 6px; border-left: 3px solid var(--primary-color);">
-                    <h5 style="margin: 0 0 0.5rem 0; color: var(--primary-color); font-size: 0.9rem;">${roundName}</h5>
-                    <p style="margin: 0 0 0.25rem 0; font-size: 0.8rem;"><i class="fas fa-clock"></i> ${matchTime}</p>
-                    <p style="margin: 0 0 0.25rem 0; font-size: 0.8rem;"><i class="fas fa-door-open"></i> Room ID: ${details.roomId}</p>
-                    <p style="margin: 0; font-size: 0.8rem;"><i class="fas fa-key"></i> Password: ${details.password}</p>
-                </div>
-            `;
+          html += `
+            <div style="margin-bottom: 1rem; padding: 0.75rem; background: rgba(15, 133, 211, 0.1); border-radius: 6px; border-left: 3px solid var(--primary-color);">
+              <h5 style="margin: 0 0 0.5rem 0; color: var(--primary-color); font-size: 0.9rem;">${roundName}</h5>
+              <p style="margin: 0 0 0.25rem 0; font-size: 0.8rem;"><i class="fas fa-clock"></i> ${matchTime}</p>
+              <p style="margin: 0 0 0.25rem 0; font-size: 0.8rem;"><i class="fas fa-door-open"></i> Room ID: ${details.roomId}</p>
+              ${details.password ? `<p style="margin: 0; font-size: 0.8rem;"><i class="fas fa-key"></i> Password: ${details.password}</p>` : ''}
+            </div>
+          `;
+        }
       }
 
-      content.innerHTML = html;
-      dialog.style.display = 'block';
+      // Only show dialog if there's actual content
+      if (html) {
+        content.innerHTML = html;
+        dialog.style.display = 'block';
+      }
     }
 
     function closeRoomDetailsDialog() {
